@@ -31,6 +31,8 @@ mergers <- mergePairs(dadaFs, filtFs, dadaRs, filtRs, verbose=TRUE)
 
 seqtab <- makeSequenceTable(mergers)
 
+table(nchar(getSequences(seqtab)))
+
 seqtab.nochim <- removeBimeraDenovo(seqtab, method="consensus",
                                     multithread=TRUE, verbose=TRUE)
 
