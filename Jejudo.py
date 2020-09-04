@@ -49,3 +49,13 @@ class Jejudo:
         self.asv_table = asv_table
         self.tax_table = tax_table
         self.sample_data = sample_data
+
+    def collapse(self, rank):
+        ranks = ["Kingdom", "Phylum", "Class", "Order",
+                 "Family", "Genus", "Species"]
+        i = ranks.index(rank) + 1
+        df = self.asv_table
+        a = self.tax_table.iloc[:, :i].astype(str)
+        df["Target"] = a.agg(":".join, axis=1)
+        df = df.groupby("Target").sum()
+        return df
