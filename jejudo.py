@@ -2,6 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn import decomposition
 from mpl_toolkits.mplot3d import Axes3D
+from sklearn.cluster import KMeans
 
 def concat(jjd1, jjd2):
     jjd3 = Jejudo()
@@ -212,3 +213,12 @@ class Jejudo:
         jjd.seq_table = seq_df
 
         return jjd
+
+    def kmeans(self, n):
+        df = self.asv_table
+        df = (df - df.mean()) / df.std()
+        X = df.T
+        kmeans = KMeans(n_clusters=n)
+        kmeans.fit(X)
+        y = kmeans.predict(X)
+        self.smp_table = self.smp_table.assign(KMeans=y)
