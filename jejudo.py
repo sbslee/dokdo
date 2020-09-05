@@ -150,7 +150,7 @@ class Jejudo:
         ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
         plt.show()
 
-    def pca3d(self, var, elev=10, azim=30):
+    def pca3d(self, var, color_map=None, elev=10, azim=30):
         df = self.asv_table
         df = (df - df.mean()) / df.std()
         df = df.T
@@ -164,11 +164,16 @@ class Jejudo:
         pca.fit(df)
         X = pca.transform(df)
         print(pca.explained_variance_ratio_)
-        color_map = dict(zip(self.smp_table[var], self.smp_table.Color))
 
-        for site, color in color_map.items():
-            i = df.index.str.contains(site)
-            ax.scatter(X[i, 0], X[i, 1], X[i, 2], label=site, color=color, s=80)
+        if not color_map:
+            a = self.smp_table[var].unique()
+            color_map = dict(zip(a, [None for x in a]))
+
+        color_map = dict(sorted(color_map.items()))
+
+        for k, v in color_map.items():
+            i = self.smp_table[var] == k
+            ax.scatter(X[i, 0], X[i, 1], X[i, 2], label=k, color=v, s=80)
 
         ax.set_xlabel('PC 1')
         ax.set_ylabel('PC 2')
