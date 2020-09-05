@@ -102,6 +102,12 @@ class Jejudo:
         tax_df = pd.read_csv(tax_file, index_col=0)
         smp_df = pd.read_table(smp_file, index_col=0)
 
+        asv_df = asv_df.sort_index()
+        smp_df = smp_df.sort_index()
+
+        if not all(asv_df.index == smp_df.index):
+            raise ValueError("Samples differ in ASV Table and Sample Table")
+
         asv_df = asv_df.T
         asv_list = [f"ASV{x+1}" for x in range(asv_df.shape[0])]
         asv_df.index = asv_list
@@ -183,3 +189,26 @@ class Jejudo:
         ax.w_zaxis.set_ticklabels([])
         ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
         plt.show()
+
+    def subset(self, var, target):
+        i = self.smp_table[var] == target
+        smp_df = self.smp_table.loc[i, :]
+        asv_df = self.asv_table.loc[:, i]
+
+        i = asv_df.sum(axis=1) != 0
+        asv_df = asv_df.loc[i, :]
+        tax_df = self.tax_table.loc[i, :]
+        seq_df = self.seq_table.loc[i, :]
+
+        asv_list = [f"ASV{x+1}" for x in range(asv_df.shape[0])]
+        asv_df.index = asv_list
+        tax_df.index = asv_list
+        seq_df.index = asv_list
+
+        jjd = Jejudo()
+        jjd.asv_table = asv_df
+        jjd.tax_table = tax_df
+        jjd.smp_table = smp_df
+        jjd.seq_table = seq_df
+
+        return jjd
