@@ -125,7 +125,7 @@ class Jejudo:
         df = df.groupby('Target').sum()
         return df
 
-    def pca2d(self, var):
+    def pca2d(self, var, color_map=None):
         df = self.asv_table
         df = (df - df.mean()) / df.std()
         df = df.T
@@ -134,10 +134,15 @@ class Jejudo:
         pca = decomposition.PCA(2)
         X = pca.fit_transform(df)
         print(pca.explained_variance_ratio_)
-        color_map = dict(zip(self.smp_table[var], self.smp_table.Color))
+
+        if not color_map:
+            a = self.smp_table[var].unique()
+            color_map = dict(zip(a, [None for x in a]))
+
+        color_map = dict(sorted(color_map.items()))
 
         for k, v in color_map.items():
-            i = df.index.str.contains(k)
+            i = self.smp_table[var] == k
             ax.scatter(X[i, 0], X[i, 1], label=k, color=v, s=90)
 
         ax.set_xlabel('PC 1')
