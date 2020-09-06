@@ -238,6 +238,7 @@ class Jejudo:
 
         result['summary'] = '\n'.join(summary)
 
+        # Store the PCA plot.
         if not color_map:
             a = self.smp_table[var].unique()
             color_map = dict(zip(a, [None for x in a]))
@@ -258,6 +259,55 @@ class Jejudo:
 
         plt.close()
         result['plot1'] = fig
+
+        # Store the feature importance plot.
+        fig, (ax1, ax2, ax3) = plt.subplots(1, 3)
+
+        a = {'ASV': df.columns, 'PC1': pca.components_[0],
+             'PC2': pca.components_[1], 'PC3': pca.components_[2]}
+        df = pd.DataFrame(a)
+        df = df.set_index('ASV')
+
+        pc1 = df.abs().sort_values('PC1', ascending=False)
+        pc2 = df.abs().sort_values('PC2', ascending=False)
+        pc3 = df.abs().sort_values('PC3', ascending=False)
+
+        n = 10
+
+        ax1.bar(pc1.index[:n], pc1['PC1'][:n])
+        ax2.bar(pc2.index[:n], pc2['PC2'][:n])
+        ax3.bar(pc3.index[:n], pc3['PC3'][:n])
+
+        ax1.set_title('PC 1')
+        ax2.set_title('PC 2')
+        ax3.set_title('PC 3')
+
+        ax1.set_ylabel('Feature Importance')
+        ax2.set_ylabel('Feature Importance')
+        ax3.set_ylabel('Feature Importance')
+
+        ax1.tick_params(axis='x', rotation=90)
+        ax2.tick_params(axis='x', rotation=90)
+        ax3.tick_params(axis='x', rotation=90)
+
+        fig.tight_layout()
+        plt.close()
+        result['plot2'] = fig
+
+        # Store the top ASV loadings for each PC.
+        pd.set_option('display.max_colwidth', None)
+
+        ps1 = self.tax_table.loc[ pc1.index[:n] , : ]
+        ps2 = self.tax_table.loc[ pc2.index[:n] , : ]
+        ps3 = self.tax_table.loc[ pc3.index[:n] , : ]
+
+        ps1.insert(0, 'Loading', df.loc[pc1.index[:n], 'PC1'])
+        ps2.insert(0, 'Loading', df.loc[pc2.index[:n], 'PC2'])
+        ps3.insert(0, 'Loading', df.loc[pc3.index[:n], 'PC3'])
+
+        result['loading1'] = ps1
+        result['loading2'] = ps2
+        result['loading3'] = ps3
 
         return result
 
