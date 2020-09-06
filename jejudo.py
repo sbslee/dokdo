@@ -3,6 +3,68 @@ import matplotlib.pyplot as plt
 from sklearn import decomposition
 from mpl_toolkits.mplot3d import Axes3D
 from sklearn.cluster import KMeans
+from sklearn.manifold import TSNE
+
+class Udo:
+    def __init__(self):
+        self._method = None
+        self._embedding = None
+        self._X = None
+
+    @property
+    def method(self):
+        return self._method
+
+    @method.setter
+    def method(self, x):
+        self._method = x
+
+    @property
+    def embedding(self):
+        return self._embedding
+
+    @embedding.setter
+    def embedding(self, x):
+        self._embedding = x
+
+    @property
+    def X(self):
+        return self._X
+
+    @X.setter
+    def X(self, x):
+        self._X = x
+
+def ordinate(jjd, method):
+    ud = Udo()
+
+    df = jjd.asv_table.T
+
+    if method == 'TSNE':
+        embedding = TSNE(n_components=2)
+        X = embedding.fit_transform(df)
+
+    ud.X = X
+    ud.method = method
+    ud.embedding = embedding
+
+    return ud
+
+def plot_ordination(jjd, ud, feat):
+    fig, ax = plt.subplots(figsize=(7,7))
+
+    a = jjd.smp_table[feat].unique()
+    color_map = dict(zip(a, [None for x in a]))
+
+    color_map = dict(sorted(color_map.items()))
+    for k, v in color_map.items():
+        i = jjd.smp_table[feat] == k
+        ax.scatter(ud.X[i, 0], ud.X[i, 1], label=k, color=v, s=90)
+
+    ax.set_xlabel(f"{ud.method} 1")
+    ax.set_ylabel(f"{ud.method} 2")
+    ax.legend(loc="center left", bbox_to_anchor=(1, 0.5))
+
 
 def concat(jjd1, jjd2):
     jjd3 = Jejudo()
