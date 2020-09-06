@@ -133,6 +133,8 @@ class Jejudo:
         return df
 
     def pca2d(self, var, color_map=None):
+        result = {}
+
         df = self.asv_table
         df = (df - df.mean()) / df.std()
         df = df.T
@@ -140,8 +142,17 @@ class Jejudo:
         fig, ax = plt.subplots(figsize=(7,7))
         pca = decomposition.PCA(2)
         X = pca.fit_transform(df)
-        print(pca.explained_variance_ratio_)
 
+        # Store the percentage of variance explained by each PC.
+        a = pca.explained_variance_ratio_
+
+        summary = ["Variance explained by PC 1: %.2f" % a[0],
+                   "Variance explained by PC 2: %.2f" % a[1],
+                   "Total variance explained: %.2f" % (a[0] + a[1])]
+
+        result['summary'] = '\n'.join(summary)
+
+        # Store the PCA plot.
         if not color_map:
             a = self.smp_table[var].unique()
             color_map = dict(zip(a, [None for x in a]))
@@ -155,9 +166,55 @@ class Jejudo:
         ax.set_xlabel('PC 1')
         ax.set_ylabel('PC 2')
         ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
-        plt.show()
+
+        plt.close()
+        result['plot1'] = fig
+
+        # Store the feature importance plot.
+        fig, (ax1, ax2) = plt.subplots(1, 2)
+
+        a = {'ASV': df.columns, 'PC1': pca.components_[0], 'PC2': pca.components_[1]}
+        df = pd.DataFrame(a)
+        df = df.set_index('ASV')
+
+        pc1 = df.abs().sort_values('PC1', ascending=False)
+        pc2 = df.abs().sort_values('PC2', ascending=False)
+
+        n = 10
+
+        ax1.bar(pc1.index[:n], pc1['PC1'][:n])
+        ax2.bar(pc2.index[:n], pc2['PC2'][:n])
+
+        ax1.set_title('PC 1')
+        ax2.set_title('PC 2')
+
+        ax1.set_ylabel('Feature Importance')
+        ax2.set_ylabel('Feature Importance')
+
+        ax1.tick_params(axis='x', rotation=90)
+        ax2.tick_params(axis='x', rotation=90)
+
+        fig.tight_layout()
+        plt.close()
+        result['plot2'] = fig
+
+        # Store the top ASV loadings for each PC.
+        pd.set_option('display.max_colwidth', None)
+
+        ps1 = self.tax_table.loc[ pc1.index[:n] , : ]
+        ps2 = self.tax_table.loc[ pc2.index[:n] , : ]
+
+        ps1.insert(0, 'Loading', df.loc[pc1.index[:n], 'PC1'])
+        ps2.insert(0, 'Loading', df.loc[pc2.index[:n], 'PC2'])
+
+        result['loading1'] = ps1
+        result['loading2'] = ps2
+
+        return result
 
     def pca3d(self, var, color_map=None, elev=10, azim=30):
+        result = {}
+
         df = self.asv_table
         df = (df - df.mean()) / df.std()
         df = df.T
@@ -170,7 +227,16 @@ class Jejudo:
         pca = decomposition.PCA(n_components=3)
         pca.fit(df)
         X = pca.transform(df)
-        print(pca.explained_variance_ratio_)
+
+        # Store the percentage of variance explained by each PC.
+        a = pca.explained_variance_ratio_
+
+        summary = ["Variance explained by PC 1: %.2f" % a[0],
+                   "Variance explained by PC 2: %.2f" % a[1],
+                   "Variance explained by PC 3: %.2f" % a[2],
+                   "Total variance explained: %.2f" % (a[0] + a[1] + a[2])]
+
+        result['summary'] = '\n'.join(summary)
 
         if not color_map:
             a = self.smp_table[var].unique()
@@ -189,7 +255,11 @@ class Jejudo:
         ax.w_yaxis.set_ticklabels([])
         ax.w_zaxis.set_ticklabels([])
         ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
-        plt.show()
+
+        plt.close()
+        result['plot1'] = fig
+
+        return result
 
     def subset(self, var, target):
         i = self.smp_table[var] == target
