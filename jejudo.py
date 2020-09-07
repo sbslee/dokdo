@@ -165,20 +165,81 @@ def plot_ordination(jjd, ud, feature=None, elev=10, azim=30,
     ax.set_title(f"{ud.method}")
 
     if feature:
-        a = jjd.smp_table[feature].unique()
-        color_map = dict(zip(a, [None for x in a]))
-        color_map = dict(sorted(color_map.items()))
+        aa = jjd.smp_table[feature].unique()
 
-        for k, v in color_map.items():
+        for k in aa:
             i = jjd.smp_table[feature] == k
             a = [ud.X[i, j] for j in range(n_components)]
-            ax.scatter(*a, label=k, color=v, s=90)
+            ax.scatter(*a, label=k, s=90)
 
         ax.legend(title=feature, loc="center left", bbox_to_anchor=(1, 0.5))
 
     else:
         a = [ud.X[:, i] for i in range(n_components)]
         ax.scatter(*a, s=90)
+
+def plot_2d_ordination(jjd, ud, ax=None, show=False, color=None, figsize=None,
+                     legend=True, labels=True, ticks=True, title=True):
+    if not ax:
+        fig, ax = plt.subplots(figsize=figsize)
+
+    if title:
+        ax.set_title(f"{ud.method}")
+
+    if not ticks:
+        ax.set_xticks([])
+        ax.set_yticks([])
+
+    if labels:
+        ax.set_xlabel('1D')
+        ax.set_ylabel('2D')
+
+    if color:
+        for c in jjd.smp_table[color].unique():
+            i = jjd.smp_table[color] == c
+            ax.scatter(ud.X[i, 0], ud.X[i, 1], label=c)
+
+        if legend:
+            ax.legend(title=color, loc="center left", bbox_to_anchor=(1, 0.5))
+
+    else:
+        ax.scatter(ud.X[:, 0], ud.X[:, 1])
+
+    if show:
+        plt.show()
+
+def plot_3d_ordination(jjd, ud, ax=None, show=False, color=None, figsize=None,
+                       legend=True, labels=True, ticks=True, title=True):
+    if not ax:
+        fig = plt.figure(figsize=figsize)
+        ax = fig.add_subplot(1, 1, 1, projection='3d')
+
+    if title:
+        ax.set_title(f"{ud.method}")
+
+    if not ticks:
+        ax.set_xticks([])
+        ax.set_yticks([])
+        ax.set_zticks([])
+
+    if labels:
+        ax.set_xlabel('1D')
+        ax.set_ylabel('2D')
+        ax.set_zlabel('3D')
+
+    if color:
+        for c in jjd.smp_table[color].unique():
+            i = jjd.smp_table[color] == c
+            ax.scatter(ud.X[i, 0], ud.X[i, 1], ud.X[i, 2], label=c)
+
+        if legend:
+            ax.legend(title=color, loc="center left", bbox_to_anchor=(1, 0.5))
+
+    else:
+        ax.scatter(ud.X[:, 0], ud.X[:, 1], ud.X[:, 2])
+
+    if show:
+        plt.show()
 
 def plot_importance(jjd, ud, n_tax=10):
     n_components = ud.embedding.components_.shape[0]
