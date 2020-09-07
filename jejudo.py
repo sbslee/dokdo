@@ -15,6 +15,9 @@ def transform(jjd1, method):
     elif method == 'p':
         df = df / df.sum()
 
+    else:
+        raise ValueError("Incorrect method detected")
+
     jjd2.asv_table = df
 
     return jjd2
