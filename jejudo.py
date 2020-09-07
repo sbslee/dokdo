@@ -1,10 +1,34 @@
 import pandas as pd
+import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 from sklearn.cluster import KMeans
 import sklearn
 import copy
 from matplotlib_venn import venn2
+
+def subset(jjd1, var, target):
+    i = jjd1.smp_table[var] == target
+    smp_df = jjd1.smp_table.loc[i, :]
+    asv_df = jjd1.asv_table.loc[:, i]
+
+    i = asv_df.sum(axis=1) != 0
+    asv_df = asv_df.loc[i, :]
+    tax_df = jjd1.tax_table.loc[i, :]
+    seq_df = jjd1.seq_table.loc[i, :]
+
+    asv_list = [f"ASV{x+1}" for x in range(asv_df.shape[0])]
+    asv_df.index = asv_list
+    tax_df.index = asv_list
+    seq_df.index = asv_list
+
+    jjd2 = Jejudo()
+    jjd2.asv_table = asv_df
+    jjd2.tax_table = tax_df
+    jjd2.smp_table = smp_df
+    jjd2.seq_table = seq_df
+
+    return jjd2
 
 def remove(jjd1, n_samples=1):
     jjd2 = copy.deepcopy(jjd1)
@@ -71,6 +95,10 @@ def transform(jjd1, method):
         df = (df - df.mean()) / df.std()
     elif method == 'p':
         df = df / df.sum()
+    elif method == 's':
+        df = df.pow(1/2)
+    elif method == 'l':
+        df = np.log10(df+0.1)
     else:
         raise ValueError("Incorrect method detected")
 
@@ -97,6 +125,9 @@ def ordinate(jejudo, method, n_components=2):
     elif method == 'NMDS':
         embedding = sklearn.manifold.MDS(n_components, metric=False)
         X = embedding.fit_transform(df)
+
+    else:
+        raise ValueError("Incorrect method detected")
 
     udo.method = method
     udo.embedding = embedding
@@ -360,29 +391,6 @@ class Jejudo:
         df['Target'] = a.agg(':'.join, axis=1)
         df = df.groupby('Target').sum()
         return df
-
-    def subset(self, var, target):
-        i = self.smp_table[var] == target
-        smp_df = self.smp_table.loc[i, :]
-        asv_df = self.asv_table.loc[:, i]
-
-        i = asv_df.sum(axis=1) != 0
-        asv_df = asv_df.loc[i, :]
-        tax_df = self.tax_table.loc[i, :]
-        seq_df = self.seq_table.loc[i, :]
-
-        asv_list = [f"ASV{x+1}" for x in range(asv_df.shape[0])]
-        asv_df.index = asv_list
-        tax_df.index = asv_list
-        seq_df.index = asv_list
-
-        jjd = Jejudo()
-        jjd.asv_table = asv_df
-        jjd.tax_table = tax_df
-        jjd.smp_table = smp_df
-        jjd.seq_table = seq_df
-
-        return jjd
 
     def kmeans(self, n):
         df = self.asv_table
