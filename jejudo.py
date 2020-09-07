@@ -107,7 +107,7 @@ def transform(jjd1, method):
     elif method == 's':
         df = df.pow(1/2)
     elif method == 'l':
-        df = np.log10(df+0.1)
+        df = np.log(df + 0.1)
     else:
         raise ValueError("Incorrect method detected")
 
@@ -115,9 +115,9 @@ def transform(jjd1, method):
 
     return jjd2
 
-def ordinate(jejudo, method, n_components=2):
-    udo = Udo()
-    df = jejudo.asv_table.T
+def ordinate(jjd, method, n_components=2):
+    ud = Udo()
+    df = jjd.asv_table.T
 
     if method == 'TSNE':
         embedding = sklearn.manifold.TSNE(n_components)
@@ -138,16 +138,16 @@ def ordinate(jejudo, method, n_components=2):
     else:
         raise ValueError("Incorrect method detected")
 
-    udo.method = method
-    udo.embedding = embedding
-    udo.X = X
+    ud.method = method
+    ud.embedding = embedding
+    ud.X = X
 
-    return udo
+    return ud
 
-def plot_ordination(jejudo, udo, feature=None, elev=10, azim=30,
+def plot_ordination(jjd, ud, feature=None, elev=10, azim=30,
                     figsize=(7,7)):
 
-    n_components = udo.X.shape[1]
+    n_components = ud.X.shape[1]
 
     if n_components == 2:
         fig, ax = plt.subplots(figsize=figsize)
@@ -162,33 +162,33 @@ def plot_ordination(jejudo, udo, feature=None, elev=10, azim=30,
     else:
         raise ValueError("Incorrect dimension detected")
 
-    ax.set_title(f"{udo.method}")
+    ax.set_title(f"{ud.method}")
 
     if feature:
-        a = jejudo.smp_table[feature].unique()
+        a = jjd.smp_table[feature].unique()
         color_map = dict(zip(a, [None for x in a]))
         color_map = dict(sorted(color_map.items()))
 
         for k, v in color_map.items():
-            i = jejudo.smp_table[feature] == k
-            a = [udo.X[i, j] for j in range(n_components)]
+            i = jjd.smp_table[feature] == k
+            a = [ud.X[i, j] for j in range(n_components)]
             ax.scatter(*a, label=k, color=v, s=90)
 
         ax.legend(title=feature, loc="center left", bbox_to_anchor=(1, 0.5))
 
     else:
-        a = [udo.X[:, i] for i in range(n_components)]
+        a = [ud.X[:, i] for i in range(n_components)]
         ax.scatter(*a, s=90)
 
-def plot_importance(jejudo, udo, n_tax=10):
-    n_components = udo.embedding.components_.shape[0]
+def plot_importance(jjd, ud, n_tax=10):
+    n_components = ud.embedding.components_.shape[0]
 
-    a = {'ASV': jejudo.asv_table.index,
-         '1D': udo.embedding.components_[0],
-         '2D': udo.embedding.components_[1]}
+    a = {'ASV': jjd.asv_table.index,
+         '1D': ud.embedding.components_[0],
+         '2D': ud.embedding.components_[1]}
 
     if n_components == 3:
-        a['3D'] = udo.embedding.components_[2]
+        a['3D'] = ud.embedding.components_[2]
 
     df = pd.DataFrame(a)
     df = df.set_index('ASV')
@@ -225,10 +225,10 @@ def plot_importance(jejudo, udo, n_tax=10):
     fig.tight_layout()
     plt.show()
 
-    ps1 = jejudo.tax_table.loc[ pc1.index[:n_tax] , : ]
-    ps2 = jejudo.tax_table.loc[ pc2.index[:n_tax] , : ]
+    ps1 = jjd.tax_table.loc[ pc1.index[:n_tax] , : ]
+    ps2 = jjd.tax_table.loc[ pc2.index[:n_tax] , : ]
     if n_components == 3:
-        ps3 = jejudo.tax_table.loc[ pc3.index[:n_tax] , : ]
+        ps3 = jjd.tax_table.loc[ pc3.index[:n_tax] , : ]
 
     ps1.insert(0, 'Loading', df.loc[pc1.index[:n_tax], '1D'])
     ps2.insert(0, 'Loading', df.loc[pc2.index[:n_tax], '2D'])
