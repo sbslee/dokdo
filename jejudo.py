@@ -179,6 +179,9 @@ def concat(jjd1, jjd2):
     seq_df = seq_df.set_index('ASV')
     tax_df.index = asv_list
 
+    asv_df = asv_df.sort_index(axis=1)
+    smp_df = smp_df.sort_index()
+
     jjd3.asv_table = asv_df
     jjd3.tax_table = tax_df
     jjd3.smp_table = smp_df
