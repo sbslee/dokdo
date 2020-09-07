@@ -6,6 +6,30 @@ import sklearn
 import copy
 from matplotlib_venn import venn2
 
+def remove(jjd1, n_samples=1):
+    jjd2 = copy.deepcopy(jjd1)
+
+    asv_df = jjd1.asv_table
+    tax_df = jjd1.tax_table
+    seq_df = jjd1.seq_table
+
+    i = jjd1.asv_table.astype(bool).sum(axis=1) > 1
+
+    asv_df = asv_df[i]
+    tax_df = tax_df[i]
+    seq_df = seq_df[i]
+
+    asv_list = [f"ASV{x+1}" for x in range(asv_df.shape[0])]
+    asv_df.index = asv_list
+    tax_df.index = asv_list
+    seq_df.index = asv_list
+
+    jjd2.asv_table = asv_df
+    jjd2.tax_table = tax_df
+    jjd2.seq_table = seq_df
+    
+    return jjd2
+
 def plot_comparison(jjd1, jjd2):
     df1 = jjd1.asv_table
     df2 = jjd2.asv_table
