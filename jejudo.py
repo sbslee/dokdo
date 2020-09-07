@@ -11,10 +11,8 @@ def transform(jjd1, method):
 
     if method == 'z':
         df = (df - df.mean()) / df.std()
-
     elif method == 'p':
         df = df / df.sum()
-
     else:
         raise ValueError("Incorrect method detected")
 
@@ -38,13 +36,19 @@ def ordinate(jejudo, method, n_components=2):
         embedding = sklearn.manifold.MDS(n_components)
         X = embedding.fit_transform(df)
 
+    elif method == 'NMDS':
+        embedding = sklearn.manifold.MDS(n_components, metric=False)
+        X = embedding.fit_transform(df)
+
     udo.method = method
     udo.embedding = embedding
     udo.X = X
 
     return udo
 
-def plot_ordination(jejudo, udo, feature=None, elev=10, azim=30, figsize=(7,7)):
+def plot_ordination(jejudo, udo, feature=None, elev=10, azim=30,
+                    figsize=(7,7)):
+
     n_components = udo.X.shape[1]
 
     if n_components == 2:
@@ -69,19 +73,14 @@ def plot_ordination(jejudo, udo, feature=None, elev=10, azim=30, figsize=(7,7)):
 
         for k, v in color_map.items():
             i = jejudo.smp_table[feature] == k
-
-            if n_components == 2:
-                ax.scatter(udo.X[i, 0], udo.X[i, 1], label=k, color=v, s=90)
-            else:
-                ax.scatter(udo.X[i, 0], udo.X[i, 1], udo.X[i, 2], label=k, color=v, s=90)
+            a = [udo.X[i, j] for j in range(n_components)]
+            ax.scatter(*a, label=k, color=v, s=90)
 
         ax.legend(title=feature, loc="center left", bbox_to_anchor=(1, 0.5))
 
     else:
-        if n_components == 2:
-            ax.scatter(udo.X[:, 0], udo.X[:, 1], s=90)
-        else:
-            ax.scatter(udo.X[:, 0], udo.X[:, 1], udo.X[:, 2], s=90)
+        a = [udo.X[:, i] for i in range(n_components)]
+        ax.scatter(*a, s=90)
 
 def plot_importance(jejudo, udo, n_tax=10):
     n_components = udo.embedding.components_.shape[0]
