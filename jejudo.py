@@ -7,6 +7,15 @@ import sklearn
 import copy
 from matplotlib_venn import venn2
 
+def collapse(jjd, rank):
+    a = ['Kingdom', 'Phylum', 'Class', 'Order', 'Family', 'Genus', 'Species']
+    i = a.index(rank) + 1
+    df = jjd.asv_table
+    a = jjd.tax_table.iloc[:, :i].astype(str)
+    df['Target'] = a.agg(':'.join, axis=1)
+    df = df.groupby('Target').sum()
+    return df
+
 def subset(jjd1, var, target):
     i = jjd1.smp_table[var] == target
     smp_df = jjd1.smp_table.loc[i, :]
@@ -381,16 +390,6 @@ class Jejudo:
         self.tax_table = tax_df
         self.smp_table = smp_df
         self.seq_table = seq_df
-
-    def collapse(self, rank):
-        ranks = ['Kingdom', 'Phylum', 'Class', 'Order',
-                 'Family', 'Genus', 'Species']
-        i = ranks.index(rank) + 1
-        df = self.asv_table
-        a = self.tax_table.iloc[:, :i].astype(str)
-        df['Target'] = a.agg(':'.join, axis=1)
-        df = df.groupby('Target').sum()
-        return df
 
     def kmeans(self, n):
         df = self.asv_table
