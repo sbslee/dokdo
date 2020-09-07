@@ -66,13 +66,22 @@ def plot_ordination(jejudo, udo, feature=None, elev=10, azim=30, figsize=(7,7)):
         a = jejudo.smp_table[feature].unique()
         color_map = dict(zip(a, [None for x in a]))
         color_map = dict(sorted(color_map.items()))
+
         for k, v in color_map.items():
             i = jejudo.smp_table[feature] == k
-            ax.scatter(udo.X[i, 0], udo.X[i, 1], label=k, color=v, s=90)
-            ax.legend(loc="center left", bbox_to_anchor=(1, 0.5))
+
+            if n_components == 2:
+                ax.scatter(udo.X[i, 0], udo.X[i, 1], label=k, color=v, s=90)
+            else:
+                ax.scatter(udo.X[i, 0], udo.X[i, 1], udo.X[i, 2], label=k, color=v, s=90)
+
+        ax.legend(title=feature, loc="center left", bbox_to_anchor=(1, 0.5))
 
     else:
-        ax.scatter(udo.X[:, 0], udo.X[:, 1], s=90)
+        if n_components == 2:
+            ax.scatter(udo.X[:, 0], udo.X[:, 1], s=90)
+        else:
+            ax.scatter(udo.X[:, 0], udo.X[:, 1], udo.X[:, 2], s=90)
 
 def plot_importance(jejudo, udo, n_tax=10):
     n_components = udo.embedding.components_.shape[0]
