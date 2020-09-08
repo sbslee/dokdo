@@ -41,12 +41,12 @@ def plot_summary(jjd, method, feature=None, ax=None, show=False,
         ax.set_xlabel(feature)
         ax.set_ylabel("Number of Reads (K)")
 
-    elif method == 'ua': # Number of unique ASVs by group
+    elif method == 'nt': # Number of taxa by group
         df = collapse(jjd, 'Kingdom', method='u').T
         df[feature] = jjd.smp_table[feature]
         sns.boxplot(x=feature, y=group, data=df, ax=ax)
         ax.set_xlabel(feature)
-        ax.set_ylabel(f"Number of Unique ASVs ({group})")
+        ax.set_ylabel(f"Number of taxa ({group})")
 
     else:
         raise ValueError("Incorrect method detected")
