@@ -11,6 +11,29 @@ import seaborn as sns
 
 TAXA = ['Kingdom', 'Phylum', 'Class', 'Order', 'Family', 'Genus', 'Species']
 
+def sdi(l):
+    def p(n, N):
+        return (n/N) * np.log(n/N)
+    N = sum(l)
+    return -sum(p(n, N) for n in l if n)
+
+def plot_richness(jjd, feature, measure='Shannon', ax=None, show=False,
+                  figsize=None):
+    measures = {'Shannon': sdi}
+
+    if not ax:
+        fig, ax = plt.subplots(figsize=figsize)
+
+    df = jjd.asv_table
+    a = jjd.smp_table[feature]
+    b = df.apply(measures[measure], axis=0)
+    df = pd.DataFrame({feature: a, measure: b})
+    sns.boxplot(x=feature, y=measure, data=df, ax=ax)
+    ax.set_ylabel(f"Alpha Diversity Measure ({measure})")
+
+    if show:
+        plt.show()
+
 def plot_summary(jjd, method, feature=None, ax=None, show=False,
                  figsize=(7,7), bins=None, group='Bacteria'):
     if not ax:
