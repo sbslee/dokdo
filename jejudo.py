@@ -7,11 +7,74 @@ import sklearn
 import copy
 from matplotlib_venn import venn2
 import matplotlib
+import seaborn as sns
 
-def collapse(jjd, rank):
-    a = ['Kingdom', 'Phylum', 'Class', 'Order', 'Family', 'Genus', 'Species']
-    i = a.index(rank) + 1
+TAXA = ['Kingdom', 'Phylum', 'Class', 'Order', 'Family', 'Genus', 'Species']
+
+def plot_summary(jjd, method, feature=None, ax=None, show=False,
+                 figsize=(7,7), bins=None, group='Bacteria'):
+    if not ax:
+        fig, ax = plt.subplots(figsize=figsize)
+
+    if method == 'fh': # Feature histogram
+        ax.hist(jjd.smp_table[feature])
+        ax.set_xlabel(feature)
+        ax.set_ylabel('Count')
+
+    elif method == 'nz': # ASVs with non-zero values
+        a = jjd.asv_table.astype(bool).sum(axis=1)
+        ax.hist(a, bins=bins)
+        ax.set_xlabel("Number of Non-Zero Values")
+        ax.set_ylabel("Number of ASVs")
+
+    elif method == 'rl': # Read length
+        a = jjd.seq_table['Sequence'].str.len()
+        ax.hist(a, bins=bins)
+        ax.set_xlabel("Read Length (bp)")
+        ax.set_ylabel("Number of ASVs")
+
+    elif method == 'nr': # Number of reads
+        d = {feature: jjd.smp_table[feature],
+             'ASV': jjd.asv_table.T.sum(axis=1) / 1e3}
+        df = pd.DataFrame(d)
+        sns.boxplot(x=feature, y="ASV", data=df, ax=ax)
+        ax.set_xlabel(feature)
+        ax.set_ylabel("Number of Reads (K)")
+
+    elif method == 'ua': # Number of unique ASVs by group
+        df = collapse(jjd, 'Kingdom', method='u').T
+        df[feature] = jjd.smp_table[feature]
+        sns.boxplot(x=feature, y=group, data=df, ax=ax)
+        ax.set_xlabel(feature)
+        ax.set_ylabel(f"Number of Unique ASVs ({group})")
+
+    else:
+        raise ValueError("Incorrect method detected")
+
+    if show:
+        plt.show()
+
+def collapse(jjd, rank, method='c'):
+    if method == 'c':
+        df = _collapse_counts(jjd, rank)
+    elif method == 'u':
+        df = _collapse_unique(jjd, rank)
+    else:
+        raise ValueError("Incorrect method detected")
+
+    return df
+
+def _collapse_counts(jjd, rank):
+    i = TAXA.index(rank) + 1
     df = jjd.asv_table
+    a = jjd.tax_table.iloc[:, :i].astype(str)
+    df['Target'] = a.agg(':'.join, axis=1)
+    df = df.groupby('Target').sum()
+    return df
+
+def _collapse_unique(jjd, rank):
+    i = TAXA.index(rank) + 1
+    df = jjd.asv_table.astype(bool)
     a = jjd.tax_table.iloc[:, :i].astype(str)
     df['Target'] = a.agg(':'.join, axis=1)
     df = df.groupby('Target').sum()
