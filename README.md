@@ -1,6 +1,6 @@
 # dokdo
 
-This repository is a collection of Python and R scripts for microbiome sequencing analysis. For details, please see the Wiki page. Pull requests are welcome.
+```dokdo``` is a collection of Python and R scripts for microbiome sequencing analysis. For details, please see the Wiki page. Pull requests are welcome.
 
 # Simple Example
 ```
@@ -12,11 +12,11 @@ import jejudo
 # Create a Jejudo object.
 jjd = jejudo.Jejudo()
 
-# Load data.
-jjd.read_files("set1/asv.csv", "set1/taxa.csv", "set1/manifest.txt")
+# Input files can be created by fq2asv.R and asv2tax.R.
+jjd.read_files("asv.csv", "tax.csv", "manifest.txt")
 ```
 
-Describe the Jejudo object using ```jjd.describe()```, which will give:
+Use ```jjd.describe()``` to describe the Jejudo object:
 ```
 asv_table: [ 1676 taxa and 60 samples ]
 tax_table: [ 1676 taxa and 7 ranks ]
@@ -30,9 +30,7 @@ jjd = jejudo.remove(jjd, n_samples=1)
 
 # Apply log transformation.
 jjd = jejudo.transform(jjd, 'l')
-```
 
-```
 # Plot 2D PCA.
 ud = jejudo.ordinate(jjd, 'PCA')
 jejudo.plot_ordination(jjd, ud, color='Site', figsize=(15,15), s=100)
