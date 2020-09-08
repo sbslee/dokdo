@@ -2,8 +2,8 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
-from sklearn.cluster import KMeans
 import sklearn
+from sklearn.cluster import KMeans
 import copy
 from matplotlib_venn import venn2
 import matplotlib
@@ -226,7 +226,8 @@ def transform(jjd1, method):
 
     return jjd2
 
-def ordinate(jjd, method, n_components=2):
+def ordinate(jjd, method, n_components=2, distance=None, verbose=0,
+             n_init=200, eps=1e-12):
     ud = Udo()
     df = jjd.asv_table.T
 
@@ -243,8 +244,19 @@ def ordinate(jjd, method, n_components=2):
         X = embedding.fit_transform(df)
 
     elif method == 'NMDS':
-        embedding = sklearn.manifold.MDS(n_components, metric=False)
-        X = embedding.fit_transform(df)
+        if distance:
+            embedding = sklearn.manifold.MDS(n_components=2,
+                                             metric=False,
+                                             verbose=verbose,
+                                             dissimilarity='precomputed',
+                                             n_init=n_init,
+                                             max_iter=3000,
+                                             eps=eps)
+            dm = sklearn.metrics.pairwise_distances(df, metric=distance)
+            X = embedding.fit_transform(dm)
+        else:
+            embedding = sklearn.manifold.MDS(n_components, metric=False)
+            X = embedding.fit_transform(df)
 
     else:
         raise ValueError("Incorrect method detected")
