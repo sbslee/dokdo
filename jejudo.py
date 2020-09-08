@@ -144,42 +144,20 @@ def ordinate(jjd, method, n_components=2):
 
     return ud
 
-def plot_ordination(jjd, ud, feature=None, elev=10, azim=30,
-                    figsize=(7,7)):
+def plot_ordination(jjd, ud, *args, **kwargs):
 
     n_components = ud.X.shape[1]
 
     if n_components == 2:
-        fig, ax = plt.subplots(figsize=figsize)
-        ax.set_xlabel('1D')
-        ax.set_ylabel('2D')
+        _plot_2d_ordination(jjd, ud, *args, **kwargs)
     elif n_components == 3:
-        fig = plt.figure(1, figsize=figsize)
-        ax = Axes3D(fig, rect=[0, 0, .95, 1], elev=elev, azim=azim)
-        ax.set_xlabel('1D')
-        ax.set_ylabel('2D')
-        ax.set_zlabel('3D')
+        _plot_3d_ordination(jjd, ud, *args, **kwargs)
     else:
         raise ValueError("Incorrect dimension detected")
 
-    ax.set_title(f"{ud.method}")
-
-    if feature:
-        aa = jjd.smp_table[feature].unique()
-
-        for k in aa:
-            i = jjd.smp_table[feature] == k
-            a = [ud.X[i, j] for j in range(n_components)]
-            ax.scatter(*a, label=k, s=90)
-
-        ax.legend(title=feature, loc="center left", bbox_to_anchor=(1, 0.5))
-
-    else:
-        a = [ud.X[:, i] for i in range(n_components)]
-        ax.scatter(*a, s=90)
-
-def plot_2d_ordination(jjd, ud, ax=None, show=False, color=None, figsize=None,
-                     legend=True, labels=True, ticks=True, title=True):
+def _plot_2d_ordination(jjd, ud, ax=None, show=False, color=None, 
+                        figsize=None, legend=True, labels=True, ticks=True, 
+                        title=True):
     if not ax:
         fig, ax = plt.subplots(figsize=figsize)
 
@@ -195,7 +173,7 @@ def plot_2d_ordination(jjd, ud, ax=None, show=False, color=None, figsize=None,
         ax.set_ylabel('2D')
 
     if color:
-        for c in jjd.smp_table[color].unique():
+        for c in sorted(jjd.smp_table[color].unique()):
             i = jjd.smp_table[color] == c
             ax.scatter(ud.X[i, 0], ud.X[i, 1], label=c)
 
@@ -208,11 +186,13 @@ def plot_2d_ordination(jjd, ud, ax=None, show=False, color=None, figsize=None,
     if show:
         plt.show()
 
-def plot_3d_ordination(jjd, ud, ax=None, show=False, color=None, figsize=None,
-                       legend=True, labels=True, ticks=True, title=True):
+def _plot_3d_ordination(jjd, ud, ax=None, show=False, color=None,
+                        figsize=None, legend=True, labels=True, ticks=True,
+                        title=True, elev=30, azim=30):
     if not ax:
         fig = plt.figure(figsize=figsize)
         ax = fig.add_subplot(1, 1, 1, projection='3d')
+        ax.view_init(elev=elev, azim=azim)
 
     if title:
         ax.set_title(f"{ud.method}")
@@ -228,7 +208,7 @@ def plot_3d_ordination(jjd, ud, ax=None, show=False, color=None, figsize=None,
         ax.set_zlabel('3D')
 
     if color:
-        for c in jjd.smp_table[color].unique():
+        for c in sorted(jjd.smp_table[color].unique()):
             i = jjd.smp_table[color] == c
             ax.scatter(ud.X[i, 0], ud.X[i, 1], ud.X[i, 2], label=c)
 
