@@ -6,6 +6,7 @@ from sklearn.cluster import KMeans
 import sklearn
 import copy
 from matplotlib_venn import venn2
+import matplotlib
 
 def collapse(jjd, rank):
     a = ['Kingdom', 'Phylum', 'Class', 'Order', 'Family', 'Genus', 'Species']
@@ -63,9 +64,12 @@ def remove(jjd1, n_samples=1):
     
     return jjd2
 
-def plot_comparison(jjd1, jjd2):
+def plot_comparison(jjd1, jjd2, figsize=(12,6), fontsize=20):
     df1 = jjd1.asv_table
     df2 = jjd2.asv_table
+
+    if not all(df1.columns == df2.columns):
+        raise ValueError("Samples not matched")
 
     df1['Sequence'] = jjd1.seq_table['Sequence']
     df2['Sequence'] = jjd2.seq_table['Sequence']
@@ -73,28 +77,33 @@ def plot_comparison(jjd1, jjd2):
     df3 = pd.merge(df1, df2, how='inner', on=['Sequence'])
     del df3['Sequence']
 
-    df1 = df3.iloc[:, :140].stack()
-    df2 = df3.iloc[:, 140:].stack()
+    n = int(df3.shape[1] / 2)
+
+    df1 = df3.iloc[:, :n].stack()
+    df2 = df3.iloc[:, n:].stack()
 
     r2 = sklearn.metrics.r2_score(df1, df2)
 
-    fig1, ax1 = plt.subplots(figsize=(6,6))
-    ax1.set_xlabel('A')
-    ax1.set_ylabel('B')
-    ax1.plot([0, 1], [0, 1], color='red', transform=ax1.transAxes)
-    ax1.scatter(df1, df2)
-    ax1.text(0.8, 0.1, 'R-squared = %0.4f' % r2,
-            horizontalalignment='center',
-            verticalalignment='center',
-            transform = ax1.transAxes)
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=figsize)
 
     AB = df3.shape[0]
     Ab = jjd1.asv_table.shape[0] - AB
     aB = jjd2.asv_table.shape[0] - AB
-    fig2, ax2 = plt.subplots(figsize=(6,6))
-    venn2(subsets=(Ab, aB, AB))
+    vd = venn2(subsets=(Ab, aB, AB), ax=ax1)
 
-    plt.show()
+    for x in vd.set_labels:
+        x.set_fontsize(fontsize)
+
+    for x in vd.subset_labels:
+        x.set_fontsize(fontsize)
+
+    ax2.set_xlabel('A', fontsize=fontsize)
+    ax2.set_ylabel('B', fontsize=fontsize)
+    ax2.plot([0, 1], [0, 1], color='red', transform=ax2.transAxes)
+    ax2.scatter(df1, df2)
+    ax2.text(0.7, 0.1, 'R-squared = %0.4f' % r2, fontsize=fontsize,
+            horizontalalignment='center', verticalalignment='center',
+            transform = ax2.transAxes)
 
 def transform(jjd1, method):
     jjd2 = copy.deepcopy(jjd1)
