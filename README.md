@@ -33,8 +33,7 @@ jjd = jejudo.transform(jjd, 'l')
 
 # Plot 2D PCA.
 ud = jejudo.ordinate(jjd, 'PCA')
-jejudo.plot_ordination(jjd, ud, color='Site', figsize=(15,15), s=100)
-plt.savefig('2dpca.png')
+jejudo.plot_ordination(jjd, ud, color='Site')
 ```
 
 ![2dpca](https://drive.google.com/uc?export=view&id=161zXhaaNeZzRLsAOVy5nBd06hPkaATFT)
@@ -42,8 +41,7 @@ plt.savefig('2dpca.png')
 ```
 # Plot 3D PCA.
 ud = jejudo.ordinate(jjd, 'PCA', n_components=3)
-jejudo.plot_ordination(jjd, ud, color='Site', figsize=(15,15), s=100)
-plt.savefig('3dpca.png')
+jejudo.plot_ordination(jjd, ud, color='Site')
 ```
 
 ![3dpca](https://drive.google.com/uc?export=view&id=19OLG6QC2lE-2WwpGhad2oMZm6CIiY0dO)
