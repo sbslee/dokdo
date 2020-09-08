@@ -164,7 +164,7 @@ def plot_ordination(jjd, ud, *args, **kwargs):
     else:
         raise ValueError("Incorrect dimension detected")
 
-def _plot_2d_ordination(jjd, ud, ax=None, show=False, color=None, 
+def _plot_2d_ordination(jjd, ud, ax=None, show=False, s=20, color=None, 
                         figsize=None, legend=True, labels=True, ticks=True, 
                         title=True):
     if not ax:
@@ -184,7 +184,7 @@ def _plot_2d_ordination(jjd, ud, ax=None, show=False, color=None,
     if color:
         for c in sorted(jjd.smp_table[color].unique()):
             i = jjd.smp_table[color] == c
-            ax.scatter(ud.X[i, 0], ud.X[i, 1], label=c)
+            ax.scatter(ud.X[i, 0], ud.X[i, 1], s=s, label=c)
 
         if legend:
             ax.legend(title=color, loc="center left", bbox_to_anchor=(1, 0.5))
@@ -195,7 +195,7 @@ def _plot_2d_ordination(jjd, ud, ax=None, show=False, color=None,
     if show:
         plt.show()
 
-def _plot_3d_ordination(jjd, ud, ax=None, show=False, color=None,
+def _plot_3d_ordination(jjd, ud, ax=None, show=False, s=20, color=None,
                         figsize=None, legend=True, labels=True, ticks=True,
                         title=True, elev=30, azim=30):
     if not ax:
@@ -219,7 +219,7 @@ def _plot_3d_ordination(jjd, ud, ax=None, show=False, color=None,
     if color:
         for c in sorted(jjd.smp_table[color].unique()):
             i = jjd.smp_table[color] == c
-            ax.scatter(ud.X[i, 0], ud.X[i, 1], ud.X[i, 2], label=c)
+            ax.scatter(ud.X[i, 0], ud.X[i, 1], ud.X[i, 2], s=s, label=c)
 
         if legend:
             ax.legend(title=color, loc="center left", bbox_to_anchor=(1, 0.5))
