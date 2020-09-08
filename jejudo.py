@@ -40,14 +40,19 @@ def subset(jjd1, var, target):
 
     return jjd2
 
-def remove(jjd1, n_samples=1):
+def remove(jjd1, method, n_samples=0, n_bases=1000):
     jjd2 = copy.deepcopy(jjd1)
 
     asv_df = jjd1.asv_table
     tax_df = jjd1.tax_table
     seq_df = jjd1.seq_table
 
-    i = jjd1.asv_table.astype(bool).sum(axis=1) > 1
+    if method == 's':
+        i = jjd1.asv_table.astype(bool).sum(axis=1) >= n_samples
+    elif method == 'l':
+        i = jjd1.seq_table['Sequence'].str.len() >= n_bases
+    else:
+        raise ValueError("Incorrect method detected")
 
     asv_df = asv_df[i]
     tax_df = tax_df[i]
