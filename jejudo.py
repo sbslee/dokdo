@@ -243,7 +243,7 @@ def ordinate(jjd, method, n_components=2, metric='euclidean', **kwargs):
                                          metric=(method == 'MDS'),
                                          dissimilarity='precomputed',
                                          **kwargs)
-        dm = sklearn.metrics.pairwise_distances(df, metric=metric)
+        dm = sklearn.metrics.pairwise_distances(df.values, metric=metric)
         X = embedding.fit_transform(dm)
 
     else:
