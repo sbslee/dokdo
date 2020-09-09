@@ -245,7 +245,7 @@ def ordinate(jjd, method, n_components=2, distance=None, verbose=0,
 
     elif method == 'NMDS':
         if distance:
-            embedding = sklearn.manifold.MDS(n_components=2,
+            embedding = sklearn.manifold.MDS(n_components,
                                              metric=False,
                                              verbose=verbose,
                                              dissimilarity='precomputed',
