@@ -226,37 +226,25 @@ def transform(jjd1, method):
 
     return jjd2
 
-def ordinate(jjd, method, n_components=2, distance=None, verbose=0,
-             n_init=200, eps=1e-12):
+def ordinate(jjd, method, n_components=2, metric='euclidean', **kwargs):
     ud = Udo()
     df = jjd.asv_table.T
 
     if method == 'TSNE':
-        embedding = sklearn.manifold.TSNE(n_components)
+        embedding = sklearn.manifold.TSNE(n_components, **kwargs)
         X = embedding.fit_transform(df)
 
     elif method == 'PCA':
-        embedding = sklearn.decomposition.PCA(n_components)
+        embedding = sklearn.decomposition.PCA(n_components, **kwargs)
         X = embedding.fit_transform(df)
 
-    elif method == 'MDS':
-        embedding = sklearn.manifold.MDS(n_components)
-        X = embedding.fit_transform(df)
-
-    elif method == 'NMDS':
-        if distance:
-            embedding = sklearn.manifold.MDS(n_components,
-                                             metric=False,
-                                             verbose=verbose,
-                                             dissimilarity='precomputed',
-                                             n_init=n_init,
-                                             max_iter=3000,
-                                             eps=eps)
-            dm = sklearn.metrics.pairwise_distances(df, metric=distance)
-            X = embedding.fit_transform(dm)
-        else:
-            embedding = sklearn.manifold.MDS(n_components, metric=False)
-            X = embedding.fit_transform(df)
+    elif method in ['MDS', 'NMDS']:
+        embedding = sklearn.manifold.MDS(n_components,
+                                         metric=(method == 'MDS'),
+                                         dissimilarity='precomputed',
+                                         **kwargs)
+        dm = sklearn.metrics.pairwise_distances(df, metric=metric)
+        X = embedding.fit_transform(dm)
 
     else:
         raise ValueError("Incorrect method detected")
@@ -264,6 +252,7 @@ def ordinate(jjd, method, n_components=2, distance=None, verbose=0,
     ud.method = method
     ud.embedding = embedding
     ud.X = X
+    ud.metric = metric
 
     return ud
 
@@ -285,7 +274,10 @@ def _plot_2d_ordination(jjd, ud, ax=None, show=False, s=20, color=None,
         fig, ax = plt.subplots(figsize=figsize)
 
     if title:
-        ax.set_title(f"{ud.method}")
+        if ud.method in ['MDS', 'NMDS']:
+            ax.set_title(f"{ud.method} ({ud.metric})")
+        else:
+            ax.set_title(f"{ud.method}")
 
     if not ticks:
         ax.set_xticks([])
@@ -318,7 +310,10 @@ def _plot_3d_ordination(jjd, ud, ax=None, show=False, s=20, color=None,
         ax.view_init(elev=elev, azim=azim)
 
     if title:
-        ax.set_title(f"{ud.method}")
+        if ud.method in ['MDS', 'NMDS']:
+            ax.set_title(f"{ud.method} ({ud.metric})")
+        else:
+            ax.set_title(f"{ud.method}")
 
     if not ticks:
         ax.set_xticks([])
@@ -456,6 +451,7 @@ class Udo:
         self._method = None
         self._embedding = None
         self._X = None
+        self._metric = None
 
     @property
     def method(self):
@@ -480,6 +476,14 @@ class Udo:
     @X.setter
     def X(self, x):
         self._X = x
+
+    @property
+    def metric(self):
+        return self._metric
+
+    @metric.setter
+    def metric(self, x):
+        self._metric = x
 
 class Jejudo:
     def __init__(self):
