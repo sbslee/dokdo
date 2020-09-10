@@ -29,7 +29,7 @@ def make_manifest(input_path=None, output_path=None, **kwargs):
             f.write('\t'.join(fields) + '\n')
 
 def main():
-    commands = {'MakeManifest': make_manifest}
+    commands = {'make-manifest': make_manifest}
 
     parser = argparse.ArgumentParser()
 
