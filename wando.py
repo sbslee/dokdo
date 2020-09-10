@@ -1,6 +1,8 @@
 import os
 import argparse
 
+from plot_alpha_rarefaction import plot_alpha_rarefaction
+
 def make_manifest(i_path=None, o_path=None, **kwargs):
     files = {}
 
@@ -47,15 +49,29 @@ def merge_metadata(i_paths=None, o_path=None, **kwargs):
         for fields in metadata:
             f.write('\t'.join(fields) + '\n')
 
+def plot_alpha_rarefaction_(i_path=None,
+                            o_path=None,
+                            p_color=None, 
+                            p_figsize=None,
+                            **kwargs):
+
+    plot_alpha_rarefaction(i_path,
+                           output=o_path,
+                           color=p_color,
+                           figsize=p_figsize)
+
 def main():
     commands = {'make-manifest': make_manifest,
-                'merge-metadata': merge_metadata}
+                'merge-metadata': merge_metadata,
+                'plot-alpha-rarefaction': plot_alpha_rarefaction_}
 
     parser = argparse.ArgumentParser()
 
     parser.add_argument('--command')
     parser.add_argument('--i-path')
     parser.add_argument('--i-paths', action='append')
+    parser.add_argument('--p-color')
+    parser.add_argument('--p-figsize', nargs=2, type=int)
     parser.add_argument('--o-path')
 
     args = parser.parse_args()

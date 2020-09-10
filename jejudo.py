@@ -1,13 +1,21 @@
+# Import the Python standard libraries.
+import os
+import zipfile
+import copy
+
+# Import the external packages.
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import sklearn
 from sklearn.cluster import KMeans
-import copy
 from matplotlib_venn import venn2
 import matplotlib
 import seaborn as sns
+
+# Import the Dokdo methods.
+from plot_alpha_rarefaction import plot_alpha_rarefaction
 
 TAXA = ['Kingdom', 'Phylum', 'Class', 'Order', 'Family', 'Genus', 'Species']
 
