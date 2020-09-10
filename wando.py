@@ -1,18 +1,21 @@
 import os
 import argparse
 
-def MakeManifest(input_path=None, output_path=None, **kwargs):
-    names = []
-    fnFs = []
-    fnRs = []
+def make_manifest(input_path=None, output_path=None, **kwargs):
+    files = {}
 
     for r, d, f in os.walk(input_path):
         for x in f:
+            name = x.split('_')[0]
+
             if '_R1_001.fastq' in x:
-                fnFs.append(f'{r}/{x}')
-                names.append(x.split('_')[0])
+                if name not in files:
+                    files[name] = ['', '']
+                files[name][0] = f'{r}/{x}'
             elif '_R2_001.fastq' in x:
-                fnRs.append(f'{r}/{x}')
+                if name not in files:
+                    files[name] = ['', '']
+                files[name][1] = f'{r}/{x}'
             else:
                 pass
 
@@ -21,12 +24,12 @@ def MakeManifest(input_path=None, output_path=None, **kwargs):
                    'reverse-absolute-filepath']
         f.write('\t'.join(headers) + '\n')
 
-        for i in range(len(names)):
-            fields = [names[i], fnFs[i], fnRs[i]]
+        for name in sorted(files):
+            fields = [name, files[name][0], files[name][1]]
             f.write('\t'.join(fields) + '\n')
 
 def main():
-    commands = {'MakeManifest': MakeManifest}
+    commands = {'MakeManifest': make_manifest}
 
     parser = argparse.ArgumentParser()
 
