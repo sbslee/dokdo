@@ -1,10 +1,10 @@
 import os
 import argparse
 
-def make_manifest(input_path=None, output_path=None, **kwargs):
+def make_manifest(i_path=None, o_path=None, **kwargs):
     files = {}
 
-    for r, d, f in os.walk(input_path):
+    for r, d, f in os.walk(i_path):
         for x in f:
             name = x.split('_')[0]
 
@@ -19,7 +19,7 @@ def make_manifest(input_path=None, output_path=None, **kwargs):
             else:
                 pass
 
-    with open(output_path, 'w') as f:
+    with open(o_path, 'w') as f:
         headers = ['sample-id', 'forward-absolute-filepath', 
                    'reverse-absolute-filepath']
         f.write('\t'.join(headers) + '\n')
@@ -28,14 +28,35 @@ def make_manifest(input_path=None, output_path=None, **kwargs):
             fields = [name, files[name][0], files[name][1]]
             f.write('\t'.join(fields) + '\n')
 
+def merge_metadata(i_paths=None, o_path=None, **kwargs):
+    metadata = []
+
+    for i in range(len(i_paths)):
+        with open(i_paths[i]) as f:
+            for j, line in enumerate(f):
+                fields = line.strip().split('\t')
+                if i == 0 and j < 2:
+                    metadata.append(fields)
+
+                if j < 2:
+                    continue
+
+                metadata.append(fields)
+
+    with open(o_path, 'w') as f:
+        for fields in metadata:
+            f.write('\t'.join(fields) + '\n')
+
 def main():
-    commands = {'make-manifest': make_manifest}
+    commands = {'make-manifest': make_manifest,
+                'merge-metadata': merge_metadata}
 
     parser = argparse.ArgumentParser()
 
     parser.add_argument('--command')
-    parser.add_argument('--input-path')
-    parser.add_argument('--output-path')
+    parser.add_argument('--i-path')
+    parser.add_argument('--i-paths', action='append')
+    parser.add_argument('--o-path')
 
     args = parser.parse_args()
 
