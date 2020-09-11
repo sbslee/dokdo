@@ -5,9 +5,17 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-def plot_alpha_rarefaction(qzv_file, color, method='observed', ax=None,
-                           show=False, figsize=None, fontsize=8, keep=False,
-                           file=None, output=None):
+def plot_alpha_rarefaction(qzv_file,
+                           color,
+                           method='observed',
+                           ax=None,
+                           show=False,
+                           figsize=None,
+                           legend_fontsize=8,
+                           tick_fontsize=8,
+                           label_fontsize=8,
+                           keep=False,
+                           output=None):
 
     methods = {'observed': ['observed_features', 'Observed ASVs'],
                'shannon': ['shannon', 'Shannon Index'],
@@ -33,7 +41,7 @@ def plot_alpha_rarefaction(qzv_file, color, method='observed', ax=None,
     for depth in depths:
         mean['ASV'] = df[depth].mean(axis=1)
         mean['depth']= depth.split('-')[-1]
-        data = pd.concat([data, mean])
+        data = pd.concat([data, mean], sort=True)
 
     if not ax:
         fig, ax = plt.subplots(figsize=figsize)
@@ -41,10 +49,10 @@ def plot_alpha_rarefaction(qzv_file, color, method='observed', ax=None,
     sns.lineplot(x='depth', y='ASV', data=data, hue=color,
                  err_style='bars', sort=False, dashes=True, ax=ax)
 
-    ax.set_xlabel('Sequencing depth', fontsize=fontsize)
-    ax.set_ylabel(f'{methods[method][1]}', fontsize=fontsize)
-    ax.tick_params(axis='both', labelsize=fontsize)
-    ax.legend(loc='center left', bbox_to_anchor=(1, 0.5), fontsize=fontsize)
+    ax.set_xlabel('Sequencing depth', fontsize=label_fontsize)
+    ax.set_ylabel(f'{methods[method][1]}', fontsize=label_fontsize)
+    ax.tick_params(axis='both', labelsize=tick_fontsize)
+    ax.legend(loc='center left', bbox_to_anchor=(1, 0.5), fontsize=legend_fontsize)
 
     if show:
         plt.show()
