@@ -60,10 +60,18 @@ def plot_alpha_rarefaction_(i_path=None,
                            color=p_color,
                            figsize=p_figsize)
 
+def fastq2asv(i_path, p_trunc_len_f=None, p_trunc_len_r=None, p_trim_left_f=None, p_trim_left_r=None, **kwargs):
+    with open('qsubme.sh', 'w') as f:
+        f.write("#!/bin/bash" + '\n')
+        f.write("#$ -cwd" + '\n')
+        f.write('\n')
+        f.write(f"sh {os.path.dirname(os.path.realpath(__file__))}/fastq2asv.sh {i_path} {p_trunc_len_f} {p_trunc_len_r} {p_trim_left_f} {p_trim_left_r}")
+
 def main():
     commands = {'make-manifest': make_manifest,
                 'merge-metadata': merge_metadata,
-                'plot-alpha-rarefaction': plot_alpha_rarefaction_}
+                'plot-alpha-rarefaction': plot_alpha_rarefaction_,
+                'fastq2asv': fastq2asv}
 
     parser = argparse.ArgumentParser()
 
@@ -71,6 +79,10 @@ def main():
     parser.add_argument('--i-path')
     parser.add_argument('--i-paths', action='append')
     parser.add_argument('--p-color')
+    parser.add_argument('--p-trunc-len-f')
+    parser.add_argument('--p-trunc-len-r')
+    parser.add_argument('--p-trim-left-f')
+    parser.add_argument('--p-trim-left-r')    
     parser.add_argument('--p-figsize', nargs=2, type=int)
     parser.add_argument('--o-path')
 
