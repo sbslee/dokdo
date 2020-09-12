@@ -54,6 +54,8 @@ def plot_alpha_rarefaction(qzv_file,
     ax.tick_params(axis='both', labelsize=tick_fontsize)
     ax.legend(loc='center left', bbox_to_anchor=(1, 0.5), fontsize=legend_fontsize)
 
+    plt.tight_layout()
+
     if show:
         plt.show()
 
