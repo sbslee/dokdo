@@ -17,6 +17,7 @@ import seaborn as sns
 # Import the Dokdo methods.
 from plot_alpha_rarefaction import plot_alpha_rarefaction
 from plot_taxa_abundance import plot_taxa_abundance
+from plot_alpha_diversity import plot_alpha_diversity
 
 TAXA = ['Kingdom', 'Phylum', 'Class', 'Order', 'Family', 'Genus', 'Species']
 
