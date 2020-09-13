@@ -7,7 +7,8 @@ import common
 
 def plot_taxa_abundance(qzv_file,
                         sortby=[],
-                        color='Kingdom',
+                        show=False,
+                        color=None,
                         method='Relative',
                         figsize=(20, 10),
                         legend=True,
@@ -15,7 +16,11 @@ def plot_taxa_abundance(qzv_file,
                         xlabel_fontsize=8,
                         ylabel_fontsize=8,
                         tick_fontsize=8,
-                        width=0.9):
+                        width=0.9,
+                        output=None):
+
+    if not color:
+        color = 'Kingdom'
 
     level = common.TAXA.index(color) + 1
 
@@ -66,3 +71,9 @@ def plot_taxa_abundance(qzv_file,
         ax.legend(loc='center left',
                   bbox_to_anchor=(1, 0.5),
                   fontsize=legend_fontsize)
+
+    if show:
+        plt.show()
+
+    if output:
+        plt.savefig(output)
