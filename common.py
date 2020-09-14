@@ -5,19 +5,18 @@ import matplotlib.pyplot as plt
 
 TAXA = ['Kingdom', 'Phylum', 'Class', 'Order', 'Family', 'Genus', 'Species']
 
-KWARGS = {'p_figsize': None,
-          'keep': False,
-          'ax': None,
-          'xlabel_fontsize': None,
-          'ylabel_fontsize': None,
-          'tick_fontsize': None,
+KWARGS = {'i_path': None,
+          'i_zip': None,
+          'p_figsize': None,
+          'p_xlabel_fontsize': None,
+          'p_ylabel_fontsize': None,
+          'p_tick_fontsize': None,
           'p_legend_title': None,
-          'legend_fontsize': None,
-          'legend': True,
+          'p_legend_fontsize': None,
+          'p_legend': True,
           'show': False,
           'output': None,
           'zip_dir': None,
-          'i_path': None,
           'p_color': None,
           'width': 0.8,
           'method': None,
@@ -26,15 +25,18 @@ KWARGS = {'p_figsize': None,
           'p_dim': 2,
           'p_elev': None,
           'p_azim': None,
-          'p_s': 20}
+          'p_s': 20,
+          'keep': False,
+          'ax': None}
 
 def visualization(func):
     def wrapper(*args, **kwargs):
         kwargs = {**KWARGS, **kwargs}
 
-        with zipfile.ZipFile(kwargs['i_path'], 'r') as zip_file:
-            zip_file.extractall()
-            kwargs['zip_dir'] = zip_file.namelist()[0].split('/')[0]
+        if kwargs['i_zip']:
+            with zipfile.ZipFile(kwargs['i_zip'], 'r') as zip_file:
+                zip_file.extractall()
+                kwargs['zip_dir'] = zip_file.namelist()[0].split('/')[0]
 
         if not kwargs['ax']:
             if kwargs['p_dim'] == 2:
@@ -52,23 +54,23 @@ def visualization(func):
         func(*args, **kwargs)
 
         kwargs['ax'].tick_params(axis='both',
-                                labelsize=kwargs['tick_fontsize'])
+                                labelsize=kwargs['p_tick_fontsize'])
 
-        kwargs['ax'].xaxis.label.set_fontsize(kwargs['xlabel_fontsize'])
+        kwargs['ax'].xaxis.label.set_fontsize(kwargs['p_xlabel_fontsize'])
 
-        kwargs['ax'].yaxis.label.set_fontsize(kwargs['ylabel_fontsize'])
+        kwargs['ax'].yaxis.label.set_fontsize(kwargs['p_ylabel_fontsize'])
 
-        if kwargs['legend']:
+        if kwargs['p_legend']:
             if kwargs['p_legend_title']:
                 kwargs['ax'].legend(title=kwargs['p_legend_title'],
                                     loc='center left',
                                     bbox_to_anchor=(1, 0.5),
-                                    fontsize=kwargs['legend_fontsize'])
+                                    fontsize=kwargs['p_legend_fontsize'])
 
             else:
                 kwargs['ax'].legend(loc='center left',
                                     bbox_to_anchor=(1, 0.5),
-                                    fontsize=kwargs['legend_fontsize'])
+                                    fontsize=kwargs['p_legend_fontsize'])
 
         plt.tight_layout()
 
