@@ -4,6 +4,7 @@ import argparse
 from plot_alpha_rarefaction import plot_alpha_rarefaction
 from plot_taxa_abundance import plot_taxa_abundance
 from plot_alpha_diversity import plot_alpha_diversity
+from create_report import create_report
 
 def make_manifest(i_path=None, o_path=None, **kwargs):
     files = {}
@@ -87,13 +88,17 @@ def fastq2asv(i_path, p_trunc_len_f=None, p_trunc_len_r=None, p_trim_left_f=None
         f.write('\n')
         f.write(f"sh {os.path.dirname(os.path.realpath(__file__))}/fastq2asv.sh {i_path} {p_trunc_len_f} {p_trunc_len_r} {p_trim_left_f} {p_trim_left_r}")
 
+def create_report_(**kwargs):
+    create_report(**kwargs)
+
 def main():
     commands = {'make-manifest': make_manifest,
                 'merge-metadata': merge_metadata,
                 'plot-alpha-rarefaction': plot_alpha_rarefaction_,
                 'plot-taxa-abundance': plot_taxa_abundance_,
                 'plot-alpha-diversity': plot_alpha_diversity_,
-                'fastq2asv': fastq2asv}
+                'fastq2asv': fastq2asv,
+                'create-report': create_report_}
 
     parser = argparse.ArgumentParser()
 
