@@ -51,7 +51,7 @@ def visualization(func):
         plt.tight_layout()
 
         if kwargs['output']:
-            plt.savefig(output)
+            plt.savefig(kwargs['output'])
 
         if kwargs['show']:
             plt.show()

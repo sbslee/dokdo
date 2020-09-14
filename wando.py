@@ -3,6 +3,7 @@ import argparse
 
 from plot_alpha_rarefaction import plot_alpha_rarefaction
 from plot_taxa_abundance import plot_taxa_abundance
+from plot_alpha_diversity import plot_alpha_diversity
 
 def make_manifest(i_path=None, o_path=None, **kwargs):
     files = {}
@@ -72,6 +73,13 @@ def plot_taxa_abundance_(i_path=None,
                         color=p_color,
                         figsize=p_figsize)
 
+def plot_alpha_diversity_(**kwargs):
+
+    plot_alpha_diversity(qzv_file=kwargs['i_path'],
+                         output=kwargs['o_path'],
+                         figsize=kwargs['p_figsize'],
+                         color=kwargs['p_color'])
+
 def fastq2asv(i_path, p_trunc_len_f=None, p_trunc_len_r=None, p_trim_left_f=None, p_trim_left_r=None, **kwargs):
     with open('qsubme.sh', 'w') as f:
         f.write("#!/bin/bash" + '\n')
@@ -84,6 +92,7 @@ def main():
                 'merge-metadata': merge_metadata,
                 'plot-alpha-rarefaction': plot_alpha_rarefaction_,
                 'plot-taxa-abundance': plot_taxa_abundance_,
+                'plot-alpha-diversity': plot_alpha_diversity_,
                 'fastq2asv': fastq2asv}
 
     parser = argparse.ArgumentParser()
