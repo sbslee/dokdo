@@ -8,13 +8,13 @@ def plot_taxa_abundance(**kwargs):
     methods = {'Relative': 'Relative frequency',
                'Absolute': 'Frequency'}
 
-    if not kwargs['color']:
-        kwargs['color'] = 'Kingdom'
+    if not kwargs['p_color']:
+        kwargs['p_color'] = 'Kingdom'
 
     if not kwargs['method']:
         kwargs['method'] = 'Relative'
 
-    level = common.TAXA.index(kwargs['color']) + 1
+    level = common.TAXA.index(kwargs['p_color']) + 1
 
     df = pd.read_csv(kwargs['zip_dir'] + f'/data/level-{level}.csv',
                      index_col=0, sep=',')

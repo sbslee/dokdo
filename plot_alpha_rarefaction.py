@@ -28,7 +28,7 @@ def plot_alpha_rarefaction(**kwargs):
         mean['depth']= depth.split('-')[-1]
         data = pd.concat([data, mean], sort=True)
 
-    sns.lineplot(x='depth', y='ASV', data=data, hue=kwargs['color'],
+    sns.lineplot(x='depth', y='ASV', data=data, hue=kwargs['p_color'],
                  err_style='bars', sort=False, dashes=True, ax=kwargs['ax'])
 
     kwargs['ax'].set_xlabel('Sequencing depth')

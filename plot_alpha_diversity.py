@@ -12,14 +12,14 @@ def plot_alpha_diversity(**kwargs):
     df = pd.read_csv(kwargs['zip_dir'] + f'/data/metadata.tsv',
                      index_col=0, sep='\t', skiprows=[1])
 
-    df = df.sort_values(by=kwargs['color'])
+    df = df.sort_values(by=kwargs['p_color'])
 
     for k in methods:
         if k in df.columns:
             method = k
             break
 
-    sns.boxplot(x=kwargs['color'], y=method, data=df, ax=kwargs['ax'])
+    sns.boxplot(x=kwargs['p_color'], y=method, data=df, ax=kwargs['ax'])
 
-    kwargs['ax'].set_xlabel(kwargs['color'])
+    kwargs['ax'].set_xlabel(kwargs['p_color'])
     kwargs['ax'].set_ylabel(f'{methods[method]}')
