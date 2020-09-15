@@ -21,13 +21,13 @@ KWARGS = {'i_path': None,
           'p_s': 20,
           'p_color': None,
           'p_forward': True,
+          'o_path': None,
+          'm_path': None,
           'show': False,
-          'output': None,
           'zip_dir': None,
           'width': 0.8,
           'method': None,
           'sortby': [],
-          'm_path': None,
           'keep': False,
           'ax': None}
 
@@ -80,8 +80,8 @@ def visualization(func):
         # Tighten up the plot.
         plt.tight_layout()
 
-        if kwargs['output']:
-            plt.savefig(kwargs['output'])
+        if kwargs['o_path']:
+            plt.savefig(kwargs['o_path'])
 
         if kwargs['show']:
             plt.show()

@@ -4,6 +4,7 @@ import argparse
 from plot_alpha_rarefaction import plot_alpha_rarefaction
 from plot_taxa_abundance import plot_taxa_abundance
 from plot_alpha_diversity import plot_alpha_diversity
+from plot_read_quality import plot_read_quality
 from create_report import create_report
 
 def make_manifest(i_path=None, o_path=None, **kwargs):
@@ -98,13 +99,15 @@ def main():
                 'plot-taxa-abundance': plot_taxa_abundance_,
                 'plot-alpha-diversity': plot_alpha_diversity_,
                 'fastq2asv': fastq2asv,
-                'create-report': create_report_}
+                'create-report': create_report_,
+                'plot-read-quality': plot_read_quality}
 
     parser = argparse.ArgumentParser()
 
     parser.add_argument('--command')
     parser.add_argument('--i-path')
     parser.add_argument('--i-paths', action='append')
+    parser.add_argument('--i-zip')
     parser.add_argument('--p-color')
     parser.add_argument('--p-trunc-len-f')
     parser.add_argument('--p-trunc-len-r')
@@ -112,6 +115,7 @@ def main():
     parser.add_argument('--p-trim-left-r')
     parser.add_argument('--p-figsize', nargs=2, type=int)
     parser.add_argument('--o-path')
+    parser.add_argument('--p-forward', action='store_true')
 
     args = parser.parse_args()
 
