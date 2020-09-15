@@ -7,6 +7,8 @@ from plot_alpha_diversity import plot_alpha_diversity
 from plot_read_quality import plot_read_quality
 from create_report import create_report
 
+from compute_table_stat import compute_table_stat
+
 def make_manifest(i_path=None, o_path=None, **kwargs):
     files = {}
 
@@ -108,7 +110,8 @@ def main():
                 'fastq2asv': fastq2asv,
                 'create-report': create_report_,
                 'plot-read-quality': plot_read_quality,
-                'analyze': analyze}
+                'analyze': analyze,
+                'compute-table-stat': compute_table_stat}
 
     parser = argparse.ArgumentParser()
 
@@ -122,6 +125,7 @@ def main():
     parser.add_argument('--p-trim-left-f')
     parser.add_argument('--p-trim-left-r')
     parser.add_argument('--p-figsize', nargs=2, type=int)
+    parser.add_argument('--p-stat')
     parser.add_argument('--o-path')
     parser.add_argument('--p-forward', action='store_true')
 
