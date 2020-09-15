@@ -92,6 +92,13 @@ def fastq2asv(i_path, p_trunc_len_f=None, p_trunc_len_r=None, p_trim_left_f=None
 def create_report_(**kwargs):
     create_report(**kwargs)
 
+def analyze(**kwargs):
+    with open('qsubme-analyze.sh', 'w') as f:
+        f.write("#!/bin/bash" + '\n')
+        f.write("#$ -cwd" + '\n')
+        f.write('\n')
+        f.write(f"sh {os.path.dirname(os.path.realpath(__file__))}/analyze.sh")
+
 def main():
     commands = {'make-manifest': make_manifest,
                 'merge-metadata': merge_metadata,
@@ -100,7 +107,8 @@ def main():
                 'plot-alpha-diversity': plot_alpha_diversity_,
                 'fastq2asv': fastq2asv,
                 'create-report': create_report_,
-                'plot-read-quality': plot_read_quality}
+                'plot-read-quality': plot_read_quality,
+                'analyze': analyze}
 
     parser = argparse.ArgumentParser()
 
