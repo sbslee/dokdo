@@ -29,4 +29,6 @@ def compute_table_stat(**kwargs):
         print(a.mean())
     else:
         raise ValueError("Incorrect --p-stat detected")
-        
+
+    if not kwargs['keep']:
+        shutil.rmtree(kwargs['zip_dir'])

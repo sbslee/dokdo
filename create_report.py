@@ -19,10 +19,10 @@ Visualization.load('rep-seqs.qzv')"""
 Visualization.load('alpha-rarefaction.qzv')"""
 
     c_shannon_group_significance_qzv = """\
-Visualization.load('shannon_group-significance.qzv')"""
+Visualization.load('core-metrics-results/shannon_group-significance.qzv')"""
 
     c_bray_curtis_emperor_qzv = """\
-Visualization.load('bray_curtis_emperor.qzv')"""
+Visualization.load('core-metrics-results/bray_curtis_emperor.qzv')"""
 
     c_taxa_bar_plots_qzv = """\
 Visualization.load('taxa-bar-plots.qzv')"""

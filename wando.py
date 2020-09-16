@@ -94,12 +94,12 @@ def fastq2asv(i_path, p_trunc_len_f=None, p_trunc_len_r=None, p_trim_left_f=None
 def create_report_(**kwargs):
     create_report(**kwargs)
 
-def analyze(**kwargs):
+def pipeline_analyze(**kwargs):
     with open('qsubme-analyze.sh', 'w') as f:
         f.write("#!/bin/bash" + '\n')
         f.write("#$ -cwd" + '\n')
         f.write('\n')
-        f.write(f"sh {os.path.dirname(os.path.realpath(__file__))}/analyze.sh")
+        f.write(f"sh {os.path.dirname(os.path.realpath(__file__))}/pipeline_analyze.sh {kwargs['p_classifier']}")
 
 def main():
     commands = {'make-manifest': make_manifest,
@@ -107,10 +107,10 @@ def main():
                 'plot-alpha-rarefaction': plot_alpha_rarefaction_,
                 'plot-taxa-abundance': plot_taxa_abundance_,
                 'plot-alpha-diversity': plot_alpha_diversity_,
+                'plot-read-quality': plot_read_quality,
                 'fastq2asv': fastq2asv,
                 'create-report': create_report_,
-                'plot-read-quality': plot_read_quality,
-                'analyze': analyze,
+                'pipeline-analyze': pipeline_analyze,
                 'compute-table-stat': compute_table_stat}
 
     parser = argparse.ArgumentParser()
@@ -126,8 +126,9 @@ def main():
     parser.add_argument('--p-trim-left-r')
     parser.add_argument('--p-figsize', nargs=2, type=int)
     parser.add_argument('--p-stat')
-    parser.add_argument('--o-path')
+    parser.add_argument('--p-classifier')
     parser.add_argument('--p-forward', action='store_true')
+    parser.add_argument('--o-path')
 
     args = parser.parse_args()
 
