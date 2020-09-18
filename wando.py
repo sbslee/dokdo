@@ -9,6 +9,9 @@ from plot_alpha_diversity import plot_alpha_diversity
 from plot_read_quality import plot_read_quality
 from create_report import create_report
 
+from action_tax2seq import action_tax2seq
+from action_collapse import action_collapse
+
 from compute_table_stat import compute_table_stat
 
 def make_manifest(**kwargs):
@@ -158,7 +161,9 @@ def main():
                 'pipeline-init': pipeline_init,
                 'pipeline-fastq2asv': pipeline_fastq2asv,
                 'pipeline-analyze': pipeline_analyze,
-                'compute-table-stat': compute_table_stat}
+                'compute-table-stat': compute_table_stat,
+                'action-tax2seq': action_tax2seq,
+                'action-collapse': action_collapse}
 
     parser = argparse.ArgumentParser()
 
@@ -167,6 +172,9 @@ def main():
     parser.add_argument('--i-paths', action='append')
     parser.add_argument('--i-zip')
     parser.add_argument('--i-fastq')
+    parser.add_argument('--i-rep-seqs')
+    parser.add_argument('--i-tax')
+    parser.add_argument('--i-table')
     parser.add_argument('--p-color')
     parser.add_argument('--p-trunc-len-f', default=0, type=int)
     parser.add_argument('--p-trunc-len-r', default=0, type=int)
@@ -177,7 +185,9 @@ def main():
     parser.add_argument('--p-stat')
     parser.add_argument('--p-classifier')
     parser.add_argument('--p-forward', action='store_true')
+    parser.add_argument('--p-tax')
     parser.add_argument('--o-path')
+    parser.add_argument('--o-prefix')
 
     args = parser.parse_args()
 
