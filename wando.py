@@ -10,7 +10,6 @@ from plot_read_quality import plot_read_quality
 from create_report import create_report
 
 from action_tax2seq import action_tax2seq
-from action_collapse import action_collapse
 
 from compute_table_stat import compute_table_stat
 
@@ -162,8 +161,7 @@ def main():
                 'pipeline-fastq2asv': pipeline_fastq2asv,
                 'pipeline-analyze': pipeline_analyze,
                 'compute-table-stat': compute_table_stat,
-                'action-tax2seq': action_tax2seq,
-                'action-collapse': action_collapse}
+                'action-tax2seq': action_tax2seq}
 
     parser = argparse.ArgumentParser()
 
