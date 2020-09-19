@@ -9,8 +9,6 @@ from plot_alpha_diversity import plot_alpha_diversity
 from plot_read_quality import plot_read_quality
 from create_report import create_report
 
-from action_tax2seq import action_tax2seq
-
 from compute_table_stat import compute_table_stat
 
 def make_manifest(**kwargs):
@@ -160,8 +158,7 @@ def main():
                 'pipeline-init': pipeline_init,
                 'pipeline-fastq2asv': pipeline_fastq2asv,
                 'pipeline-analyze': pipeline_analyze,
-                'compute-table-stat': compute_table_stat,
-                'action-tax2seq': action_tax2seq}
+                'compute-table-stat': compute_table_stat}
 
     parser = argparse.ArgumentParser()
 
