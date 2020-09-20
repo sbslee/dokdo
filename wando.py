@@ -11,33 +11,6 @@ from create_report import create_report
 
 from compute_table_stat import compute_table_stat
 
-def make_manifest(**kwargs):
-    files = {}
-
-    for r, d, f in os.walk(kwargs['i_fastq']):
-        for x in f:
-            name = x.split('_')[0]
-
-            if '_R1_001.fastq' in x:
-                if name not in files:
-                    files[name] = ['', '']
-                files[name][0] = f'{r}/{x}'
-            elif '_R2_001.fastq' in x:
-                if name not in files:
-                    files[name] = ['', '']
-                files[name][1] = f'{r}/{x}'
-            else:
-                pass
-
-    with open(kwargs['o_path'], 'w') as f:
-        headers = ['sample-id', 'forward-absolute-filepath', 
-                   'reverse-absolute-filepath']
-        f.write('\t'.join(headers) + '\n')
-
-        for name in sorted(files):
-            fields = [name, files[name][0], files[name][1]]
-            f.write('\t'.join(fields) + '\n')
-
 def merge_metadata(i_paths=None, o_path=None, **kwargs):
     metadata = []
 
@@ -148,8 +121,7 @@ def pipeline_analyze(**kwargs):
         f.write(f"sh {os.path.dirname(os.path.realpath(__file__))}/pipeline_analyze.sh {kwargs['p_classifier']}")
 
 def main():
-    commands = {'make-manifest': make_manifest,
-                'merge-metadata': merge_metadata,
+    commands = {'merge-metadata': merge_metadata,
                 'plot-alpha-rarefaction': plot_alpha_rarefaction_,
                 'plot-taxa-abundance': plot_taxa_abundance_,
                 'plot-alpha-diversity': plot_alpha_diversity_,

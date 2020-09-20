@@ -1,4 +1,5 @@
 import argparse
+import os
 
 import pandas as pd
 
@@ -35,10 +36,38 @@ def tax2seq(taxonomy, rep_seqs, output):
     _ = pd.concat([tax_df, seq_df], axis=1, sort=False)
     _.to_csv(output)
 
+def make_manifest(fastq_dir, output):
+    files = {}
+
+    for r, d, f in os.walk(fastq_dir):
+        for x in f:
+            name = x.split('_')[0]
+
+            if '_R1_001.fastq' in x:
+                if name not in files:
+                    files[name] = ['', '']
+                files[name][0] = f'{r}/{x}'
+            elif '_R2_001.fastq' in x:
+                if name not in files:
+                    files[name] = ['', '']
+                files[name][1] = f'{r}/{x}'
+            else:
+                pass
+
+    with open(output, 'w') as f:
+        headers = ['sample-id', 'forward-absolute-filepath', 
+                   'reverse-absolute-filepath']
+        f.write('\t'.join(headers) + '\n')
+
+        for name in sorted(files):
+            fields = [name, files[name][0], files[name][1]]
+            f.write('\t'.join(fields) + '\n')
+
 def main():
     commands = {
         'collapse': collapse,
         'tax2seq': tax2seq,
+        'make_manifest': make_manifest,
     }
 
     parser = argparse.ArgumentParser()
@@ -67,6 +96,15 @@ def main():
                                 help="path to input rep-seqs.qza file")
     tax2seq_parser.add_argument('output',
                                 help="path to output csv file")
+
+    make_manifest_parser = subparsers.add_parser(
+        'make_manifest',
+        help="create manifest file from FASTQ directory",
+    )
+    make_manifest_parser.add_argument('fastq_dir',
+                                 help="path to input FASTQ directory")
+    make_manifest_parser.add_argument('output',
+                                 help="path to output manifest file")
 
     args = parser.parse_args()
 

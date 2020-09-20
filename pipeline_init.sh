@@ -7,9 +7,7 @@ export LC_ALL=en_US.utf-8
 export LANG=en_US.utf-8
 
 ##### Make a manifest file.
-python3 $X_PDP/wando.py --command make-manifest \
---i-fastq $I_FASTQ \
---o-path manifest.tsv
+python3 $X_PDP/cli.py manifest $I_FASTQ manifest.tsv
 
 echo "Saved ManifestData to: manifest.tsv"
 
