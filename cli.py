@@ -102,46 +102,59 @@ def main():
 
     collapse_parser = subparsers.add_parser(
         'collapse',
-        help="This command creates seven collapsed ASV tables, one for each taxonomic level.",
+        description=("This command creates seven collapsed ASV tables, one "
+                     "for each taxonomic level. The ouput files (level-1.csv "
+                     "through level-7.csv) will be created in the current "
+                     "directory."),
+        help=("This command creates seven collapsed ASV tables, one for each "
+              "taxonomic level."),
     )
     collapse_parser.add_argument(
         'table',
-        help="path to input table.qza file"
+        help="Path to the input table.qza file."
     )
     collapse_parser.add_argument(
         'taxonomy',
-        help="path to input taxonomy.qza file"
+        help="Path to the input taxonomy.qza file."
     )
 
 
 
     tax2seq_parser = subparsers.add_parser(
         'tax2seq',
-        help="This command returns the mapping between observed ASVs and taxonomic classifications.",
+        description=("This command returns the mapping between observed ASVs "
+                     "and taxonomic classifications."),
+        help=("This command returns the mapping between observed ASVs and "
+              "taxonomic classifications."),
     )
     tax2seq_parser.add_argument(
         'taxonomy',
-        help="path to input taxonomy.qza file"
+        help="Path to the input taxonomy.qza file."
     )
     tax2seq_parser.add_argument(
         'rep_seqs',
-        help="path to input rep-seqs.qza file"
+        help="Path to the input rep-seqs.qza file."
     )
     tax2seq_parser.add_argument(
         'output',
-        help="path to output csv file"
+        help="Path to the output mapping file (.csv)"
     )
 
 
 
     make_manifest_parser = subparsers.add_parser(
         'make_manifest',
+        description=("This command creates a manifest file from a directory "
+                     "containing FASTQ files. The file names must include "
+                     "either '_R1_001.fastq' or '_R1_002.fastq'. The word "
+                     "before the first underscore will be set as the sample "
+                     "ID (e.g. 'EXAMPLE' in EXAMPLE_S1_R1_001.fastq.gz)."),
         help=("This command creates a manifest file from a directory "
               "containing FASTQ files."),
     )
     make_manifest_parser.add_argument(
         'fastq_dir',
-        help="Path to input FASTQ directory."
+        help="Path to the directory containing input FASTQ files (.fastq.gz)."
     )
     make_manifest_parser.add_argument(
         'output',
@@ -161,7 +174,7 @@ def main():
     )
     add_metadata_parser.add_argument(
         'metadata',
-        help="Path to the input sample-metadata file (.tsv)."
+        help="Path to the input sample-metadata.tsv file."
     )
     add_metadata_parser.add_argument(
         'columns',
@@ -170,7 +183,7 @@ def main():
     )
     add_metadata_parser.add_argument(
         'output',
-        help="Path to the output sample-metadata file (.tsv)."
+        help="Path to the output sample-metadata.tsv (.tsv)."
     )
 
 
