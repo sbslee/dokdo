@@ -152,6 +152,10 @@ def main():
 
     add_metadata_parser = subparsers.add_parser(
         'add_metadata',
+        description=("This command adds new columns to an existing "
+                     "sample-metadata file. The 'metadata' file and the "
+                     "'columns' file must have at least one overlapping "
+                     "column."),
         help=("This command adds new columns to an existing sample-metadata "
               "file."),
     )
@@ -161,7 +165,8 @@ def main():
     )
     add_metadata_parser.add_argument(
         'columns',
-        help="Path to a .tsv file containing the new columns to be added."
+        help=("Path to a file containing the new columns to be added (.tsv). "
+              "The first row should be column names.")
     )
     add_metadata_parser.add_argument(
         'output',
