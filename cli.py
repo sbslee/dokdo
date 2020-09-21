@@ -95,7 +95,7 @@ def main():
 
     subparsers = parser.add_subparsers(dest='command',
                                        metavar='command',
-                                       help="The name of the command.")
+                                       help="Name of the command.")
     subparsers.required = True
 
 
@@ -136,7 +136,8 @@ def main():
 
     make_manifest_parser = subparsers.add_parser(
         'make_manifest',
-        help="This command creates a manifest file from FASTQ directory.",
+        help=("This command creates a manifest file from a directory "
+              "containing FASTQ files."),
     )
     make_manifest_parser.add_argument(
         'fastq_dir',
@@ -152,7 +153,7 @@ def main():
     add_metadata_parser = subparsers.add_parser(
         'add_metadata',
         help=("This command adds new columns to an existing sample-metadata "
-              "file and then outputs the resulting metadata."),
+              "file."),
     )
     add_metadata_parser.add_argument(
         'metadata',
