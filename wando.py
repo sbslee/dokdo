@@ -11,25 +11,6 @@ from create_report import create_report
 
 from compute_table_stat import compute_table_stat
 
-def merge_metadata(i_paths=None, o_path=None, **kwargs):
-    metadata = []
-
-    for i in range(len(i_paths)):
-        with open(i_paths[i]) as f:
-            for j, line in enumerate(f):
-                fields = line.strip().split('\t')
-                if i == 0 and j < 2:
-                    metadata.append(fields)
-
-                if j < 2:
-                    continue
-
-                metadata.append(fields)
-
-    with open(o_path, 'w') as f:
-        for fields in metadata:
-            f.write('\t'.join(fields) + '\n')
-
 def plot_alpha_rarefaction_(i_path=None,
                             o_path=None,
                             p_color=None, 
@@ -121,8 +102,7 @@ def pipeline_analyze(**kwargs):
         f.write(f"sh {os.path.dirname(os.path.realpath(__file__))}/pipeline_analyze.sh {kwargs['p_classifier']}")
 
 def main():
-    commands = {'merge-metadata': merge_metadata,
-                'plot-alpha-rarefaction': plot_alpha_rarefaction_,
+    commands = {'plot-alpha-rarefaction': plot_alpha_rarefaction_,
                 'plot-taxa-abundance': plot_taxa_abundance_,
                 'plot-alpha-diversity': plot_alpha_diversity_,
                 'plot-read-quality': plot_read_quality,

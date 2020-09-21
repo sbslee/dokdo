@@ -11,20 +11,23 @@ $ python3 /path/to/dokdo/cli.py -h
 usage: cli.py [-h] command ...
 
 positional arguments:
-  command        Name of the command.
-    collapse     This command creates seven collapsed ASV tables, one for each
-                 taxonomic level.
-    tax2seq      This command returns the mapping between observed ASVs and
-                 taxonomic classifications.
+  command         Name of the command.
+    collapse      This command creates seven collapsed ASV tables, one for
+                  each taxonomic level.
+    tax2seq       This command returns the mapping between observed ASVs and
+                  taxonomic classifications.
     make_manifest
-                 This command creates a manifest file from a directory
-                 containing FASTQ files.
-    add_metadata
-                 This command adds new columns to an existing sample-metadata
-                 file.
+                  This command creates a manifest file from a directory
+                  containing FASTQ files.
+    add_metadata  This command adds new columns to an existing sample-metadata
+                  file.
+    merge_metadata
+                  This command merges two or more sample-metadata.tsv files
+                  vertically.
 
 optional arguments:
-  -h, --help     show this help message and exit
+  -h, --help      show this help message and exit
+(qiime2-2020.8) SEUNGs-MacBook-Pro-2:Desktop seung
 ```
 
 For getting command-specific help:

@@ -9,12 +9,16 @@ from q2_types.feature_data import DNAFASTAFormat
 
 from qiime2.plugins import taxa
 
+
+
 def collapse(table, taxonomy):
     for i in range(1, 8):
         _ = taxa.methods.collapse(table=Artifact.load(table),
                                   taxonomy=Artifact.load(taxonomy),
                                   level=i)
         _.collapsed_table.view(pd.DataFrame).T.to_csv(f'level-{i}.csv')
+
+
 
 def tax2seq(taxonomy, rep_seqs, output):
     tax_df = Artifact.load(taxonomy).view(pd.DataFrame)
@@ -36,6 +40,8 @@ def tax2seq(taxonomy, rep_seqs, output):
 
     _ = pd.concat([tax_df, seq_df], axis=1, sort=False)
     _.to_csv(output)
+
+
 
 def make_manifest(fastq_dir, output):
     files = {}
@@ -83,12 +89,23 @@ def add_metadata(metadata, columns, output):
 
 
 
+def merge_metadata(metadata, output):
+    dfs = []
+
+    for file in metadata:
+        dfs.append(Metadata.load(file).to_dataframe())
+
+    Metadata(pd.concat(dfs)).save(output)
+
+
+
 def main():
     commands = {
         'collapse': collapse,
         'tax2seq': tax2seq,
         'make_manifest': make_manifest,
         'add_metadata': add_metadata,
+        'merge_metadata': merge_metadata,
     }
 
     parser = argparse.ArgumentParser()
@@ -183,7 +200,27 @@ def main():
     )
     add_metadata_parser.add_argument(
         'output',
-        help="Path to the output sample-metadata.tsv (.tsv)."
+        help="Path to the output sample-metadata.tsv file."
+    )
+
+
+
+    merge_metadata_parser = subparsers.add_parser(
+        'merge_metadata',
+        description=("This command merges two or more sample-metadata.tsv "
+                     "files vertically. All files are assumed to have the "
+                     "same column names."),
+        help=("This command merges two or more sample-metadata.tsv files "
+              "vertically."),
+    )
+    merge_metadata_parser.add_argument(
+        'metadata',
+        nargs='+',
+        help="Paths to the sample-metadata.tsv files to be merged. ",
+    )
+    merge_metadata_parser.add_argument(
+        'output',
+        help="Path to the output sample-metadata.tsv file.",
     )
 
 
