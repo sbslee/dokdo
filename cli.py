@@ -4,6 +4,7 @@ import os
 import pandas as pd
 
 from qiime2 import Artifact
+from qiime2 import Metadata
 from q2_types.feature_data import DNAFASTAFormat
 
 from qiime2.plugins import taxa
@@ -63,48 +64,110 @@ def make_manifest(fastq_dir, output):
             fields = [name, files[name][0], files[name][1]]
             f.write('\t'.join(fields) + '\n')
 
+
+
+def add_metadata(metadata, columns, output):
+    df1 = Metadata.load(metadata).to_dataframe()
+    dtypes = df1.dtypes.to_dict()
+    df2 = pd.read_table(columns)
+
+    for k, v in dtypes.items():
+        if k in df2.columns:
+            if v == 'object':
+                df2[k] = df2[k].astype(str)
+            else:
+                df2[k] = df2[k].astype(v)
+
+    df3 = df1.reset_index().merge(df2).set_index('#SampleID')
+    Metadata(df3).save(output)
+
+
+
 def main():
     commands = {
         'collapse': collapse,
         'tax2seq': tax2seq,
         'make_manifest': make_manifest,
+        'add_metadata': add_metadata,
     }
 
     parser = argparse.ArgumentParser()
 
     subparsers = parser.add_subparsers(dest='command',
                                        metavar='command',
-                                       help="name of command")
+                                       help="The name of the command.")
     subparsers.required = True
+
+
 
     collapse_parser = subparsers.add_parser(
         'collapse',
-        help="create 7 collapsed ASV tables, one for each taxonomic level",
+        help="This command creates seven collapsed ASV tables, one for each taxonomic level.",
     )
-    collapse_parser.add_argument('table',
-                                 help="path to input table.qza file")
-    collapse_parser.add_argument('taxonomy',
-                                 help="path to input taxonomy.qza file")
+    collapse_parser.add_argument(
+        'table',
+        help="path to input table.qza file"
+    )
+    collapse_parser.add_argument(
+        'taxonomy',
+        help="path to input taxonomy.qza file"
+    )
+
+
 
     tax2seq_parser = subparsers.add_parser(
         'tax2seq',
-        help="return mapping between ASVs and taxonomic classifications",
+        help="This command returns the mapping between observed ASVs and taxonomic classifications.",
     )
-    tax2seq_parser.add_argument('taxonomy',
-                                help="path to input taxonomy.qza file")
-    tax2seq_parser.add_argument('rep_seqs',
-                                help="path to input rep-seqs.qza file")
-    tax2seq_parser.add_argument('output',
-                                help="path to output csv file")
+    tax2seq_parser.add_argument(
+        'taxonomy',
+        help="path to input taxonomy.qza file"
+    )
+    tax2seq_parser.add_argument(
+        'rep_seqs',
+        help="path to input rep-seqs.qza file"
+    )
+    tax2seq_parser.add_argument(
+        'output',
+        help="path to output csv file"
+    )
+
+
 
     make_manifest_parser = subparsers.add_parser(
         'make_manifest',
-        help="create manifest file from FASTQ directory",
+        help="This command creates a manifest file from FASTQ directory.",
     )
-    make_manifest_parser.add_argument('fastq_dir',
-                                 help="path to input FASTQ directory")
-    make_manifest_parser.add_argument('output',
-                                 help="path to output manifest file")
+    make_manifest_parser.add_argument(
+        'fastq_dir',
+        help="Path to input FASTQ directory."
+    )
+    make_manifest_parser.add_argument(
+        'output',
+        help="Path to the output manifest file (.tsv)."
+    )
+
+
+
+    add_metadata_parser = subparsers.add_parser(
+        'add_metadata',
+        help=("This command adds new columns to an existing sample-metadata "
+              "file and then outputs the resulting metadata."),
+    )
+    add_metadata_parser.add_argument(
+        'metadata',
+        help="Path to the input sample-metadata file (.tsv)."
+    )
+    add_metadata_parser.add_argument(
+        'columns',
+        help="Path to a .tsv file containing the new columns to be added."
+    )
+    add_metadata_parser.add_argument(
+        'output',
+        help="Path to the output sample-metadata file (.tsv)."
+    )
+
+
 
     args = parser.parse_args()
 
