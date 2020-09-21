@@ -27,7 +27,6 @@ positional arguments:
 
 optional arguments:
   -h, --help      show this help message and exit
-(qiime2-2020.8) SEUNGs-MacBook-Pro-2:Desktop seung
 ```
 
 For getting command-specific help:
