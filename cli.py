@@ -137,7 +137,7 @@ def main():
     )
     tax2seq_parser.add_argument(
         'output',
-        help="Path to the output mapping file (.csv)"
+        help="Path to the output mapping file (.csv)."
     )
 
 
