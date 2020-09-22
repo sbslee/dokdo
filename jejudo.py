@@ -17,7 +17,6 @@ import seaborn as sns
 # Import the Dokdo methods.
 from plot_alpha_rarefaction import plot_alpha_rarefaction
 from plot_taxa_abundance import plot_taxa_abundance
-from plot_alpha_diversity import plot_alpha_diversity
 from plot_beta_diversity import plot_beta_diversity
 from plot_read_quality import plot_read_quality
 

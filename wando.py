@@ -5,7 +5,6 @@ import nbformat as nbf
 
 from plot_alpha_rarefaction import plot_alpha_rarefaction
 from plot_taxa_abundance import plot_taxa_abundance
-from plot_alpha_diversity import plot_alpha_diversity
 from plot_read_quality import plot_read_quality
 from create_report import create_report
 
@@ -32,13 +31,6 @@ def plot_taxa_abundance_(i_path=None,
                         output=o_path,
                         color=p_color,
                         figsize=p_figsize)
-
-def plot_alpha_diversity_(**kwargs):
-
-    plot_alpha_diversity(qzv_file=kwargs['i_path'],
-                         output=kwargs['o_path'],
-                         figsize=kwargs['p_figsize'],
-                         color=kwargs['p_color'])
 
 def create_report_(**kwargs):
     create_report(**kwargs)
@@ -104,7 +96,6 @@ def pipeline_analyze(**kwargs):
 def main():
     commands = {'plot-alpha-rarefaction': plot_alpha_rarefaction_,
                 'plot-taxa-abundance': plot_taxa_abundance_,
-                'plot-alpha-diversity': plot_alpha_diversity_,
                 'plot-read-quality': plot_read_quality,
                 'create-report': create_report_,
                 'pipeline-init': pipeline_init,
