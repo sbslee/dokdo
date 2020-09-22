@@ -5,7 +5,6 @@ import nbformat as nbf
 
 from plot_alpha_rarefaction import plot_alpha_rarefaction
 from plot_taxa_abundance import plot_taxa_abundance
-from plot_read_quality import plot_read_quality
 from create_report import create_report
 
 from compute_table_stat import compute_table_stat
@@ -96,7 +95,6 @@ def pipeline_analyze(**kwargs):
 def main():
     commands = {'plot-alpha-rarefaction': plot_alpha_rarefaction_,
                 'plot-taxa-abundance': plot_taxa_abundance_,
-                'plot-read-quality': plot_read_quality,
                 'create-report': create_report_,
                 'pipeline-init': pipeline_init,
                 'pipeline-fastq2asv': pipeline_fastq2asv,
