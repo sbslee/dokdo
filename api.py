@@ -19,6 +19,6 @@ def ancom_volcano_plot(ancom, ax=None):
     df = pd.read_table(f'{t.name}/data.tsv')
     if ax is None:
         fig, ax = plt.subplots(figsize=(15, 10))
-    ax.scatter(df.clr, df.W, c='black', alpha=0.5)
+    ax.scatter(df.clr, df.W, s=80, c='black', alpha=0.5)
     ax.set_xlabel('clr')
     ax.set_ylabel('W')
