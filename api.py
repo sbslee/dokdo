@@ -11,8 +11,17 @@ def ancom_volcano_plot(ancom, ax=None):
     """
     This method creates an ANCOM volcano plot.
 
-    Example:
-        api.ancom_volcano_plot('ancom-Site.qzv')
+    Parameters
+    ----------
+    ancom : str
+        Path to the visualization file from the 'qiime composition ancom' 
+        command.
+    ax : matplotlib Axes, optional
+        Axes object to draw the plot onto, otherwise uses the current Axes.
+
+    Example
+    -------
+    api.ancom_volcano_plot('ancom-Site.qzv')
     """
     t = TemporaryDirectory()
     Visualization.load(ancom).export_data(t.name)
@@ -29,8 +38,19 @@ def alpha_diversity_plot(significance, where, ax=None):
     """
     This method creates an alpha diversity plot.
 
-    Example:
-        api.alpha_diversity_plot('shannon_group-significance.qzv', 'Site')
+    Parameters
+    ----------
+    significance : str
+        Path to the visualization file from the 'qiime diversity 
+        alpha-group-significance' command.
+    where : str
+        Column name to be used for the x-axis.
+    ax : matplotlib Axes, optional
+        Axes object to draw the plot onto, otherwise uses the current Axes.
+
+    Example
+    -------
+    api.alpha_diversity_plot('shannon_group-significance.qzv', 'Site')
     """
     t = TemporaryDirectory()
     Visualization.load(significance).export_data(t.name)
