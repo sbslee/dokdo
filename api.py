@@ -6,7 +6,14 @@ import matplotlib.pyplot as plt
 from qiime2 import Visualization
 
 def ancom_volcano_plot(ancom, ax=None):
-    """This method creates an ANCOM volcano plot."""
+    """
+    This method creates an ANCOM volcano plot.
+
+    Example:
+        import matplotlib.pyplot as plt
+        api.ancom_volcano_plot('ancom-Site.qzv')
+        plt.savefig('ancom-Site.pdf')
+    """
     t = TemporaryDirectory()
     Visualization.load(ancom).export_data(t.name)
     df = pd.read_table(f'{t.name}/data.tsv')

@@ -48,3 +48,33 @@ positional arguments:
 optional arguments:
   -h, --help  show this help message and exit
 ```
+
+# Application Programming Interface (API)
+
+At the beginning of your Jupyter Notebook, enter the following:
+
+```
+import sys
+sys.path.append("/path/to/dokdo")
+import api
+```
+
+Then you can use the methods defined in Dokdo API. For example:
+
+```
+help(api.ancom_volcano_plot)
+```
+
+Gives:
+
+```
+Help on function ancom_volcano_plot in module api:
+
+ancom_volcano_plot(ancom, ax=None)
+    This method creates an ANCOM volcano plot.
+    
+    Example:
+        import matplotlib.pyplot as plt
+        api.ancom_volcano_plot('ancom-Site.qzv')
+        plt.savefig('ancom-Site.pdf')
+```
