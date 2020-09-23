@@ -3,22 +3,10 @@ import argparse
 
 import nbformat as nbf
 
-from plot_alpha_rarefaction import plot_alpha_rarefaction
 from plot_taxa_abundance import plot_taxa_abundance
 from create_report import create_report
 
 from compute_table_stat import compute_table_stat
-
-def plot_alpha_rarefaction_(i_path=None,
-                            o_path=None,
-                            p_color=None, 
-                            p_figsize=None,
-                            **kwargs):
-
-    plot_alpha_rarefaction(i_path,
-                           output=o_path,
-                           color=p_color,
-                           figsize=p_figsize)
 
 def plot_taxa_abundance_(i_path=None,
                          o_path=None,
@@ -93,8 +81,7 @@ def pipeline_analyze(**kwargs):
         f.write(f"sh {os.path.dirname(os.path.realpath(__file__))}/pipeline_analyze.sh {kwargs['p_classifier']}")
 
 def main():
-    commands = {'plot-alpha-rarefaction': plot_alpha_rarefaction_,
-                'plot-taxa-abundance': plot_taxa_abundance_,
+    commands = {'plot-taxa-abundance': plot_taxa_abundance_,
                 'create-report': create_report_,
                 'pipeline-init': pipeline_init,
                 'pipeline-fastq2asv': pipeline_fastq2asv,
