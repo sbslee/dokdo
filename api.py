@@ -166,3 +166,57 @@ def alpha_rarefaction_plot(rarefaction, where, metric='shannon', ax=None):
 
 
 
+def taxa_abundance_plot(taxa, level=1, by=[], ax=None):
+    """
+    This method creates a taxa abundance plot.
+
+    Parameters
+    ----------
+    taxa : str
+        Path to the visualization file from the 'qiime taxa barplot'.
+    level : int
+        Taxonomic level at which the features should be collapsed.
+    by : list of str
+        Column name(s) to be used for sorting the samples. Using 'index' will 
+        sort the samples by their name, in addition to other column name(s) 
+        that may have been provided. If multiple items are provided, sorting 
+        will occur by the order of the items.
+    ax : matplotlib Axes, optional
+        Axes object to draw the plot onto, otherwise uses the current Axes.
+
+    Example
+    -------
+    api.taxa_abundance_plot('taxa-bar-plots.qzv', level=3,
+                            by=['Site', 'index'])
+    """
+    t = TemporaryDirectory()
+    Visualization.load(taxa).export_data(t.name)
+    df = pd.read_csv(f'{t.name}/level-{level}.csv', index_col=0)
+
+    if by:
+        df = df.sort_values(by=by)
+
+    dropped = []
+    for column in df.columns:
+        if 'Unassigned' in column:
+            continue
+        elif '__' in column:
+            continue
+        else:
+            dropped.append(column)
+
+    df = df.drop(columns=dropped)
+    df = df.T
+    df = df / df.sum()
+    df = df.T
+    df = df.loc[:, df.mean().sort_values(ascending=False).index]
+
+    if ax is None:
+        fig, ax = plt.subplots(figsize=(15, 10))
+
+    df.plot.bar(stacked=True, legend=False, ax=ax,
+                color=plt.cm.get_cmap('Accent').colors)
+
+    ax.set_xlabel('Samples')
+    ax.set_ylabel('Relative frequency')
+
