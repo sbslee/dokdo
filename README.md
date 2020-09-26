@@ -10,7 +10,7 @@
 
 ## Introduction <a name="Introduction"></a>
 
-Dokdo is a collection of scripts for microbiome sequencing analysis. For details, please see the Wiki page. Pull requests are welcome.
+Dokdo is a Python package for microbiome sequencing analysis, which can be used as a standalone program and as a Python module. For details, please see the Wiki page. Pull requests are welcome.
 
 ## Wiki <a name="Wiki"></a>
 
