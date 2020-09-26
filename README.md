@@ -10,11 +10,11 @@
 
 ## Introduction <a name="Introduction"></a>
 
-```dokdo``` is a collection of scripts for microbiome sequencing analysis. For details, please see the Wiki page. Pull requests are welcome.
+Dokdo is a collection of scripts for microbiome sequencing analysis. For details, please see the Wiki page. Pull requests are welcome.
 
 ## Wiki <a name="Wiki"></a>
 
-In progress.
+The Dokdo Wiki page is the official user documentation for the Dokdo package, including instructions, tutorials, and other important information.
 
 ## Command Line Interface (CLI) <a name="Command-Line-Interface-(CLI)"></a>
 
