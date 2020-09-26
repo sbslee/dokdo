@@ -14,10 +14,6 @@ from matplotlib_venn import venn2
 import matplotlib
 import seaborn as sns
 
-# Import the Dokdo methods.
-from plot_beta_diversity import plot_beta_diversity
-
-
 TAXA = ['Kingdom', 'Phylum', 'Class', 'Order', 'Family', 'Genus', 'Species']
 
 def plot_summary(jjd, method, feature=None, ax=None, show=False,

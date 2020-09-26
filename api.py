@@ -76,7 +76,7 @@ def read_quality_plot(demux, strand='forward', ax=None):
     demux : str
         Path to the visualization file from the 'qiime demux summarize' 
         command.
-    strand : str, optional [default: 'forward']
+    strand : str, default: 'forward'
         Read strand to be displayed (either 'forward' or 'reverse').
     ax : matplotlib Axes, optional
         Axes object to draw the plot onto, otherwise uses the current Axes.
@@ -124,7 +124,7 @@ def alpha_rarefaction_plot(rarefaction, where, metric='shannon', ax=None):
         alpha-rarefaction' command.
     where : str
         Column name of the sample metadata.
-    metric : str, optional [default: 'shannon']
+    metric : str, default: 'shannon'
         Desired diversity metric to be displayed (either 'observed_features', 
         'faith_pd' or 'shannon').
     ax : matplotlib Axes, optional
@@ -220,3 +220,103 @@ def taxa_abundance_plot(taxa, level=1, by=[], ax=None):
     ax.set_xlabel('Samples')
     ax.set_ylabel('Relative frequency')
 
+
+
+def beta_2d_plot(ordination, metadata, where, ax=None):
+    """
+    This method creates a 2D beta diversity plot.
+
+    Parameters
+    ----------
+    ordination : str
+        Path to the artifact file from ordination (e.g. 
+        bray_curtis_pcoa_results.qza).
+    metadata : str
+        Path to the sample-metadata.tsv file.
+    where : str
+        Column name of the sample metadata.
+    ax : matplotlib Axes, optional
+        Axes object to draw the plot onto, otherwise uses the current Axes.
+    """
+    t = TemporaryDirectory()
+    Artifact.load(ordination).export_data(t.name)
+
+    df1 = pd.read_table(f'{t.name}/ordination.txt', header=None, index_col=0,
+                        skiprows=[0, 1, 2, 3, 4, 5, 6, 7, 8],
+                        skipfooter=4, engine='python')
+
+    df1 = df1.sort_index()
+
+    df2 = Metadata.load(metadata).to_dataframe()
+    df2 = df2.sort_index()
+
+    f = open(f'{t.name}/ordination.txt')
+    v = [round(float(x) * 100, 2) for x in f.readlines()[4].split('\t')]
+    f.close()
+
+    if ax is None:
+        fig, ax = plt.subplots(figsize=(15, 15))
+
+    ax.set_xlabel(f'Axis 1 ({v[0]} %)')
+    ax.set_ylabel(f'Axis 2 ({v[1]} %)')
+    ax.set_xticks([])
+    ax.set_yticks([])
+
+    for c in sorted(df2[where].unique()):
+        i = df2[where] == c
+        ax.scatter(df1[i].iloc[:, 0], df1[i].iloc[:, 1], label=c, s=80)
+
+
+
+def beta_3d_plot(ordination, metadata, where, ax=None, azim=-60, elev=30):
+    """
+    This method creates a 3D beta diversity plot.
+
+    Parameters
+    ----------
+    ordination : str
+        Path to the artifact file from ordination (e.g. 
+        bray_curtis_pcoa_results.qza).
+    metadata : str
+        Path to the sample-metadata.tsv file.
+    where : str
+        Column name of the sample metadata.
+    ax : matplotlib Axes, optional
+        Axes object to draw the plot onto, otherwise uses the current Axes.
+    azim : int, default: -60
+        Elevation viewing angle.
+    elev : int, default: 30
+        Azimuthal viewing angle.
+    """
+
+    t = TemporaryDirectory()
+    Artifact.load(ordination).export_data(t.name)
+
+    df1 = pd.read_table(f'{t.name}/ordination.txt', header=None, index_col=0,
+                        skiprows=[0, 1, 2, 3, 4, 5, 6, 7, 8],
+                        skipfooter=4, engine='python')
+    df1 = df1.sort_index()
+
+    df2 = Metadata.load(metadata).to_dataframe()
+    df2 = df2.sort_index()
+
+    f = open(f'{t.name}/ordination.txt')
+    v = [round(float(x) * 100, 2) for x in f.readlines()[4].split('\t')]
+    f.close()
+
+    if ax is None:
+        fig = plt.figure(figsize=(15, 15))
+        ax = fig.add_subplot(1, 1, 1, projection='3d')
+
+    ax.view_init(azim=azim, elev=elev)
+    ax.set_xlabel(f'Axis 1 ({v[0]} %)')
+    ax.set_ylabel(f'Axis 2 ({v[1]} %)')
+    ax.set_zlabel(f'Axis 3 ({v[2]} %)')
+    ax.set_xticks([])
+    ax.set_yticks([])
+    ax.set_zticks([])
+
+    for c in sorted(df2[where].unique()):
+        i = df2[where] == c
+        ax.scatter(df1[i].iloc[:, 0], df1[i].iloc[:, 1],
+                   df1[i].iloc[:, 2], label=c, s=80)

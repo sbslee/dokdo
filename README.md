@@ -1,8 +1,22 @@
 # dokdo
 
+## Table of Contents
+
+* [Introduction](#Introduction)
+* [Wiki](#Wiki)
+* [Command Line Interface (CLI)](#Command-Line-Interface-(CLI))
+* [Application Programming Interface (API)](#Application-Programming-Interface-(API))
+
+
+## Introduction <a name="Introduction"></a>
+
 ```dokdo``` is a collection of scripts for microbiome sequencing analysis. For details, please see the Wiki page. Pull requests are welcome.
 
-# Command Line Interface (CLI)
+## Wiki <a name="Wiki"></a>
+
+In progress.
+
+## Command Line Interface (CLI) <a name="Command-Line-Interface-(CLI)"></a>
 
 For getting help:
 
@@ -49,7 +63,7 @@ optional arguments:
   -h, --help  show this help message and exit
 ```
 
-# Application Programming Interface (API)
+## Application Programming Interface (API) <a name="Application-Programming-Interface-(API)"></a>
 
 At the beginning of your Jupyter Notebook, enter the following:
 
