@@ -4,19 +4,19 @@
 
 * [Introduction](#Introduction)
 * [Wiki](#Wiki)
-* [Command Line Interface (CLI)](#Command-Line-Interface-(CLI))
-* [Application Programming Interface (API)](#Application-Programming-Interface-(API))
+* [Command Line Interface](#Command-Line-Interface)
+* [Application Programming Interface](#Application-Programming-Interface)
 
 
 ## Introduction <a name="Introduction"></a>
 
-Dokdo is a Python package for microbiome sequencing analysis, which can be used as a standalone program and as a Python module. For details, please see the Wiki page. Pull requests are welcome.
+Dokdo is a Python package for microbiome sequencing analysis, which can be used as a standalone program and as a Python module. Dokdo is designed to be used with QIIME2. For details, please see the Wiki page. Pull requests are welcome.
 
 ## Wiki <a name="Wiki"></a>
 
 The Dokdo Wiki page is the official user documentation for the Dokdo package, including instructions, tutorials, and other important information.
 
-## Command Line Interface (CLI) <a name="Command-Line-Interface-(CLI)"></a>
+## Command Line Interface <a name="Command-Line-Interface"></a>
 
 For getting help:
 
@@ -63,7 +63,7 @@ optional arguments:
   -h, --help  show this help message and exit
 ```
 
-## Application Programming Interface (API) <a name="Application-Programming-Interface-(API)"></a>
+## Application Programming Interface <a name="Application-Programming-Interface"></a>
 
 At the beginning of your Jupyter Notebook, enter the following:
 
