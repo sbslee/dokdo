@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+import skbio as sb
 
 from qiime2 import Artifact
 from qiime2 import Metadata
@@ -222,7 +223,8 @@ def taxa_abundance_plot(taxa, level=1, by=[], ax=None):
 
 
 
-def beta_2d_plot(ordination, metadata, where, ax=None):
+def beta_2d_plot(ordination, metadata, where, s=80, remove=[], small=[],
+                 ax=None):
     """
     This method creates a 2D beta diversity plot.
 
@@ -235,6 +237,10 @@ def beta_2d_plot(ordination, metadata, where, ax=None):
         Path to the sample-metadata.tsv file.
     where : str
         Column name of the sample metadata.
+    remove : list of str
+        Values in the column which should not be drawn when matached.
+    small : dict of str
+        Values in the column which should be drawn smaller when matached.
     ax : matplotlib Axes, optional
         Axes object to draw the plot onto, otherwise uses the current Axes.
     """
@@ -243,12 +249,11 @@ def beta_2d_plot(ordination, metadata, where, ax=None):
 
     df1 = pd.read_table(f'{t.name}/ordination.txt', header=None, index_col=0,
                         skiprows=[0, 1, 2, 3, 4, 5, 6, 7, 8],
-                        skipfooter=4, engine='python')
-
-    df1 = df1.sort_index()
+                        skipfooter=4, engine='python', usecols=[0, 1, 2])
 
     df2 = Metadata.load(metadata).to_dataframe()
-    df2 = df2.sort_index()
+
+    df3 = pd.concat([df1, df2], axis=1, join='inner')
 
     f = open(f'{t.name}/ordination.txt')
     v = [round(float(x) * 100, 2) for x in f.readlines()[4].split('\t')]
@@ -262,9 +267,14 @@ def beta_2d_plot(ordination, metadata, where, ax=None):
     ax.set_xticks([])
     ax.set_yticks([])
 
-    for c in sorted(df2[where].unique()):
-        i = df2[where] == c
-        ax.scatter(df1[i].iloc[:, 0], df1[i].iloc[:, 1], label=c, s=80)
+    for c in sorted(df3[where].unique()):
+        if c in remove:
+            continue
+        i = df3[where] == c
+
+        _s = s / 10 if c in small else s
+
+        ax.scatter(df3[i].iloc[:, 0], df3[i].iloc[:, 1], label=c, s=_s)
 
 
 
@@ -320,3 +330,51 @@ def beta_3d_plot(ordination, metadata, where, ax=None, azim=-60, elev=30):
         i = df2[where] == c
         ax.scatter(df1[i].iloc[:, 0], df1[i].iloc[:, 1],
                    df1[i].iloc[:, 2], label=c, s=80)
+
+
+
+def distance_matrix_plot(distance_matrix, bins=100, pairs={}, ax=None):
+    """
+    This method creates a histogram from a distance matrix.
+
+    Parameters
+    ----------
+    distance_matrix : str
+         Path to the artifact file from distance matrix computation. For 
+         example, it could be an artifact from the 'qiime diversity-lib 
+         jaccard' command.
+    bins : int, optional
+        Number of bins to be displayed.
+    pairs : dict of str to list of str, optional
+        Dictionary of sample pairs to be shown in red vertical lines. Keys 
+        do not matter, but values have to be a list of two sample IDs.
+    ax : matplotlib Axes, optional
+        Axes object to draw the plot onto, otherwise uses the current Axes.
+    """
+    t = TemporaryDirectory()
+    Artifact.load(distance_matrix).export_data(t.name)
+    df = pd.read_table(f'{t.name}/distance-matrix.tsv', index_col=0)
+    dist = sb.stats.distance.DistanceMatrix(df, ids=df.columns)
+    cdist = dist.condensed_form()
+
+    if ax is None:
+        fig, ax = plt.subplots(figsize=(15, 15))
+
+    ax.hist(cdist, bins=bins)
+
+    # https://stackoverflow.com/a/36867493/7481899
+    def square_to_condensed(i, j, n):
+        assert i != j, "no diagonal elements in condensed matrix"
+        if i < j:
+            i, j = j, i
+        return n*j - j*(j+1)//2 + i - 1 - j
+
+    if pairs:
+        idx = []
+
+        for pairid, l in pairs.items():
+            i = square_to_condensed(dist.index(l[0]), dist.index(l[1]), len(dist.ids))
+            idx.append(cdist[i])
+
+        for i in idx:
+            ax.axvline(x=i, c='red')
