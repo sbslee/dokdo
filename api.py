@@ -243,6 +243,11 @@ def beta_2d_plot(ordination, metadata, where, s=80, remove=[], small=[],
         Values in the column which should be drawn smaller when matached.
     ax : matplotlib Axes, optional
         Axes object to draw the plot onto, otherwise uses the current Axes.
+
+    Example
+    -------
+    api.beta_2d_plot('bray_curtis_pcoa_results.qza', 'sample-metadata.tsv', 
+                     'Site')
     """
     t = TemporaryDirectory()
     Artifact.load(ordination).export_data(t.name)
@@ -297,6 +302,11 @@ def beta_3d_plot(ordination, metadata, where, ax=None, azim=-60, elev=30):
         Elevation viewing angle.
     elev : int, default: 30
         Azimuthal viewing angle.
+
+    Example
+    -------
+    api.beta_3d_plot('bray_curtis_pcoa_results.qza', 'sample-metadata.tsv', 
+                     'Site')
     """
 
     t = TemporaryDirectory()
@@ -350,6 +360,10 @@ def distance_matrix_plot(distance_matrix, bins=100, pairs={}, ax=None):
         do not matter, but values have to be a list of two sample IDs.
     ax : matplotlib Axes, optional
         Axes object to draw the plot onto, otherwise uses the current Axes.
+
+    Example
+    -------
+    api.distance_matrix_plot('distance_matrix.qza')
     """
     t = TemporaryDirectory()
     Artifact.load(distance_matrix).export_data(t.name)
