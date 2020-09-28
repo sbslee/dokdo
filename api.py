@@ -237,6 +237,8 @@ def beta_2d_plot(ordination, metadata, where, s=80, remove=[], small=[],
         Path to the sample-metadata.tsv file.
     where : str
         Column name of the sample metadata.
+    s : int, default: 80
+        Marker size.
     remove : list of str
         Values in the column which should not be drawn when matached.
     small : dict of str
@@ -283,7 +285,8 @@ def beta_2d_plot(ordination, metadata, where, s=80, remove=[], small=[],
 
 
 
-def beta_3d_plot(ordination, metadata, where, ax=None, azim=-60, elev=30):
+def beta_3d_plot(ordination, metadata, where, ax=None, azim=-60, elev=30, 
+                 s=80):
     """
     This method creates a 3D beta diversity plot.
 
@@ -302,6 +305,8 @@ def beta_3d_plot(ordination, metadata, where, ax=None, azim=-60, elev=30):
         Elevation viewing angle.
     elev : int, default: 30
         Azimuthal viewing angle.
+    s : int, default: 80
+        Marker size.
 
     Example
     -------
@@ -339,7 +344,7 @@ def beta_3d_plot(ordination, metadata, where, ax=None, azim=-60, elev=30):
     for c in sorted(df2[where].unique()):
         i = df2[where] == c
         ax.scatter(df1[i].iloc[:, 0], df1[i].iloc[:, 1],
-                   df1[i].iloc[:, 2], label=c, s=80)
+                   df1[i].iloc[:, 2], label=c, s=s)
 
 
 
