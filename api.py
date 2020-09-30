@@ -397,3 +397,39 @@ def distance_matrix_plot(distance_matrix, bins=100, pairs={}, ax=None):
 
         for i in idx:
             ax.axvline(x=i, c='red')
+
+
+
+def denoising_stats_plot(stats, metadata, where, figsize=None, ax=None):
+    """
+    This method creates a grouped box plot using denoising statistics from 
+    DADA2.
+
+    Parameters
+    ----------
+    stats : str
+        Path to the denoising-stats.qza file.
+    metadata : str
+        Path to the sample-metadata.tsv file.
+    where : str
+        Column name of the sample metadata.
+    figsize : tuple of float, optional
+        Width, height in inches.
+    ax : matplotlib Axes, optional
+        Axes object to draw the plot onto, otherwise uses the current Axes.
+
+    Example
+    -------
+    api.denoising_stats_plot("denoising-stats.qza", "sample-metadata.tsv",
+                             "Site")
+    """
+    t = TemporaryDirectory()
+    Artifact.load(stats).export_data(t.name)
+    df1 = pd.read_table(f'{t.name}/stats.tsv', skiprows=[1], index_col=0)
+    df2 = Metadata.load(metadata).to_dataframe()
+    df3 = pd.concat([df1, df2], axis=1)
+    a = ['input', 'filtered', 'denoised', 'merged', 'non-chimeric', where]
+    df4 = pd.melt(df3[a], id_vars=[where])
+    if ax is None:
+        fig, ax = plt.subplots(figsize=figsize)
+    sns.boxplot(x='Site', y='value', data=df4, hue='variable', ax=ax)
