@@ -206,12 +206,16 @@ def taxa_abundance_plot(taxa, level=1, by=[], figsize=None, ax=None,
 
     Example
     -------
-    # Typical cases
+    # Typical cases.
     api.taxa_abundance_plot('taxa-bar-plots.qzv', level=3,
                             by=['Site', 'index'])
 
-    # Exclude samples
+    # Exclude samples.
     api.taxa_abundance_plot('taxa-bar-plots.qzv', level=3,
+                            by=['Site'], exclude={'Site': ['G', 'S']})
+
+    # Display the top five taxa only.
+    api.taxa_abundance_plot('taxa-bar-plots.qzv', level=3, count=5,
                             by=['Site'], exclude={'Site': ['G', 'S']})
     """
     t = TemporaryDirectory()
