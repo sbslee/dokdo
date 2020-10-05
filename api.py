@@ -428,14 +428,12 @@ def denoising_stats_plot(stats, metadata, where, figsize=None, ax=None):
     df1 = pd.read_table(f'{t.name}/stats.tsv', skiprows=[1], index_col=0)
     df2 = Metadata.load(metadata).to_dataframe()
     df3 = pd.concat([df1, df2], axis=1, join='inner')
-    df3.to_csv("df3.csv")
     dict = df3[where].value_counts().to_dict()
     for k, v in dict.items():
         dict[k] = f"{k} ({v})"
     df3[where].replace(dict, inplace=True)
     a = ['input', 'filtered', 'denoised', 'merged', 'non-chimeric', where]
     df4 = pd.melt(df3[a], id_vars=[where])
-    df4.to_csv("df4.csv")
     if ax is None:
         fig, ax = plt.subplots(figsize=figsize)
     sns.boxplot(x=where, y='value', data=df4, hue='variable', ax=ax)
