@@ -12,7 +12,7 @@ from qiime2 import Visualization
 
 
 
-def ancom_volcano_plot(ancom, ax=None):
+def ancom_volcano_plot(ancom, figsize=None, ax=None):
     """
     This method creates an ANCOM volcano plot.
 
@@ -21,6 +21,8 @@ def ancom_volcano_plot(ancom, ax=None):
     ancom : str
         Path to the visualization file from the 'qiime composition ancom' 
         command.
+    figsize : tuple of float, optional
+        Width, height in inches.
     ax : matplotlib Axes, optional
         Axes object to draw the plot onto, otherwise uses the current Axes.
 
@@ -32,14 +34,14 @@ def ancom_volcano_plot(ancom, ax=None):
     Visualization.load(ancom).export_data(t.name)
     df = pd.read_table(f'{t.name}/data.tsv')
     if ax is None:
-        fig, ax = plt.subplots(figsize=(15, 10))
+        fig, ax = plt.subplots(figsize=figsize)
     ax.scatter(df.clr, df.W, s=80, c='black', alpha=0.5)
     ax.set_xlabel('clr')
     ax.set_ylabel('W')
 
 
 
-def alpha_diversity_plot(significance, where, ax=None):
+def alpha_diversity_plot(significance, where, figsize=None, ax=None):
     """
     This method creates an alpha diversity plot.
 
@@ -50,6 +52,8 @@ def alpha_diversity_plot(significance, where, ax=None):
         alpha-group-significance' command.
     where : str
         Column name to be used for the x-axis.
+    figsize : tuple of float, optional
+        Width, height in inches.
     ax : matplotlib Axes, optional
         Axes object to draw the plot onto, otherwise uses the current Axes.
 
@@ -61,14 +65,14 @@ def alpha_diversity_plot(significance, where, ax=None):
     Visualization.load(significance).export_data(t.name)
     df = Metadata.load(f'{t.name}/metadata.tsv').to_dataframe()
     if ax is None:
-        fig, ax = plt.subplots(figsize=(15, 10))
+        fig, ax = plt.subplots(figsize=figsize)
     metric = df.columns[-1]
     boxprops = dict(color='white', edgecolor='black')
     sns.boxplot(x=where, y=metric, data=df, ax=ax, boxprops=boxprops)
 
 
 
-def read_quality_plot(demux, strand='forward', ax=None):
+def read_quality_plot(demux, strand='forward', figsize=None, ax=None):
     """
     This method creates a read quality plot.
 
@@ -79,6 +83,8 @@ def read_quality_plot(demux, strand='forward', ax=None):
         command.
     strand : str, default: 'forward'
         Read strand to be displayed (either 'forward' or 'reverse').
+    figsize : tuple of float, optional
+        Width, height in inches.
     ax : matplotlib Axes, optional
         Axes object to draw the plot onto, otherwise uses the current Axes.
 
@@ -98,7 +104,7 @@ def read_quality_plot(demux, strand='forward', ax=None):
     df = pd.melt(df.reset_index(), id_vars=['index'])
     df['variable'] = df['variable'].astype('int64')
     if ax is None:
-        fig, ax = plt.subplots(figsize=(15, 10))
+        fig, ax = plt.subplots(figsize=figsize)
 
     sns.boxplot(x='variable', y='value', data=df, ax=ax, fliersize=0,
                 boxprops=dict(color='white', edgecolor='black'),
@@ -170,7 +176,7 @@ def alpha_rarefaction_plot(rarefaction, where, metric='shannon',
 
 
 
-def taxa_abundance_plot(taxa, level=1, by=[], ax=None):
+def taxa_abundance_plot(taxa, level=1, by=[], figsize=None, ax=None):
     """
     This method creates a taxa abundance plot.
 
@@ -185,6 +191,8 @@ def taxa_abundance_plot(taxa, level=1, by=[], ax=None):
         sort the samples by their name, in addition to other column name(s) 
         that may have been provided. If multiple items are provided, sorting 
         will occur by the order of the items.
+    figsize : tuple of float, optional
+        Width, height in inches.
     ax : matplotlib Axes, optional
         Axes object to draw the plot onto, otherwise uses the current Axes.
 
@@ -216,7 +224,7 @@ def taxa_abundance_plot(taxa, level=1, by=[], ax=None):
     df = df.loc[:, df.mean().sort_values(ascending=False).index]
 
     if ax is None:
-        fig, ax = plt.subplots(figsize=(15, 10))
+        fig, ax = plt.subplots(figsize=figsize)
 
     df.plot.bar(stacked=True, legend=False, ax=ax,
                 color=plt.cm.get_cmap('Accent').colors)
@@ -227,7 +235,7 @@ def taxa_abundance_plot(taxa, level=1, by=[], ax=None):
 
 
 def beta_2d_plot(ordination, metadata, where, s=80, remove=[], small=[],
-                 ax=None):
+                 figsize=None, ax=None):
     """
     This method creates a 2D beta diversity plot.
 
@@ -246,6 +254,8 @@ def beta_2d_plot(ordination, metadata, where, s=80, remove=[], small=[],
         Values in the column which should not be drawn when matached.
     small : dict of str
         Values in the column which should be drawn smaller when matached.
+    figsize : tuple of float, optional
+        Width, height in inches.
     ax : matplotlib Axes, optional
         Axes object to draw the plot onto, otherwise uses the current Axes.
 
@@ -270,7 +280,7 @@ def beta_2d_plot(ordination, metadata, where, s=80, remove=[], small=[],
     f.close()
 
     if ax is None:
-        fig, ax = plt.subplots(figsize=(15, 15))
+        fig, ax = plt.subplots(figsize=figsize)
 
     ax.set_xlabel(f'Axis 1 ({v[0]} %)')
     ax.set_ylabel(f'Axis 2 ({v[1]} %)')
@@ -288,8 +298,8 @@ def beta_2d_plot(ordination, metadata, where, s=80, remove=[], small=[],
 
 
 
-def beta_3d_plot(ordination, metadata, where, ax=None, azim=-60, elev=30, 
-                 s=80):
+def beta_3d_plot(ordination, metadata, where, azim=-60, elev=30, s=80, 
+                 figsize=None, ax=None):
     """
     This method creates a 3D beta diversity plot.
 
@@ -302,14 +312,16 @@ def beta_3d_plot(ordination, metadata, where, ax=None, azim=-60, elev=30,
         Path to the sample-metadata.tsv file.
     where : str
         Column name of the sample metadata.
-    ax : matplotlib Axes, optional
-        Axes object to draw the plot onto, otherwise uses the current Axes.
     azim : int, default: -60
         Elevation viewing angle.
     elev : int, default: 30
         Azimuthal viewing angle.
     s : int, default: 80
         Marker size.
+    figsize : tuple of float, optional
+        Width, height in inches.
+    ax : matplotlib Axes, optional
+        Axes object to draw the plot onto, otherwise uses the current Axes.
 
     Example
     -------
@@ -333,7 +345,7 @@ def beta_3d_plot(ordination, metadata, where, ax=None, azim=-60, elev=30,
     f.close()
 
     if ax is None:
-        fig = plt.figure(figsize=(15, 15))
+        fig = plt.figure(figsize=figsize)
         ax = fig.add_subplot(1, 1, 1, projection='3d')
 
     ax.view_init(azim=azim, elev=elev)
@@ -351,7 +363,8 @@ def beta_3d_plot(ordination, metadata, where, ax=None, azim=-60, elev=30,
 
 
 
-def distance_matrix_plot(distance_matrix, bins=100, pairs={}, ax=None):
+def distance_matrix_plot(distance_matrix, bins=100, pairs={}, figsize=None, 
+                         ax=None):
     """
     This method creates a histogram from a distance matrix.
 
@@ -366,6 +379,8 @@ def distance_matrix_plot(distance_matrix, bins=100, pairs={}, ax=None):
     pairs : dict of str to list of str, optional
         Dictionary of sample pairs to be shown in red vertical lines. Keys 
         do not matter, but values have to be a list of two sample IDs.
+    figsize : tuple of float, optional
+        Width, height in inches.
     ax : matplotlib Axes, optional
         Axes object to draw the plot onto, otherwise uses the current Axes.
 
@@ -380,7 +395,7 @@ def distance_matrix_plot(distance_matrix, bins=100, pairs={}, ax=None):
     cdist = dist.condensed_form()
 
     if ax is None:
-        fig, ax = plt.subplots(figsize=(15, 15))
+        fig, ax = plt.subplots(figsize=figsize)
 
     ax.hist(cdist, bins=bins)
 
