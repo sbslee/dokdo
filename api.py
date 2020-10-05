@@ -296,6 +296,8 @@ def beta_2d_plot(ordination, metadata, where, s=80, remove=[], small=[],
 
         ax.scatter(df3[i].iloc[:, 0], df3[i].iloc[:, 1], label=c, s=_s)
 
+    ax.legend()
+
 
 
 def beta_3d_plot(ordination, metadata, where, azim=-60, elev=30, s=80, 
@@ -360,6 +362,8 @@ def beta_3d_plot(ordination, metadata, where, azim=-60, elev=30, s=80,
         i = df2[where] == c
         ax.scatter(df1[i].iloc[:, 0], df1[i].iloc[:, 1],
                    df1[i].iloc[:, 2], label=c, s=s)
+
+    ax.legend()
 
 
 
