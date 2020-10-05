@@ -203,6 +203,8 @@ def taxa_abundance_plot(taxa, level=1, by=[], figsize=None, ax=None,
         The width of the bars.
     count : int
         Number of taxa to display. When 0, display all.
+    legend : bool
+        If true, display the legend.
 
     Example
     -------
