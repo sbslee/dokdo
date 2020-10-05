@@ -114,7 +114,8 @@ def read_quality_plot(demux, strand='forward', ax=None):
 
 
 
-def alpha_rarefaction_plot(rarefaction, where, metric='shannon', ax=None):
+def alpha_rarefaction_plot(rarefaction, where, metric='shannon',
+                           figsize=None, ax=None):
     """
     This method creates an alpha rarefaction plot.
 
@@ -128,6 +129,8 @@ def alpha_rarefaction_plot(rarefaction, where, metric='shannon', ax=None):
     metric : str, default: 'shannon'
         Desired diversity metric to be displayed (either 'observed_features', 
         'faith_pd' or 'shannon').
+    figsize : tuple of float, optional
+        Width, height in inches.
     ax : matplotlib Axes, optional
         Axes object to draw the plot onto, otherwise uses the current Axes.
 
@@ -157,7 +160,7 @@ def alpha_rarefaction_plot(rarefaction, where, metric='shannon', ax=None):
         data = pd.concat([data, mean], sort=True)
 
     if ax is None:
-        fig, ax = plt.subplots(figsize=(15, 10))
+        fig, ax = plt.subplots(figsize=figsize)
 
     sns.lineplot(x='depth', y='ASV', data=data, hue=where, ax=ax,
                  err_style='bars', sort=False)
