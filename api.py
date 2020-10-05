@@ -177,7 +177,8 @@ def alpha_rarefaction_plot(rarefaction, where, metric='shannon',
 
 
 def taxa_abundance_plot(taxa, level=1, by=[], figsize=None, ax=None, 
-                        exclude={}, width=0.8, count=0, legend=False):
+                        exclude={}, width=0.8, count=0, legend_show=False,
+                        legend_short=False):
     """
     This method creates a taxa abundance plot.
 
@@ -203,8 +204,10 @@ def taxa_abundance_plot(taxa, level=1, by=[], figsize=None, ax=None,
         The width of the bars.
     count : int
         Number of taxa to display. When 0, display all.
-    legend : bool
+    legend_show : bool
         If true, display the legend.
+    legend_short : bool
+        If true, only display the smallest taxa rank in the legend.
 
     Example
     -------
@@ -262,13 +265,23 @@ def taxa_abundance_plot(taxa, level=1, by=[], figsize=None, ax=None,
     if ax is None:
         fig, ax = plt.subplots(figsize=figsize)
 
+    if legend_show and legend_short:
+        def f(s):
+            ranks = s.split(';')
+            for rank in reversed(ranks):
+                if rank != '__':
+                    x = rank
+                    break
+            return x
+        df.columns = [f(x) for x in df.columns]
+
     df.plot.bar(stacked=True, legend=False, ax=ax, width=width,
                 color=plt.cm.get_cmap('Accent').colors)
 
     ax.set_xlabel('Samples')
     ax.set_ylabel('Relative frequency')
 
-    if legend:
+    if legend_show:
         ax.legend()
 
 
