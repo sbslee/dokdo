@@ -177,7 +177,7 @@ def alpha_rarefaction_plot(rarefaction, where, metric='shannon',
 
 
 def taxa_abundance_plot(taxa, level=1, by=[], figsize=None, ax=None, 
-                        exclude={}, width=0.8, count=0):
+                        exclude={}, width=0.8, count=0, legend=False):
     """
     This method creates a taxa abundance plot.
 
@@ -265,6 +265,9 @@ def taxa_abundance_plot(taxa, level=1, by=[], figsize=None, ax=None,
 
     ax.set_xlabel('Samples')
     ax.set_ylabel('Relative frequency')
+
+    if legend:
+        ax.legend()
 
 
 
