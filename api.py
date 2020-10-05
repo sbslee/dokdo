@@ -177,7 +177,7 @@ def alpha_rarefaction_plot(rarefaction, where, metric='shannon',
 
 
 def taxa_abundance_plot(taxa, level=1, by=[], figsize=None, ax=None, 
-                        exclude={}, width=0.8):
+                        exclude={}, width=0.8, count=0):
     """
     This method creates a taxa abundance plot.
 
@@ -201,6 +201,8 @@ def taxa_abundance_plot(taxa, level=1, by=[], figsize=None, ax=None,
         exclude samples.
     width : float
         The width of the bars.
+    count : int
+        Number of taxa to display. When 0, display all.
 
     Example
     -------
@@ -237,10 +239,19 @@ def taxa_abundance_plot(taxa, level=1, by=[], figsize=None, ax=None,
             dropped.append(column)
     df = df.drop(columns=dropped)
 
+    # Convert counts to proportions.
     df = df.T
     df = df / df.sum()
     df = df.T
+
+    # Sort the species by their mean abundance.
     df = df.loc[:, df.mean().sort_values(ascending=False).index]
+
+    # If provided, collapse extra species to the Other column.
+    if count is not 0:
+        other = df.iloc[:, count-1:].sum(axis=1)
+        df = df.iloc[:, :count-1]
+        df['Other'] = other
 
     if ax is None:
         fig, ax = plt.subplots(figsize=figsize)
