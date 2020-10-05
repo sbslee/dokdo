@@ -176,7 +176,8 @@ def alpha_rarefaction_plot(rarefaction, where, metric='shannon',
 
 
 
-def taxa_abundance_plot(taxa, level=1, by=[], figsize=None, ax=None):
+def taxa_abundance_plot(taxa, level=1, by=[], figsize=None, ax=None, 
+                        exclude={}, width=0.8):
     """
     This method creates a taxa abundance plot.
 
@@ -195,19 +196,37 @@ def taxa_abundance_plot(taxa, level=1, by=[], figsize=None, ax=None):
         Width, height in inches.
     ax : matplotlib Axes, optional
         Axes object to draw the plot onto, otherwise uses the current Axes.
+    exclude : dict of str to list of str
+        Dictionary of column name(s) to list(s) of column value(s) to use to 
+        exclude samples.
+    width : float
+        The width of the bars.
 
     Example
     -------
+    # Typical cases
     api.taxa_abundance_plot('taxa-bar-plots.qzv', level=3,
                             by=['Site', 'index'])
+
+    # Exclude samples
+    api.taxa_abundance_plot('taxa-bar-plots.qzv', level=3,
+                            by=['Site'], exclude={'Site': ['G', 'S']})
     """
     t = TemporaryDirectory()
     Visualization.load(taxa).export_data(t.name)
     df = pd.read_csv(f'{t.name}/level-{level}.csv', index_col=0)
 
+    # If provided, sort the samples for display in the x-axis.
     if by:
         df = df.sort_values(by=by)
 
+    # If provided, exclude the specified samples.
+    if exclude:
+        for x in exclude:
+            for y in exclude[x]:
+                df = df[df[x] != y]
+
+    # Remove the metadata columns.
     dropped = []
     for column in df.columns:
         if 'Unassigned' in column:
@@ -216,8 +235,8 @@ def taxa_abundance_plot(taxa, level=1, by=[], figsize=None, ax=None):
             continue
         else:
             dropped.append(column)
-
     df = df.drop(columns=dropped)
+
     df = df.T
     df = df / df.sum()
     df = df.T
@@ -226,7 +245,7 @@ def taxa_abundance_plot(taxa, level=1, by=[], figsize=None, ax=None):
     if ax is None:
         fig, ax = plt.subplots(figsize=figsize)
 
-    df.plot.bar(stacked=True, legend=False, ax=ax,
+    df.plot.bar(stacked=True, legend=False, ax=ax, width=width,
                 color=plt.cm.get_cmap('Accent').colors)
 
     ax.set_xlabel('Samples')
