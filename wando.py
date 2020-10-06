@@ -10,38 +10,6 @@ from compute_table_stat import compute_table_stat
 def create_report_(**kwargs):
     create_report(**kwargs)
 
-def pipeline_init(**kwargs):
-    if not kwargs['i_fastq']:
-        raise ValueError('Argument --i-fastq not found')
-
-    with open('qsubme-pipeline-init.sh', 'w') as f:
-        f.write("#$ -S /bin/sh" + '\n')
-        f.write("#$ -cwd" + '\n')
-        f.write('\n')
-        f.write("X_PDP={}".format(kwargs['x_pdp']) + '\n')
-        f.write("I_FASTQ={}".format(kwargs['i_fastq']) + '\n')
-        f.write('\n')
-        f.write("sh $X_PDP/pipeline_init.sh \\" + '\n')
-        f.write("$X_PDP \\" + '\n')
-        f.write("$I_FASTQ" + '\n')
-
-    nb = nbf.v4.new_notebook()
-
-    md1 = """\
-This is an auto-generated notebook."""
-
-    cd1 = """\
-from qiime2 import Visualization"""
-
-    cd2 = """\
-Visualization.load('demux.qzv')"""
-
-    nb['cells'] = [nbf.v4.new_markdown_cell(md1),
-                   nbf.v4.new_code_cell(cd1),
-                   nbf.v4.new_code_cell(cd2)]
-
-    nbf.write(nb, 'report-pipeline-init.ipynb')
-
 def pipeline_fastq2asv(**kwargs):
     with open('qsubme-pipeline-fastq2asv.sh', 'w') as f:
         f.write("#$ -S /bin/sh" + '\n')
@@ -70,7 +38,6 @@ def pipeline_analyze(**kwargs):
 
 def main():
     commands = {'create-report': create_report_,
-                'pipeline-init': pipeline_init,
                 'pipeline-fastq2asv': pipeline_fastq2asv,
                 'pipeline-analyze': pipeline_analyze,
                 'compute-table-stat': compute_table_stat}
