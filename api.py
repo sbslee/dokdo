@@ -181,7 +181,7 @@ def taxa_abundance_plot(taxa, level=1, by=[], figsize=None, ax=None,
                         exclude_samples={}, exclude_taxa=[],
                         legend_show=False,
                         legend_short=False,
-                        legend_loc='best'):
+                        legend_loc='best', csv_file=None):
     """
     This method creates a taxa abundance plot.
 
@@ -217,6 +217,8 @@ def taxa_abundance_plot(taxa, level=1, by=[], figsize=None, ax=None,
         The location of the legend. Valid options include 'upper right', 
         'upper left', etc. See the 'matplotlib.pyplot.legend' method for 
         the complete list of options.
+    csv_file : str, optional
+        The path to the csv file.
 
     Example
     -------
@@ -302,6 +304,9 @@ def taxa_abundance_plot(taxa, level=1, by=[], figsize=None, ax=None,
 
     if legend_show:
         ax.legend(loc=legend_loc)
+
+    if csv_file:
+        df.to_csv(csv_file)
 
 
 
