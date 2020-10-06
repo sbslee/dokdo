@@ -1,18 +1,10 @@
 import os
 import argparse
 
-import nbformat as nbf
-
-from create_report import create_report
-
 from compute_table_stat import compute_table_stat
 
-def create_report_(**kwargs):
-    create_report(**kwargs)
-
 def main():
-    commands = {'create-report': create_report_,
-                'compute-table-stat': compute_table_stat}
+    commands = {'compute-table-stat': compute_table_stat}
 
     parser = argparse.ArgumentParser()
 
