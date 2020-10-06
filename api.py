@@ -177,8 +177,9 @@ def alpha_rarefaction_plot(rarefaction, where, metric='shannon',
 
 
 def taxa_abundance_plot(taxa, level=1, by=[], figsize=None, ax=None, 
-                        exclude={}, width=0.8, count=0, legend_show=False,
-                        legend_short=False):
+                        width=0.8, count=0,
+                        exclude_samples={}, exclude_taxa=[],
+                        legend_show=False, legend_short=False):
     """
     This method creates a taxa abundance plot.
 
@@ -197,13 +198,15 @@ def taxa_abundance_plot(taxa, level=1, by=[], figsize=None, ax=None,
         Width, height in inches.
     ax : matplotlib Axes, optional
         Axes object to draw the plot onto, otherwise uses the current Axes.
-    exclude : dict of str to list of str
-        Dictionary of column name(s) to list(s) of column value(s) to use to 
-        exclude samples.
     width : float
         The width of the bars.
     count : int
         Number of taxa to display. When 0, display all.
+    exclude_samples : dict of str to list of str
+        Dictionary of column name(s) to list(s) of column value(s) to use to 
+        exclude samples.
+    exclude_taxa : list of str
+        List of taxa names to be excluded when matched. Case insenstivie.
     legend_show : bool
         If true, display the legend.
     legend_short : bool
@@ -232,10 +235,20 @@ def taxa_abundance_plot(taxa, level=1, by=[], figsize=None, ax=None,
         df = df.sort_values(by=by)
 
     # If provided, exclude the specified samples.
-    if exclude:
-        for x in exclude:
-            for y in exclude[x]:
+    if exclude_samples:
+        for x in exclude_samples:
+            for y in exclude_samples[x]:
                 df = df[df[x] != y]
+
+    # If provided, exclude the specified taxa.
+    if exclude_taxa:
+        dropped = []
+        for tax in exclude_taxa:
+            for col in df.columns:
+                if tax.lower() in col.lower():
+                    dropped.append(col)
+        dropped = list(set(dropped))
+        df = df.drop(columns=dropped)
 
     # Remove the metadata columns.
     dropped = []
