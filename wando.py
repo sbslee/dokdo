@@ -10,28 +10,8 @@ from compute_table_stat import compute_table_stat
 def create_report_(**kwargs):
     create_report(**kwargs)
 
-def pipeline_fastq2asv(**kwargs):
-    with open('qsubme-pipeline-fastq2asv.sh', 'w') as f:
-        f.write("#$ -S /bin/sh" + '\n')
-        f.write("#$ -cwd" + '\n')
-        f.write('\n')
-        f.write("X_PDP={}".format(kwargs['x_pdp']) + '\n')
-        f.write("P_TRUNC_LEN_F={}".format(kwargs['p_trunc_len_f']) + '\n')
-        f.write("P_TRUNC_LEN_R={}".format(kwargs['p_trunc_len_r']) + '\n')
-        f.write("P_TRIM_LEFT_F={}".format(kwargs['p_trim_left_f']) + '\n')
-        f.write("P_TRIM_LEFT_R={}".format(kwargs['p_trim_left_r']) + '\n')
-        f.write("P_N_THREADS={}".format(kwargs['p_n_threads']) + '\n')
-        f.write('\n')
-        f.write(f"sh $X_PDP/pipeline_fastq2asv.sh \\" + '\n')
-        f.write("$P_TRUNC_LEN_F \\" + '\n')
-        f.write("$P_TRUNC_LEN_R \\" + '\n')
-        f.write("$P_TRIM_LEFT_F \\" + '\n')
-        f.write("$P_TRIM_LEFT_R \\" + '\n')
-        f.write("$P_N_THREADS" + '\n')
-
 def main():
     commands = {'create-report': create_report_,
-                'pipeline-fastq2asv': pipeline_fastq2asv,
                 'compute-table-stat': compute_table_stat}
 
     parser = argparse.ArgumentParser()
