@@ -179,7 +179,9 @@ def alpha_rarefaction_plot(rarefaction, where, metric='shannon',
 def taxa_abundance_plot(taxa, level=1, by=[], figsize=None, ax=None, 
                         width=0.8, count=0,
                         exclude_samples={}, exclude_taxa=[],
-                        legend_show=False, legend_short=False):
+                        legend_show=False,
+                        legend_short=False,
+                        legend_loc='best'):
     """
     This method creates a taxa abundance plot.
 
@@ -211,6 +213,10 @@ def taxa_abundance_plot(taxa, level=1, by=[], figsize=None, ax=None,
         If true, display the legend.
     legend_short : bool
         If true, only display the smallest taxa rank in the legend.
+    legend_loc : str
+        The location of the legend. Valid options include 'upper right', 
+        'upper left', etc. See the 'matplotlib.pyplot.legend' method for 
+        the complete list of options.
 
     Example
     -------
@@ -295,7 +301,7 @@ def taxa_abundance_plot(taxa, level=1, by=[], figsize=None, ax=None,
     ax.set_ylabel('Relative frequency')
 
     if legend_show:
-        ax.legend()
+        ax.legend(loc=legend_loc)
 
 
 
