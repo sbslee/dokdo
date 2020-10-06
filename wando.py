@@ -29,17 +29,9 @@ def pipeline_fastq2asv(**kwargs):
         f.write("$P_TRIM_LEFT_R \\" + '\n')
         f.write("$P_N_THREADS" + '\n')
 
-def pipeline_analyze(**kwargs):
-    with open('qsubme-analyze.sh', 'w') as f:
-        f.write("#!/bin/bash" + '\n')
-        f.write("#$ -cwd" + '\n')
-        f.write('\n')
-        f.write(f"sh {os.path.dirname(os.path.realpath(__file__))}/pipeline_analyze.sh {kwargs['p_classifier']}")
-
 def main():
     commands = {'create-report': create_report_,
                 'pipeline-fastq2asv': pipeline_fastq2asv,
-                'pipeline-analyze': pipeline_analyze,
                 'compute-table-stat': compute_table_stat}
 
     parser = argparse.ArgumentParser()
