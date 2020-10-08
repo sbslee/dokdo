@@ -270,9 +270,7 @@ def taxa_abundance_plot(taxa, level=1, by=[], figsize=None, ax=None,
     df = df.drop(columns=dropped)
 
     # Convert counts to proportions.
-    df = df.T
-    df = df / df.sum()
-    df = df.T
+    df = df.div(df.sum(axis=1), axis=0)
 
     # Sort the species by their mean abundance.
     df = df.loc[:, df.mean().sort_values(ascending=False).index]
@@ -535,3 +533,87 @@ def denoising_stats_plot(stats, metadata, where, figsize=None, ax=None):
     if ax is None:
         fig, ax = plt.subplots(figsize=figsize)
     sns.boxplot(x=where, y='value', data=df4, hue='variable', ax=ax)
+
+
+
+def paired_abundance_plot(taxa, x, y, hue, level=1, by=[],
+                          exclude_samples={}, ax=None, figsize=None):
+    """
+    This method creates a line plot showing relative frequency of a specific 
+    taxon for paired samples.
+
+    Parameters
+    ----------
+    taxa : str
+        Path to the visualization file from the 'qiime taxa barplot'.
+    x : str
+        The column to be used for the x-axis.
+    y : str
+        The column to be used for the y-axis (i.e. the taxon name).
+    hue : str
+        The column to be used for distinguishing the individual samples
+    level : int
+        Taxonomic level at which the features should be collapsed.
+        within a pair.
+    by : list of str
+        Column name(s) to be used for sorting the samples. Using 'index' will 
+        sort the samples by their name, in addition to other column name(s) 
+        that may have been provided. If multiple items are provided, sorting 
+        will occur by the order of the items.
+    exclude_samples : dict of str to list of str
+        Dictionary of column name(s) to list(s) of column value(s) to use to 
+        exclude samples.
+    ax : matplotlib Axes, optional
+        Axes object to draw the plot onto, otherwise uses the current Axes.
+    figsize : tuple of float, optional
+        Width, height in inches.
+    """
+    t = TemporaryDirectory()
+    Visualization.load(taxa).export_data(t.name)
+    df = pd.read_csv(f'{t.name}/level-{level}.csv', index_col=0)
+
+    df.to_csv('name.csv')
+
+    # If provided, sort the samples for display in the x-axis.
+    if by:
+        df = df.sort_values(by=[hue] + by)
+
+    # Remove the metadata columns.
+    dropped = []
+    for column in df.columns:
+        if 'Unassigned' in column:
+            continue
+        elif '__' in column:
+            continue
+        else:
+            dropped.append(column)
+    mf = df[dropped]
+    df = df.drop(columns=dropped)
+
+    # Convert counts to proportions.
+    df = df.div(df.sum(axis=1), axis=0)
+    mf[y] = df[y]
+
+    # If provided, exclude the specified samples.
+    if exclude_samples:
+        for xx in exclude_samples:
+            for yy in exclude_samples[xx]:
+                mf = mf[mf[xx] != yy]
+
+    if ax is None:
+        fig, ax = plt.subplots(figsize=figsize)
+
+    mf.rename(columns={y: 'Y'}, inplace=True)
+    mf = mf[[x, 'Y', hue] + by]
+
+    temp = mf[by].apply(lambda row: ', '.join(row.values.astype(str)), axis=1)
+
+    mf[x] = mf[x] + ' (' + temp + ')'
+
+    sns.lineplot(data=mf, x=x, y='Y', hue=hue, marker='o', sort=False, ax=ax)
+    ax.tick_params(axis='x', labelrotation=90)
+
+    ax.set_xlabel('')
+    ax.set_ylabel('Relative frequency')
+
+
