@@ -179,7 +179,7 @@ def alpha_rarefaction_plot(rarefaction, where, metric='shannon',
 def taxa_abundance_plot(taxa, level=1, by=[], figsize=None, ax=None, 
                         width=0.8, count=0,
                         exclude_samples={}, exclude_taxa=[],
-                        legend_show=False,
+                        show_legend=False,
                         legend_short=False,
                         legend_loc='best', csv_file=None,
                         sort_by_names=False,
@@ -213,8 +213,8 @@ def taxa_abundance_plot(taxa, level=1, by=[], figsize=None, ax=None,
         exclude samples.
     exclude_taxa : list of str
         List of taxa names to be excluded when matched. Case insenstivie.
-    legend_show : bool
-        If true, display the legend.
+    show_legend : bool
+        Show the legend.
     legend_short : bool
         If true, only display the smallest taxa rank in the legend.
     legend_loc : str
@@ -305,7 +305,7 @@ def taxa_abundance_plot(taxa, level=1, by=[], figsize=None, ax=None,
     if ax is None:
         fig, ax = plt.subplots(figsize=figsize)
 
-    if legend_show and legend_short:
+    if show_legend and legend_short:
         def f(s):
             ranks = s.split(';')
             for rank in reversed(ranks):
@@ -331,16 +331,17 @@ def taxa_abundance_plot(taxa, level=1, by=[], figsize=None, ax=None,
     if hide_labels:
         ax.set_xticks([])
     elif label_columns:
-        new_labels = mf[label_columns].apply(
-            lambda row: ' : '.join(row.values.astype(str)), axis=1)
+        f = lambda row: ' : '.join(row.values.astype(str))
+        new_labels = mf[label_columns].apply(f, axis=1)
         ax.set_xticklabels(new_labels)
     else:
         pass
 
 
     # Control the legend.
-    if legend_show:
+    if show_legend:
         ax.legend(loc=legend_loc)
+
 
     if csv_file:
         df.to_csv(csv_file)
