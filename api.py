@@ -181,7 +181,10 @@ def taxa_abundance_plot(taxa, level=1, by=[], figsize=None, ax=None,
                         exclude_samples={}, exclude_taxa=[],
                         legend_show=False,
                         legend_short=False,
-                        legend_loc='best', csv_file=None):
+                        legend_loc='best', csv_file=None,
+                        sort_by_names=False,
+                        colors=[],
+                        xclean=False):
     """
     This method creates a taxa abundance plot.
 
@@ -219,6 +222,10 @@ def taxa_abundance_plot(taxa, level=1, by=[], figsize=None, ax=None,
         the complete list of options.
     csv_file : str, optional
         The path to the csv file.
+    sort_by_names : bool
+        If true, sort the columns (i.e. species) to be displayed by name.
+    colors : list of str
+        The list of colors for each column.
 
     Example
     -------
@@ -272,7 +279,7 @@ def taxa_abundance_plot(taxa, level=1, by=[], figsize=None, ax=None,
     # Convert counts to proportions.
     df = df.div(df.sum(axis=1), axis=0)
 
-    # Sort the species by their mean abundance.
+    # Sort the columns (i.e. species) by their mean abundance.
     df = df.loc[:, df.mean().sort_values(ascending=False).index]
 
     # If provided, collapse extra species to the Other column.
@@ -280,6 +287,9 @@ def taxa_abundance_plot(taxa, level=1, by=[], figsize=None, ax=None,
         other = df.iloc[:, count-1:].sum(axis=1)
         df = df.iloc[:, :count-1]
         df['Other'] = other
+
+    if sort_by_names:
+        df = df.reindex(sorted(df.columns), axis=1)
 
     if ax is None:
         fig, ax = plt.subplots(figsize=figsize)
@@ -294,11 +304,20 @@ def taxa_abundance_plot(taxa, level=1, by=[], figsize=None, ax=None,
             return x
         df.columns = [f(x) for x in df.columns]
 
-    df.plot.bar(stacked=True, legend=False, ax=ax, width=width,
-                color=plt.cm.get_cmap('Accent').colors)
+    if colors:
+        c = colors
+    else:
+        c = plt.cm.get_cmap('Accent').colors
 
-    ax.set_xlabel('Samples')
+
+    df.plot.bar(stacked=True, legend=False, ax=ax, width=width, color=c)
+
+    ax.set_xlabel('')
     ax.set_ylabel('Relative frequency')
+
+    if xclean:
+        ax.set_xlabel('')
+        ax.set_xticks([], [])
 
     if legend_show:
         ax.legend(loc=legend_loc)
@@ -572,8 +591,6 @@ def paired_abundance_plot(taxa, x, y, hue, level=1, by=[],
     Visualization.load(taxa).export_data(t.name)
     df = pd.read_csv(f'{t.name}/level-{level}.csv', index_col=0)
 
-    df.to_csv('name.csv')
-
     # If provided, sort the samples for display in the x-axis.
     if by:
         df = df.sort_values(by=[hue] + by)
@@ -606,9 +623,10 @@ def paired_abundance_plot(taxa, x, y, hue, level=1, by=[],
     mf.rename(columns={y: 'Y'}, inplace=True)
     mf = mf[[x, 'Y', hue] + by]
 
-    temp = mf[by].apply(lambda row: ', '.join(row.values.astype(str)), axis=1)
+    if by:
+        temp = mf[by].apply(lambda row: ', '.join(row.values.astype(str)), axis=1)
 
-    mf[x] = mf[x] + ' (' + temp + ')'
+        mf[x] = mf[x] + ' (' + temp + ')'
 
     sns.lineplot(data=mf, x=x, y='Y', hue=hue, marker='o', sort=False, ax=ax)
     ax.tick_params(axis='x', labelrotation=90)
