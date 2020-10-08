@@ -265,6 +265,7 @@ def taxa_abundance_plot(taxa, level=1, by=[], figsize=None, ax=None,
         dropped = list(set(dropped))
         df = df.drop(columns=dropped)
 
+
     # Remove the metadata columns.
     dropped = []
     for column in df.columns:
@@ -314,6 +315,8 @@ def taxa_abundance_plot(taxa, level=1, by=[], figsize=None, ax=None,
 
     ax.set_xlabel('')
     ax.set_ylabel('Relative frequency')
+
+
 
     if xclean:
         ax.set_xlabel('')
