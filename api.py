@@ -184,7 +184,8 @@ def taxa_abundance_plot(taxa, level=1, by=[], figsize=None, ax=None,
                         legend_loc='best', csv_file=None,
                         sort_by_names=False,
                         colors=[],
-                        xclean=False):
+                        hide_labels=False,
+                        label_columns=[]):
     """
     This method creates a taxa abundance plot.
 
@@ -226,6 +227,10 @@ def taxa_abundance_plot(taxa, level=1, by=[], figsize=None, ax=None,
         If true, sort the columns (i.e. species) to be displayed by name.
     colors : list of str
         The list of colors for each column.
+    hide_labels : bool
+        Hide all the x-axis labels.
+    label_columns : list of str
+        The column names to be used as the x-axis labels.
 
     Example
     -------
@@ -275,7 +280,12 @@ def taxa_abundance_plot(taxa, level=1, by=[], figsize=None, ax=None,
             continue
         else:
             dropped.append(column)
+
+    mf = df[dropped]
     df = df.drop(columns=dropped)
+
+
+
 
     # Convert counts to proportions.
     df = df.div(df.sum(axis=1), axis=0)
@@ -317,16 +327,25 @@ def taxa_abundance_plot(taxa, level=1, by=[], figsize=None, ax=None,
     ax.set_ylabel('Relative frequency')
 
 
+    # Control the x-axis labels.
+    if hide_labels:
+        ax.set_xticks([])
+    elif label_columns:
+        new_labels = mf[label_columns].apply(
+            lambda row: ' : '.join(row.values.astype(str)), axis=1)
+        ax.set_xticklabels(new_labels)
+    else:
+        pass
 
-    if xclean:
-        ax.set_xlabel('')
-        ax.set_xticks([], [])
 
+    # Control the legend.
     if legend_show:
         ax.legend(loc=legend_loc)
 
     if csv_file:
         df.to_csv(csv_file)
+
+
 
 
 
