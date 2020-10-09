@@ -206,14 +206,14 @@ def taxa_abundance_plot(taxa, level=1, by=[], figsize=None, ax=None,
         Axes object to draw the plot onto, otherwise uses the current Axes.
     width : float
         The width of the bars.
-    count : int
-        Number of taxa to display. When 0, display all.
-    exclude_samples : dict of str to list of str
+    count : int, default: 0
+        The number of taxa to display. When 0, display all.
+    exclude_samples : dict
         Dictionary of column name(s) to list(s) of column value(s) to use to 
         exclude samples.
-    exclude_taxa : list of str
-        List of taxa names to be excluded when matched. Case insenstivie.
-    show_legend : bool
+    exclude_taxa : list
+        The taxa names to be excluded when matched. Case insenstivie.
+    show_legend : bool, default: False
         Show the legend.
     legend_short : bool
         If true, only display the smallest taxa rank in the legend.
@@ -225,26 +225,12 @@ def taxa_abundance_plot(taxa, level=1, by=[], figsize=None, ax=None,
         The path to the csv file.
     sort_by_names : bool
         If true, sort the columns (i.e. species) to be displayed by name.
-    colors : list of str
-        The list of colors for each column.
-    hide_labels : bool
+    colors : list
+        The bar colors.
+    hide_labels : bool, default: False
         Hide all the x-axis labels.
-    label_columns : list of str
+    label_columns : list
         The column names to be used as the x-axis labels.
-
-    Example
-    -------
-    # Typical cases.
-    api.taxa_abundance_plot('taxa-bar-plots.qzv', level=3,
-                            by=['Site', 'index'])
-
-    # Exclude samples.
-    api.taxa_abundance_plot('taxa-bar-plots.qzv', level=3,
-                            by=['Site'], exclude={'Site': ['G', 'S']})
-
-    # Display the top five taxa only.
-    api.taxa_abundance_plot('taxa-bar-plots.qzv', level=3, count=5,
-                            by=['Site'], exclude={'Site': ['G', 'S']})
     """
     t = TemporaryDirectory()
     Visualization.load(taxa).export_data(t.name)
