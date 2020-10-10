@@ -435,11 +435,6 @@ def beta_3d_plot(ordination, metadata, where, azim=-60, elev=30, s=80,
         The location of the legend. Valid options include 'upper right', 
         'upper left', etc. See the 'matplotlib.pyplot.legend' method for 
         the complete list of options.
-
-    Example
-    -------
-    api.beta_3d_plot('bray_curtis_pcoa_results.qza', 'sample-metadata.tsv', 
-                     'Site')
     """
 
     t = TemporaryDirectory()
