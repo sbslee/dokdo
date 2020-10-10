@@ -337,7 +337,7 @@ def taxa_abundance_plot(taxa, level=1, by=[], figsize=None, ax=None,
 
 
 def beta_2d_plot(ordination, metadata, where, s=80, remove=[], small=[],
-                 figsize=None, ax=None):
+                 ax=None, figsize=None, show_legend=False, legend_loc='best'):
     """
     This method creates a 2D beta diversity plot.
 
@@ -356,15 +356,16 @@ def beta_2d_plot(ordination, metadata, where, s=80, remove=[], small=[],
         Values in the column which should not be drawn when matached.
     small : dict of str
         Values in the column which should be drawn smaller when matached.
-    figsize : tuple of float, optional
-        Width, height in inches.
     ax : matplotlib Axes, optional
         Axes object to draw the plot onto, otherwise uses the current Axes.
-
-    Example
-    -------
-    api.beta_2d_plot('bray_curtis_pcoa_results.qza', 'sample-metadata.tsv', 
-                     'Site')
+    figsize : tuple of float, optional
+        Width, height in inches.
+    legend_short : bool
+        If true, only display the smallest taxa rank in the legend.
+    legend_loc : str
+        The location of the legend. Valid options include 'upper right', 
+        'upper left', etc. See the 'matplotlib.pyplot.legend' method for 
+        the complete list of options.
     """
     t = TemporaryDirectory()
     Artifact.load(ordination).export_data(t.name)
@@ -398,12 +399,14 @@ def beta_2d_plot(ordination, metadata, where, s=80, remove=[], small=[],
 
         ax.scatter(df3[i].iloc[:, 0], df3[i].iloc[:, 1], label=c, s=_s)
 
-    ax.legend()
+    # Control the legend.
+    if show_legend:
+        ax.legend(loc=legend_loc)
 
 
 
 def beta_3d_plot(ordination, metadata, where, azim=-60, elev=30, s=80, 
-                 figsize=None, ax=None):
+                 figsize=None, ax=None, show_legend=False, legend_loc='best'):
     """
     This method creates a 3D beta diversity plot.
 
@@ -426,6 +429,12 @@ def beta_3d_plot(ordination, metadata, where, azim=-60, elev=30, s=80,
         Width, height in inches.
     ax : matplotlib Axes, optional
         Axes object to draw the plot onto, otherwise uses the current Axes.
+    legend_short : bool
+        If true, only display the smallest taxa rank in the legend.
+    legend_loc : str
+        The location of the legend. Valid options include 'upper right', 
+        'upper left', etc. See the 'matplotlib.pyplot.legend' method for 
+        the complete list of options.
 
     Example
     -------
@@ -465,7 +474,9 @@ def beta_3d_plot(ordination, metadata, where, azim=-60, elev=30, s=80,
         ax.scatter(df1[i].iloc[:, 0], df1[i].iloc[:, 1],
                    df1[i].iloc[:, 2], label=c, s=s)
 
-    ax.legend()
+    # Control the legend.
+    if show_legend:
+        ax.legend(loc=legend_loc)
 
 
 
