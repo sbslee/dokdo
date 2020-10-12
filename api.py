@@ -336,7 +336,7 @@ def taxa_abundance_plot(taxa, level=1, by=[], figsize=None, ax=None,
 
 
 
-def beta_2d_plot(ordination, metadata, where, s=80, remove=[], small=[],
+def beta_2d_plot(ordination, metadata, where, s=80,
                  ax=None, figsize=None, show_legend=False, legend_loc='best'):
     """
     This method creates a 2D beta diversity plot.
@@ -352,10 +352,6 @@ def beta_2d_plot(ordination, metadata, where, s=80, remove=[], small=[],
         Column name of the sample metadata.
     s : int, default: 80
         Marker size.
-    remove : list of str
-        Values in the column which should not be drawn when matached.
-    small : dict of str
-        Values in the column which should be drawn smaller when matached.
     ax : matplotlib Axes, optional
         Axes object to draw the plot onto, otherwise uses the current Axes.
     figsize : tuple of float, optional
@@ -373,35 +369,36 @@ def beta_2d_plot(ordination, metadata, where, s=80, remove=[], small=[],
     df1 = pd.read_table(f'{t.name}/ordination.txt', header=None, index_col=0,
                         skiprows=[0, 1, 2, 3, 4, 5, 6, 7, 8],
                         skipfooter=4, engine='python', usecols=[0, 1, 2])
+    df1.columns = ['A1', 'A2']
+
 
     df2 = Metadata.load(metadata).to_dataframe()
 
     df3 = pd.concat([df1, df2], axis=1, join='inner')
 
     f = open(f'{t.name}/ordination.txt')
-    v = [round(float(x) * 100, 2) for x in f.readlines()[4].split('\t')]
+    explained_variances = [round(float(x) * 100, 2) for x
+                               in f.readlines()[4].split('\t')]
     f.close()
 
     if ax is None:
         fig, ax = plt.subplots(figsize=figsize)
 
-    ax.set_xlabel(f'Axis 1 ({v[0]} %)')
-    ax.set_ylabel(f'Axis 2 ({v[1]} %)')
+
+    sns.scatterplot(data=df3, x='A1', y='A2', hue=where, ax=ax, s=s)
+
     ax.set_xticks([])
     ax.set_yticks([])
-
-    for c in sorted(df3[where].unique()):
-        if c in remove:
-            continue
-        i = df3[where] == c
-
-        _s = s / 10 if c in small else s
-
-        ax.scatter(df3[i].iloc[:, 0], df3[i].iloc[:, 1], label=c, s=_s)
+    ax.set_xlabel(f'Axis 1 ({explained_variances[0]} %)')
+    ax.set_ylabel(f'Axis 2 ({explained_variances[1]} %)')
 
     # Control the legend.
     if show_legend:
         ax.legend(loc=legend_loc)
+    else:
+        ax.get_legend().remove()
+
+
 
 
 
