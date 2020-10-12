@@ -6,7 +6,7 @@ Dokdo is versatile like the swiss army knife. For example, you can use its comma
 
 There is no installation for Dokdo. Simply clone this repository and you are good to go. Only QIIME 2 is required.
 
-For more details, please see the Wiki page which serves as the official user documentation for Dokdo, including instructions, tutorials, and other important information. The page also documents select information and resources pertaining to QIIME 2 that I find particularly useful.
+For more details, please see the [Wiki page](https://github.com/sbslee/dokdo/wiki) which serves as the official user documentation for Dokdo, including instructions, tutorials, and other important information. The page also documents select information and resources pertaining to QIIME 2 that I find particularly useful.
 
 Pull requests are always welcome.
 
