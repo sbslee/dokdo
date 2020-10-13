@@ -209,9 +209,7 @@ def taxa_abundance_plot(taxa, level=1, by=[], figsize=None, ax=None,
     legend_short : bool
         If true, only display the smallest taxa rank in the legend.
     legend_loc : str
-        The location of the legend. Valid options include 'upper right', 
-        'upper left', etc. See the 'matplotlib.pyplot.legend' method for 
-        the complete list of options.
+        Legend location specified as in matplotlib.pyplot.legend.
     csv_file : str, optional
         The path to the csv file.
     sort_by_names : bool
@@ -332,6 +330,8 @@ def beta_2d_plot(ordination, metadata, hue=None, size=None, style=None, s=80, al
     """
     This method creates a 2D beta diversity plot.
 
+    Under the hood, this method uses the seaborn.scatterplot method.
+
     Parameters
     ----------
     ordination : str
@@ -353,12 +353,10 @@ def beta_2d_plot(ordination, metadata, hue=None, size=None, style=None, s=80, al
         Axes object to draw the plot onto, otherwise uses the current Axes.
     figsize : tuple of float, optional
         Width, height in inches.
-    legend_short : bool
-        If true, only display the smallest taxa rank in the legend.
+    show_legend : bool, default: False
+        Show the legend.
     legend_loc : str
-        The location of the legend. Valid options include 'upper right', 
-        'upper left', etc. See the 'matplotlib.pyplot.legend' method for 
-        the complete list of options.
+        Legend location specified as in matplotlib.pyplot.legend.
     """
     t = TemporaryDirectory()
     Artifact.load(ordination).export_data(t.name)
@@ -429,12 +427,10 @@ def beta_3d_plot(ordination, metadata, where, azim=-60, elev=30, s=80,
         Width, height in inches.
     ax : matplotlib Axes, optional
         Axes object to draw the plot onto, otherwise uses the current Axes.
-    legend_short : bool
-        If true, only display the smallest taxa rank in the legend.
+    show_legend : bool, default: False
+        Show the legend.
     legend_loc : str
-        The location of the legend. Valid options include 'upper right', 
-        'upper left', etc. See the 'matplotlib.pyplot.legend' method for 
-        the complete list of options.
+        Legend location specified as in matplotlib.pyplot.legend.
     """
 
     t = TemporaryDirectory()
