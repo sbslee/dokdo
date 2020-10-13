@@ -135,11 +135,6 @@ def alpha_rarefaction_plot(rarefaction, where, metric='shannon',
         Width, height in inches.
     ax : matplotlib Axes, optional
         Axes object to draw the plot onto, otherwise uses the current Axes.
-
-    Example
-    -------
-    api.alpha_rarefaction_plot('alpha-rarefaction.qzv', 'Site', 
-                               metric='observed_features')
     """
     t = TemporaryDirectory()
     Visualization.load(rarefaction).export_data(t.name)
