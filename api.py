@@ -327,7 +327,7 @@ def taxa_abundance_plot(taxa, level=1, by=[], figsize=None, ax=None,
 
 
 
-def beta_2d_plot(ordination, metadata, where, s=80,
+def beta_2d_plot(ordination, metadata, where=None, s=80,
                  ax=None, figsize=None, show_legend=False, legend_loc='best'):
     """
     This method creates a 2D beta diversity plot.
@@ -339,8 +339,8 @@ def beta_2d_plot(ordination, metadata, where, s=80,
         bray_curtis_pcoa_results.qza).
     metadata : str
         Path to the sample-metadata.tsv file.
-    where : str
-        Column name of the sample metadata.
+    where : str, optional
+        The column name to be used for coloring the markers.
     s : int, default: 80
         Marker size.
     ax : matplotlib Axes, optional
@@ -384,7 +384,9 @@ def beta_2d_plot(ordination, metadata, where, s=80,
     ax.set_ylabel(f'Axis 2 ({explained_variances[1]} %)')
 
     # Control the legend.
-    if show_legend:
+    if not where:
+        pass
+    elif show_legend:
         ax.legend(loc=legend_loc)
     else:
         ax.get_legend().remove()
