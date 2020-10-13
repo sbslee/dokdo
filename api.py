@@ -535,11 +535,6 @@ def denoising_stats_plot(stats, metadata, where, figsize=None, ax=None):
         Width, height in inches.
     ax : matplotlib Axes, optional
         Axes object to draw the plot onto, otherwise uses the current Axes.
-
-    Example
-    -------
-    api.denoising_stats_plot("denoising-stats.qza", "sample-metadata.tsv",
-                             "Site")
     """
     t = TemporaryDirectory()
     Artifact.load(stats).export_data(t.name)
