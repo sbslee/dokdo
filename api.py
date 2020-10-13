@@ -337,8 +337,8 @@ def beta_2d_plot(ordination, metadata, hue=None, size=None, style=None, s=80,
     ordination : str
         Path to the artifact file from ordination (e.g. 
         bray_curtis_pcoa_results.qza).
-    metadata : str
-        Path to the sample-metadata.tsv file.
+    metadata : str or DataFrame
+        Path to the sample-metadata.tsv file or DataFrame.
     hue : str, optional
         Grouping variable that will produce points with different colors.
     size : str, optional
@@ -366,8 +366,12 @@ def beta_2d_plot(ordination, metadata, hue=None, size=None, style=None, s=80,
                         skipfooter=4, engine='python', usecols=[0, 1, 2])
     df1.columns = ['A1', 'A2']
 
-
-    df2 = Metadata.load(metadata).to_dataframe()
+    if isinstance(metadata, str):
+        df2 = Metadata.load(metadata).to_dataframe()
+    elif isinstance(metadata, pd.DataFrame):
+        df2 = metadata
+    else:
+        raise TypeError("Incorrect type of metadata detected")
 
     df3 = pd.concat([df1, df2], axis=1, join='inner')
 
