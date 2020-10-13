@@ -327,7 +327,7 @@ def taxa_abundance_plot(taxa, level=1, by=[], figsize=None, ax=None,
 
 
 
-def beta_2d_plot(ordination, metadata, hue=None, size=None, style=None, s=80,
+def beta_2d_plot(ordination, metadata, hue=None, size=None, style=None, s=80, alpha=None,
                  ax=None, figsize=None, show_legend=False, legend_loc='best'):
     """
     This method creates a 2D beta diversity plot.
@@ -347,6 +347,8 @@ def beta_2d_plot(ordination, metadata, hue=None, size=None, style=None, s=80,
         Grouping variable that will produce points with different markers.
     s : int, default: 80
         Marker size.
+    alpha : float, optional
+        Proportional opacity of the points.
     ax : matplotlib Axes, optional
         Axes object to draw the plot onto, otherwise uses the current Axes.
     figsize : tuple of float, optional
@@ -384,7 +386,7 @@ def beta_2d_plot(ordination, metadata, hue=None, size=None, style=None, s=80,
         fig, ax = plt.subplots(figsize=figsize)
 
 
-    sns.scatterplot(data=df3, x='A1', y='A2', hue=hue, style=style, size=size, ax=ax, s=s)
+    sns.scatterplot(data=df3, x='A1', y='A2', hue=hue, style=style, size=size, ax=ax, s=s, alpha=alpha)
 
     ax.set_xticks([])
     ax.set_yticks([])
