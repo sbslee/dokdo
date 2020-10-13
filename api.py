@@ -327,7 +327,7 @@ def taxa_abundance_plot(taxa, level=1, by=[], figsize=None, ax=None,
 
 
 
-def beta_2d_plot(ordination, metadata, where=None, s=80,
+def beta_2d_plot(ordination, metadata, hue=None, size=None, style=None, s=80,
                  ax=None, figsize=None, show_legend=False, legend_loc='best'):
     """
     This method creates a 2D beta diversity plot.
@@ -339,8 +339,12 @@ def beta_2d_plot(ordination, metadata, where=None, s=80,
         bray_curtis_pcoa_results.qza).
     metadata : str
         Path to the sample-metadata.tsv file.
-    where : str, optional
-        The column name to be used for coloring the markers.
+    hue : str, optional
+        Grouping variable that will produce points with different colors.
+    size : str, optional
+        Grouping variable that will produce points with different sizes.
+    style : str, optional
+        Grouping variable that will produce points with different markers.
     s : int, default: 80
         Marker size.
     ax : matplotlib Axes, optional
@@ -376,7 +380,7 @@ def beta_2d_plot(ordination, metadata, where=None, s=80,
         fig, ax = plt.subplots(figsize=figsize)
 
 
-    sns.scatterplot(data=df3, x='A1', y='A2', hue=where, ax=ax, s=s)
+    sns.scatterplot(data=df3, x='A1', y='A2', hue=hue, style=style, size=size, ax=ax, s=s)
 
     ax.set_xticks([])
     ax.set_yticks([])
@@ -384,7 +388,7 @@ def beta_2d_plot(ordination, metadata, where=None, s=80,
     ax.set_ylabel(f'Axis 2 ({explained_variances[1]} %)')
 
     # Control the legend.
-    if not where:
+    if not hue and not size and not style:
         pass
     elif show_legend:
         ax.legend(loc=legend_loc)
