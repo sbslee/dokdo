@@ -56,10 +56,6 @@ def alpha_diversity_plot(significance, where, figsize=None, ax=None):
         Width, height in inches.
     ax : matplotlib Axes, optional
         Axes object to draw the plot onto, otherwise uses the current Axes.
-
-    Example
-    -------
-    api.alpha_diversity_plot('shannon_group-significance.qzv', 'Site')
     """
     t = TemporaryDirectory()
     Visualization.load(significance).export_data(t.name)
