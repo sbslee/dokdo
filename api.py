@@ -485,10 +485,6 @@ def distance_matrix_plot(distance_matrix, bins=100, pairs={}, figsize=None,
         Width, height in inches.
     ax : matplotlib Axes, optional
         Axes object to draw the plot onto, otherwise uses the current Axes.
-
-    Example
-    -------
-    api.distance_matrix_plot('distance_matrix.qza')
     """
     t = TemporaryDirectory()
     Artifact.load(distance_matrix).export_data(t.name)
