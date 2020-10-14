@@ -83,10 +83,6 @@ def read_quality_plot(demux, strand='forward', figsize=None, ax=None):
         Width, height in inches.
     ax : matplotlib Axes, optional
         Axes object to draw the plot onto, otherwise uses the current Axes.
-
-    Example
-    -------
-    api.read_quality_plot('demux.qzv', 'reverse')
     """
     t = TemporaryDirectory()
     Visualization.load(demux).export_data(t.name)
@@ -329,8 +325,6 @@ def beta_2d_plot(ordination, metadata, hue=None, size=None, style=None, s=80, al
                  ax=None, figsize=None, show_legend=False, legend_loc='best'):
     """
     This method creates a 2D beta diversity plot.
-
-    Under the hood, this method uses the seaborn.scatterplot method.
 
     Parameters
     ----------
