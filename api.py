@@ -25,10 +25,6 @@ def ancom_volcano_plot(ancom, figsize=None, ax=None):
         Width, height in inches.
     ax : matplotlib Axes, optional
         Axes object to draw the plot onto, otherwise uses the current Axes.
-
-    Example
-    -------
-    api.ancom_volcano_plot('ancom-Site.qzv')
     """
     t = TemporaryDirectory()
     Visualization.load(ancom).export_data(t.name)
