@@ -108,8 +108,11 @@ def read_quality_plot(demux, strand='forward', figsize=None, ax=None):
 
 
 
-def alpha_rarefaction_plot(rarefaction, where, metric='shannon',
-                           figsize=None, ax=None):
+
+
+
+def alpha_rarefaction_plot(rarefaction, hue='sample-id', metric='shannon',
+                           ax=None, figsize=None, show_legend=False, legend_loc='best'):
     """
     This method creates an alpha rarefaction plot.
 
@@ -118,15 +121,19 @@ def alpha_rarefaction_plot(rarefaction, where, metric='shannon',
     rarefaction : str
         Path to the visualization file from the 'qiime diversity 
         alpha-rarefaction' command.
-    where : str
-        Column name of the sample metadata.
+    hue : str, default: 'sample-id'
+        Grouping variable that will produce lines with different colors.
     metric : str, default: 'shannon'
         Desired diversity metric to be displayed (either 'observed_features', 
         'faith_pd' or 'shannon').
-    figsize : tuple of float, optional
-        Width, height in inches.
     ax : matplotlib Axes, optional
         Axes object to draw the plot onto, otherwise uses the current Axes.
+    figsize : tuple of float, optional
+        Width, height in inches.
+    show_legend : bool, default: False
+        Show the legend.
+    legend_loc : str
+        Legend location specified as in matplotlib.pyplot.legend.
     """
     t = TemporaryDirectory()
     Visualization.load(rarefaction).export_data(t.name)
@@ -138,7 +145,7 @@ def alpha_rarefaction_plot(rarefaction, where, metric='shannon',
     df = pd.read_csv(f'{t.name}/{metric}.csv', index_col=0)
     cols = [x for x in df.columns if 'iter' not in x]
     mean = df[cols]
-    data = pd.DataFrame(columns=cols)
+    df2 = pd.DataFrame(columns=cols)
     depths = [col.split('_')[0] for col in df.columns if 'depth' in col]
     df = df.drop(cols, axis=1)
     df.columns = depths
@@ -146,16 +153,28 @@ def alpha_rarefaction_plot(rarefaction, where, metric='shannon',
     for depth in depths:
         mean['ASV'] = df[depth].mean(axis=1)
         mean['depth']= depth.split('-')[-1]
-        data = pd.concat([data, mean], sort=True)
+        df2 = pd.concat([df2, mean], sort=True)
 
     if ax is None:
         fig, ax = plt.subplots(figsize=figsize)
 
-    sns.lineplot(x='depth', y='ASV', data=data, hue=where, ax=ax,
+    df2['sample-id'] = df2.index
+
+    sns.lineplot(x='depth', y='ASV', data=df2, hue=hue, ax=ax,
                  err_style='bars', sort=False)
 
     ax.set_xlabel('Sequencing depth')
     ax.set_ylabel(metric)
+
+    # Control the legend.
+    if not hue:
+        pass
+    elif show_legend:
+        ax.legend(loc=legend_loc)
+    else:
+        ax.get_legend().remove()
+
+
 
 
 
