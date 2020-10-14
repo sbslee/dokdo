@@ -461,7 +461,7 @@ def beta_3d_plot(ordination, metadata, where, azim=-60, elev=30, s=80,
 
 
 
-def distance_matrix_plot(distance_matrix, bins=100, pairs={}, figsize=None, 
+def distance_matrix_plot(distance_matrix, bins=100, pairs=None, figsize=None, 
                          ax=None):
     """
     This method creates a histogram from a distance matrix.
@@ -474,9 +474,8 @@ def distance_matrix_plot(distance_matrix, bins=100, pairs={}, figsize=None,
          jaccard' command.
     bins : int, optional
         Number of bins to be displayed.
-    pairs : dict of str to list of str, optional
-        Dictionary of sample pairs to be shown in red vertical lines. Keys 
-        do not matter, but values have to be a list of two sample IDs.
+    pairs : list, optional
+        List of sample pairs to be shown in red vertical lines.
     figsize : tuple of float, optional
         Width, height in inches.
     ax : matplotlib Axes, optional
@@ -503,8 +502,8 @@ def distance_matrix_plot(distance_matrix, bins=100, pairs={}, figsize=None,
     if pairs:
         idx = []
 
-        for pairid, l in pairs.items():
-            i = square_to_condensed(dist.index(l[0]), dist.index(l[1]), len(dist.ids))
+        for pair in pairs:
+            i = square_to_condensed(dist.index(pair[0]), dist.index(pair[1]), len(dist.ids))
             idx.append(cdist[i])
 
         for i in idx:
