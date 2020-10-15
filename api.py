@@ -124,7 +124,8 @@ def alpha_rarefaction_plot(rarefaction,
                            ax=None,
                            figsize=None,
                            show_legend=False,
-                           legend_loc='best'):
+                           legend_loc='best',
+                           legend_ncol=1):
     """
     This method creates an alpha rarefaction plot.
 
@@ -145,6 +146,8 @@ def alpha_rarefaction_plot(rarefaction,
         Show the legend.
     legend_loc : str, default: 'best'
         Legend location specified as in matplotlib.pyplot.legend.
+    legend_ncol : int, default: 1
+        The number of columns that the legend has.
     """
     t = TemporaryDirectory()
     Visualization.load(rarefaction).export_data(t.name)
@@ -180,7 +183,7 @@ def alpha_rarefaction_plot(rarefaction,
     if not hue:
         pass
     elif show_legend:
-        ax.legend(loc=legend_loc)
+        ax.legend(loc=legend_loc, ncol=legend_ncol)
     else:
         ax.get_legend().remove()
 
