@@ -198,16 +198,32 @@ def alpha_rarefaction_plot(rarefaction,
 
 
 
-def taxa_abundance_plot(taxa, level=1, by=[], figsize=None, ax=None, 
-                        width=0.8, count=0,
-                        exclude_samples={}, exclude_taxa=[],
+
+
+
+
+
+
+
+
+
+def taxa_abundance_plot(taxa,
+                        level=1,
+                        by=[],
+                        ax=None,
+                        figsize=None,
+                        width=0.8,
+                        count=0,
+                        exclude_samples={},
+                        exclude_taxa=[],
                         show_legend=False,
                         legend_short=False,
-                        legend_loc='best', csv_file=None,
+                        legend_loc='best',
                         sort_by_names=False,
                         colors=[],
                         hide_labels=False,
-                        label_columns=[]):
+                        label_columns=[],
+                        orders={}):
     """
     This method creates a taxa abundance plot.
 
@@ -222,10 +238,10 @@ def taxa_abundance_plot(taxa, level=1, by=[], figsize=None, ax=None,
         sort the samples by their name, in addition to other column name(s) 
         that may have been provided. If multiple items are provided, sorting 
         will occur by the order of the items.
-    figsize : tuple of float, optional
-        Width, height in inches.
     ax : matplotlib Axes, optional
         Axes object to draw the plot onto, otherwise uses the current Axes.
+    figsize : tuple of float, optional
+        Width, height in inches.
     width : float
         The width of the bars.
     count : int, default: 0
@@ -241,8 +257,6 @@ def taxa_abundance_plot(taxa, level=1, by=[], figsize=None, ax=None,
         If true, only display the smallest taxa rank in the legend.
     legend_loc : str, default: 'best'
         Legend location specified as in matplotlib.pyplot.legend.
-    csv_file : str, optional
-        The path to the csv file.
     sort_by_names : bool
         If true, sort the columns (i.e. species) to be displayed by name.
     colors : list
@@ -251,14 +265,44 @@ def taxa_abundance_plot(taxa, level=1, by=[], figsize=None, ax=None,
         Hide all the x-axis labels.
     label_columns : list
         The column names to be used as the x-axis labels.
+    orders : dict
+        Dictionary of {column1: [element1, element2, ...], column2: 
+        [element1, element2...], ...} to indicate the order of items. Used to 
+        sort the sampels by the user-specified order instead of ordering 
+        numerically or alphabetically.
     """
     t = TemporaryDirectory()
     Visualization.load(taxa).export_data(t.name)
     df = pd.read_csv(f'{t.name}/level-{level}.csv', index_col=0)
 
+    # If provided, sort the samples by the user-specified order instead of 
+    # ordering numerically or alphabetically. To do this, we will first add a 
+    # new temporary column filled with the indicies of the user-provided 
+    # list. This column will be used for sorting the samples later instead of 
+    # the original column. After sorting, the new column will be dropped from 
+    # the dataframe and the original column will replace its place.
+    for k, v in orders.items():
+        u = df[k].unique().tolist()
+
+        if set(u) != set(v):
+            message = (f"Target values {u} not matched with user-provided "
+                       f"values {v} for metadata column `{k}`")
+            raise ValueError(message)
+
+        l = [x for x in range(len(v))]
+        d = dict(zip(v, l))
+        df.rename(columns={k: f'@{k}'}, inplace=True)
+        df[k] = df[f'@{k}'].map(d)
+
     # If provided, sort the samples for display in the x-axis.
     if by:
         df = df.sort_values(by=by)
+
+    # If sorting was performed by the user-specified order, remove the 
+    # temporary columns and then bring back the original column.
+    for k in orders:
+        df.drop(columns=[k], inplace=True)
+        df.rename(columns={f'@{k}': k}, inplace=True)
 
     # If provided, exclude the specified samples.
     if exclude_samples:
@@ -327,7 +371,12 @@ def taxa_abundance_plot(taxa, level=1, by=[], figsize=None, ax=None,
         c = plt.cm.get_cmap('Accent').colors
 
 
-    df.plot.bar(stacked=True, legend=False, ax=ax, width=width, color=c)
+    df.plot.bar(stacked=True,
+                legend=False,
+                ax=ax,
+                width=width,
+                color=c)
+
 
     ax.set_xlabel('')
     ax.set_ylabel('Relative frequency')
@@ -349,8 +398,17 @@ def taxa_abundance_plot(taxa, level=1, by=[], figsize=None, ax=None,
         ax.legend(loc=legend_loc)
 
 
-    if csv_file:
-        df.to_csv(csv_file)
+
+
+
+
+
+
+
+
+
+
+
 
 
 
