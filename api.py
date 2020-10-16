@@ -332,6 +332,7 @@ def taxa_abundance_plot(taxa,
             dropped.append(column)
 
     mf = df[dropped]
+    mf['sample-id'] = mf.index
     df = df.drop(columns=dropped)
 
 
