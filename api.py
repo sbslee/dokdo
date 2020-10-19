@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import skbio as sb
 
+import qiime2
 from qiime2 import Artifact
 from qiime2 import Metadata
 from qiime2 import Visualization
@@ -131,9 +132,8 @@ def alpha_rarefaction_plot(rarefaction,
 
     Parameters
     ----------
-    rarefaction : str
-        Path to the visualization file from the 'qiime diversity 
-        alpha-rarefaction' command.
+    rarefaction : str or qiime2.sdk.results.Results
+        Visualization file or result object from alpha rarefaction.
     hue : str, default: 'sample-id'
         Grouping variable that will produce lines with different colors.
     metric : str, default: 'shannon'
@@ -150,6 +150,12 @@ def alpha_rarefaction_plot(rarefaction,
         The number of columns that the legend has.
     """
     t = TemporaryDirectory()
+
+    if isinstance(rarefaction, qiime2.sdk.results.Results):
+        fn = f'{t.name}/alpha-rarefaction.qzv'
+        rarefaction.visualization.save(fn)
+        rarefaction = fn
+
     Visualization.load(rarefaction).export_data(t.name)
 
     l = ['observed_features', 'faith_pd', 'shannon']
