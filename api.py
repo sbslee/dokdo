@@ -24,7 +24,7 @@ def ancom_volcano_plot(ancom, figsize=None, ax=None):
         command.
     figsize : tuple of float, optional
         Width, height in inches.
-    ax : matplotlib Axes, optional
+    ax : matplotlib.axes.Axes, optional
         Axes object to draw the plot onto, otherwise uses the current Axes.
     """
     t = TemporaryDirectory()
@@ -51,7 +51,7 @@ def alpha_diversity_plot(significance, where, figsize=None, ax=None):
         Column name to be used for the x-axis.
     figsize : tuple of float, optional
         Width, height in inches.
-    ax : matplotlib Axes, optional
+    ax : matplotlib.axes.Axes, optional
         Axes object to draw the plot onto, otherwise uses the current Axes.
     """
     t = TemporaryDirectory()
@@ -78,7 +78,7 @@ def read_quality_plot(demux, strand='forward', figsize=None, ax=None):
         Read strand to be displayed (either 'forward' or 'reverse').
     figsize : tuple of float, optional
         Width, height in inches.
-    ax : matplotlib Axes, optional
+    ax : matplotlib.axes.Axes, optional
         Axes object to draw the plot onto, otherwise uses the current Axes.
     """
     t = TemporaryDirectory()
@@ -138,7 +138,7 @@ def alpha_rarefaction_plot(rarefaction,
         Grouping variable that will produce lines with different colors.
     metric : str, default: 'shannon'
         Diversity metric ('shannon', 'observed_features', or 'faith_pd').
-    ax : matplotlib Axes, optional
+    ax : matplotlib.axes.Axes, optional
         Axes object to draw the plot onto, otherwise uses the current Axes.
     figsize : tuple of float, optional
         Width, height in inches.
@@ -244,7 +244,7 @@ def taxa_abundance_plot(taxa,
         sort the samples by their name, in addition to other column name(s) 
         that may have been provided. If multiple items are provided, sorting 
         will occur by the order of the items.
-    ax : matplotlib Axes, optional
+    ax : matplotlib.axes.Axes, optional
         Axes object to draw the plot onto, otherwise uses the current Axes.
     figsize : tuple of float, optional
         Width, height in inches.
@@ -439,7 +439,7 @@ def beta_2d_plot(ordination,
     ----------
     ordination : str or qiime2.sdk.results.Results
         Artifact file or Results object from ordination.
-    metadata : str, pd.DataFrame, or qiime2.metadata.metadata.Metadata
+    metadata : str, pandas.DataFrame, or qiime2.metadata.metadata.Metadata
         Metadata file, DataFrame object, or Metadata object.
     hue : str, optional
         Grouping variable that will produce points with different colors.
@@ -451,7 +451,7 @@ def beta_2d_plot(ordination,
         Marker size.
     alpha : float, optional
         Proportional opacity of the points.
-    ax : matplotlib Axes, optional
+    ax : matplotlib.axes.Axes, optional
         Axes object to draw the plot onto, otherwise uses the current Axes.
     figsize : tuple of float, optional
         Width, height in inches.
@@ -513,8 +513,26 @@ def beta_2d_plot(ordination,
 
 
 
-def beta_3d_plot(ordination, metadata, where, azim=-60, elev=30, s=80, 
-                 figsize=None, ax=None, show_legend=False, legend_loc='best'):
+
+
+
+
+
+
+
+
+
+
+def beta_3d_plot(ordination,
+                 metadata,
+                 where,
+                 azim=-60,
+                 elev=30,
+                 s=80, 
+                 figsize=None,
+                 ax=None,
+                 show_legend=False,
+                 legend_loc='best'):
     """
     This method creates a 3D beta diversity plot.
 
@@ -535,7 +553,7 @@ def beta_3d_plot(ordination, metadata, where, azim=-60, elev=30, s=80,
         Marker size.
     figsize : tuple of float, optional
         Width, height in inches.
-    ax : matplotlib Axes, optional
+    ax : matplotlib.axes.Axes, optional
         Axes object to draw the plot onto, otherwise uses the current Axes.
     show_legend : bool, default: False
         Show the legend.
@@ -581,27 +599,54 @@ def beta_3d_plot(ordination, metadata, where, azim=-60, elev=30, s=80,
 
 
 
-def distance_matrix_plot(distance_matrix, bins=100, pairs=None, figsize=None, 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+def distance_matrix_plot(distance_matrix,
+                         bins=100,
+                         pairs=None,
+                         figsize=None, 
                          ax=None):
     """
     This method creates a histogram from a distance matrix.
 
     Parameters
     ----------
-    distance_matrix : str
-         Path to the artifact file from distance matrix computation. For 
-         example, it could be an artifact from the 'qiime diversity-lib 
-         jaccard' command.
+    distance_matrix : str or qiime2.sdk.results.Results
+         Artifact file or Results object from distance matrix computation.
     bins : int, optional
         Number of bins to be displayed.
     pairs : list, optional
         List of sample pairs to be shown in red vertical lines.
     figsize : tuple of float, optional
         Width, height in inches.
-    ax : matplotlib Axes, optional
+    ax : matplotlib.axes.Axes, optional
         Axes object to draw the plot onto, otherwise uses the current Axes.
     """
     t = TemporaryDirectory()
+
+    if isinstance(distance_matrix, qiime2.sdk.results.Results):
+        fn = f'{t.name}/distance-matrix.qza'
+        distance_matrix.distance_matrix.save(fn)
+        distance_matrix = fn
+
     Artifact.load(distance_matrix).export_data(t.name)
     df = pd.read_table(f'{t.name}/distance-matrix.tsv', index_col=0)
     dist = sb.stats.distance.DistanceMatrix(df, ids=df.columns)
@@ -631,6 +676,17 @@ def distance_matrix_plot(distance_matrix, bins=100, pairs=None, figsize=None,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
 def denoising_stats_plot(stats, metadata, where, figsize=None, ax=None):
     """
     This method creates a grouped box plot using denoising statistics from 
@@ -646,7 +702,7 @@ def denoising_stats_plot(stats, metadata, where, figsize=None, ax=None):
         Column name of the sample metadata.
     figsize : tuple of float, optional
         Width, height in inches.
-    ax : matplotlib Axes, optional
+    ax : matplotlib.axes.Axes, optional
         Axes object to draw the plot onto, otherwise uses the current Axes.
     """
     t = TemporaryDirectory()
@@ -693,7 +749,7 @@ def paired_abundance_plot(taxa, x, y, hue, level=1, by=[],
     exclude_samples : dict of str to list of str
         Dictionary of column name(s) to list(s) of column value(s) to use to 
         exclude samples.
-    ax : matplotlib Axes, optional
+    ax : matplotlib.axes.Axes, optional
         Axes object to draw the plot onto, otherwise uses the current Axes.
     figsize : tuple of float, optional
         Width, height in inches.
