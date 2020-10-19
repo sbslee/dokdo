@@ -132,8 +132,8 @@ def alpha_rarefaction_plot(rarefaction,
 
     Parameters
     ----------
-    rarefaction : str or qiime2.sdk.results.Results
-        Visualization file or Results object from alpha rarefaction.
+    rarefaction : str or qiime2.sdk.result.Visualization
+        Visualization file or object from alpha rarefaction.
     hue : str, default: 'sample-id'
         Grouping variable that will produce lines with different colors.
     metric : str, default: 'shannon'
@@ -151,9 +151,9 @@ def alpha_rarefaction_plot(rarefaction,
     """
     t = TemporaryDirectory()
 
-    if isinstance(rarefaction, qiime2.sdk.results.Results):
+    if isinstance(rarefaction, qiime2.sdk.result.Visualization):
         fn = f'{t.name}/alpha-rarefaction.qzv'
-        rarefaction.visualization.save(fn)
+        rarefaction.save(fn)
         rarefaction = fn
 
     Visualization.load(rarefaction).export_data(t.name)
@@ -437,8 +437,8 @@ def beta_2d_plot(ordination,
 
     Parameters
     ----------
-    ordination : str or qiime2.sdk.results.Results
-        Artifact file or Results object from ordination.
+    ordination : str or qiime2.sdk.result.Artifact
+        Artifact file or object from ordination.
     metadata : str, pandas.DataFrame, or qiime2.metadata.metadata.Metadata
         Metadata file, DataFrame object, or Metadata object.
     hue : str, optional
@@ -462,9 +462,9 @@ def beta_2d_plot(ordination,
     """
     t = TemporaryDirectory()
 
-    if isinstance(ordination, qiime2.sdk.results.Results):
+    if isinstance(ordination, qiime2.sdk.result.Artifact):
         fn = f'{t.name}/ordination.qza'
-        ordination.pcoa.save(fn)
+        ordination.save(fn)
         ordination = fn
 
     Artifact.load(ordination).export_data(t.name)
@@ -629,8 +629,8 @@ def distance_matrix_plot(distance_matrix,
 
     Parameters
     ----------
-    distance_matrix : str or qiime2.sdk.results.Results
-         Artifact file or Results object from distance matrix computation.
+    distance_matrix : str or qiime2.sdk.result.Artifact
+         Artifact file or object from distance matrix computation.
     bins : int, optional
         Number of bins to be displayed.
     pairs : list, optional
@@ -642,9 +642,9 @@ def distance_matrix_plot(distance_matrix,
     """
     t = TemporaryDirectory()
 
-    if isinstance(distance_matrix, qiime2.sdk.results.Results):
+    if isinstance(distance_matrix, qiime2.sdk.result.Artifact):
         fn = f'{t.name}/distance-matrix.qza'
-        distance_matrix.distance_matrix.save(fn)
+        distance_matrix.save(fn)
         distance_matrix = fn
 
     Artifact.load(distance_matrix).export_data(t.name)
