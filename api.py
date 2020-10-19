@@ -133,7 +133,7 @@ def alpha_rarefaction_plot(rarefaction,
     Parameters
     ----------
     rarefaction : str or qiime2.sdk.results.Results
-        Visualization file or result object from alpha rarefaction.
+        Visualization file or Results object from alpha rarefaction.
     hue : str, default: 'sample-id'
         Grouping variable that will produce lines with different colors.
     metric : str, default: 'shannon'
@@ -421,18 +421,26 @@ def taxa_abundance_plot(taxa,
 
 
 
-def beta_2d_plot(ordination, metadata, hue=None, size=None, style=None, s=80, alpha=None,
-                 ax=None, figsize=None, show_legend=False, legend_loc='best'):
+def beta_2d_plot(ordination,
+                 metadata,
+                 hue=None,
+                 size=None,
+                 style=None,
+                 s=80,
+                 alpha=None,
+                 ax=None,
+                 figsize=None,
+                 show_legend=False,
+                 legend_loc='best'):
     """
     This method creates a 2D beta diversity plot.
 
     Parameters
     ----------
-    ordination : str
-        Path to the artifact file from ordination (e.g. 
-        bray_curtis_pcoa_results.qza).
-    metadata : str or DataFrame
-        Path to the sample-metadata.tsv file or DataFrame.
+    ordination : str or qiime2.sdk.results.Results
+        Artifact file or Results object from ordination.
+    metadata : str, pd.DataFrame, or qiime2.metadata.metadata.Metadata
+        Metadata file, DataFrame object, or Metadata object.
     hue : str, optional
         Grouping variable that will produce points with different colors.
     size : str, optional
@@ -453,6 +461,12 @@ def beta_2d_plot(ordination, metadata, hue=None, size=None, style=None, s=80, al
         Legend location specified as in matplotlib.pyplot.legend.
     """
     t = TemporaryDirectory()
+
+    if isinstance(ordination, qiime2.sdk.results.Results):
+        fn = f'{t.name}/ordination.qza'
+        ordination.pcoa.save(fn)
+        ordination = fn
+
     Artifact.load(ordination).export_data(t.name)
 
     df1 = pd.read_table(f'{t.name}/ordination.txt', header=None, index_col=0,
@@ -464,6 +478,8 @@ def beta_2d_plot(ordination, metadata, hue=None, size=None, style=None, s=80, al
         df2 = Metadata.load(metadata).to_dataframe()
     elif isinstance(metadata, pd.DataFrame):
         df2 = metadata
+    elif isinstance(metadata, qiime2.metadata.metadata.Metadata):
+        df2 = metadata.to_dataframe()
     else:
         raise TypeError("Incorrect type of metadata detected")
 
