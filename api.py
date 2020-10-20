@@ -227,7 +227,8 @@ def taxa_abundance_plot(taxa,
                         legend_loc='best',
                         sort_by_names=False,
                         colors=[],
-                        hide_labels=False,
+                        hide_xlabels=False,
+                        hide_ylabels=False,
                         label_columns=[],
                         orders={},
                         sample_names=[]):
@@ -268,8 +269,10 @@ def taxa_abundance_plot(taxa,
         If true, sort the columns (i.e. species) to be displayed by name.
     colors : list
         The bar colors.
-    hide_labels : bool, default: False
+    hide_xlabels : bool, default: False
         Hide all the x-axis labels.
+    hide_ylabels : bool, default: False
+        Hide all the y-axis labels.
     label_columns : list
         The column names to be used as the x-axis labels.
     orders : dict
@@ -396,7 +399,7 @@ def taxa_abundance_plot(taxa,
 
 
     # Control the x-axis labels.
-    if hide_labels:
+    if hide_xlabels:
         ax.set_xticks([])
     elif label_columns:
         f = lambda row: ' : '.join(row.values.astype(str))
@@ -405,6 +408,10 @@ def taxa_abundance_plot(taxa,
     else:
         pass
 
+    # Control the y-axis labels.
+    if hide_ylabels:
+        ax.set_ylabel('')
+        ax.set_yticks([])
 
     # Control the legend.
     if show_legend:
