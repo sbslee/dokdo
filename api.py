@@ -229,7 +229,8 @@ def taxa_abundance_plot(taxa,
                         colors=[],
                         hide_labels=False,
                         label_columns=[],
-                        orders={}):
+                        orders={},
+                        sample_names=[]):
     """
     This method creates a taxa abundance plot.
 
@@ -276,6 +277,8 @@ def taxa_abundance_plot(taxa,
         [element1, element2...], ...} to indicate the order of items. Used to 
         sort the sampels by the user-specified order instead of ordering 
         numerically or alphabetically.
+    sample_names : list
+        List of sample IDs to be included.
     """
     t = TemporaryDirectory()
     Visualization.load(taxa).export_data(t.name)
@@ -326,6 +329,9 @@ def taxa_abundance_plot(taxa,
         dropped = list(set(dropped))
         df = df.drop(columns=dropped)
 
+    # If provided, only include the specified samples.
+    if sample_names:
+        df = df.loc[sample_names]
 
     # Remove the metadata columns.
     dropped = []
