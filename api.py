@@ -439,8 +439,8 @@ def beta_2d_plot(ordination,
     ----------
     ordination : str or qiime2.sdk.result.Artifact
         Artifact file or object from ordination.
-    metadata : str, pandas.DataFrame, or qiime2.metadata.metadata.Metadata
-        Metadata file, DataFrame object, or Metadata object.
+    metadata : str or qiime2.metadata.metadata.Metadata
+        Metadata file or object.
     hue : str, optional
         Grouping variable that will produce points with different colors.
     size : str, optional
@@ -476,8 +476,6 @@ def beta_2d_plot(ordination,
 
     if isinstance(metadata, str):
         df2 = Metadata.load(metadata).to_dataframe()
-    elif isinstance(metadata, pd.DataFrame):
-        df2 = metadata
     elif isinstance(metadata, qiime2.metadata.metadata.Metadata):
         df2 = metadata.to_dataframe()
     else:
