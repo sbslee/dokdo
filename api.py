@@ -232,7 +232,8 @@ def taxa_abundance_bar_plot(taxa,
                             label_columns=[],
                             orders={},
                             sample_names=[],
-                            csv_file=None):
+                            csv_file=None,
+                            xlabels=None):
     """
     This method creates a taxa abundance plot.
 
@@ -285,6 +286,8 @@ def taxa_abundance_bar_plot(taxa,
         List of sample IDs to be included.
     csv_file : str
         Path of the .csv file to output the dataframe to.
+    xlabels : list, optional
+        List of the x-axis labels.
     """
     t = TemporaryDirectory()
     Visualization.load(taxa).export_data(t.name)
@@ -350,7 +353,7 @@ def taxa_abundance_bar_plot(taxa,
             dropped.append(column)
 
     mf = df[dropped]
-    mf['sample-id'] = mf.index
+    mf = mf.assign(**{'sample-id': mf.index})
     df = df.drop(columns=dropped)
 
 
@@ -424,7 +427,12 @@ def taxa_abundance_bar_plot(taxa,
     if csv_file is not None:
         df.to_csv(csv_file)
 
-
+    if xlabels is not None:
+        xtexts = [x.get_text() for x in ax.get_xticklabels()]
+        if len(xtexts) != len(xlabels):
+            m = f"Expected {len(xtexts)} items, but found {len(xlabels)}"
+            raise ValueError(m)
+        ax.set_xticklabels(xlabels)
 
 
 
@@ -464,7 +472,8 @@ def taxa_abundance_box_plot(taxa,
                             orders={},
                             sample_names=[],
                             csv_file=None,
-                            size=5):
+                            size=5,
+                            xlabels=None):
     """
     This method creates a taxa abundance box plot.
 
@@ -519,6 +528,8 @@ def taxa_abundance_box_plot(taxa,
         Path of the .csv file to output the dataframe to.
     size : float, default: 5.0
         Radius of the markers, in points.
+    xlabels : list, optional
+        List of the x-axis labels.
     """
     t = TemporaryDirectory()
     Visualization.load(taxa).export_data(t.name)
@@ -584,7 +595,7 @@ def taxa_abundance_box_plot(taxa,
             dropped.append(column)
 
     mf = df[dropped]
-    mf['sample-id'] = mf.index
+    mf = mf.assign(**{'sample-id': mf.index})
     df = df.drop(columns=dropped)
 
 
@@ -681,10 +692,12 @@ def taxa_abundance_box_plot(taxa,
         df.to_csv(csv_file)
 
 
-
-
-
-
+    if xlabels is not None:
+        xtexts = [x.get_text() for x in ax.get_xticklabels()]
+        if len(xtexts) != len(xlabels):
+            m = f"Expected {len(xtexts)} items, but found {len(xlabels)}"
+            raise ValueError(m)
+        ax.set_xticklabels(xlabels)
 
 
 
