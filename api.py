@@ -231,7 +231,8 @@ def taxa_abundance_plot(taxa,
                         hide_ylabels=False,
                         label_columns=[],
                         orders={},
-                        sample_names=[]):
+                        sample_names=[],
+                        csv_file=None):
     """
     This method creates a taxa abundance plot.
 
@@ -282,6 +283,8 @@ def taxa_abundance_plot(taxa,
         numerically or alphabetically.
     sample_names : list
         List of sample IDs to be included.
+    csv_file : str
+        Path of the .csv file to output the dataframe to.
     """
     t = TemporaryDirectory()
     Visualization.load(taxa).export_data(t.name)
@@ -417,6 +420,9 @@ def taxa_abundance_plot(taxa,
     if show_legend:
         ax.legend(loc=legend_loc)
 
+    # If provided, output the dataframe as a .csv file.
+    if csv_file is not None:
+        df.to_csv(csv_file)
 
 
 
