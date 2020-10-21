@@ -473,7 +473,8 @@ def taxa_abundance_box_plot(taxa,
                             sample_names=[],
                             csv_file=None,
                             size=5,
-                            xlabels=None):
+                            xlabels=None,
+                            log_scale=False):
     """
     This method creates a taxa abundance box plot.
 
@@ -530,6 +531,8 @@ def taxa_abundance_box_plot(taxa,
         Radius of the markers, in points.
     xlabels : list, optional
         List of the x-axis labels.
+    log_scale : bool, default: False
+        Draw the y-axis in log scale.
     """
     t = TemporaryDirectory()
     Visualization.load(taxa).export_data(t.name)
@@ -635,8 +638,11 @@ def taxa_abundance_box_plot(taxa,
         c = plt.cm.get_cmap('Accent').colors
 
     df2 = df * 100
-    df2.replace(0, 1, inplace=True)
     df2 = pd.melt(df2)
+
+    if log_scale:
+        ax.set_yscale('log')
+        df2['value'].replace(0, 1, inplace=True)
 
     meanprops={'marker':'x',
                'markerfacecolor':'red', 
@@ -657,9 +663,6 @@ def taxa_abundance_box_plot(taxa,
                   ax=ax,
                   color='black',
                   size=size)
-
-
-    ax.set_yscale('log')
 
     ax.set_xlabel('')
     ax.set_ylabel('Relative abundance (%)')
@@ -992,7 +995,32 @@ def distance_matrix_plot(distance_matrix,
 
 
 
-def denoising_stats_plot(stats, metadata, where, figsize=None, ax=None):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+def denoising_stats_plot(stats,
+                         metadata,
+                         where,
+                         ax=None,
+                         figsize=None,
+                         log_scale=False):
     """
     This method creates a grouped box plot using denoising statistics from 
     DADA2 (i.e. the 'qiime dada2 denoise-paired' command).
@@ -1005,10 +1033,12 @@ def denoising_stats_plot(stats, metadata, where, figsize=None, ax=None):
         Path to the sample-metadata.tsv file.
     where : str
         Column name of the sample metadata.
-    figsize : tuple of float, optional
-        Width, height in inches.
     ax : matplotlib.axes.Axes, optional
         Axes object to draw the plot onto, otherwise uses the current Axes.
+    figsize : tuple of float, optional
+        Width, height in inches.
+    log_scale : bool, default: False
+        Draw the y-axis in log scale.
     """
     t = TemporaryDirectory()
     Artifact.load(stats).export_data(t.name)
@@ -1023,7 +1053,36 @@ def denoising_stats_plot(stats, metadata, where, figsize=None, ax=None):
     df4 = pd.melt(df3[a], id_vars=[where])
     if ax is None:
         fig, ax = plt.subplots(figsize=figsize)
-    sns.boxplot(x=where, y='value', data=df4, hue='variable', ax=ax)
+
+    if log_scale:
+        df4['value'].replace(0, 1, inplace=True)
+        ax.set_yscale('log')
+
+    sns.boxplot(x=where,
+                y='value',
+                data=df4,
+                hue='variable',
+                ax=ax)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
