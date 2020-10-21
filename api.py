@@ -623,8 +623,9 @@ def taxa_abundance_box_plot(taxa,
     else:
         c = plt.cm.get_cmap('Accent').colors
 
-
-    df2 = pd.melt(df)
+    df2 = df * 100
+    df2.replace(0, 1, inplace=True)
+    df2 = pd.melt(df2)
 
     meanprops={'marker':'x',
                'markerfacecolor':'red', 
@@ -647,9 +648,14 @@ def taxa_abundance_box_plot(taxa,
                   size=size)
 
 
+    ax.set_yscale('log')
+
     ax.set_xlabel('')
-    ax.set_ylabel('Relative frequency')
+    ax.set_ylabel('Relative abundance (%)')
+    ax.set_ylim([1, 100])
     ax.tick_params(axis='x', labelrotation=90)
+
+
 
     # Control the x-axis labels.
     if hide_xlabels:
