@@ -213,26 +213,26 @@ def alpha_rarefaction_plot(rarefaction,
 
 
 
-def taxa_abundance_plot(taxa,
-                        level=1,
-                        by=[],
-                        ax=None,
-                        figsize=None,
-                        width=0.8,
-                        count=0,
-                        exclude_samples={},
-                        exclude_taxa=[],
-                        show_legend=False,
-                        legend_short=False,
-                        legend_loc='best',
-                        sort_by_names=False,
-                        colors=[],
-                        hide_xlabels=False,
-                        hide_ylabels=False,
-                        label_columns=[],
-                        orders={},
-                        sample_names=[],
-                        csv_file=None):
+def taxa_abundance_bar_plot(taxa,
+                            level=1,
+                            by=[],
+                            ax=None,
+                            figsize=None,
+                            width=0.8,
+                            count=0,
+                            exclude_samples={},
+                            exclude_taxa=[],
+                            show_legend=False,
+                            legend_short=False,
+                            legend_loc='best',
+                            sort_by_names=False,
+                            colors=[],
+                            hide_xlabels=False,
+                            hide_ylabels=False,
+                            label_columns=[],
+                            orders={},
+                            sample_names=[],
+                            csv_file=None):
     """
     This method creates a taxa abundance plot.
 
@@ -423,6 +423,275 @@ def taxa_abundance_plot(taxa,
     # If provided, output the dataframe as a .csv file.
     if csv_file is not None:
         df.to_csv(csv_file)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+def taxa_abundance_box_plot(taxa,
+                            level=1,
+                            by=[],
+                            ax=None,
+                            figsize=None,
+                            width=0.8,
+                            count=0,
+                            exclude_samples={},
+                            exclude_taxa=[],
+                            show_legend=False,
+                            legend_short=False,
+                            legend_loc='best',
+                            sort_by_names=False,
+                            colors=[],
+                            hide_xlabels=False,
+                            hide_ylabels=False,
+                            label_columns=[],
+                            orders={},
+                            sample_names=[],
+                            csv_file=None,
+                            size=5):
+    """
+    This method creates a taxa abundance box plot.
+
+    Parameters
+    ----------
+    taxa : str
+        Path to the visualization file from the 'qiime taxa barplot'.
+    level : int
+        Taxonomic level at which the features should be collapsed.
+    by : list of str
+        Column name(s) to be used for sorting the samples. Using 'index' will 
+        sort the samples by their name, in addition to other column name(s) 
+        that may have been provided. If multiple items are provided, sorting 
+        will occur by the order of the items.
+    ax : matplotlib.axes.Axes, optional
+        Axes object to draw the plot onto, otherwise uses the current Axes.
+    figsize : tuple of float, optional
+        Width, height in inches.
+    width : float
+        The width of the bars.
+    count : int, default: 0
+        The number of taxa to display. When 0, display all.
+    exclude_samples : dict
+        Dictionary of column name(s) to list(s) of column value(s) to use to 
+        exclude samples.
+    exclude_taxa : list
+        The taxa names to be excluded when matched. Case insenstivie.
+    show_legend : bool, default: False
+        Show the legend.
+    legend_short : bool
+        If true, only display the smallest taxa rank in the legend.
+    legend_loc : str, default: 'best'
+        Legend location specified as in matplotlib.pyplot.legend.
+    sort_by_names : bool
+        If true, sort the columns (i.e. species) to be displayed by name.
+    colors : list
+        The bar colors.
+    hide_xlabels : bool, default: False
+        Hide all the x-axis labels.
+    hide_ylabels : bool, default: False
+        Hide all the y-axis labels.
+    label_columns : list
+        The column names to be used as the x-axis labels.
+    orders : dict
+        Dictionary of {column1: [element1, element2, ...], column2: 
+        [element1, element2...], ...} to indicate the order of items. Used to 
+        sort the sampels by the user-specified order instead of ordering 
+        numerically or alphabetically.
+    sample_names : list
+        List of sample IDs to be included.
+    csv_file : str
+        Path of the .csv file to output the dataframe to.
+    size : float, default: 5.0
+        Radius of the markers, in points.
+    """
+    t = TemporaryDirectory()
+    Visualization.load(taxa).export_data(t.name)
+    df = pd.read_csv(f'{t.name}/level-{level}.csv', index_col=0)
+
+    # If provided, sort the samples by the user-specified order instead of 
+    # ordering numerically or alphabetically. To do this, we will first add a 
+    # new temporary column filled with the indicies of the user-provided 
+    # list. This column will be used for sorting the samples later instead of 
+    # the original column. After sorting, the new column will be dropped from 
+    # the dataframe and the original column will replace its place.
+    for k, v in orders.items():
+        u = df[k].unique().tolist()
+
+        if set(u) != set(v):
+            message = (f"Target values {u} not matched with user-provided "
+                       f"values {v} for metadata column `{k}`")
+            raise ValueError(message)
+
+        l = [x for x in range(len(v))]
+        d = dict(zip(v, l))
+        df.rename(columns={k: f'@{k}'}, inplace=True)
+        df[k] = df[f'@{k}'].map(d)
+
+    # If provided, sort the samples for display in the x-axis.
+    if by:
+        df = df.sort_values(by=by)
+
+    # If sorting was performed by the user-specified order, remove the 
+    # temporary columns and then bring back the original column.
+    for k in orders:
+        df.drop(columns=[k], inplace=True)
+        df.rename(columns={f'@{k}': k}, inplace=True)
+
+    # If provided, exclude the specified samples.
+    if exclude_samples:
+        for x in exclude_samples:
+            for y in exclude_samples[x]:
+                df = df[df[x] != y]
+
+    # If provided, exclude the specified taxa.
+    if exclude_taxa:
+        dropped = []
+        for tax in exclude_taxa:
+            for col in df.columns:
+                if tax.lower() in col.lower():
+                    dropped.append(col)
+        dropped = list(set(dropped))
+        df = df.drop(columns=dropped)
+
+    # If provided, only include the specified samples.
+    if sample_names:
+        df = df.loc[sample_names]
+
+    # Remove the metadata columns.
+    dropped = []
+    for column in df.columns:
+        if 'Unassigned' in column:
+            continue
+        elif '__' in column:
+            continue
+        else:
+            dropped.append(column)
+
+    mf = df[dropped]
+    mf['sample-id'] = mf.index
+    df = df.drop(columns=dropped)
+
+
+
+
+    # Convert counts to proportions.
+    df = df.div(df.sum(axis=1), axis=0)
+
+    # Sort the columns (i.e. species) by their mean abundance.
+    df = df.loc[:, df.mean().sort_values(ascending=False).index]
+
+    # If provided, collapse extra species to the Other column.
+    if count is not 0:
+        other = df.iloc[:, count-1:].sum(axis=1)
+        df = df.iloc[:, :count-1]
+        df['Other'] = other
+
+    if sort_by_names:
+        df = df.reindex(sorted(df.columns), axis=1)
+
+    if ax is None:
+        fig, ax = plt.subplots(figsize=figsize)
+
+    if show_legend and legend_short:
+        def f(s):
+            ranks = s.split(';')
+            for rank in reversed(ranks):
+                if rank != '__':
+                    x = rank
+                    break
+            return x
+        df.columns = [f(x) for x in df.columns]
+
+    if colors:
+        c = colors
+    else:
+        c = plt.cm.get_cmap('Accent').colors
+
+
+    df2 = pd.melt(df)
+
+    meanprops={'marker':'x',
+               'markerfacecolor':'red', 
+               'markeredgecolor':'red',
+               'markersize':'10'}
+
+    sns.boxplot(x='variable',
+                y='value',
+                data=df2,
+                color='white',
+                ax=ax,
+                showmeans=True,
+                meanprops=meanprops)
+
+    sns.swarmplot(x='variable',
+                  y='value',
+                  data=df2,
+                  ax=ax,
+                  color='black',
+                  size=size)
+
+
+    ax.set_xlabel('')
+    ax.set_ylabel('Relative frequency')
+    ax.tick_params(axis='x', labelrotation=90)
+
+    # Control the x-axis labels.
+    if hide_xlabels:
+        ax.set_xticks([])
+    elif label_columns:
+        f = lambda row: ' : '.join(row.values.astype(str))
+        new_labels = mf[label_columns].apply(f, axis=1)
+        ax.set_xticklabels(new_labels)
+    else:
+        pass
+
+    # Control the y-axis labels.
+    if hide_ylabels:
+        ax.set_ylabel('')
+        ax.set_yticks([])
+
+    # Control the legend.
+    if show_legend:
+        ax.legend(loc=legend_loc)
+
+    # If provided, output the dataframe as a .csv file.
+    if csv_file is not None:
+        df.to_csv(csv_file)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
