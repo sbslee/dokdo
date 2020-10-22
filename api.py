@@ -377,16 +377,6 @@ def taxa_abundance_bar_plot(taxa,
     if ax is None:
         fig, ax = plt.subplots(figsize=figsize)
 
-    if show_legend and legend_short:
-        def f(s):
-            ranks = s.split(';')
-            for rank in reversed(ranks):
-                if rank != '__':
-                    x = rank
-                    break
-            return x
-        df.columns = [f(x) for x in df.columns]
-
     if colors:
         c = colors
     else:
@@ -419,9 +409,26 @@ def taxa_abundance_bar_plot(taxa,
         ax.set_ylabel('')
         ax.set_yticks([])
 
+
+
     # Control the legend.
+    def f(s):
+        ranks = s.split(';')
+        for rank in reversed(ranks):
+            if rank != '__':
+                x = rank
+                break
+        return x
+
     if show_legend:
-        ax.legend(loc=legend_loc)
+        legend_labels = [x.get_text() for x in ax.legend().get_texts()]
+        if legend_short:
+            legend_labels = [f(x) for x in legend_labels]
+        ax.legend(labels=legend_labels, loc=legend_loc)
+
+
+
+
 
     # If provided, output the dataframe as a .csv file.
     if csv_file is not None:
