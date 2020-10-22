@@ -233,7 +233,8 @@ def taxa_abundance_bar_plot(taxa,
                             orders={},
                             sample_names=[],
                             csv_file=None,
-                            xlabels=None):
+                            xlabels=None,
+                            taxa_names=None):
     """
     This method creates a taxa abundance plot.
 
@@ -288,6 +289,8 @@ def taxa_abundance_bar_plot(taxa,
         Path of the .csv file to output the dataframe to.
     xlabels : list, optional
         List of the x-axis labels.
+    taxa_names : list, optional
+        List of taxa names to be displayed.
     """
     t = TemporaryDirectory()
     Visualization.load(taxa).export_data(t.name)
@@ -370,6 +373,19 @@ def taxa_abundance_bar_plot(taxa,
         other = df.iloc[:, count-1:].sum(axis=1)
         df = df.iloc[:, :count-1]
         df['Other'] = other
+
+
+
+
+
+    if taxa_names is not None:
+        other = df.drop(columns=taxa_names).sum(axis=1)
+        df = df[taxa_names]
+        df['Other'] = other
+
+
+
+
 
     if sort_by_names:
         df = df.reindex(sorted(df.columns), axis=1)
