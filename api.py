@@ -1020,7 +1020,8 @@ def denoising_stats_plot(stats,
                          where,
                          ax=None,
                          figsize=None,
-                         log_scale=False):
+                         log_scale=False,
+                         ylimits=None):
     """
     This method creates a grouped box plot using denoising statistics from 
     DADA2 (i.e. the 'qiime dada2 denoise-paired' command).
@@ -1064,6 +1065,8 @@ def denoising_stats_plot(stats,
                 hue='variable',
                 ax=ax)
 
+    if ylimits:
+        ax.set_ylim(ylimits)
 
 
 
