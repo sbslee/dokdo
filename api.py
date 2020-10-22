@@ -677,10 +677,6 @@ def taxa_abundance_box_plot(taxa,
     ax.set_xlabel('')
     ax.set_ylabel('Relative abundance (%)')
 
-    ax.tick_params(axis='x', labelrotation=90)
-
-
-
     # Control the x-axis labels.
     if hide_xlabels:
         ax.set_xticks([])
@@ -712,7 +708,8 @@ def taxa_abundance_box_plot(taxa,
             raise ValueError(m)
         ax.set_xticklabels(xlabels)
 
-
+    a = ax.get_xticklabels()
+    ax.set_xticklabels(a, rotation=45, ha='right')
 
 
 
