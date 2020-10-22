@@ -649,6 +649,9 @@ def taxa_abundance_box_plot(taxa,
     if log_scale:
         ax.set_yscale('log')
         df2['value'].replace(0, 1, inplace=True)
+        ax.set_ylim([1, 100])
+    else:
+        ax.set_ylim([0, 100])
 
     meanprops={'marker':'x',
                'markerfacecolor':'red', 
@@ -672,7 +675,7 @@ def taxa_abundance_box_plot(taxa,
 
     ax.set_xlabel('')
     ax.set_ylabel('Relative abundance (%)')
-    ax.set_ylim([1, 100])
+
     ax.tick_params(axis='x', labelrotation=90)
 
 
