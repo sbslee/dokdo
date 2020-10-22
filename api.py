@@ -584,6 +584,8 @@ def taxa_abundance_box_plot(taxa,
         Draw the y-axis in log scale.
     taxa_names : list, optional
         List of taxa names to be displayed.
+    ylimits : list, optional
+        Y-axis limits. Format: [float, float].
     """
     t = TemporaryDirectory()
     Visualization.load(taxa).export_data(t.name)
@@ -1094,6 +1096,8 @@ def denoising_stats_plot(stats,
         Width, height in inches. Format: (float, float).
     log_scale : bool, default: False
         Draw the y-axis in log scale.
+    ylimits : list, optional
+        Y-axis limits. Format: [float, float].
     """
     t = TemporaryDirectory()
     Artifact.load(stats).export_data(t.name)
