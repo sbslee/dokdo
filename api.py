@@ -475,7 +475,8 @@ def taxa_abundance_box_plot(taxa,
                             size=5,
                             xlabels=None,
                             log_scale=False,
-                            taxa_names=None):
+                            taxa_names=None,
+                            ylimits=None):
     """
     This method creates a taxa abundance box plot.
 
@@ -648,10 +649,10 @@ def taxa_abundance_box_plot(taxa,
 
     if log_scale:
         ax.set_yscale('log')
-        df2['value'].replace(0, 1, inplace=True)
-        ax.set_ylim([1, 100])
-    else:
-        ax.set_ylim([0, 100])
+        df2['value'] = df2['value'] + 1
+
+    if ylimits:
+        ax.set_ylim(ylimits)
 
     meanprops={'marker':'x',
                'markerfacecolor':'red', 
