@@ -13,7 +13,9 @@ from qiime2 import Visualization
 
 
 
-def ancom_volcano_plot(ancom, figsize=None, ax=None):
+def ancom_volcano_plot(ancom,
+                       ax=None,
+                       figsize=None):
     """
     This method creates an ANCOM volcano plot.
 
@@ -22,10 +24,10 @@ def ancom_volcano_plot(ancom, figsize=None, ax=None):
     ancom : str
         Path to the visualization file from the 'qiime composition ancom' 
         command.
-    figsize : tuple of float, optional
-        Width, height in inches.
     ax : matplotlib.axes.Axes, optional
         Axes object to draw the plot onto, otherwise uses the current Axes.
+    figsize : tuple, optional
+        Width, height in inches. Format: (float, float).
     """
     t = TemporaryDirectory()
     Visualization.load(ancom).export_data(t.name)
@@ -38,7 +40,20 @@ def ancom_volcano_plot(ancom, figsize=None, ax=None):
 
 
 
-def alpha_diversity_plot(significance, where, figsize=None, ax=None):
+
+
+
+
+
+
+
+
+
+
+def alpha_diversity_plot(significance,
+                         where,
+                         ax=None,
+                         figsize=None):
     """
     This method creates an alpha diversity plot.
 
@@ -49,10 +64,10 @@ def alpha_diversity_plot(significance, where, figsize=None, ax=None):
         alpha-group-significance' command.
     where : str
         Column name to be used for the x-axis.
-    figsize : tuple of float, optional
-        Width, height in inches.
     ax : matplotlib.axes.Axes, optional
         Axes object to draw the plot onto, otherwise uses the current Axes.
+    figsize : tuple, optional
+        Width, height in inches. Format: (float, float).
     """
     t = TemporaryDirectory()
     Visualization.load(significance).export_data(t.name)
@@ -65,7 +80,10 @@ def alpha_diversity_plot(significance, where, figsize=None, ax=None):
 
 
 
-def read_quality_plot(demux, strand='forward', figsize=None, ax=None):
+def read_quality_plot(demux,
+                      strand='forward',
+                      ax=None,
+                      figsize=None):
     """
     This method creates a read quality plot.
 
@@ -76,10 +94,10 @@ def read_quality_plot(demux, strand='forward', figsize=None, ax=None):
         command.
     strand : str, default: 'forward'
         Read strand to be displayed (either 'forward' or 'reverse').
-    figsize : tuple of float, optional
-        Width, height in inches.
     ax : matplotlib.axes.Axes, optional
         Axes object to draw the plot onto, otherwise uses the current Axes.
+    figsize : tuple, optional
+        Width, height in inches. Format: (float, float).
     """
     t = TemporaryDirectory()
     Visualization.load(demux).export_data(t.name)
@@ -119,6 +137,12 @@ def read_quality_plot(demux, strand='forward', figsize=None, ax=None):
 
 
 
+
+
+
+
+
+
 def alpha_rarefaction_plot(rarefaction,
                            hue='sample-id',
                            metric='shannon',
@@ -140,8 +164,8 @@ def alpha_rarefaction_plot(rarefaction,
         Diversity metric ('shannon', 'observed_features', or 'faith_pd').
     ax : matplotlib.axes.Axes, optional
         Axes object to draw the plot onto, otherwise uses the current Axes.
-    figsize : tuple of float, optional
-        Width, height in inches.
+    figsize : tuple, optional
+        Width, height in inches. Format: (float, float).
     show_legend : bool, default: False
         Show the legend.
     legend_loc : str, default: 'best'
@@ -251,8 +275,8 @@ def taxa_abundance_bar_plot(taxa,
         will occur by the order of the items.
     ax : matplotlib.axes.Axes, optional
         Axes object to draw the plot onto, otherwise uses the current Axes.
-    figsize : tuple of float, optional
-        Width, height in inches.
+    figsize : tuple, optional
+        Width, height in inches. Format: (float, float).
     width : float
         The width of the bars.
     count : int, default: 0
@@ -516,8 +540,8 @@ def taxa_abundance_box_plot(taxa,
         will occur by the order of the items.
     ax : matplotlib.axes.Axes, optional
         Axes object to draw the plot onto, otherwise uses the current Axes.
-    figsize : tuple of float, optional
-        Width, height in inches.
+    figsize : tuple, optional
+        Width, height in inches. Format: (float, float).
     width : float
         The width of the bars.
     count : int, default: 0
@@ -793,8 +817,8 @@ def beta_2d_plot(ordination,
         Proportional opacity of the points.
     ax : matplotlib.axes.Axes, optional
         Axes object to draw the plot onto, otherwise uses the current Axes.
-    figsize : tuple of float, optional
-        Width, height in inches.
+    figsize : tuple, optional
+        Width, height in inches. Format: (float, float).
     show_legend : bool, default: False
         Show the legend.
     legend_loc : str, default: 'best'
@@ -867,8 +891,8 @@ def beta_3d_plot(ordination,
                  azim=-60,
                  elev=30,
                  s=80, 
-                 figsize=None,
                  ax=None,
+                 figsize=None,
                  show_legend=False,
                  legend_loc='best'):
     """
@@ -889,10 +913,10 @@ def beta_3d_plot(ordination,
         Azimuthal viewing angle.
     s : int, default: 80
         Marker size.
-    figsize : tuple of float, optional
-        Width, height in inches.
     ax : matplotlib.axes.Axes, optional
         Axes object to draw the plot onto, otherwise uses the current Axes.
+    figsize : tuple, optional
+        Width, height in inches. Format: (float, float).
     show_legend : bool, default: False
         Show the legend.
     legend_loc : str, default: 'best'
@@ -960,8 +984,8 @@ def beta_3d_plot(ordination,
 def distance_matrix_plot(distance_matrix,
                          bins=100,
                          pairs=None,
-                         figsize=None, 
-                         ax=None):
+                         ax=None,
+                         figsize=None):
     """
     This method creates a histogram from a distance matrix.
 
@@ -973,10 +997,10 @@ def distance_matrix_plot(distance_matrix,
         Number of bins to be displayed.
     pairs : list, optional
         List of sample pairs to be shown in red vertical lines.
-    figsize : tuple of float, optional
-        Width, height in inches.
     ax : matplotlib.axes.Axes, optional
         Axes object to draw the plot onto, otherwise uses the current Axes.
+    figsize : tuple, optional
+        Width, height in inches. Format: (float, float).
     """
     t = TemporaryDirectory()
 
@@ -1066,8 +1090,8 @@ def denoising_stats_plot(stats,
         Column name of the sample metadata.
     ax : matplotlib.axes.Axes, optional
         Axes object to draw the plot onto, otherwise uses the current Axes.
-    figsize : tuple of float, optional
-        Width, height in inches.
+    figsize : tuple, optional
+        Width, height in inches. Format: (float, float).
     log_scale : bool, default: False
         Draw the y-axis in log scale.
     """
@@ -1119,83 +1143,6 @@ def denoising_stats_plot(stats,
 
 
 
-def paired_abundance_plot(taxa, x, y, hue, level=1, by=[],
-                          exclude_samples={}, ax=None, figsize=None):
-    """
-    This method creates a line plot showing relative frequency of a specific 
-    taxon for paired samples.
 
-    Parameters
-    ----------
-    taxa : str
-        Path to the visualization file from the 'qiime taxa barplot'.
-    x : str
-        The column to be used for the x-axis.
-    y : str
-        The column to be used for the y-axis (i.e. the taxon name).
-    hue : str
-        The column to be used for distinguishing the individual samples
-    level : int
-        Taxonomic level at which the features should be collapsed.
-        within a pair.
-    by : list of str
-        Column name(s) to be used for sorting the samples. Using 'index' will 
-        sort the samples by their name, in addition to other column name(s) 
-        that may have been provided. If multiple items are provided, sorting 
-        will occur by the order of the items.
-    exclude_samples : dict of str to list of str
-        Dictionary of column name(s) to list(s) of column value(s) to use to 
-        exclude samples.
-    ax : matplotlib.axes.Axes, optional
-        Axes object to draw the plot onto, otherwise uses the current Axes.
-    figsize : tuple of float, optional
-        Width, height in inches.
-    """
-    t = TemporaryDirectory()
-    Visualization.load(taxa).export_data(t.name)
-    df = pd.read_csv(f'{t.name}/level-{level}.csv', index_col=0)
-
-    # If provided, sort the samples for display in the x-axis.
-    if by:
-        df = df.sort_values(by=[hue] + by)
-
-    # Remove the metadata columns.
-    dropped = []
-    for column in df.columns:
-        if 'Unassigned' in column:
-            continue
-        elif '__' in column:
-            continue
-        else:
-            dropped.append(column)
-    mf = df[dropped]
-    df = df.drop(columns=dropped)
-
-    # Convert counts to proportions.
-    df = df.div(df.sum(axis=1), axis=0)
-    mf[y] = df[y]
-
-    # If provided, exclude the specified samples.
-    if exclude_samples:
-        for xx in exclude_samples:
-            for yy in exclude_samples[xx]:
-                mf = mf[mf[xx] != yy]
-
-    if ax is None:
-        fig, ax = plt.subplots(figsize=figsize)
-
-    mf.rename(columns={y: 'Y'}, inplace=True)
-    mf = mf[[x, 'Y', hue] + by]
-
-    if by:
-        temp = mf[by].apply(lambda row: ', '.join(row.values.astype(str)), axis=1)
-
-        mf[x] = mf[x] + ' (' + temp + ')'
-
-    sns.lineplot(data=mf, x=x, y='Y', hue=hue, marker='o', sort=False, ax=ax)
-    ax.tick_params(axis='x', labelrotation=90)
-
-    ax.set_xlabel('')
-    ax.set_ylabel('Relative frequency')
 
 
