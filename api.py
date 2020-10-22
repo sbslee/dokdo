@@ -474,7 +474,8 @@ def taxa_abundance_box_plot(taxa,
                             csv_file=None,
                             size=5,
                             xlabels=None,
-                            log_scale=False):
+                            log_scale=False,
+                            taxa_names=None):
     """
     This method creates a taxa abundance box plot.
 
@@ -533,6 +534,8 @@ def taxa_abundance_box_plot(taxa,
         List of the x-axis labels.
     log_scale : bool, default: False
         Draw the y-axis in log scale.
+    taxa_names : list, optional
+        List of taxa names to be displayed.
     """
     t = TemporaryDirectory()
     Visualization.load(taxa).export_data(t.name)
@@ -636,6 +639,9 @@ def taxa_abundance_box_plot(taxa,
         c = colors
     else:
         c = plt.cm.get_cmap('Accent').colors
+
+    if taxa_names is not None:
+        df = df[taxa_names]
 
     df2 = df * 100
     df2 = pd.melt(df2)
