@@ -53,7 +53,8 @@ def ancom_volcano_plot(ancom,
 def alpha_diversity_plot(significance,
                          where,
                          ax=None,
-                         figsize=None):
+                         figsize=None,
+                         add_swarmplot=False):
     """
     This method creates an alpha diversity plot.
 
@@ -68,6 +69,8 @@ def alpha_diversity_plot(significance,
         Axes object to draw the plot onto, otherwise uses the current Axes.
     figsize : tuple, optional
         Width, height in inches. Format: (float, float).
+    add_swarmplot : bool, default: False
+        Add a swarm plot on top of the box plot.
     """
     t = TemporaryDirectory()
     Visualization.load(significance).export_data(t.name)
@@ -75,8 +78,44 @@ def alpha_diversity_plot(significance,
     if ax is None:
         fig, ax = plt.subplots(figsize=figsize)
     metric = df.columns[-1]
+
     boxprops = dict(color='white', edgecolor='black')
-    sns.boxplot(x=where, y=metric, data=df, ax=ax, boxprops=boxprops)
+
+    print(df)
+
+    sns.boxplot(x=where,
+                y=metric,
+                data=df,
+                ax=ax,
+                boxprops=boxprops)
+
+    if add_swarmplot:
+        sns.swarmplot(x=where,
+                      y=metric,
+                      data=df,
+                      ax=ax)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
