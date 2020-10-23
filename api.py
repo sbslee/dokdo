@@ -1153,8 +1153,8 @@ def beta_3d_plot(ordination,
     ordination : str
         Path to the artifact file from ordination (e.g. 
         bray_curtis_pcoa_results.qza).
-    metadata : str
-        Path to the sample-metadata.tsv file.
+    metadata : str or qiime2.metadata.metadata.Metadata
+        Metadata file or object.
     where : str
         Column name of the sample metadata.
     azim : int, default: -60
@@ -1176,13 +1176,13 @@ def beta_3d_plot(ordination,
     t = TemporaryDirectory()
     Artifact.load(ordination).export_data(t.name)
 
-    df1 = pd.read_table(f'{t.name}/ordination.txt', header=None, index_col=0,
+    df = pd.read_table(f'{t.name}/ordination.txt', header=None, index_col=0,
                         skiprows=[0, 1, 2, 3, 4, 5, 6, 7, 8],
                         skipfooter=4, engine='python')
-    df1 = df1.sort_index()
+    df = df.sort_index()
 
-    df2 = Metadata.load(metadata).to_dataframe()
-    df2 = df2.sort_index()
+    mf = get_mf(metadata)
+    mf = mf.sort_index()
 
     f = open(f'{t.name}/ordination.txt')
     v = [round(float(x) * 100, 2) for x in f.readlines()[4].split('\t')]
@@ -1200,10 +1200,13 @@ def beta_3d_plot(ordination,
     ax.set_yticks([])
     ax.set_zticks([])
 
-    for c in sorted(df2[where].unique()):
-        i = df2[where] == c
-        ax.scatter(df1[i].iloc[:, 0], df1[i].iloc[:, 1],
-                   df1[i].iloc[:, 2], label=c, s=s)
+    for c in sorted(mf[where].unique()):
+        i = mf[where] == c
+        ax.scatter(df[i].iloc[:, 0],
+                   df[i].iloc[:, 1],
+                   df[i].iloc[:, 2],
+                   label=c,
+                   s=s)
 
     # Control the legend.
     if show_legend:
