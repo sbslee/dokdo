@@ -1112,7 +1112,9 @@ def denoising_stats_plot(stats,
                          ax=None,
                          figsize=None,
                          log_scale=False,
-                         ylimits=None):
+                         ylimits=None,
+                         order=None,
+                         hide_nsizes=False):
     """
     This method creates a grouped box plot using denoising statistics from 
     DADA2 (i.e. the 'qiime dada2 denoise-paired' command).
@@ -1133,18 +1135,20 @@ def denoising_stats_plot(stats,
         Draw the y-axis in log scale.
     ylimits : list, optional
         Y-axis limits. Format: [float, float].
+    order : list, optional
+        Order to plot the categorical levels in.
+    hide_nsizes : bool, default: False
+        Hide sample size from x-axis labels.
     """
     t = TemporaryDirectory()
     Artifact.load(stats).export_data(t.name)
     df1 = pd.read_table(f'{t.name}/stats.tsv', skiprows=[1], index_col=0)
     df2 = Metadata.load(metadata).to_dataframe()
     df3 = pd.concat([df1, df2], axis=1, join='inner')
-    dict = df3[where].value_counts().to_dict()
-    for k, v in dict.items():
-        dict[k] = f"{k} ({v})"
-    df3[where].replace(dict, inplace=True)
+
     a = ['input', 'filtered', 'denoised', 'merged', 'non-chimeric', where]
     df4 = pd.melt(df3[a], id_vars=[where])
+
     if ax is None:
         fig, ax = plt.subplots(figsize=figsize)
 
@@ -1156,7 +1160,14 @@ def denoising_stats_plot(stats,
                 y='value',
                 data=df4,
                 hue='variable',
-                ax=ax)
+                ax=ax,
+                order=order)
+
+    if hide_nsizes is False:
+        nsizes = df3[where].value_counts().to_dict()
+        xtexts = [x.get_text() for x in ax.get_xticklabels()]
+        xtexts = [f'{x} ({nsizes[x]})' for x in xtexts]
+        ax.set_xticklabels(xtexts)
 
     if ylimits:
         ax.set_ylim(ylimits)
