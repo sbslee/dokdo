@@ -76,7 +76,7 @@ def get_mf(metadata) -> pd.DataFrame:
 
 def ancom_volcano_plot(ancom,
                        ax=None,
-                       figsize=None):
+                       figsize=None) -> None:
     """
     This method creates an ANCOM volcano plot.
 
@@ -116,7 +116,7 @@ def alpha_diversity_plot(significance,
                          ax=None,
                          figsize=None,
                          add_swarmplot=False,
-                         order=None):
+                         order=None) -> None:
     """
     This method creates an alpha diversity plot.
 
@@ -179,7 +179,7 @@ def alpha_diversity_plot(significance,
 def read_quality_plot(demux,
                       strand='forward',
                       ax=None,
-                      figsize=None):
+                      figsize=None) -> None:
     """
     This method creates a read quality plot.
 
@@ -246,7 +246,7 @@ def alpha_rarefaction_plot(rarefaction,
                            figsize=None,
                            show_legend=False,
                            legend_loc='best',
-                           legend_ncol=1):
+                           legend_ncol=1) -> None:
     """
     This method creates an alpha rarefaction plot.
 
@@ -354,7 +354,7 @@ def taxa_abundance_bar_plot(taxa,
                             sample_names=[],
                             csv_file=None,
                             xlabels=None,
-                            taxa_names=None):
+                            taxa_names=None) -> None:
     """
     This method creates a taxa abundance plot.
 
@@ -619,7 +619,7 @@ def taxa_abundance_box_plot(taxa,
                             xlabels=None,
                             log_scale=False,
                             taxa_names=None,
-                            ylimits=None):
+                            ylimits=None) -> None:
     """
     This method creates a taxa abundance box plot.
 
@@ -894,7 +894,7 @@ def beta_2d_plot(ordination,
                  figsize=None,
                  show_legend=False,
                  legend_loc='best',
-                 title=None):
+                 title=None) -> None:
     """
     This method creates a 2D beta diversity plot.
 
@@ -1014,7 +1014,7 @@ def beta_2d_plot_gallery(ordination,
                          nrows=3,
                          ncols=4,
                          figsize=None,
-                         **kwargs):
+                         **kwargs) -> None:
 
     """
     This method creates a 2D beta diversity plot gallery.
@@ -1144,7 +1144,7 @@ def beta_3d_plot(ordination,
                  ax=None,
                  figsize=None,
                  show_legend=False,
-                 legend_loc='best'):
+                 legend_loc='best') -> None:
     """
     This method creates a 3D beta diversity plot.
 
@@ -1238,7 +1238,7 @@ def distance_matrix_plot(distance_matrix,
                          bins=100,
                          pairs=None,
                          ax=None,
-                         figsize=None):
+                         figsize=None) -> None:
     """
     This method creates a histogram from a distance matrix.
 
@@ -1330,7 +1330,7 @@ def denoising_stats_plot(stats,
                          log_scale=False,
                          ylimits=None,
                          order=None,
-                         hide_nsizes=False):
+                         hide_nsizes=False) -> None:
     """
     This method creates a grouped box plot using denoising statistics from 
     DADA2 (i.e. the 'qiime dada2 denoise-paired' command).
