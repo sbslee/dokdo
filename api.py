@@ -1,15 +1,76 @@
+# Import standard libraries.
+import math
 from tempfile import TemporaryDirectory
 
+# Import external libraries.
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import skbio as sb
 
+# Import QIIME 2 libraries
 import qiime2
 from qiime2 import Artifact
 from qiime2 import Metadata
 from qiime2 import Visualization
+
+
+
+# Define public methods.
+def get_mf(metadata) -> pd.DataFrame:
+    """
+    This method returns DataFrame object for metadata.
+
+    Parameters
+    ----------
+    metadata : str or qiime2.metadata.metadata.Metadata
+        Metadata file or object.
+    """
+    if isinstance(metadata, str):
+        mf = Metadata.load(metadata).to_dataframe()
+    elif isinstance(metadata, qiime2.metadata.metadata.Metadata):
+        mf = metadata.to_dataframe()
+    else:
+        raise TypeError(f"Incorrect metadata type: {type(metadata)}")
+    return mf
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -878,14 +939,9 @@ def beta_2d_plot(ordination,
                         skipfooter=4, engine='python', usecols=[0, 1, 2])
     df1.columns = ['A1', 'A2']
 
-    if isinstance(metadata, str):
-        df2 = Metadata.load(metadata).to_dataframe()
-    elif isinstance(metadata, qiime2.metadata.metadata.Metadata):
-        df2 = metadata.to_dataframe()
-    else:
-        raise TypeError("Incorrect type of metadata detected")
+    mf = get_mf(metadata)
 
-    df3 = pd.concat([df1, df2], axis=1, join='inner')
+    df3 = pd.concat([df1, mf], axis=1, join='inner')
 
     f = open(f'{t.name}/ordination.txt')
     explained_variances = [round(float(x) * 100, 2) for x
@@ -921,6 +977,145 @@ def beta_2d_plot(ordination,
 
     if title is not None:
         ax.set_title(title)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+def beta_2d_plot_gallery(ordination,
+                         metadata,
+                         targets,
+                         prefix,
+                         nrows=3,
+                         ncols=4,
+                         figsize=None,
+                         **kwargs):
+
+    """
+    This method creates a 2D beta diversity plot gallery.
+
+    Parameters
+    ----------
+    ordination : str or qiime2.sdk.result.Artifact
+        Artifact file or object from ordination.
+    metadata : str or qiime2.metadata.metadata.Metadata
+        Metadata file or object.
+    prefix : str
+        File prefix.
+    nrows : int, default: 3
+        Number of rows of the subplot grid.
+    ncols : int, default: 4
+        Number of rows of the subplot grid.
+    figsize : tuple, optional
+        Width, height in inches. Format: (float, float).
+    """
+
+    n_total = len(targets)
+    n_panels = nrows * ncols
+    n_figures = math.ceil(len(targets) / n_panels)
+
+    i = 0 # Total number of panels.
+
+    
+
+    for j in range(n_figures):
+        k = 0 # Number of panels within figure.
+        filename = f'{prefix}-{j}.png'
+
+        fig, axes = plt.subplots(nrows=nrows, ncols=ncols, figsize=figsize)
+        
+        for row in axes:
+            for col in row:
+
+                kwargs = {**kwargs,
+                          'ax': col,
+                          'hue': targets[i],
+                          'title': targets[i]}
+
+                beta_2d_plot(ordination, metadata, show_legend=True, **kwargs)
+
+                legend_labels = [x.get_text() for x in col.legend().get_texts()] 
+                if len(legend_labels) > 10:
+                    col.get_legend().remove()
+                
+                k += 1
+                i += 1
+
+                if k == n_panels:
+                    print(f"Figure saved to: {filename}")
+                    plt.tight_layout()
+                    plt.savefig(filename)
+                    k = 0
+
+                if i == n_total:
+                    print(f"Figure saved to: {filename}")
+                    plt.tight_layout()
+                    plt.savefig(filename)
+                    return
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
