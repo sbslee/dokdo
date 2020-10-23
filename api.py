@@ -832,7 +832,8 @@ def beta_2d_plot(ordination,
                  ax=None,
                  figsize=None,
                  show_legend=False,
-                 legend_loc='best'):
+                 legend_loc='best',
+                 title=None):
     """
     This method creates a 2D beta diversity plot.
 
@@ -860,6 +861,8 @@ def beta_2d_plot(ordination,
         Show the legend.
     legend_loc : str, default: 'best'
         Legend location specified as in matplotlib.pyplot.legend.
+    title : str, optional
+        Plot title.
     """
     t = TemporaryDirectory()
 
@@ -893,7 +896,15 @@ def beta_2d_plot(ordination,
         fig, ax = plt.subplots(figsize=figsize)
 
 
-    sns.scatterplot(data=df3, x='A1', y='A2', hue=hue, style=style, size=size, ax=ax, s=s, alpha=alpha)
+    sns.scatterplot(data=df3,
+                    x='A1',
+                    y='A2',
+                    hue=hue,
+                    style=style,
+                    size=size,
+                    ax=ax,
+                    s=s,
+                    alpha=alpha)
 
     ax.set_xticks([])
     ax.set_yticks([])
@@ -907,6 +918,13 @@ def beta_2d_plot(ordination,
         ax.legend(loc=legend_loc)
     else:
         ax.get_legend().remove()
+
+    if title is not None:
+        ax.set_title(title)
+
+
+
+
 
 
 
