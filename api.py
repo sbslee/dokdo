@@ -55,7 +55,7 @@ def alpha_diversity_plot(significance,
                          ax=None,
                          figsize=None,
                          add_swarmplot=False,
-                         orders=None):
+                         order=None):
     """
     This method creates an alpha diversity plot.
 
@@ -72,9 +72,8 @@ def alpha_diversity_plot(significance,
         Width, height in inches. Format: (float, float).
     add_swarmplot : bool, default: False
         Add a swarm plot on top of the box plot.
-    orders : dict, optional
-        Dictionary for specifying order of x-axis labels. 
-        Format: {column: [label, label, ...]}.
+    order : list, optional
+        Order to plot the categorical levels in.
     """
     t = TemporaryDirectory()
     Visualization.load(significance).export_data(t.name)
@@ -85,40 +84,12 @@ def alpha_diversity_plot(significance,
 
     boxprops = dict(color='white', edgecolor='black')
 
-    if orders is not None:
-        by = []
+    kwargs = {'x': where, 'y': metric, 'ax': ax, 'order': order, 'data': df}
 
-        for k, v in orders.items():
-            u = df[k].unique().tolist()
-
-            if set(u) != set(v):
-                raise ValueError(f"Expected {u}, but found {v}")
-
-            l = [x for x in range(len(v))]
-            d = dict(zip(v, l))
-            df.rename(columns={k: f'@{k}'}, inplace=True)
-            df[k] = df[f'@{k}'].map(d)
-
-            by.append(k)
-
-        df = df.sort_values(by=by)
-
-        for k in orders:
-            df.drop(columns=[k], inplace=True)
-            df.rename(columns={f'@{k}': k}, inplace=True)
-
-
-    sns.boxplot(x=where,
-                y=metric,
-                data=df,
-                ax=ax,
-                boxprops=boxprops)
+    sns.boxplot(boxprops=boxprops, **kwargs)
 
     if add_swarmplot:
-        sns.swarmplot(x=where,
-                      y=metric,
-                      data=df,
-                      ax=ax)
+        sns.swarmplot(**kwargs)
 
 
 
