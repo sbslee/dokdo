@@ -11,12 +11,37 @@ from qiime2.plugins import taxa
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 def collapse(table, taxonomy):
     for i in range(1, 8):
         _ = taxa.methods.collapse(table=Artifact.load(table),
                                   taxonomy=Artifact.load(taxonomy),
                                   level=i)
         _.collapsed_table.view(pd.DataFrame).T.to_csv(f'level-{i}.csv')
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -40,6 +65,23 @@ def tax2seq(taxonomy, rep_seqs, output):
 
     _ = pd.concat([tax_df, seq_df], axis=1, sort=False)
     _.to_csv(output)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -72,20 +114,54 @@ def make_manifest(fastq_dir, output):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 def add_metadata(metadata, columns, output):
-    df1 = Metadata.load(metadata).to_dataframe()
-    dtypes = df1.dtypes.to_dict()
-    df2 = pd.read_table(columns)
+    mf1 = Metadata.load(metadata).to_dataframe()
+    dtypes = mf1.dtypes.to_dict()
+    mf2 = pd.read_table(columns, keep_default_na=False)
 
     for k, v in dtypes.items():
-        if k in df2.columns:
+        if k in mf2.columns:
             if v == 'object':
-                df2[k] = df2[k].astype(str)
+                mf2[k] = mf2[k].astype(str)
             else:
-                df2[k] = df2[k].astype(v)
+                mf2[k] = mf2[k].astype(v)
 
-    df3 = df1.reset_index().merge(df2).set_index('#SampleID')
-    Metadata(df3).save(output)
+    mf3 = mf1.reset_index().merge(mf2).set_index('#SampleID')
+    Metadata(mf3).save(output)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -96,6 +172,24 @@ def merge_metadata(metadata, output):
         dfs.append(Metadata.load(file).to_dataframe())
 
     Metadata(pd.concat(dfs)).save(output)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -117,6 +211,13 @@ def main():
 
 
 
+
+
+
+
+
+
+
     collapse_parser = subparsers.add_parser(
         'collapse',
         description=("This command creates seven collapsed ASV tables, one "
@@ -134,6 +235,12 @@ def main():
         'taxonomy',
         help="Path to the input taxonomy.qza file."
     )
+
+
+
+
+
+
 
 
 
@@ -159,6 +266,11 @@ def main():
 
 
 
+
+
+
+
+
     make_manifest_parser = subparsers.add_parser(
         'make_manifest',
         description=("This command creates a manifest file from a directory "
@@ -177,6 +289,12 @@ def main():
         'output',
         help="Path to the output manifest file (.tsv)."
     )
+
+
+
+
+
+
 
 
 
@@ -202,6 +320,12 @@ def main():
         'output',
         help="Path to the output sample-metadata.tsv file."
     )
+
+
+
+
+
+
 
 
 
