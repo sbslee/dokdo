@@ -430,7 +430,9 @@ def beta_2d_plot_gallery(ordination,
                          **kwargs) -> None:
 
     """
-    This method creates a 2D beta diversity plot gallery.
+    This method extends the 'beta_2d_plot' method and allows the user to 
+    automatically create multiple figures of 2D beta diversity plot. This 
+    method is useful when there are multiple variables to be tested.
 
     Parameters
     ----------
@@ -447,14 +449,11 @@ def beta_2d_plot_gallery(ordination,
     figsize : tuple, optional
         Width, height in inches. Format: (float, float).
     """
-
     n_total = len(targets)
     n_panels = nrows * ncols
     n_figures = math.ceil(len(targets) / n_panels)
 
     i = 0 # Total number of panels.
-
-    
 
     for j in range(n_figures):
         k = 0 # Number of panels within figure.
@@ -485,7 +484,7 @@ def beta_2d_plot_gallery(ordination,
                     plt.savefig(filename)
                     k = 0
 
-                if i == n_total:
+                elif i == n_total:
                     print(f"Figure saved to: {filename}")
                     plt.tight_layout()
                     plt.savefig(filename)
