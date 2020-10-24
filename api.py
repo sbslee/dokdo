@@ -17,7 +17,15 @@ from qiime2 import Visualization
 
 
 
-# Define public methods.
+
+
+
+
+
+
+
+# -- General methods ---------------------------------------------------------
+
 def get_mf(metadata) -> pd.DataFrame:
     """
     This method returns DataFrame object for metadata.
@@ -44,137 +52,7 @@ def get_mf(metadata) -> pd.DataFrame:
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-def ancom_volcano_plot(ancom,
-                       ax=None,
-                       figsize=None) -> None:
-    """
-    This method creates an ANCOM volcano plot.
-
-    Parameters
-    ----------
-    ancom : str
-        Path to the visualization file from the 'qiime composition ancom' 
-        command.
-    ax : matplotlib.axes.Axes, optional
-        Axes object to draw the plot onto, otherwise uses the current Axes.
-    figsize : tuple, optional
-        Width, height in inches. Format: (float, float).
-    """
-    t = TemporaryDirectory()
-    Visualization.load(ancom).export_data(t.name)
-    df = pd.read_table(f'{t.name}/data.tsv')
-    if ax is None:
-        fig, ax = plt.subplots(figsize=figsize)
-    ax.scatter(df.clr, df.W, s=80, c='black', alpha=0.5)
-    ax.set_xlabel('clr')
-    ax.set_ylabel('W')
-
-
-
-
-
-
-
-
-
-
-
-
-
-def alpha_diversity_plot(significance,
-                         where,
-                         ax=None,
-                         figsize=None,
-                         add_swarmplot=False,
-                         order=None) -> None:
-    """
-    This method creates an alpha diversity plot.
-
-    Parameters
-    ----------
-    significance : str
-        Path to the visualization file from the 'qiime diversity 
-        alpha-group-significance' command.
-    where : str
-        Column name to be used for the x-axis.
-    ax : matplotlib.axes.Axes, optional
-        Axes object to draw the plot onto, otherwise uses the current Axes.
-    figsize : tuple, optional
-        Width, height in inches. Format: (float, float).
-    add_swarmplot : bool, default: False
-        Add a swarm plot on top of the box plot.
-    order : list, optional
-        Order to plot the categorical levels in.
-    """
-    t = TemporaryDirectory()
-    Visualization.load(significance).export_data(t.name)
-    df = Metadata.load(f'{t.name}/metadata.tsv').to_dataframe()
-    if ax is None:
-        fig, ax = plt.subplots(figsize=figsize)
-    metric = df.columns[-1]
-
-    boxprops = dict(color='white', edgecolor='black')
-
-    kwargs = {'x': where, 'y': metric, 'ax': ax, 'order': order, 'data': df}
-
-    sns.boxplot(boxprops=boxprops, **kwargs)
-
-    if add_swarmplot:
-        sns.swarmplot(**kwargs)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+# -- Plotting methods --------------------------------------------------------
 
 def read_quality_plot(demux,
                       strand='forward',
@@ -229,6 +107,72 @@ def read_quality_plot(demux,
 
 
 
+
+def denoising_stats_plot(stats,
+                         metadata,
+                         where,
+                         ax=None,
+                         figsize=None,
+                         log_scale=False,
+                         ylimits=None,
+                         order=None,
+                         hide_nsizes=False) -> None:
+    """
+    This method creates a grouped box plot using denoising statistics from 
+    DADA2 (i.e. the 'qiime dada2 denoise-paired' command).
+
+    Parameters
+    ----------
+    stats : str
+        Path to the denoising-stats.qza file.
+    metadata : str
+        Path to the sample-metadata.tsv file.
+    where : str
+        Column name of the sample metadata.
+    ax : matplotlib.axes.Axes, optional
+        Axes object to draw the plot onto, otherwise uses the current Axes.
+    figsize : tuple, optional
+        Width, height in inches. Format: (float, float).
+    log_scale : bool, default: False
+        Draw the y-axis in log scale.
+    ylimits : list, optional
+        Y-axis limits. Format: [float, float].
+    order : list, optional
+        Order to plot the categorical levels in.
+    hide_nsizes : bool, default: False
+        Hide sample size from x-axis labels.
+    """
+    t = TemporaryDirectory()
+    Artifact.load(stats).export_data(t.name)
+    df1 = pd.read_table(f'{t.name}/stats.tsv', skiprows=[1], index_col=0)
+    df2 = Metadata.load(metadata).to_dataframe()
+    df3 = pd.concat([df1, df2], axis=1, join='inner')
+
+    a = ['input', 'filtered', 'denoised', 'merged', 'non-chimeric', where]
+    df4 = pd.melt(df3[a], id_vars=[where])
+
+    if ax is None:
+        fig, ax = plt.subplots(figsize=figsize)
+
+    if log_scale:
+        df4['value'].replace(0, 1, inplace=True)
+        ax.set_yscale('log')
+
+    sns.boxplot(x=where,
+                y='value',
+                data=df4,
+                hue='variable',
+                ax=ax,
+                order=order)
+
+    if hide_nsizes is False:
+        nsizes = df3[where].value_counts().to_dict()
+        xtexts = [x.get_text() for x in ax.get_xticklabels()]
+        xtexts = [f'{x} ({nsizes[x]})' for x in xtexts]
+        ax.set_xticklabels(xtexts)
+
+    if ylimits:
+        ax.set_ylim(ylimits)
 
 
 
@@ -322,7 +266,380 @@ def alpha_rarefaction_plot(rarefaction,
 
 
 
+def alpha_diversity_plot(significance,
+                         where,
+                         ax=None,
+                         figsize=None,
+                         add_swarmplot=False,
+                         order=None) -> None:
+    """
+    This method creates an alpha diversity plot.
 
+    Parameters
+    ----------
+    significance : str
+        Path to the visualization file from the 'qiime diversity 
+        alpha-group-significance' command.
+    where : str
+        Column name to be used for the x-axis.
+    ax : matplotlib.axes.Axes, optional
+        Axes object to draw the plot onto, otherwise uses the current Axes.
+    figsize : tuple, optional
+        Width, height in inches. Format: (float, float).
+    add_swarmplot : bool, default: False
+        Add a swarm plot on top of the box plot.
+    order : list, optional
+        Order to plot the categorical levels in.
+    """
+    t = TemporaryDirectory()
+    Visualization.load(significance).export_data(t.name)
+    df = Metadata.load(f'{t.name}/metadata.tsv').to_dataframe()
+    if ax is None:
+        fig, ax = plt.subplots(figsize=figsize)
+    metric = df.columns[-1]
+
+    boxprops = dict(color='white', edgecolor='black')
+
+    kwargs = {'x': where, 'y': metric, 'ax': ax, 'order': order, 'data': df}
+
+    sns.boxplot(boxprops=boxprops, **kwargs)
+
+    if add_swarmplot:
+        sns.swarmplot(**kwargs)
+
+
+
+
+
+
+
+
+
+
+def beta_2d_plot(ordination,
+                 metadata,
+                 hue=None,
+                 size=None,
+                 style=None,
+                 s=80,
+                 alpha=None,
+                 ax=None,
+                 figsize=None,
+                 show_legend=False,
+                 legend_loc='best',
+                 title=None) -> None:
+    """
+    This method creates a 2D beta diversity plot.
+
+    Parameters
+    ----------
+    ordination : str or qiime2.sdk.result.Artifact
+        Artifact file or object from ordination.
+    metadata : str or qiime2.metadata.metadata.Metadata
+        Metadata file or object.
+    hue : str, optional
+        Grouping variable that will produce points with different colors.
+    size : str, optional
+        Grouping variable that will produce points with different sizes.
+    style : str, optional
+        Grouping variable that will produce points with different markers.
+    s : int, default: 80
+        Marker size.
+    alpha : float, optional
+        Proportional opacity of the points.
+    ax : matplotlib.axes.Axes, optional
+        Axes object to draw the plot onto, otherwise uses the current Axes.
+    figsize : tuple, optional
+        Width, height in inches. Format: (float, float).
+    show_legend : bool, default: False
+        Show the legend.
+    legend_loc : str, default: 'best'
+        Legend location specified as in matplotlib.pyplot.legend.
+    title : str, optional
+        Plot title.
+    """
+    t = TemporaryDirectory()
+
+    if isinstance(ordination, qiime2.sdk.result.Artifact):
+        fn = f'{t.name}/ordination.qza'
+        ordination.save(fn)
+        ordination = fn
+
+    Artifact.load(ordination).export_data(t.name)
+
+    df1 = pd.read_table(f'{t.name}/ordination.txt', header=None, index_col=0,
+                        skiprows=[0, 1, 2, 3, 4, 5, 6, 7, 8],
+                        skipfooter=4, engine='python', usecols=[0, 1, 2])
+    df1.columns = ['A1', 'A2']
+
+    mf = get_mf(metadata)
+
+    df3 = pd.concat([df1, mf], axis=1, join='inner')
+
+    f = open(f'{t.name}/ordination.txt')
+    explained_variances = [round(float(x) * 100, 2) for x
+                               in f.readlines()[4].split('\t')]
+    f.close()
+
+    if ax is None:
+        fig, ax = plt.subplots(figsize=figsize)
+
+
+    sns.scatterplot(data=df3,
+                    x='A1',
+                    y='A2',
+                    hue=hue,
+                    style=style,
+                    size=size,
+                    ax=ax,
+                    s=s,
+                    alpha=alpha)
+
+    ax.set_xticks([])
+    ax.set_yticks([])
+    ax.set_xlabel(f'Axis 1 ({explained_variances[0]} %)')
+    ax.set_ylabel(f'Axis 2 ({explained_variances[1]} %)')
+
+    # Control the legend.
+    if not hue and not size and not style:
+        pass
+    elif show_legend:
+        ax.legend(loc=legend_loc)
+    else:
+        ax.get_legend().remove()
+
+    if title is not None:
+        ax.set_title(title)
+
+
+
+
+
+
+
+
+
+
+def beta_2d_plot_gallery(ordination,
+                         metadata,
+                         targets,
+                         prefix,
+                         nrows=3,
+                         ncols=4,
+                         figsize=None,
+                         **kwargs) -> None:
+
+    """
+    This method creates a 2D beta diversity plot gallery.
+
+    Parameters
+    ----------
+    ordination : str or qiime2.sdk.result.Artifact
+        Artifact file or object from ordination.
+    metadata : str or qiime2.metadata.metadata.Metadata
+        Metadata file or object.
+    prefix : str
+        File prefix.
+    nrows : int, default: 3
+        Number of rows of the subplot grid.
+    ncols : int, default: 4
+        Number of rows of the subplot grid.
+    figsize : tuple, optional
+        Width, height in inches. Format: (float, float).
+    """
+
+    n_total = len(targets)
+    n_panels = nrows * ncols
+    n_figures = math.ceil(len(targets) / n_panels)
+
+    i = 0 # Total number of panels.
+
+    
+
+    for j in range(n_figures):
+        k = 0 # Number of panels within figure.
+        filename = f'{prefix}-{j}.png'
+
+        fig, axes = plt.subplots(nrows=nrows, ncols=ncols, figsize=figsize)
+        
+        for row in axes:
+            for col in row:
+
+                kwargs = {**kwargs,
+                          'ax': col,
+                          'hue': targets[i],
+                          'title': targets[i]}
+
+                beta_2d_plot(ordination, metadata, show_legend=True, **kwargs)
+
+                legend_labels = [x.get_text() for x in col.legend().get_texts()] 
+                if len(legend_labels) > 10:
+                    col.get_legend().remove()
+                
+                k += 1
+                i += 1
+
+                if k == n_panels:
+                    print(f"Figure saved to: {filename}")
+                    plt.tight_layout()
+                    plt.savefig(filename)
+                    k = 0
+
+                if i == n_total:
+                    print(f"Figure saved to: {filename}")
+                    plt.tight_layout()
+                    plt.savefig(filename)
+                    return
+
+
+
+
+
+
+
+
+
+
+def beta_3d_plot(ordination,
+                 metadata,
+                 where,
+                 azim=-60,
+                 elev=30,
+                 s=80, 
+                 ax=None,
+                 figsize=None,
+                 show_legend=False,
+                 legend_loc='best') -> None:
+    """
+    This method creates a 3D beta diversity plot.
+
+    Parameters
+    ----------
+    ordination : str
+        Path to the artifact file from ordination (e.g. 
+        bray_curtis_pcoa_results.qza).
+    metadata : str or qiime2.metadata.metadata.Metadata
+        Metadata file or object.
+    where : str
+        Column name of the sample metadata.
+    azim : int, default: -60
+        Elevation viewing angle.
+    elev : int, default: 30
+        Azimuthal viewing angle.
+    s : int, default: 80
+        Marker size.
+    ax : matplotlib.axes.Axes, optional
+        Axes object to draw the plot onto, otherwise uses the current Axes.
+    figsize : tuple, optional
+        Width, height in inches. Format: (float, float).
+    show_legend : bool, default: False
+        Show the legend.
+    legend_loc : str, default: 'best'
+        Legend location specified as in matplotlib.pyplot.legend.
+    """
+
+    t = TemporaryDirectory()
+    Artifact.load(ordination).export_data(t.name)
+
+    df = pd.read_table(f'{t.name}/ordination.txt', header=None, index_col=0,
+                        skiprows=[0, 1, 2, 3, 4, 5, 6, 7, 8],
+                        skipfooter=4, engine='python')
+    df = df.sort_index()
+
+    mf = get_mf(metadata)
+    mf = mf.sort_index()
+
+    f = open(f'{t.name}/ordination.txt')
+    v = [round(float(x) * 100, 2) for x in f.readlines()[4].split('\t')]
+    f.close()
+
+    if ax is None:
+        fig = plt.figure(figsize=figsize)
+        ax = fig.add_subplot(1, 1, 1, projection='3d')
+
+    ax.view_init(azim=azim, elev=elev)
+    ax.set_xlabel(f'Axis 1 ({v[0]} %)')
+    ax.set_ylabel(f'Axis 2 ({v[1]} %)')
+    ax.set_zlabel(f'Axis 3 ({v[2]} %)')
+    ax.set_xticks([])
+    ax.set_yticks([])
+    ax.set_zticks([])
+
+    for c in sorted(mf[where].unique()):
+        i = mf[where] == c
+        ax.scatter(df[i].iloc[:, 0],
+                   df[i].iloc[:, 1],
+                   df[i].iloc[:, 2],
+                   label=c,
+                   s=s)
+
+    # Control the legend.
+    if show_legend:
+        ax.legend(loc=legend_loc)
+
+
+
+
+
+
+
+
+
+
+def distance_matrix_plot(distance_matrix,
+                         bins=100,
+                         pairs=None,
+                         ax=None,
+                         figsize=None) -> None:
+    """
+    This method creates a histogram from a distance matrix.
+
+    Parameters
+    ----------
+    distance_matrix : str or qiime2.sdk.result.Artifact
+         Artifact file or object from distance matrix computation.
+    bins : int, optional
+        Number of bins to be displayed.
+    pairs : list, optional
+        List of sample pairs to be shown in red vertical lines.
+    ax : matplotlib.axes.Axes, optional
+        Axes object to draw the plot onto, otherwise uses the current Axes.
+    figsize : tuple, optional
+        Width, height in inches. Format: (float, float).
+    """
+    t = TemporaryDirectory()
+
+    if isinstance(distance_matrix, qiime2.sdk.result.Artifact):
+        fn = f'{t.name}/distance-matrix.qza'
+        distance_matrix.save(fn)
+        distance_matrix = fn
+
+    Artifact.load(distance_matrix).export_data(t.name)
+    df = pd.read_table(f'{t.name}/distance-matrix.tsv', index_col=0)
+    dist = sb.stats.distance.DistanceMatrix(df, ids=df.columns)
+    cdist = dist.condensed_form()
+
+    if ax is None:
+        fig, ax = plt.subplots(figsize=figsize)
+
+    ax.hist(cdist, bins=bins)
+
+    # https://stackoverflow.com/a/36867493/7481899
+    def square_to_condensed(i, j, n):
+        assert i != j, "no diagonal elements in condensed matrix"
+        if i < j:
+            i, j = j, i
+        return n*j - j*(j+1)//2 + i - 1 - j
+
+    if pairs:
+        idx = []
+
+        for pair in pairs:
+            i = square_to_condensed(dist.index(pair[0]), dist.index(pair[1]), len(dist.ids))
+            idx.append(cdist[i])
+
+        for i in idx:
+            ax.axvline(x=i, c='red')
 
 
 
@@ -503,10 +820,6 @@ def taxa_abundance_bar_plot(taxa,
         df = df[taxa_names]
         df['Other'] = other
 
-
-
-
-
     if sort_by_names:
         df = df.reindex(sorted(df.columns), axis=1)
 
@@ -576,15 +889,6 @@ def taxa_abundance_bar_plot(taxa,
             m = f"Expected {len(xtexts)} items, but found {len(xlabels)}"
             raise ValueError(m)
         ax.set_xticklabels(xlabels)
-
-
-
-
-
-
-
-
-
 
 
 
@@ -865,544 +1169,30 @@ def taxa_abundance_box_plot(taxa,
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-def beta_2d_plot(ordination,
-                 metadata,
-                 hue=None,
-                 size=None,
-                 style=None,
-                 s=80,
-                 alpha=None,
-                 ax=None,
-                 figsize=None,
-                 show_legend=False,
-                 legend_loc='best',
-                 title=None) -> None:
+def ancom_volcano_plot(ancom,
+                       ax=None,
+                       figsize=None) -> None:
     """
-    This method creates a 2D beta diversity plot.
+    This method creates an ANCOM volcano plot.
 
     Parameters
     ----------
-    ordination : str or qiime2.sdk.result.Artifact
-        Artifact file or object from ordination.
-    metadata : str or qiime2.metadata.metadata.Metadata
-        Metadata file or object.
-    hue : str, optional
-        Grouping variable that will produce points with different colors.
-    size : str, optional
-        Grouping variable that will produce points with different sizes.
-    style : str, optional
-        Grouping variable that will produce points with different markers.
-    s : int, default: 80
-        Marker size.
-    alpha : float, optional
-        Proportional opacity of the points.
+    ancom : str
+        Path to the visualization file from the 'qiime composition ancom' 
+        command.
     ax : matplotlib.axes.Axes, optional
         Axes object to draw the plot onto, otherwise uses the current Axes.
     figsize : tuple, optional
         Width, height in inches. Format: (float, float).
-    show_legend : bool, default: False
-        Show the legend.
-    legend_loc : str, default: 'best'
-        Legend location specified as in matplotlib.pyplot.legend.
-    title : str, optional
-        Plot title.
     """
     t = TemporaryDirectory()
-
-    if isinstance(ordination, qiime2.sdk.result.Artifact):
-        fn = f'{t.name}/ordination.qza'
-        ordination.save(fn)
-        ordination = fn
-
-    Artifact.load(ordination).export_data(t.name)
-
-    df1 = pd.read_table(f'{t.name}/ordination.txt', header=None, index_col=0,
-                        skiprows=[0, 1, 2, 3, 4, 5, 6, 7, 8],
-                        skipfooter=4, engine='python', usecols=[0, 1, 2])
-    df1.columns = ['A1', 'A2']
-
-    mf = get_mf(metadata)
-
-    df3 = pd.concat([df1, mf], axis=1, join='inner')
-
-    f = open(f'{t.name}/ordination.txt')
-    explained_variances = [round(float(x) * 100, 2) for x
-                               in f.readlines()[4].split('\t')]
-    f.close()
-
+    Visualization.load(ancom).export_data(t.name)
+    df = pd.read_table(f'{t.name}/data.tsv')
     if ax is None:
         fig, ax = plt.subplots(figsize=figsize)
-
-
-    sns.scatterplot(data=df3,
-                    x='A1',
-                    y='A2',
-                    hue=hue,
-                    style=style,
-                    size=size,
-                    ax=ax,
-                    s=s,
-                    alpha=alpha)
-
-    ax.set_xticks([])
-    ax.set_yticks([])
-    ax.set_xlabel(f'Axis 1 ({explained_variances[0]} %)')
-    ax.set_ylabel(f'Axis 2 ({explained_variances[1]} %)')
-
-    # Control the legend.
-    if not hue and not size and not style:
-        pass
-    elif show_legend:
-        ax.legend(loc=legend_loc)
-    else:
-        ax.get_legend().remove()
-
-    if title is not None:
-        ax.set_title(title)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-def beta_2d_plot_gallery(ordination,
-                         metadata,
-                         targets,
-                         prefix,
-                         nrows=3,
-                         ncols=4,
-                         figsize=None,
-                         **kwargs) -> None:
-
-    """
-    This method creates a 2D beta diversity plot gallery.
-
-    Parameters
-    ----------
-    ordination : str or qiime2.sdk.result.Artifact
-        Artifact file or object from ordination.
-    metadata : str or qiime2.metadata.metadata.Metadata
-        Metadata file or object.
-    prefix : str
-        File prefix.
-    nrows : int, default: 3
-        Number of rows of the subplot grid.
-    ncols : int, default: 4
-        Number of rows of the subplot grid.
-    figsize : tuple, optional
-        Width, height in inches. Format: (float, float).
-    """
-
-    n_total = len(targets)
-    n_panels = nrows * ncols
-    n_figures = math.ceil(len(targets) / n_panels)
-
-    i = 0 # Total number of panels.
-
-    
-
-    for j in range(n_figures):
-        k = 0 # Number of panels within figure.
-        filename = f'{prefix}-{j}.png'
-
-        fig, axes = plt.subplots(nrows=nrows, ncols=ncols, figsize=figsize)
-        
-        for row in axes:
-            for col in row:
-
-                kwargs = {**kwargs,
-                          'ax': col,
-                          'hue': targets[i],
-                          'title': targets[i]}
-
-                beta_2d_plot(ordination, metadata, show_legend=True, **kwargs)
-
-                legend_labels = [x.get_text() for x in col.legend().get_texts()] 
-                if len(legend_labels) > 10:
-                    col.get_legend().remove()
-                
-                k += 1
-                i += 1
-
-                if k == n_panels:
-                    print(f"Figure saved to: {filename}")
-                    plt.tight_layout()
-                    plt.savefig(filename)
-                    k = 0
-
-                if i == n_total:
-                    print(f"Figure saved to: {filename}")
-                    plt.tight_layout()
-                    plt.savefig(filename)
-                    return
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-def beta_3d_plot(ordination,
-                 metadata,
-                 where,
-                 azim=-60,
-                 elev=30,
-                 s=80, 
-                 ax=None,
-                 figsize=None,
-                 show_legend=False,
-                 legend_loc='best') -> None:
-    """
-    This method creates a 3D beta diversity plot.
-
-    Parameters
-    ----------
-    ordination : str
-        Path to the artifact file from ordination (e.g. 
-        bray_curtis_pcoa_results.qza).
-    metadata : str or qiime2.metadata.metadata.Metadata
-        Metadata file or object.
-    where : str
-        Column name of the sample metadata.
-    azim : int, default: -60
-        Elevation viewing angle.
-    elev : int, default: 30
-        Azimuthal viewing angle.
-    s : int, default: 80
-        Marker size.
-    ax : matplotlib.axes.Axes, optional
-        Axes object to draw the plot onto, otherwise uses the current Axes.
-    figsize : tuple, optional
-        Width, height in inches. Format: (float, float).
-    show_legend : bool, default: False
-        Show the legend.
-    legend_loc : str, default: 'best'
-        Legend location specified as in matplotlib.pyplot.legend.
-    """
-
-    t = TemporaryDirectory()
-    Artifact.load(ordination).export_data(t.name)
-
-    df = pd.read_table(f'{t.name}/ordination.txt', header=None, index_col=0,
-                        skiprows=[0, 1, 2, 3, 4, 5, 6, 7, 8],
-                        skipfooter=4, engine='python')
-    df = df.sort_index()
-
-    mf = get_mf(metadata)
-    mf = mf.sort_index()
-
-    f = open(f'{t.name}/ordination.txt')
-    v = [round(float(x) * 100, 2) for x in f.readlines()[4].split('\t')]
-    f.close()
-
-    if ax is None:
-        fig = plt.figure(figsize=figsize)
-        ax = fig.add_subplot(1, 1, 1, projection='3d')
-
-    ax.view_init(azim=azim, elev=elev)
-    ax.set_xlabel(f'Axis 1 ({v[0]} %)')
-    ax.set_ylabel(f'Axis 2 ({v[1]} %)')
-    ax.set_zlabel(f'Axis 3 ({v[2]} %)')
-    ax.set_xticks([])
-    ax.set_yticks([])
-    ax.set_zticks([])
-
-    for c in sorted(mf[where].unique()):
-        i = mf[where] == c
-        ax.scatter(df[i].iloc[:, 0],
-                   df[i].iloc[:, 1],
-                   df[i].iloc[:, 2],
-                   label=c,
-                   s=s)
-
-    # Control the legend.
-    if show_legend:
-        ax.legend(loc=legend_loc)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-def distance_matrix_plot(distance_matrix,
-                         bins=100,
-                         pairs=None,
-                         ax=None,
-                         figsize=None) -> None:
-    """
-    This method creates a histogram from a distance matrix.
-
-    Parameters
-    ----------
-    distance_matrix : str or qiime2.sdk.result.Artifact
-         Artifact file or object from distance matrix computation.
-    bins : int, optional
-        Number of bins to be displayed.
-    pairs : list, optional
-        List of sample pairs to be shown in red vertical lines.
-    ax : matplotlib.axes.Axes, optional
-        Axes object to draw the plot onto, otherwise uses the current Axes.
-    figsize : tuple, optional
-        Width, height in inches. Format: (float, float).
-    """
-    t = TemporaryDirectory()
-
-    if isinstance(distance_matrix, qiime2.sdk.result.Artifact):
-        fn = f'{t.name}/distance-matrix.qza'
-        distance_matrix.save(fn)
-        distance_matrix = fn
-
-    Artifact.load(distance_matrix).export_data(t.name)
-    df = pd.read_table(f'{t.name}/distance-matrix.tsv', index_col=0)
-    dist = sb.stats.distance.DistanceMatrix(df, ids=df.columns)
-    cdist = dist.condensed_form()
-
-    if ax is None:
-        fig, ax = plt.subplots(figsize=figsize)
-
-    ax.hist(cdist, bins=bins)
-
-    # https://stackoverflow.com/a/36867493/7481899
-    def square_to_condensed(i, j, n):
-        assert i != j, "no diagonal elements in condensed matrix"
-        if i < j:
-            i, j = j, i
-        return n*j - j*(j+1)//2 + i - 1 - j
-
-    if pairs:
-        idx = []
-
-        for pair in pairs:
-            i = square_to_condensed(dist.index(pair[0]), dist.index(pair[1]), len(dist.ids))
-            idx.append(cdist[i])
-
-        for i in idx:
-            ax.axvline(x=i, c='red')
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-def denoising_stats_plot(stats,
-                         metadata,
-                         where,
-                         ax=None,
-                         figsize=None,
-                         log_scale=False,
-                         ylimits=None,
-                         order=None,
-                         hide_nsizes=False) -> None:
-    """
-    This method creates a grouped box plot using denoising statistics from 
-    DADA2 (i.e. the 'qiime dada2 denoise-paired' command).
-
-    Parameters
-    ----------
-    stats : str
-        Path to the denoising-stats.qza file.
-    metadata : str
-        Path to the sample-metadata.tsv file.
-    where : str
-        Column name of the sample metadata.
-    ax : matplotlib.axes.Axes, optional
-        Axes object to draw the plot onto, otherwise uses the current Axes.
-    figsize : tuple, optional
-        Width, height in inches. Format: (float, float).
-    log_scale : bool, default: False
-        Draw the y-axis in log scale.
-    ylimits : list, optional
-        Y-axis limits. Format: [float, float].
-    order : list, optional
-        Order to plot the categorical levels in.
-    hide_nsizes : bool, default: False
-        Hide sample size from x-axis labels.
-    """
-    t = TemporaryDirectory()
-    Artifact.load(stats).export_data(t.name)
-    df1 = pd.read_table(f'{t.name}/stats.tsv', skiprows=[1], index_col=0)
-    df2 = Metadata.load(metadata).to_dataframe()
-    df3 = pd.concat([df1, df2], axis=1, join='inner')
-
-    a = ['input', 'filtered', 'denoised', 'merged', 'non-chimeric', where]
-    df4 = pd.melt(df3[a], id_vars=[where])
-
-    if ax is None:
-        fig, ax = plt.subplots(figsize=figsize)
-
-    if log_scale:
-        df4['value'].replace(0, 1, inplace=True)
-        ax.set_yscale('log')
-
-    sns.boxplot(x=where,
-                y='value',
-                data=df4,
-                hue='variable',
-                ax=ax,
-                order=order)
-
-    if hide_nsizes is False:
-        nsizes = df3[where].value_counts().to_dict()
-        xtexts = [x.get_text() for x in ax.get_xticklabels()]
-        xtexts = [f'{x} ({nsizes[x]})' for x in xtexts]
-        ax.set_xticklabels(xtexts)
-
-    if ylimits:
-        ax.set_ylim(ylimits)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    ax.scatter(df.clr, df.W, s=80, c='black', alpha=0.5)
+    ax.set_xlabel('clr')
+    ax.set_ylabel('W')
 
 
 
