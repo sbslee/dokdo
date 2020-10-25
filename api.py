@@ -63,7 +63,7 @@ def get_mf(metadata):
 def read_quality_plot(demux,
                       strand='forward',
                       ax=None,
-                      figsize=None) -> None:
+                      figsize=None):
     """
     This method creates a read quality plot.
 
@@ -78,6 +78,11 @@ def read_quality_plot(demux,
         Axes object to draw the plot onto, otherwise uses the current Axes.
     figsize : tuple, optional
         Width, height in inches. Format: (float, float).
+
+    Returns
+    -------
+    matplotlib.axes.Axes
+        Returns the Axes object with the plot drawn onto it.
     """
     t = TemporaryDirectory()
     Visualization.load(demux).export_data(t.name)
@@ -104,6 +109,8 @@ def read_quality_plot(demux,
     a = np.arange(df['variable'].min(), df['variable'].max(), 20)
     ax.set_xticks(a)
     ax.set_xticklabels(a)
+
+    return ax
 
 
 
