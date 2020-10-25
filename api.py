@@ -129,7 +129,7 @@ def denoising_stats_plot(stats,
                          log_scale=False,
                          ylimits=None,
                          order=None,
-                         hide_nsizes=False) -> None:
+                         hide_nsizes=False):
     """
     This method creates a grouped box plot using denoising statistics from 
     DADA2 (i.e. the 'qiime dada2 denoise-paired' command).
@@ -154,6 +154,11 @@ def denoising_stats_plot(stats,
         Order to plot the categorical levels in.
     hide_nsizes : bool, default: False
         Hide sample size from x-axis labels.
+
+    Returns
+    -------
+    matplotlib.axes.Axes
+        Returns the Axes object with the plot drawn onto it.
     """
     t = TemporaryDirectory()
     Artifact.load(stats).export_data(t.name)
@@ -187,6 +192,8 @@ def denoising_stats_plot(stats,
     if ylimits:
         ax.set_ylim(ylimits)
 
+    return ax
+
 
 
 
@@ -203,7 +210,7 @@ def alpha_rarefaction_plot(rarefaction,
                            figsize=None,
                            show_legend=False,
                            legend_loc='best',
-                           legend_ncol=1) -> None:
+                           legend_ncol=1):
     """
     This method creates an alpha rarefaction plot.
 
@@ -225,6 +232,11 @@ def alpha_rarefaction_plot(rarefaction,
         Legend location specified as in matplotlib.pyplot.legend.
     legend_ncol : int, default: 1
         The number of columns that the legend has.
+
+    Returns
+    -------
+    matplotlib.axes.Axes
+        Returns the Axes object with the plot drawn onto it.
     """
     t = TemporaryDirectory()
 
@@ -270,6 +282,8 @@ def alpha_rarefaction_plot(rarefaction,
     else:
         ax.get_legend().remove()
 
+    return ax
+
 
 
 
@@ -284,7 +298,7 @@ def alpha_diversity_plot(significance,
                          ax=None,
                          figsize=None,
                          add_swarmplot=False,
-                         order=None) -> None:
+                         order=None):
     """
     This method creates an alpha diversity plot.
 
@@ -303,6 +317,11 @@ def alpha_diversity_plot(significance,
         Add a swarm plot on top of the box plot.
     order : list, optional
         Order to plot the categorical levels in.
+
+    Returns
+    -------
+    matplotlib.axes.Axes
+        Returns the Axes object with the plot drawn onto it.
     """
     t = TemporaryDirectory()
     Visualization.load(significance).export_data(t.name)
@@ -319,6 +338,8 @@ def alpha_diversity_plot(significance,
 
     if add_swarmplot:
         sns.swarmplot(**kwargs)
+
+    return ax
 
 
 
@@ -340,7 +361,7 @@ def beta_2d_plot(ordination,
                  figsize=None,
                  show_legend=False,
                  legend_loc='best',
-                 title=None) -> None:
+                 title=None):
     """
     This method creates a 2D beta diversity plot.
 
@@ -370,6 +391,11 @@ def beta_2d_plot(ordination,
         Legend location specified as in matplotlib.pyplot.legend.
     title : str, optional
         Plot title.
+
+    Returns
+    -------
+    matplotlib.axes.Axes
+        Returns the Axes object with the plot drawn onto it.
     """
     t = TemporaryDirectory()
 
@@ -424,6 +450,8 @@ def beta_2d_plot(ordination,
     if title is not None:
         ax.set_title(title)
 
+    return ax
+
 
 
 
@@ -440,7 +468,7 @@ def beta_2d_plot_gallery(ordination,
                          nrows=3,
                          ncols=4,
                          figsize=None,
-                         **kwargs) -> None:
+                         **kwargs):
 
     """
     This method extends the 'beta_2d_plot' method and allows the user to 
@@ -461,6 +489,11 @@ def beta_2d_plot_gallery(ordination,
         Number of rows of the subplot grid.
     figsize : tuple, optional
         Width, height in inches. Format: (float, float).
+
+    Returns
+    -------
+    matplotlib.axes.Axes
+        Returns the Axes object with the plot drawn onto it.
     """
     n_total = len(targets)
     n_panels = nrows * ncols
@@ -503,6 +536,8 @@ def beta_2d_plot_gallery(ordination,
                     plt.savefig(filename)
                     return
 
+    return ax
+
 
 
 
@@ -521,7 +556,7 @@ def beta_3d_plot(ordination,
                  ax=None,
                  figsize=None,
                  show_legend=False,
-                 legend_loc='best') -> None:
+                 legend_loc='best'):
     """
     This method creates a 3D beta diversity plot.
 
@@ -548,6 +583,11 @@ def beta_3d_plot(ordination,
         Show the legend.
     legend_loc : str, default: 'best'
         Legend location specified as in matplotlib.pyplot.legend.
+
+    Returns
+    -------
+    matplotlib.axes.Axes
+        Returns the Axes object with the plot drawn onto it.
     """
 
     t = TemporaryDirectory()
@@ -589,6 +629,8 @@ def beta_3d_plot(ordination,
     if show_legend:
         ax.legend(loc=legend_loc)
 
+    return ax
+
 
 
 
@@ -602,7 +644,7 @@ def distance_matrix_plot(distance_matrix,
                          bins=100,
                          pairs=None,
                          ax=None,
-                         figsize=None) -> None:
+                         figsize=None):
     """
     This method creates a histogram from a distance matrix.
 
@@ -618,6 +660,11 @@ def distance_matrix_plot(distance_matrix,
         Axes object to draw the plot onto, otherwise uses the current Axes.
     figsize : tuple, optional
         Width, height in inches. Format: (float, float).
+
+    Returns
+    -------
+    matplotlib.axes.Axes
+        Returns the Axes object with the plot drawn onto it.
     """
     t = TemporaryDirectory()
 
@@ -653,6 +700,8 @@ def distance_matrix_plot(distance_matrix,
         for i in idx:
             ax.axvline(x=i, c='red')
 
+    return ax
+
 
 
 
@@ -683,7 +732,7 @@ def taxa_abundance_bar_plot(taxa,
                             sample_names=[],
                             csv_file=None,
                             xlabels=None,
-                            taxa_names=None) -> None:
+                            taxa_names=None):
     """
     This method creates a taxa abundance plot.
 
@@ -740,6 +789,11 @@ def taxa_abundance_bar_plot(taxa,
         List of the x-axis labels.
     taxa_names : list, optional
         List of taxa names to be displayed.
+
+    Returns
+    -------
+    matplotlib.axes.Axes
+        Returns the Axes object with the plot drawn onto it.
     """
     t = TemporaryDirectory()
     Visualization.load(taxa).export_data(t.name)
@@ -808,9 +862,6 @@ def taxa_abundance_bar_plot(taxa,
     mf = mf.assign(**{'sample-id': mf.index})
     df = df.drop(columns=dropped)
 
-
-
-
     # Convert counts to proportions.
     df = df.div(df.sum(axis=1), axis=0)
 
@@ -822,10 +873,6 @@ def taxa_abundance_bar_plot(taxa,
         other = df.iloc[:, count-1:].sum(axis=1)
         df = df.iloc[:, :count-1]
         df['Other'] = other
-
-
-
-
 
     if taxa_names is not None:
         other = df.drop(columns=taxa_names).sum(axis=1)
@@ -902,6 +949,8 @@ def taxa_abundance_bar_plot(taxa,
             raise ValueError(m)
         ax.set_xticklabels(xlabels)
 
+    return ax
+
 
 
 
@@ -935,7 +984,7 @@ def taxa_abundance_box_plot(taxa,
                             xlabels=None,
                             log_scale=False,
                             taxa_names=None,
-                            ylimits=None) -> None:
+                            ylimits=None):
     """
     This method creates a taxa abundance box plot.
 
@@ -998,6 +1047,11 @@ def taxa_abundance_box_plot(taxa,
         List of taxa names to be displayed.
     ylimits : list, optional
         Y-axis limits. Format: [float, float].
+
+    Returns
+    -------
+    matplotlib.axes.Axes
+        Returns the Axes object with the plot drawn onto it.
     """
     t = TemporaryDirectory()
     Visualization.load(taxa).export_data(t.name)
@@ -1172,6 +1226,8 @@ def taxa_abundance_box_plot(taxa,
     a = ax.get_xticklabels()
     ax.set_xticklabels(a, rotation=45, ha='right')
 
+    return ax
+
 
 
 
@@ -1183,7 +1239,7 @@ def taxa_abundance_box_plot(taxa,
 
 def ancom_volcano_plot(ancom,
                        ax=None,
-                       figsize=None) -> None:
+                       figsize=None):
     """
     This method creates an ANCOM volcano plot.
 
@@ -1196,6 +1252,11 @@ def ancom_volcano_plot(ancom,
         Axes object to draw the plot onto, otherwise uses the current Axes.
     figsize : tuple, optional
         Width, height in inches. Format: (float, float).
+
+    Returns
+    -------
+    matplotlib.axes.Axes
+        Returns the Axes object with the plot drawn onto it.
     """
     t = TemporaryDirectory()
     Visualization.load(ancom).export_data(t.name)
@@ -1205,6 +1266,8 @@ def ancom_volcano_plot(ancom,
     ax.scatter(df.clr, df.W, s=80, c='black', alpha=0.5)
     ax.set_xlabel('clr')
     ax.set_ylabel('W')
+
+    return ax
 
 
 
