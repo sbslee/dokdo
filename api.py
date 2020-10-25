@@ -26,14 +26,20 @@ from qiime2 import Visualization
 
 # -- General methods ---------------------------------------------------------
 
-def get_mf(metadata) -> pd.DataFrame:
+def get_mf(metadata):
     """
-    This method returns DataFrame object for metadata.
+    This method automatically detects the type of input metadata and converts 
+    it to DataFrame object.
 
     Parameters
     ----------
     metadata : str or qiime2.metadata.metadata.Metadata
         Metadata file or object.
+
+    Returns
+    -------
+    pandas.DataFrame
+        DataFrame object containing metadata.
     """
     if isinstance(metadata, str):
         mf = Metadata.load(metadata).to_dataframe()
