@@ -361,7 +361,8 @@ def beta_2d_plot(ordination,
                  figsize=None,
                  show_legend=False,
                  legend_loc='best',
-                 title=None):
+                 title=None,
+                 **kwargs):
     """
     This method creates a 2D beta diversity plot.
 
@@ -391,6 +392,8 @@ def beta_2d_plot(ordination,
         Legend location specified as in matplotlib.pyplot.legend.
     title : str, optional
         Plot title.
+    kwargs : dict, optional
+        Other keyword arguments passed down to matplotlib.axes.Axes.scatter.
 
     Returns
     -------
@@ -432,7 +435,8 @@ def beta_2d_plot(ordination,
                     size=size,
                     ax=ax,
                     s=s,
-                    alpha=alpha)
+                    alpha=alpha,
+                    **kwargs)
 
     ax.set_xticks([])
     ax.set_yticks([])
@@ -489,11 +493,6 @@ def beta_2d_plot_gallery(ordination,
         Number of rows of the subplot grid.
     figsize : tuple, optional
         Width, height in inches. Format: (float, float).
-
-    Returns
-    -------
-    matplotlib.axes.Axes
-        Returns the Axes object with the plot drawn onto it.
     """
     n_total = len(targets)
     n_panels = nrows * ncols
@@ -535,8 +534,6 @@ def beta_2d_plot_gallery(ordination,
                     plt.tight_layout()
                     plt.savefig(filename)
                     return
-
-    return ax
 
 
 
