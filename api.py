@@ -370,6 +370,7 @@ def beta_2d_plot(ordination,
                  show_legend=False,
                  legend_loc='best',
                  title=None,
+                 hue_order=None,
                  **kwargs):
     """
     This method creates a 2D beta diversity plot.
@@ -400,6 +401,8 @@ def beta_2d_plot(ordination,
         Legend location specified as in matplotlib.pyplot.legend.
     title : str, optional
         Plot title.
+    hue_order : list, optional
+        Specify the order of categorical levels of the 'hue' semantic.
     kwargs : dict, optional
         Other keyword arguments passed down to matplotlib.axes.Axes.scatter.
 
@@ -439,6 +442,7 @@ def beta_2d_plot(ordination,
                     x='A1',
                     y='A2',
                     hue=hue,
+                    hue_order=hue_order,
                     style=style,
                     size=size,
                     ax=ax,
