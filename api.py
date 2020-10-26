@@ -210,7 +210,9 @@ def alpha_rarefaction_plot(rarefaction,
                            figsize=None,
                            show_legend=False,
                            legend_loc='best',
-                           legend_ncol=1):
+                           legend_ncol=1,
+                           hue_order=None,
+                           **kwargs):
     """
     This method creates an alpha rarefaction plot.
 
@@ -232,6 +234,10 @@ def alpha_rarefaction_plot(rarefaction,
         Legend location specified as in matplotlib.pyplot.legend.
     legend_ncol : int, default: 1
         The number of columns that the legend has.
+    hue_order : list, optional
+        Specify the order of categorical levels of the 'hue' semantic.
+    kwargs : dict, optional
+        Other keyword arguments passed down to matplotlib.axes.Axes.scatter.
 
     Returns
     -------
@@ -269,7 +275,9 @@ def alpha_rarefaction_plot(rarefaction,
                  hue=hue,
                  ax=ax,
                  err_style='bars',
-                 sort=False)
+                 sort=False,
+                 hue_order=hue_order,
+                 **kwargs)
 
     ax.set_xlabel('Sequencing depth')
     ax.set_ylabel(metric)
