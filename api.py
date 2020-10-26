@@ -374,6 +374,8 @@ def beta_2d_plot(ordination,
                  title=None,
                  hue_order=None,
                  style_order=None,
+                 legend_ncol=1,
+                 legend_type='auto',
                  **kwargs):
     """
     This method creates a 2D beta diversity plot.
@@ -408,6 +410,10 @@ def beta_2d_plot(ordination,
         Specify the order of categorical levels of the 'hue' semantic.
     style_order : list, optional
         Specify the order of categorical levels of the 'style' semantic.
+    legend_ncol : int, default: 1
+        The number of columns that the legend has.
+    legend_type : str, default: 'auto'
+        Legend type as in seaborn.scatterplot ('auto', 'brief', or 'full').
     kwargs : dict, optional
         Other keyword arguments passed down to matplotlib.axes.Axes.scatter.
 
@@ -434,14 +440,11 @@ def beta_2d_plot(ordination,
 
     df3 = pd.concat([df1, mf], axis=1, join='inner')
 
-    f = open(f'{t.name}/ordination.txt')
-    explained_variances = [round(float(x) * 100, 2) for x
-                               in f.readlines()[4].split('\t')]
-    f.close()
+    with open(f'{t.name}/ordination.txt') as f:
+        v = [round(float(x) * 100, 2) for x in f.readlines()[4].split('\t')]
 
     if ax is None:
         fig, ax = plt.subplots(figsize=figsize)
-
 
     sns.scatterplot(data=df3,
                     x='A1',
@@ -454,18 +457,19 @@ def beta_2d_plot(ordination,
                     ax=ax,
                     s=s,
                     alpha=alpha,
+                    legend=legend_type,
                     **kwargs)
 
     ax.set_xticks([])
     ax.set_yticks([])
-    ax.set_xlabel(f'Axis 1 ({explained_variances[0]} %)')
-    ax.set_ylabel(f'Axis 2 ({explained_variances[1]} %)')
+    ax.set_xlabel(f'Axis 1 ({v[0]} %)')
+    ax.set_ylabel(f'Axis 2 ({v[1]} %)')
 
     # Control the legend.
     if not hue and not size and not style:
         pass
     elif show_legend:
-        ax.legend(loc=legend_loc)
+        ax.legend(loc=legend_loc, ncol=legend_ncol)
     else:
         ax.get_legend().remove()
 
@@ -623,9 +627,8 @@ def beta_3d_plot(ordination,
     mf = mf.sort_index()
     mf = mf.assign(**{'sample-id': mf.index})
 
-    f = open(f'{t.name}/ordination.txt')
-    v = [round(float(x) * 100, 2) for x in f.readlines()[4].split('\t')]
-    f.close()
+    with open(f'{t.name}/ordination.txt') as f:
+        v = [round(float(x) * 100, 2) for x in f.readlines()[4].split('\t')]
 
     if ax is None:
         fig = plt.figure(figsize=figsize)
@@ -654,9 +657,10 @@ def beta_3d_plot(ordination,
 
         for c in levels:
             i = mf[hue] == c
-            ax.scatter(df[i].iloc[:, 0],
-                       df[i].iloc[:, 1],
-                       df[i].iloc[:, 2],
+            df2 = df.loc[i]
+            ax.scatter(df2.iloc[:, 0],
+                       df2.iloc[:, 1],
+                       df2.iloc[:, 2],
                        label=c,
                        **kwargs)
 
