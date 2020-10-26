@@ -558,14 +558,16 @@ def beta_2d_plot_gallery(ordination,
 
 def beta_3d_plot(ordination,
                  metadata,
-                 where,
+                 hue=None,
                  azim=-60,
                  elev=30,
                  s=80, 
                  ax=None,
                  figsize=None,
                  show_legend=False,
-                 legend_loc='best'):
+                 legend_loc='best',
+                 hue_order=None,
+                 **kwargs):
     """
     This method creates a 3D beta diversity plot.
 
@@ -576,8 +578,8 @@ def beta_3d_plot(ordination,
         bray_curtis_pcoa_results.qza).
     metadata : str or qiime2.metadata.metadata.Metadata
         Metadata file or object.
-    where : str
-        Column name of the sample metadata.
+    hue : str, optional
+        Grouping variable that will produce points with different colors.
     azim : int, default: -60
         Elevation viewing angle.
     elev : int, default: 30
@@ -592,6 +594,10 @@ def beta_3d_plot(ordination,
         Show the legend.
     legend_loc : str, default: 'best'
         Legend location specified as in matplotlib.pyplot.legend.
+    hue_order : list, optional
+        Specify the order of categorical levels of the 'hue' semantic.
+    kwargs : dict, optional
+        Other keyword arguments passed down to matplotlib.axes.Axes.scatter.
 
     Returns
     -------
@@ -609,6 +615,7 @@ def beta_3d_plot(ordination,
 
     mf = get_mf(metadata)
     mf = mf.sort_index()
+    mf = mf.assign(**{'sample-id': mf.index})
 
     f = open(f'{t.name}/ordination.txt')
     v = [round(float(x) * 100, 2) for x in f.readlines()[4].split('\t')]
@@ -626,13 +633,26 @@ def beta_3d_plot(ordination,
     ax.set_yticks([])
     ax.set_zticks([])
 
-    for c in sorted(mf[where].unique()):
-        i = mf[where] == c
-        ax.scatter(df[i].iloc[:, 0],
-                   df[i].iloc[:, 1],
-                   df[i].iloc[:, 2],
-                   label=c,
-                   s=s)
+    kwargs = {'s': s, **kwargs}
+
+    if hue is None:
+        ax.scatter(df.iloc[:, 0],
+                   df.iloc[:, 1],
+                   df.iloc[:, 2],
+                   **kwargs)
+    else:
+        if hue_order is None:
+            levels = sorted(mf[hue].unique())
+        else:
+            levels = hue_order
+
+        for c in levels:
+            i = mf[hue] == c
+            ax.scatter(df[i].iloc[:, 0],
+                       df[i].iloc[:, 1],
+                       df[i].iloc[:, 2],
+                       label=c,
+                       **kwargs)
 
     # Control the legend.
     if show_legend:
