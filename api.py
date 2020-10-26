@@ -138,8 +138,8 @@ def denoising_stats_plot(stats,
     ----------
     stats : str
         Path to the denoising-stats.qza file.
-    metadata : str
-        Path to the sample-metadata.tsv file.
+    metadata : str or qiime2.metadata.metadata.Metadata
+        Metadata file or object.
     where : str
         Column name of the sample metadata.
     ax : matplotlib.axes.Axes, optional
@@ -163,28 +163,30 @@ def denoising_stats_plot(stats,
     t = TemporaryDirectory()
     Artifact.load(stats).export_data(t.name)
     df1 = pd.read_table(f'{t.name}/stats.tsv', skiprows=[1], index_col=0)
-    df2 = Metadata.load(metadata).to_dataframe()
-    df3 = pd.concat([df1, df2], axis=1, join='inner')
+
+    mf = get_mf(metadata)
+
+    df2 = pd.concat([df1, mf], axis=1, join='inner')
 
     a = ['input', 'filtered', 'denoised', 'merged', 'non-chimeric', where]
-    df4 = pd.melt(df3[a], id_vars=[where])
+    df3 = pd.melt(df2[a], id_vars=[where])
 
     if ax is None:
         fig, ax = plt.subplots(figsize=figsize)
 
     if log_scale:
-        df4['value'].replace(0, 1, inplace=True)
+        df3['value'].replace(0, 1, inplace=True)
         ax.set_yscale('log')
 
     sns.boxplot(x=where,
                 y='value',
-                data=df4,
+                data=df3,
                 hue='variable',
                 ax=ax,
                 order=order)
 
     if hide_nsizes is False:
-        nsizes = df3[where].value_counts().to_dict()
+        nsizes = df2[where].value_counts().to_dict()
         xtexts = [x.get_text() for x in ax.get_xticklabels()]
         xtexts = [f'{x} ({nsizes[x]})' for x in xtexts]
         ax.set_xticklabels(xtexts)
