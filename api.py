@@ -375,7 +375,7 @@ def beta_2d_plot(ordination,
                  hue_order=None,
                  style_order=None,
                  legend_ncol=1,
-                 legend_type='auto',
+                 legend_type='brief',
                  **kwargs):
     """
     This method creates a 2D beta diversity plot.
@@ -412,8 +412,8 @@ def beta_2d_plot(ordination,
         Specify the order of categorical levels of the 'style' semantic.
     legend_ncol : int, default: 1
         The number of columns that the legend has.
-    legend_type : str, default: 'auto'
-        Legend type as in seaborn.scatterplot ('auto', 'brief', or 'full').
+    legend_type : str, default: 'brief'
+        Legend type as in seaborn.scatterplot ('brief' or 'full').
     kwargs : dict, optional
         Other keyword arguments passed down to matplotlib.axes.Axes.scatter.
 
