@@ -907,16 +907,20 @@ def taxa_abundance_bar_plot(taxa,
     # Sort the columns (i.e. species) by their mean abundance.
     df = df.loc[:, df.mean().sort_values(ascending=False).index]
 
-    # If provided, collapse extra species to the Other column.
-    if count is not 0:
+    # If provided, collapse species to the Other column.
+    if count is not 0 and taxa_names is not None:
+        m = "Cannot use 'count' and 'taxa_names' arguments together"
+        raise ValueError(m)
+    elif count is not 0:
         other = df.iloc[:, count-1:].sum(axis=1)
         df = df.iloc[:, :count-1]
         df['Other'] = other
-
-    if taxa_names is not None:
+    elif taxa_names is not None:
         other = df.drop(columns=taxa_names).sum(axis=1)
         df = df[taxa_names]
         df['Other'] = other
+    else:
+        pass
 
     if sort_by_names:
         df = df.reindex(sorted(df.columns), axis=1)
