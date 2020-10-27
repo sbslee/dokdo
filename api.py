@@ -1082,6 +1082,9 @@ def taxa_abundance_box_plot(taxa,
     """
     This method creates a taxa abundance box plot.
 
+    The y-axis can be drawn at log scale with the 'log_scale' option, in 
+    which case a pseudocount of 1 will be added to remove 0 values.
+
     Parameters
     ----------
     taxa : str
@@ -1206,6 +1209,14 @@ def taxa_abundance_box_plot(taxa,
     mf = mf.assign(**{'sample-id': mf.index})
     df = df.drop(columns=cols)
 
+    if ax is None:
+        fig, ax = plt.subplots(figsize=figsize)
+
+    # Add a pseudocount.
+    if log_scale:
+        ax.set_yscale('log')
+        df = df + 1
+
     # Convert counts to proportions.
     df = df.div(df.sum(axis=1), axis=0)
 
@@ -1220,9 +1231,6 @@ def taxa_abundance_box_plot(taxa,
 
     if sort_by_names:
         df = df.reindex(sorted(df.columns), axis=1)
-
-    if ax is None:
-        fig, ax = plt.subplots(figsize=figsize)
 
     if show_legend and legend_short:
         def f(s):
@@ -1244,10 +1252,6 @@ def taxa_abundance_box_plot(taxa,
 
     df2 = df * 100
     df2 = pd.melt(df2)
-
-    if log_scale:
-        ax.set_yscale('log')
-        df2['value'] = df2['value'] + 1
 
     if ylimits:
         ax.set_ylim(ylimits)
