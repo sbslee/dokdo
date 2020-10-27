@@ -781,7 +781,8 @@ def taxa_abundance_bar_plot(taxa,
                             figsize=None,
                             width=0.8,
                             count=0,
-                            exclude_samples={},
+                            exclude_samples=None,
+                            include_samples=None,
                             exclude_taxa=[],
                             show_legend=False,
                             legend_short=False,
@@ -825,9 +826,12 @@ def taxa_abundance_bar_plot(taxa,
         The width of the bars.
     count : int, default: 0
         The number of taxa to display. When 0, display all.
-    exclude_samples : dict
-        Dictionary of column name(s) to list(s) of column value(s) to use to 
-        exclude samples.
+    exclude_samples : dict, optional
+        Filtering logic used for samples exclusion.
+        Format: {'column': ['item', ...], ...}.
+    include_samples : dict, optional
+        Filtering logic used for samples inclusion.
+        Format: {'column': ['item', ...], ...}.
     exclude_taxa : list
         The taxa names to be excluded when matched. Case insenstivie.
     show_legend : bool, default: False
@@ -911,11 +915,20 @@ def taxa_abundance_bar_plot(taxa,
         df.drop(columns=[k], inplace=True)
         df.rename(columns={f'@{k}': k}, inplace=True)
 
-    # If provided, exclude the specified samples.
-    if exclude_samples:
+    # If provided, filter the samples.
+    if exclude_samples and include_samples:
+        m = ("Cannot use 'exclude_samples' and "
+             "'include_samples' arguments together")
+        raise ValueError(m)
+    elif exclude_samples:
         for x in exclude_samples:
             for y in exclude_samples[x]:
                 df = df[df[x] != y]
+    elif include_samples:
+        for x in include_samples:
+            df = df[df[x].isin(include_samples[x])]
+    else:
+        pass
 
     # If provided, exclude the specified taxa.
     if exclude_taxa:
