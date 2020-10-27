@@ -24,6 +24,29 @@ from qiime2 import Visualization
 
 
 
+# -- Private methods ---------------------------------------------------------
+
+def _get_mf_cols(df):
+    "Returns metadata columns from DataFrame object."
+    cols = []
+    for column in df.columns:
+        if 'Unassigned' in column:
+            continue
+        elif '__' in column:
+            continue
+        else:
+            cols.append(column)
+    return cols
+
+
+
+
+
+
+
+
+
+
 # -- General methods ---------------------------------------------------------
 
 def get_mf(metadata):
@@ -751,6 +774,7 @@ def distance_matrix_plot(distance_matrix,
 
 
 def taxa_abundance_bar_plot(taxa,
+                            metadata=None,
                             level=1,
                             by=[],
                             ax=None,
@@ -777,10 +801,15 @@ def taxa_abundance_bar_plot(taxa,
     """
     This method creates a taxa abundance plot.
 
+    Although the input visualization file should contain medatadata already, 
+    you can replace it with new metadata by using the 'metadata' option.
+
     Parameters
     ----------
     taxa : str
         Path to the visualization file from the 'qiime taxa barplot'.
+    metadata : str or qiime2.metadata.metadata.Metadata
+        Metadata file or object.
     level : int
         Taxonomic level at which the features should be collapsed.
     by : list of str
@@ -844,6 +873,15 @@ def taxa_abundance_bar_plot(taxa,
     Visualization.load(taxa).export_data(t.name)
     df = pd.read_csv(f'{t.name}/level-{level}.csv', index_col=0)
 
+    # If provided, update the metadata.
+    if metadata is None:
+        pass
+    else:
+        mf = get_mf(metadata)
+        cols = _get_mf_cols(df)
+        df.drop(columns=cols, inplace=True)
+        df = pd.concat([df, mf], axis=1, join='inner')
+
     # If provided, sort the samples by the user-specified order instead of 
     # ordering numerically or alphabetically. To do this, we will first add a 
     # new temporary column filled with the indicies of the user-provided 
@@ -894,18 +932,10 @@ def taxa_abundance_bar_plot(taxa,
         df = df.loc[sample_names]
 
     # Remove the metadata columns.
-    dropped = []
-    for column in df.columns:
-        if 'Unassigned' in column:
-            continue
-        elif '__' in column:
-            continue
-        else:
-            dropped.append(column)
-
-    mf = df[dropped]
+    cols = _get_mf_cols(df)
+    mf = df[cols]
     mf = mf.assign(**{'sample-id': mf.index})
-    df = df.drop(columns=dropped)
+    df = df.drop(columns=cols)
 
     # Convert counts to proportions.
     df = df.div(df.sum(axis=1), axis=0)
@@ -1158,21 +1188,10 @@ def taxa_abundance_box_plot(taxa,
         df = df.loc[sample_names]
 
     # Remove the metadata columns.
-    dropped = []
-    for column in df.columns:
-        if 'Unassigned' in column:
-            continue
-        elif '__' in column:
-            continue
-        else:
-            dropped.append(column)
-
-    mf = df[dropped]
+    cols = _get_mf_cols(df)
+    mf = df[cols]
     mf = mf.assign(**{'sample-id': mf.index})
-    df = df.drop(columns=dropped)
-
-
-
+    df = df.drop(columns=cols)
 
     # Convert counts to proportions.
     df = df.div(df.sum(axis=1), axis=0)
