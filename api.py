@@ -771,7 +771,9 @@ def taxa_abundance_bar_plot(taxa,
                             sample_names=[],
                             csv_file=None,
                             xlabels=None,
-                            taxa_names=None):
+                            taxa_names=None,
+                            title=None,
+                            **kwargs):
     """
     This method creates a taxa abundance plot.
 
@@ -828,6 +830,10 @@ def taxa_abundance_bar_plot(taxa,
         List of the x-axis labels.
     taxa_names : list, optional
         List of taxa names to be displayed.
+    title : str, optional
+        Plot title.
+    kwargs : dict, optional
+        Additional keyword arguments are documented in DataFrame.plot.
 
     Returns
     -------
@@ -933,13 +939,12 @@ def taxa_abundance_bar_plot(taxa,
     else:
         c = plt.cm.get_cmap('Accent').colors
 
-
     df.plot.bar(stacked=True,
                 legend=False,
                 ax=ax,
                 width=width,
-                color=c)
-
+                color=c,
+                **kwargs)
 
     ax.set_xlabel('')
     ax.set_ylabel('Relative frequency')
@@ -991,6 +996,9 @@ def taxa_abundance_bar_plot(taxa,
             m = f"Expected {len(xtexts)} items, but found {len(xlabels)}"
             raise ValueError(m)
         ax.set_xticklabels(xlabels)
+
+    if title is not None:
+        ax.set_title(title)
 
     return ax
 
