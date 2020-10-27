@@ -827,11 +827,11 @@ def taxa_abundance_bar_plot(taxa,
     count : int, default: 0
         The number of taxa to display. When 0, display all.
     exclude_samples : dict, optional
-        Filtering logic used for samples exclusion.
-        Format: {'column': ['item', ...], ...}.
+        Filtering logic used for sample exclusion.
+        Format: {'col': ['item', ...], ...}.
     include_samples : dict, optional
-        Filtering logic used for samples inclusion.
-        Format: {'column': ['item', ...], ...}.
+        Filtering logic used for sample inclusion.
+        Format: {'col': ['item', ...], ...}.
     exclude_taxa : list
         The taxa names to be excluded when matched. Case insenstivie.
     show_legend : bool, default: False
