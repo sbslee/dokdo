@@ -1,6 +1,7 @@
 # Import standard libraries.
 import argparse
 import os
+import warnings
 
 # Import external libraries.
 import pandas as pd
@@ -115,6 +116,16 @@ def add_metadata(metadata,
                 mf2[k] = mf2[k].astype(v)
 
     mf3 = mf1.reset_index().merge(mf2).set_index(index_name)
+
+    a = mf1.shape[0]
+    b = mf3.shape[0]
+
+    if a != b:
+        message = (f"Final metadata (N={b}) has different number of samples "
+                   f"then input metadata (N={a}). Please double check "
+                   "whether this was intended.")
+        warnings.warn(message)
+
     Metadata(mf3).save(output)
 
 
