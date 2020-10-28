@@ -1,29 +1,20 @@
+# Import standard libraries.
 import argparse
 import os
 
+# Import external libraries.
 import pandas as pd
 
+# Import QIIME 2 libraries
 from qiime2 import Artifact
 from qiime2 import Metadata
 from q2_types.feature_data import DNAFASTAFormat
-
 from qiime2.plugins import taxa
 
+# -- Public commands ---------------------------------------------------------
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-def collapse(table, taxonomy):
+def collapse(table,
+             taxonomy):
     for i in range(1, 8):
         _ = taxa.methods.collapse(table=Artifact.load(table),
                                   taxonomy=Artifact.load(taxonomy),
@@ -39,13 +30,9 @@ def collapse(table, taxonomy):
 
 
 
-
-
-
-
-
-
-def tax2seq(taxonomy, rep_seqs, output):
+def tax2seq(taxonomy,
+            rep_seqs,
+            output):
     tax_df = Artifact.load(taxonomy).view(pd.DataFrame)
 
     _ = Artifact.load(rep_seqs)
@@ -75,17 +62,8 @@ def tax2seq(taxonomy, rep_seqs, output):
 
 
 
-
-
-
-
-
-
-
-
-
-
-def make_manifest(fastq_dir, output):
+def make_manifest(fastq_dir,
+                  output):
     files = {}
 
     for r, d, f in os.walk(fastq_dir):
@@ -121,20 +99,9 @@ def make_manifest(fastq_dir, output):
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-def add_metadata(metadata, columns, output):
+def add_metadata(metadata,
+                 columns,
+                 output):
     mf1 = Metadata.load(metadata).to_dataframe()
     dtypes = mf1.dtypes.to_dict()
     mf2 = pd.read_table(columns, keep_default_na=False)
@@ -158,31 +125,14 @@ def add_metadata(metadata, columns, output):
 
 
 
-
-
-
-
-
-
-
-def merge_metadata(metadata, output):
+def merge_metadata(metadata,
+                   output):
     dfs = []
 
     for file in metadata:
         dfs.append(Metadata.load(file).to_dataframe())
 
     Metadata(pd.concat(dfs)).save(output)
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -244,6 +194,7 @@ def main():
 
 
 
+
     tax2seq_parser = subparsers.add_parser(
         'tax2seq',
         description=("This command returns the mapping between observed ASVs "
@@ -271,6 +222,8 @@ def main():
 
 
 
+
+
     make_manifest_parser = subparsers.add_parser(
         'make_manifest',
         description=("This command creates a manifest file from a directory "
@@ -289,6 +242,7 @@ def main():
         'output',
         help="Path to the output manifest file (.tsv)."
     )
+
 
 
 
@@ -329,6 +283,7 @@ def main():
 
 
 
+
     merge_metadata_parser = subparsers.add_parser(
         'merge_metadata',
         description=("This command merges two or more sample-metadata.tsv "
@@ -349,12 +304,16 @@ def main():
 
 
 
+
+
+
+
+
+
+
     args = parser.parse_args()
-
     command = args.command
-
     del args.command
-
     commands[command](**vars(args))
 
 if __name__ == '__main__':
