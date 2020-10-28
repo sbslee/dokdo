@@ -14,6 +14,9 @@ import qiime2
 from qiime2 import Artifact
 from qiime2 import Metadata
 from qiime2 import Visualization
+from qiime2.plugins import feature_table
+from qiime2.plugins import diversity_lib
+from qiime2.plugins import diversity
 
 
 
@@ -71,6 +74,87 @@ def get_mf(metadata):
     else:
         raise TypeError(f"Incorrect metadata type: {type(metadata)}")
     return mf
+
+
+
+
+
+
+
+
+
+
+def ordinate(table,
+             metadata,
+             where,
+             metric='jaccard',
+             phylogeny=None):
+    """
+    This method wraps multiple QIIME 2 methods to perform ordination and 
+    returns Artifact object containing PCoA results.
+
+    Under the hood, this method performs sample filtration, rarefaction, 
+    distance matrix computation, and PCoA analysis.
+
+    Parameters
+    ----------
+    table : str
+        Table file.
+    metadata : str
+        Metadata file.
+    where : str
+        SQLite WHERE clause specifying sample metadata criteria.
+    metric : str, default: 'jaccard'
+        Metric used for distance matrix computation ('jaccard',
+        'bray_curtis', 'unweighted_unifrac', or 'weighted_unifrac').
+    phylogeny : str, optional
+        Rooted tree file. Required if using 'unweighted_unifrac', or 
+        'weighted_unifrac' as metric.
+
+    Returns
+    -------
+    qiime2.sdk.result.Artifact
+        Artifact containing PCoA results from 'diversity.methods.pcoa'.
+    """
+    filter_result = feature_table.methods.filter_samples(
+        table=Artifact.load(table),
+        metadata=Metadata.load(metadata),
+        where=where,
+    )
+
+    filtered_table = filter_result.filtered_table
+
+    min_depth = int(filtered_table.view(pd.DataFrame).sum(axis=1).min())
+
+    rarefy_result = feature_table.methods.rarefy(table=filtered_table,
+                                                 sampling_depth=min_depth)
+    
+    rarefied_table = rarefy_result.rarefied_table
+
+    args = [rarefied_table]
+    kwargs = {}
+
+    if phylogeny:
+        kwargs['phylogeny'] = Artifact.load(phylogeny)
+
+    if metric == 'jaccard':
+        distance_matrix_result = diversity_lib.methods.jaccard(*args, **kwargs)
+    elif metric == 'bray_curtis':
+        distance_matrix_result = diversity_lib.methods.bray_curtis(*args, **kwargs)
+    elif metric == 'unweighted_unifrac':
+        distance_matrix_result = diversity_lib.methods.unweighted_unifrac(*args, **kwargs)
+    elif metric == 'weighted_unifrac':
+        distance_matrix_result = diversity_lib.methods.weighted_unifrac(*args, **kwargs)
+    else:
+        raise ValueError(f"Incorrect metric detected: {metric}")
+
+    distance_matrix_result = diversity_lib.methods.jaccard(rarefied_table)
+    
+    distance_matrix = distance_matrix_result.distance_matrix
+    
+    pcoa_result = diversity.methods.pcoa(distance_matrix=distance_matrix)
+
+    return pcoa_result.pcoa
 
 
 
