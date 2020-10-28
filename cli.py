@@ -103,6 +103,7 @@ def add_metadata(metadata,
                  columns,
                  output):
     mf1 = Metadata.load(metadata).to_dataframe()
+    index_name = mf1.index.name
     dtypes = mf1.dtypes.to_dict()
     mf2 = pd.read_table(columns, keep_default_na=False)
 
@@ -113,7 +114,7 @@ def add_metadata(metadata,
             else:
                 mf2[k] = mf2[k].astype(v)
 
-    mf3 = mf1.reset_index().merge(mf2).set_index('#SampleID')
+    mf3 = mf1.reset_index().merge(mf2).set_index(index_name)
     Metadata(mf3).save(output)
 
 
