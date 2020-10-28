@@ -122,7 +122,7 @@ def add_metadata(metadata,
 
     if a != b:
         message = (f"Final metadata (N={b}) has different number of samples "
-                   f"then input metadata (N={a}). Please double check "
+                   f"than input metadata (N={a}). Please double check "
                    "whether this was intended.")
         warnings.warn(message)
 
