@@ -1180,7 +1180,8 @@ def taxa_abundance_box_plot(taxa,
                             xlabels=None,
                             log_scale=False,
                             taxa_names=None,
-                            ylimits=None):
+                            ylimits=None,
+                            title=None):
     """
     This method creates a taxa abundance box plot.
 
@@ -1249,6 +1250,8 @@ def taxa_abundance_box_plot(taxa,
         List of taxa names to be displayed.
     ylimits : list, optional
         Y-axis limits. Format: [float, float].
+    title : str, optional
+        Plot title.
 
     Returns
     -------
@@ -1393,7 +1396,7 @@ def taxa_abundance_box_plot(taxa,
     # Control the y-axis labels.
     if hide_ylabels:
         ax.set_ylabel('')
-        ax.set_yticks([])
+        ax.set_yticklabels([])
 
     # Control the legend.
     if show_legend:
@@ -1413,6 +1416,9 @@ def taxa_abundance_box_plot(taxa,
 
     a = ax.get_xticklabels()
     ax.set_xticklabels(a, rotation=45, ha='right')
+
+    if title is not None:
+        ax.set_title(title)
 
     return ax
 
