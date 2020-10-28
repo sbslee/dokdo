@@ -600,8 +600,8 @@ def beta_2d_plot(ordination,
 
 def beta_2d_plot_gallery(ordination,
                          metadata,
-                         targets,
                          prefix,
+                         targets=None,
                          nrows=3,
                          ncols=4,
                          figsize=None,
@@ -620,6 +620,8 @@ def beta_2d_plot_gallery(ordination,
         Metadata file or object.
     prefix : str
         File prefix.
+    targets: list, optional
+        List of targeted columns. Otherwise, use all columns in the metadata.
     nrows : int, default: 3
         Number of rows of the subplot grid.
     ncols : int, default: 4
@@ -627,9 +629,15 @@ def beta_2d_plot_gallery(ordination,
     figsize : tuple, optional
         Width, height in inches. Format: (float, float).
     """
-    n_total = len(targets)
+    if targets is None:
+        mf = get_mf(metadata)
+        _targets = mf.columns
+    else:
+        _targets = targets
+
+    n_total = len(_targets)
     n_panels = nrows * ncols
-    n_figures = math.ceil(len(targets) / n_panels)
+    n_figures = math.ceil(len(_targets) / n_panels)
 
     i = 0 # Total number of panels.
 
@@ -644,8 +652,8 @@ def beta_2d_plot_gallery(ordination,
 
                 kwargs = {**kwargs,
                           'ax': col,
-                          'hue': targets[i],
-                          'title': targets[i]}
+                          'hue': _targets[i],
+                          'title': _targets[i]}
 
                 beta_2d_plot(ordination, metadata, show_legend=True, **kwargs)
 
