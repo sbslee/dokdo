@@ -133,24 +133,16 @@ def ordinate(table,
     
     rarefied_table = rarefy_result.rarefied_table
 
-    args = [rarefied_table]
-    kwargs = {}
-
-    if phylogeny:
-        kwargs['phylogeny'] = Artifact.load(phylogeny)
-
     if metric == 'jaccard':
-        distance_matrix_result = diversity_lib.methods.jaccard(*args, **kwargs)
+        distance_matrix_result = diversity_lib.methods.jaccard(table=rarefied_table)
     elif metric == 'bray_curtis':
-        distance_matrix_result = diversity_lib.methods.bray_curtis(*args, **kwargs)
+        distance_matrix_result = diversity_lib.methods.bray_curtis(table=rarefied_table)
     elif metric == 'unweighted_unifrac':
-        distance_matrix_result = diversity_lib.methods.unweighted_unifrac(*args, **kwargs)
+        distance_matrix_result = diversity_lib.methods.unweighted_unifrac(table=rarefied_table, phylogeny=Artifact.load(phylogeny))
     elif metric == 'weighted_unifrac':
-        distance_matrix_result = diversity_lib.methods.weighted_unifrac(*args, **kwargs)
+        distance_matrix_result = diversity_lib.methods.weighted_unifrac(table=rarefied_table, phylogeny=Artifact.load(phylogeny))
     else:
         raise ValueError(f"Incorrect metric detected: {metric}")
-
-    distance_matrix_result = diversity_lib.methods.jaccard(rarefied_table)
     
     distance_matrix = distance_matrix_result.distance_matrix
     
