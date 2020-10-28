@@ -384,7 +384,7 @@ def alpha_diversity_plot(significance,
 
 
 def beta_2d_plot(ordination,
-                 metadata,
+                 metadata=None,
                  hue=None,
                  size=None,
                  style=None,
@@ -407,7 +407,7 @@ def beta_2d_plot(ordination,
     ----------
     ordination : str or qiime2.sdk.result.Artifact
         Artifact file or object from ordination.
-    metadata : str or qiime2.metadata.metadata.Metadata
+    metadata : str or qiime2.metadata.metadata.Metadata, optional
         Metadata file or object.
     hue : str, optional
         Grouping variable that will produce points with different colors.
@@ -459,9 +459,11 @@ def beta_2d_plot(ordination,
                         skipfooter=4, engine='python', usecols=[0, 1, 2])
     df1.columns = ['A1', 'A2']
 
-    mf = get_mf(metadata)
-
-    df3 = pd.concat([df1, mf], axis=1, join='inner')
+    if metadata is None:
+        df2 = df1
+    else:
+        mf = get_mf(metadata)
+        df2 = pd.concat([df1, mf], axis=1, join='inner')
 
     with open(f'{t.name}/ordination.txt') as f:
         v = [round(float(x) * 100, 2) for x in f.readlines()[4].split('\t')]
@@ -469,7 +471,7 @@ def beta_2d_plot(ordination,
     if ax is None:
         fig, ax = plt.subplots(figsize=figsize)
 
-    sns.scatterplot(data=df3,
+    sns.scatterplot(data=df2,
                     x='A1',
                     y='A2',
                     hue=hue,
