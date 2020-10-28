@@ -85,8 +85,8 @@ def get_mf(metadata):
 
 
 def ordinate(table,
-             metadata,
-             where,
+             metadata=None,
+             where=None,
              metric='jaccard',
              phylogeny=None):
     """
@@ -100,9 +100,9 @@ def ordinate(table,
     ----------
     table : str
         Table file.
-    metadata : str
+    metadata : str, optional
         Metadata file.
-    where : str
+    where : str, optional
         SQLite WHERE clause specifying sample metadata criteria.
     metric : str, default: 'jaccard'
         Metric used for distance matrix computation ('jaccard',
@@ -116,17 +116,19 @@ def ordinate(table,
     qiime2.sdk.result.Artifact
         Artifact containing PCoA results from 'diversity.methods.pcoa'.
     """
-    filter_result = feature_table.methods.filter_samples(
-        table=Artifact.load(table),
-        metadata=Metadata.load(metadata),
-        where=where,
-    )
+    if where:
+        filter_result = feature_table.methods.filter_samples(
+            table=Artifact.load(table),
+            metadata=Metadata.load(metadata),
+            where=where,
+        )
+        _table = filter_result.filtered_table
+    else:
+        _table = Artifact.load(table)
 
-    filtered_table = filter_result.filtered_table
+    min_depth = int(_table.view(pd.DataFrame).sum(axis=1).min())
 
-    min_depth = int(filtered_table.view(pd.DataFrame).sum(axis=1).min())
-
-    rarefy_result = feature_table.methods.rarefy(table=filtered_table,
+    rarefy_result = feature_table.methods.rarefy(table=_table,
                                                  sampling_depth=min_depth)
     
     rarefied_table = rarefy_result.rarefied_table
