@@ -50,8 +50,8 @@ def _get_mf_cols(df):
 
 
 
-def _filter_samples(df, exclude_samples, include_samples):
-    "Returns DataFrame object after sample filtering."
+def _filter_samples(df, mf, exclude_samples, include_samples):
+    "Returns DataFrame objects after sample filtering."
     if exclude_samples and include_samples:
         m = ("Cannot use 'exclude_samples' and "
              "'include_samples' arguments together")
@@ -59,13 +59,30 @@ def _filter_samples(df, exclude_samples, include_samples):
     elif exclude_samples:
         for x in exclude_samples:
             for y in exclude_samples[x]:
-                df = df[df[x] != y]
+                i = mf[x] != y
+                df = df.loc[i]
+                mf = mf.loc[i]
     elif include_samples:
         for x in include_samples:
-            df = df[df[x].isin(include_samples[x])]
+            i = mf[x].isin(include_samples[x])
+            df = df.loc[i]
+            mf = mf.loc[i]
     else:
         pass
-    return df
+    return (df, mf)
+
+
+
+
+
+
+
+
+
+
+def sort_by_mean(df):
+    "Returns DataFrame object after sorting columns by their mean."
+    return df.loc[:, df.mean().sort_values(ascending=False).index]
 
 
 
@@ -912,6 +929,8 @@ def taxa_abundance_bar_plot(taxa,
                             xlabels=None,
                             taxa_names=None,
                             title=None,
+                            sort_by_mean1=True,
+                            sort_by_mean2=True,
                             **kwargs):
     """
     This method creates a taxa abundance plot.
@@ -979,6 +998,10 @@ def taxa_abundance_bar_plot(taxa,
         List of taxa names to be displayed.
     title : str, optional
         Plot title.
+    sort_by_mean1 : bool, default: True
+        Sort taxa by their mean abundance before sample filtration.
+    sort_by_mean2 : bool, default: True
+        Sort taxa by their mean abundance after sample filtration.
     kwargs : dict, optional
         Additional keyword arguments are documented in DataFrame.plot.
 
@@ -1029,8 +1052,6 @@ def taxa_abundance_bar_plot(taxa,
         df.drop(columns=[k], inplace=True)
         df.rename(columns={f'@{k}': k}, inplace=True)
 
-    df = _filter_samples(df, exclude_samples, include_samples)
-
     # If provided, exclude the specified taxa.
     if exclude_taxa:
         dropped = []
@@ -1041,21 +1062,27 @@ def taxa_abundance_bar_plot(taxa,
         dropped = list(set(dropped))
         df = df.drop(columns=dropped)
 
-    # If provided, only include the specified samples.
-    if sample_names:
-        df = df.loc[sample_names]
-
     # Remove the metadata columns.
     cols = _get_mf_cols(df)
     mf = df[cols]
     mf = mf.assign(**{'sample-id': mf.index})
     df = df.drop(columns=cols)
 
+    if sort_by_mean1:
+        df = sort_by_mean(df)
+
+    df, mf = _filter_samples(df, mf, exclude_samples, include_samples)
+
+    # If provided, only include the specified samples.
+    if sample_names:
+        df = df.loc[sample_names]
+        mf = mf.loc[sample_names]
+
     # Convert counts to proportions.
     df = df.div(df.sum(axis=1), axis=0)
 
-    # Sort the columns (i.e. species) by their mean abundance.
-    df = df.loc[:, df.mean().sort_values(ascending=False).index]
+    if sort_by_mean2:
+        df = sort_by_mean(df)
 
     # If provided, collapse species to the Other column.
     if count is not 0 and taxa_names is not None:
@@ -1292,8 +1319,6 @@ def taxa_abundance_box_plot(taxa,
         df.drop(columns=[k], inplace=True)
         df.rename(columns={f'@{k}': k}, inplace=True)
 
-    df = _filter_samples(df, exclude_samples, include_samples)
-
     # If provided, exclude the specified taxa.
     if exclude_taxa:
         dropped = []
@@ -1304,15 +1329,18 @@ def taxa_abundance_box_plot(taxa,
         dropped = list(set(dropped))
         df = df.drop(columns=dropped)
 
-    # If provided, only include the specified samples.
-    if sample_names:
-        df = df.loc[sample_names]
-
     # Remove the metadata columns.
     cols = _get_mf_cols(df)
     mf = df[cols]
     mf = mf.assign(**{'sample-id': mf.index})
     df = df.drop(columns=cols)
+
+    df, mf = _filter_samples(df, mf, exclude_samples, include_samples)
+
+    # If provided, only include the specified samples.
+    if sample_names:
+        df = df.loc[sample_names]
+        mf = mf.loc[sample_names]
 
     if ax is None:
         fig, ax = plt.subplots(figsize=figsize)
