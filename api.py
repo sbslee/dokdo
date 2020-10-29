@@ -1088,6 +1088,7 @@ def taxa_abundance_bar_plot(taxa,
                 ax=ax,
                 width=width,
                 color=c,
+                linewidth=0,
                 **kwargs)
 
     ax.set_xlabel('')
