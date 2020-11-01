@@ -80,7 +80,7 @@ def _filter_samples(df, mf, exclude_samples, include_samples):
 
 
 
-def sort_by_mean(df):
+def _sort_by_mean(df):
     "Returns DataFrame object after sorting columns by their mean."
     return df.loc[:, df.mean().sort_values(ascending=False).index]
 
@@ -160,6 +160,10 @@ def ordinate(table,
         Artifact containing PCoA results from 'diversity.methods.pcoa'.
     """
     if where:
+        if metadata is None:
+            m = "To use 'where' argument, you must provide metadata"
+            raise ValueError(m)
+
         filter_result = feature_table.methods.filter_samples(
             table=Artifact.load(table),
             metadata=Metadata.load(metadata),
@@ -1069,7 +1073,7 @@ def taxa_abundance_bar_plot(taxa,
     df = df.drop(columns=cols)
 
     if sort_by_mean1:
-        df = sort_by_mean(df)
+        df = _sort_by_mean(df)
 
     df, mf = _filter_samples(df, mf, exclude_samples, include_samples)
 
@@ -1082,7 +1086,7 @@ def taxa_abundance_bar_plot(taxa,
     df = df.div(df.sum(axis=1), axis=0)
 
     if sort_by_mean2:
-        df = sort_by_mean(df)
+        df = _sort_by_mean(df)
 
     # If provided, collapse species to the Other column.
     if count is not 0 and taxa_names is not None:
@@ -1354,7 +1358,7 @@ def taxa_abundance_box_plot(taxa,
     df = df.div(df.sum(axis=1), axis=0)
 
     # Sort the columns (i.e. species) by their mean abundance.
-    df = df.loc[:, df.mean().sort_values(ascending=False).index]
+    df = _sort_by_mean(df)
 
     # If provided, collapse extra species to the Other column.
     if count is not 0:
