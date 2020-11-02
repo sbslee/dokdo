@@ -1510,3 +1510,45 @@ def ancom_volcano_plot(ancom,
 
 
 
+
+def addsig(x1,
+           x2,
+           y,
+           t='',
+           h=1.0,
+           lw=1.0,
+           lc='black',
+           tc='black'):
+    """
+    This method adds a signifiance annotation between two groups in a box plot.
+
+    Parameters
+    ----------
+    x1 : float
+        Position of the first box.
+    x2 : float
+        Position of the second box.
+    y : float
+        Bottom position of the drawing.
+    t : str, default: ''
+        Text.
+    h : float, default: 1.0
+        Height of the drawing.
+    lw : float, default: 1.0
+        Line width.
+    lc : str, default: 'black'
+        Line color.
+    tc : str, default: 'black'
+        Text color.
+    """
+    plt.plot([x1, x1, x2, x2], [y, y+h, y+h, y], lw=lw, c=lc)
+    plt.text((x1+x2)*0.5, y+h, t, ha='center', va='bottom', color=tc)
+
+
+
+
+
+
+
+
+
