@@ -456,7 +456,8 @@ def alpha_diversity_plot(significance,
                          ax=None,
                          figsize=None,
                          add_swarmplot=False,
-                         order=None):
+                         order=None,
+                         ylabel=None):
     """
     This method creates an alpha diversity plot.
 
@@ -475,6 +476,8 @@ def alpha_diversity_plot(significance,
         Add a swarm plot on top of the box plot.
     order : list, optional
         Order to plot the categorical levels in.
+    ylabel : str, optional
+        Y-axis label.
 
     Returns
     -------
@@ -496,6 +499,9 @@ def alpha_diversity_plot(significance,
 
     if add_swarmplot:
         sns.swarmplot(**kwargs)
+
+    if ylabel:
+        ax.set_ylabel(ylabel)
 
     return ax
 
