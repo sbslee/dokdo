@@ -1120,6 +1120,8 @@ def taxa_abundance_bar_plot(taxa,
     else:
         c = plt.cm.get_cmap('Accent').colors
 
+    df = df * 100
+
     df.plot.bar(stacked=True,
                 legend=False,
                 ax=ax,
@@ -1129,7 +1131,7 @@ def taxa_abundance_bar_plot(taxa,
                 **kwargs)
 
     ax.set_xlabel('')
-    ax.set_ylabel('Relative frequency')
+    ax.set_ylabel('Relative abundance (%)')
 
 
     # Control the x-axis labels.
