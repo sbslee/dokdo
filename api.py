@@ -1079,7 +1079,9 @@ def taxa_abundance_bar_plot(taxa,
     df = df.drop(columns=cols)
 
     if sort_by_mean1:
-        df = _sort_by_mean(df)
+        a = df.div(df.sum(axis=1), axis=0)
+        a = _sort_by_mean(a)
+        df = df[a.columns]
 
     df, mf = _filter_samples(df, mf, exclude_samples, include_samples)
 
