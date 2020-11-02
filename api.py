@@ -941,6 +941,7 @@ def taxa_abundance_bar_plot(taxa,
                             title=None,
                             sort_by_mean1=True,
                             sort_by_mean2=True,
+                            legend_labels=None,
                             **kwargs):
     """
     This method creates a taxa abundance plot.
@@ -1012,6 +1013,8 @@ def taxa_abundance_bar_plot(taxa,
         Sort taxa by their mean abundance before sample filtration.
     sort_by_mean2 : bool, default: True
         Sort taxa by their mean abundance after sample filtration.
+    legend_labels : list, optional
+        Legend texts.
     kwargs : dict, optional
         Additional keyword arguments are documented in DataFrame.plot.
 
@@ -1163,7 +1166,17 @@ def taxa_abundance_bar_plot(taxa,
         return x
 
     if show_legend:
-        legend_labels = [x.get_text() for x in ax.legend().get_texts()]
+        original_labels = [x.get_text() for x in ax.legend().get_texts()]
+
+        if legend_labels is None:
+            legend_labels = original_labels
+
+        a = len(legend_labels)
+        b = len(original_labels)
+
+        if a != b:
+            raise ValueError(f"Expected {a} legend labels, received {b}")
+
         if legend_short:
             legend_labels = [f(x) for x in legend_labels]
         ax.legend(labels=legend_labels, loc=legend_loc)
