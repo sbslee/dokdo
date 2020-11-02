@@ -942,6 +942,7 @@ def taxa_abundance_bar_plot(taxa,
                             sort_by_mean1=True,
                             sort_by_mean2=True,
                             legend_labels=None,
+                            legend_only=False,
                             **kwargs):
     """
     This method creates a taxa abundance plot.
@@ -1015,6 +1016,8 @@ def taxa_abundance_bar_plot(taxa,
         Sort taxa by their mean abundance after sample filtration.
     legend_labels : list, optional
         Legend texts.
+    legend_only : bool, default: False
+        Plot the legend only.
     kwargs : dict, optional
         Additional keyword arguments are documented in DataFrame.plot.
 
@@ -1154,9 +1157,33 @@ def taxa_abundance_bar_plot(taxa,
         ax.set_ylabel('')
         ax.set_yticks([])
 
+    # If provided, output the dataframe as a .csv file.
+    if csv_file is not None:
+        df.to_csv(csv_file)
 
+    # Manage the x-axis labels.
+    if xlabels is not None:
+        xtexts = [x.get_text() for x in ax.get_xticklabels()]
+        if len(xtexts) != len(xlabels):
+            m = f"Expected {len(xtexts)} items, but found {len(xlabels)}"
+            raise ValueError(m)
+        ax.set_xticklabels(xlabels)
+
+    # Manage the plot title.
+    if title is not None:
+        ax.set_title(title)
 
     # Control the legend.
+    h, l = ax.get_legend_handles_labels()
+
+    if legend_labels is None:
+        legend_labels = l
+    else:
+        a = len(legend_labels)
+        b = len(l)
+        if a != b:
+            raise ValueError(f"Expected {a} legend labels, received {b}")
+
     def f(s):
         ranks = s.split(';')
         for rank in reversed(ranks):
@@ -1165,39 +1192,18 @@ def taxa_abundance_bar_plot(taxa,
                 break
         return x
 
+    if legend_short:
+        legend_labels = [f(x) for x in legend_labels]
+
     if show_legend:
-        original_labels = [x.get_text() for x in ax.legend().get_texts()]
+        ax.legend(h, legend_labels, loc=legend_loc)
 
-        if legend_labels is None:
-            legend_labels = original_labels
-
-        a = len(legend_labels)
-        b = len(original_labels)
-
-        if a != b:
-            raise ValueError(f"Expected {a} legend labels, received {b}")
-
-        if legend_short:
-            legend_labels = [f(x) for x in legend_labels]
-        ax.legend(labels=legend_labels, loc=legend_loc)
-
-
-
-
-
-    # If provided, output the dataframe as a .csv file.
-    if csv_file is not None:
-        df.to_csv(csv_file)
-
-    if xlabels is not None:
-        xtexts = [x.get_text() for x in ax.get_xticklabels()]
-        if len(xtexts) != len(xlabels):
-            m = f"Expected {len(xtexts)} items, but found {len(xlabels)}"
-            raise ValueError(m)
-        ax.set_xticklabels(xlabels)
-
-    if title is not None:
-        ax.set_title(title)
+    if legend_only:
+        fig2, ax2 = plt.subplots(figsize=figsize)
+        ax2.legend(h, legend_labels)
+        ax2.axis('off')
+        ax.remove()
+        ax = ax2
 
     return ax
 
