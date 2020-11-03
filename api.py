@@ -118,6 +118,9 @@ def _pretty_taxa(s):
 def _legend_handler(ax,
                     show_legend,
                     legend_loc,
+                    legend_ncol=1,
+                    legend_labels=None,
+                    legend_short=False,
                     remove_duplicates=False):
     "Handles the legend of a figure."
     h, l = ax.get_legend_handles_labels()
@@ -126,11 +129,20 @@ def _legend_handler(ax,
             if remove_duplicates:
                 n = int(len(h) / 2)
                 h, l = h[:n], l[:n]
-            ax.legend(h, l, loc=legend_loc)
+            if legend_labels:
+                a = len(legend_labels)
+                b = len(l)
+                if a != b:
+                    m = f"Legend: Expected {b} items, received {a}"
+                    raise ValueError(m)
+                l = legend_labels
+            if legend_short:
+                l = [_pretty_taxa(x) for x in l]
+            ax.legend(h, l, loc=legend_loc, ncol=legend_ncol)
         else:
             warnings.warn("No handles with labels found to put in legend.")
     else:
-        if h:
+        if ax.get_legend():
             ax.get_legend().remove()
         else:
             pass
@@ -483,13 +495,7 @@ def alpha_rarefaction_plot(rarefaction,
     ax.set_xlabel('Sequencing depth')
     ax.set_ylabel(metric)
 
-    # Control the legend.
-    if not hue:
-        pass
-    elif show_legend:
-        ax.legend(loc=legend_loc, ncol=legend_ncol)
-    else:
-        ax.get_legend().remove()
+    _legend_handler(ax, show_legend, legend_loc, legend_ncol=legend_ncol)
 
     return ax
 
@@ -672,13 +678,7 @@ def beta_2d_plot(ordination,
     ax.set_xlabel(f'Axis 1 ({v[0]} %)')
     ax.set_ylabel(f'Axis 2 ({v[1]} %)')
 
-    # Control the legend.
-    if not hue and not size and not style:
-        pass
-    elif show_legend:
-        ax.legend(loc=legend_loc, ncol=legend_ncol)
-    else:
-        ax.get_legend().remove()
+    _legend_handler(ax, show_legend, legend_loc, legend_ncol=legend_ncol)
 
     if title is not None:
         ax.set_title(title)
@@ -792,6 +792,7 @@ def beta_3d_plot(ordination,
                  show_legend=False,
                  legend_loc='best',
                  hue_order=None,
+                 legend_ncol=1,
                  **kwargs):
     """
     This method creates a 3D beta diversity plot.
@@ -821,6 +822,8 @@ def beta_3d_plot(ordination,
         Legend location specified as in matplotlib.pyplot.legend.
     hue_order : list, optional
         Specify the order of categorical levels of the 'hue' semantic.
+    legend_ncol : int, default: 1
+        The number of columns that the legend has.
     kwargs : dict, optional
         Other keyword arguments passed down to matplotlib.axes.Axes.scatter.
 
@@ -879,9 +882,7 @@ def beta_3d_plot(ordination,
                        label=c,
                        **kwargs)
 
-    # Control the legend.
-    if show_legend:
-        ax.legend(loc=legend_loc)
+    _legend_handler(ax, show_legend, legend_loc, legend_ncol=legend_ncol)
 
     return ax
 
@@ -1224,22 +1225,7 @@ def taxa_abundance_bar_plot(taxa,
     if title is not None:
         ax.set_title(title)
 
-    # Control the legend.
-    h, l = ax.get_legend_handles_labels()
-
-    if legend_labels is None:
-        legend_labels = l
-    else:
-        a = len(legend_labels)
-        b = len(l)
-        if a != b:
-            raise ValueError(f"Expected {b} legend labels, received {a}")
-
-    if legend_short:
-        legend_labels = [_pretty_taxa(x) for x in legend_labels]
-
-    if show_legend:
-        ax.legend(h, legend_labels, loc=legend_loc)
+    _legend_handler(ax, show_legend, legend_loc, legend_labels=legend_labels, legend_short=True)
 
     if legend_only:
         ax.clear()
