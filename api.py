@@ -1182,7 +1182,7 @@ def taxa_abundance_bar_plot(taxa,
         a = len(legend_labels)
         b = len(l)
         if a != b:
-            raise ValueError(f"Expected {a} legend labels, received {b}")
+            raise ValueError(f"Expected {b} legend labels, received {a}")
 
     def f(s):
         ranks = s.split(';')
