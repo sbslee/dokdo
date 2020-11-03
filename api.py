@@ -1219,16 +1219,11 @@ def taxa_abundance_box_plot(taxa,
                             by=[],
                             ax=None,
                             figsize=None,
-                            width=0.8,
                             count=0,
                             exclude_samples=None,
                             include_samples=None,
                             exclude_taxa=[],
-                            show_legend=False,
-                            legend_short=False,
-                            legend_loc='best',
                             sort_by_names=False,
-                            colors=[],
                             hide_xlabels=False,
                             hide_ylabels=False,
                             label_columns=[],
@@ -1262,8 +1257,6 @@ def taxa_abundance_box_plot(taxa,
         Axes object to draw the plot onto, otherwise uses the current Axes.
     figsize : tuple, optional
         Width, height in inches. Format: (float, float).
-    width : float
-        The width of the bars.
     count : int, default: 0
         The number of taxa to display. When 0, display all.
     exclude_samples : dict, optional
@@ -1274,16 +1267,8 @@ def taxa_abundance_box_plot(taxa,
         Format: {'col': ['item', ...], ...}.
     exclude_taxa : list
         The taxa names to be excluded when matched. Case insenstivie.
-    show_legend : bool, default: False
-        Show the legend.
-    legend_short : bool
-        If true, only display the smallest taxa rank in the legend.
-    legend_loc : str, default: 'best'
-        Legend location specified as in matplotlib.pyplot.legend.
     sort_by_names : bool
         If true, sort the columns (i.e. species) to be displayed by name.
-    colors : list
-        The bar colors.
     hide_xlabels : bool, default: False
         Hide all the x-axis labels.
     hide_ylabels : bool, default: False
@@ -1396,21 +1381,6 @@ def taxa_abundance_box_plot(taxa,
     if sort_by_names:
         df = df.reindex(sorted(df.columns), axis=1)
 
-    if show_legend and legend_short:
-        def f(s):
-            ranks = s.split(';')
-            for rank in reversed(ranks):
-                if rank != '__':
-                    x = rank
-                    break
-            return x
-        df.columns = [f(x) for x in df.columns]
-
-    if colors:
-        c = colors
-    else:
-        c = plt.cm.get_cmap('Accent').colors
-
     if taxa_names is not None:
         df = df[taxa_names]
 
@@ -1457,10 +1427,6 @@ def taxa_abundance_box_plot(taxa,
     if hide_ylabels:
         ax.set_ylabel('')
         ax.set_yticklabels([])
-
-    # Control the legend.
-    if show_legend:
-        ax.legend(loc=legend_loc)
 
     # If provided, output the dataframe as a .csv file.
     if csv_file is not None:
