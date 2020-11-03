@@ -137,16 +137,17 @@ def _legend_handler(ax,
             raise ValueError(m)
         l = legend_labels
 
+    if remove_duplicates:
+        if h:
+            n = int(len(h) / 2)
+            h, l = h[:n], l[:n]
+
     if legend_only:
         ax.clear()
         ax.legend(h, l, loc=legend_loc)
         ax.axis('off')
     elif show_legend:
         if h:
-            if remove_duplicates:
-                n = int(len(h) / 2)
-                h, l = h[:n], l[:n]
-
             ax.legend(h, l, loc=legend_loc, ncol=legend_ncol)
         else:
             warnings.warn("No handles with labels found to put in legend.")
