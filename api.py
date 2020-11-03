@@ -1,10 +1,12 @@
 # Import standard libraries.
 import math
 from tempfile import TemporaryDirectory
+import warnings
 
 # Import external libraries.
 import numpy as np
 import pandas as pd
+import matplotlib
 import matplotlib.pyplot as plt
 import seaborn as sns
 import skbio as sb
@@ -83,6 +85,55 @@ def _filter_samples(df, mf, exclude_samples, include_samples):
 def _sort_by_mean(df):
     "Returns DataFrame object after sorting columns by their mean."
     return df.loc[:, df.mean().sort_values(ascending=False).index]
+
+
+
+
+
+
+
+
+
+
+def _pretty_taxa(s):
+    "Returns pretty taxa name."
+    if isinstance(s, matplotlib.text.Text):
+        s = s.get_text()
+    ranks = s.split(';')
+    for rank in reversed(ranks):
+        if rank != '__':
+            x = rank
+            break
+    return x
+
+
+
+
+
+
+
+
+
+
+def _legend_handler(ax,
+                    show_legend,
+                    legend_loc,
+                    remove_duplicates=False):
+    "Handles the legend of a figure."
+    h, l = ax.get_legend_handles_labels()
+    if show_legend:
+        if h:
+            if remove_duplicates:
+                n = int(len(h) / 2)
+                h, l = h[:n], l[:n]
+            ax.legend(h, l, loc=legend_loc)
+        else:
+            warnings.warn("No handles with labels found to put in legend.")
+    else:
+        if h:
+            ax.get_legend().remove()
+        else:
+            pass
 
 
 
@@ -1184,16 +1235,8 @@ def taxa_abundance_bar_plot(taxa,
         if a != b:
             raise ValueError(f"Expected {b} legend labels, received {a}")
 
-    def f(s):
-        ranks = s.split(';')
-        for rank in reversed(ranks):
-            if rank != '__':
-                x = rank
-                break
-        return x
-
     if legend_short:
-        legend_labels = [f(x) for x in legend_labels]
+        legend_labels = [_pretty_taxa(x) for x in legend_labels]
 
     if show_legend:
         ax.legend(h, legend_labels, loc=legend_loc)
@@ -1215,6 +1258,8 @@ def taxa_abundance_bar_plot(taxa,
 
 
 def taxa_abundance_box_plot(taxa,
+                            hue=None,
+                            add_datapoints=False,
                             level=1,
                             by=[],
                             ax=None,
@@ -1226,7 +1271,6 @@ def taxa_abundance_box_plot(taxa,
                             sort_by_names=False,
                             hide_xlabels=False,
                             hide_ylabels=False,
-                            label_columns=[],
                             orders={},
                             sample_names=[],
                             csv_file=None,
@@ -1235,7 +1279,12 @@ def taxa_abundance_box_plot(taxa,
                             log_scale=False,
                             taxa_names=None,
                             ylimits=None,
-                            title=None):
+                            title=None,
+                            brief_xlabels=False,
+                            show_legend=False,
+                            legend_loc='best',
+                            show_means=False,
+                            meanprops=None):
     """
     This method creates a taxa abundance box plot.
 
@@ -1246,6 +1295,10 @@ def taxa_abundance_box_plot(taxa,
     ----------
     taxa : str
         Path to the visualization file from the 'qiime taxa barplot'.
+    hue : str, optional
+        Grouping variable that will produce boxes with different colors.
+    add_datapoints : bool, default: False
+        Show datapoints on top of the boxes.
     level : int
         Taxonomic level at which the features should be collapsed.
     by : list of str
@@ -1273,8 +1326,6 @@ def taxa_abundance_box_plot(taxa,
         Hide all the x-axis labels.
     hide_ylabels : bool, default: False
         Hide all the y-axis labels.
-    label_columns : list
-        The column names to be used as the x-axis labels.
     orders : dict
         Dictionary of {column1: [element1, element2, ...], column2: 
         [element1, element2...], ...} to indicate the order of items. Used to 
@@ -1296,6 +1347,16 @@ def taxa_abundance_box_plot(taxa,
         Y-axis limits. Format: [float, float].
     title : str, optional
         Plot title.
+    brief_xlabels : bool, default: False
+        If true, only display the smallest taxa rank in the x-axis labels.
+    show_legend : bool, default: False
+        Show the legend.
+    legend_loc : str, default: 'best'
+        Legend location specified as in matplotlib.pyplot.legend.
+    show_means : bool, default: False
+        Add means to the boxes.
+    meanprops : dict, optional
+        The meanprops argument as in matplotlib.pyplot.boxplot.
 
     Returns
     -------
@@ -1372,7 +1433,7 @@ def taxa_abundance_box_plot(taxa,
     # Sort the columns (i.e. species) by their mean abundance.
     df = _sort_by_mean(df)
 
-    # If provided, collapse extra species to the Other column.
+    # If provided, collapse extra species to the Others column.
     if count is not 0:
         others = df.iloc[:, count-1:].sum(axis=1)
         df = df.iloc[:, :count-1]
@@ -1384,31 +1445,51 @@ def taxa_abundance_box_plot(taxa,
     if taxa_names is not None:
         df = df[taxa_names]
 
+    _taxa_names = df.columns
+
     df2 = df * 100
-    df2 = pd.melt(df2)
+
+    if hue is not None:
+        df2 = pd.concat([df2, mf[hue]], axis=1, join='inner')
+        df2 = pd.melt(df2, id_vars=[hue])
+    else:
+        df2 = pd.melt(df2)
 
     if ylimits:
         ax.set_ylim(ylimits)
 
-    meanprops={'marker':'x',
-               'markerfacecolor':'red', 
-               'markeredgecolor':'red',
-               'markersize':'10'}
+
+
+    if meanprops:
+        _meanprops = meanprops
+    else:
+        _meanprops={'marker':'x',
+                    'markerfacecolor':'white', 
+                    'markeredgecolor':'white',
+                    'markersize':'10'}
+
+    kwargs = {}
+
+    if show_means:
+        kwargs['showmeans'] = True
+        kwargs['meanprops'] = _meanprops
 
     sns.boxplot(x='variable',
                 y='value',
+                hue=hue,
                 data=df2,
-                color='white',
                 ax=ax,
-                showmeans=True,
-                meanprops=meanprops)
+                **kwargs)
 
-    sns.swarmplot(x='variable',
-                  y='value',
-                  data=df2,
-                  ax=ax,
-                  color='black',
-                  size=size)
+    if add_datapoints:
+        sns.swarmplot(x='variable',
+                      y='value',
+                      hue=hue,
+                      data=df2,
+                      ax=ax,
+                      color='black',
+                      size=size,
+                      dodge=True)
 
     ax.set_xlabel('')
     ax.set_ylabel('Relative abundance (%)')
@@ -1416,12 +1497,6 @@ def taxa_abundance_box_plot(taxa,
     # Control the x-axis labels.
     if hide_xlabels:
         ax.set_xticks([])
-    elif label_columns:
-        f = lambda row: ' : '.join(row.values.astype(str))
-        new_labels = mf[label_columns].apply(f, axis=1)
-        ax.set_xticklabels(new_labels)
-    else:
-        pass
 
     # Control the y-axis labels.
     if hide_ylabels:
@@ -1441,10 +1516,16 @@ def taxa_abundance_box_plot(taxa,
         ax.set_xticklabels(xlabels)
 
     a = ax.get_xticklabels()
+
+    if brief_xlabels:
+        a = [_pretty_taxa(x) for x in a]
+
     ax.set_xticklabels(a, rotation=45, ha='right')
 
     if title is not None:
         ax.set_title(title)
+
+    _legend_handler(ax, show_legend, legend_loc, remove_duplicates=True)
 
     return ax
 
