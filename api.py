@@ -1199,11 +1199,9 @@ def taxa_abundance_bar_plot(taxa,
         ax.legend(h, legend_labels, loc=legend_loc)
 
     if legend_only:
-        fig2, ax2 = plt.subplots(figsize=figsize)
-        ax2.legend(h, legend_labels)
-        ax2.axis('off')
-        ax.remove()
-        ax = ax2
+        ax.clear()
+        ax.legend(h, legend_labels, loc=legend_loc)
+        ax.axis('off')
 
     return ax
 
