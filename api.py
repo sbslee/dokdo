@@ -100,11 +100,28 @@ def _pretty_taxa(s):
     if isinstance(s, matplotlib.text.Text):
         s = s.get_text()
     ranks = s.split(';')
-    for rank in reversed(ranks):
-        if rank != '__':
-            x = rank
-            break
-    return x
+
+    for i, rank in enumerate(reversed(ranks)):
+        if rank in ['Others']:
+            return rank
+
+        if rank == '__':
+            continue
+
+        if rank.split('__')[1] is '':
+            continue
+
+        if 's__' in rank:
+            rank = rank.split('__')[1]
+            if len(rank.split('_')) == 1:
+                genus = ranks[i+1].split('__')[1].split('_')[0]
+                species = rank.split('_')[0]
+                rank = f'{genus} {species}'
+
+        if '__' in rank:
+            rank = rank.split('__')[1]
+
+        return rank
 
 
 
