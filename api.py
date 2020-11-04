@@ -99,10 +99,10 @@ def _pretty_taxa(s):
     "Returns pretty taxa name."
     if isinstance(s, matplotlib.text.Text):
         s = s.get_text()
-    ranks = s.split(';')
+    ranks = list(reversed(s.split(';')))
 
-    for i, rank in enumerate(reversed(ranks)):
-        if rank in ['Others']:
+    for i, rank in enumerate(ranks):
+        if rank in ['Others', 'Unassigned']:
             return rank
 
         if rank == '__':
