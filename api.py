@@ -144,7 +144,7 @@ def _legend_handler(ax,
 
     if legend_only:
         ax.clear()
-        ax.legend(h, l, loc=legend_loc)
+        ax.legend(h, l, loc=legend_loc, ncol=legend_ncol)
         ax.axis('off')
     elif show_legend:
         if h:
@@ -435,6 +435,7 @@ def alpha_rarefaction_plot(rarefaction,
                            show_legend=False,
                            legend_loc='best',
                            legend_ncol=1,
+                           legend_only=False,
                            hue_order=None,
                            **kwargs):
     """
@@ -458,6 +459,8 @@ def alpha_rarefaction_plot(rarefaction,
         Legend location specified as in matplotlib.pyplot.legend.
     legend_ncol : int, default: 1
         The number of columns that the legend has.
+    legend_only : bool, default: False
+        Plot the legend only.
     hue_order : list, optional
         Specify the order of categorical levels of the 'hue' semantic.
     kwargs : dict, optional
@@ -506,7 +509,7 @@ def alpha_rarefaction_plot(rarefaction,
     ax.set_xlabel('Sequencing depth')
     ax.set_ylabel(metric)
 
-    ax = _legend_handler(ax, show_legend, legend_loc, legend_ncol=legend_ncol)
+    ax = _legend_handler(ax, show_legend, legend_loc, legend_ncol=legend_ncol, legend_only=legend_only)
 
     return ax
 
@@ -991,6 +994,8 @@ def taxa_abundance_bar_plot(taxa,
                             show_legend=False,
                             legend_short=False,
                             legend_loc='best',
+                            legend_labels=None,
+                            legend_only=False,
                             sort_by_names=False,
                             colors=[],
                             hide_xlabels=False,
@@ -1004,8 +1009,6 @@ def taxa_abundance_bar_plot(taxa,
                             title=None,
                             sort_by_mean1=True,
                             sort_by_mean2=True,
-                            legend_labels=None,
-                            legend_only=False,
                             **kwargs):
     """
     This method creates a taxa abundance plot.
@@ -1048,6 +1051,10 @@ def taxa_abundance_bar_plot(taxa,
         If true, only display the smallest taxa rank in the legend.
     legend_loc : str, default: 'best'
         Legend location specified as in matplotlib.pyplot.legend.
+    legend_labels : list, optional
+        Legend texts.
+    legend_only : bool, default: False
+        Plot the legend only.
     sort_by_names : bool
         If true, sort the columns (i.e. species) to be displayed by name.
     colors : list
@@ -1077,10 +1084,6 @@ def taxa_abundance_bar_plot(taxa,
         Sort taxa by their mean abundance before sample filtration.
     sort_by_mean2 : bool, default: True
         Sort taxa by their mean abundance after sample filtration.
-    legend_labels : list, optional
-        Legend texts.
-    legend_only : bool, default: False
-        Plot the legend only.
     kwargs : dict, optional
         Additional keyword arguments are documented in DataFrame.plot.
 
@@ -1236,12 +1239,12 @@ def taxa_abundance_bar_plot(taxa,
     if title is not None:
         ax.set_title(title)
 
-    ax = _legend_handler(ax, show_legend, legend_loc, legend_labels=legend_labels, legend_short=True, legend_only=legend_only)
-
-#     if legend_only:
-#         ax.clear()
-#         ax.legend(h, legend_labels, loc=legend_loc)
-#         ax.axis('off')
+    ax = _legend_handler(ax,
+                         show_legend,
+                         legend_loc,
+                         legend_labels=legend_labels,
+                         legend_short=legend_short,
+                         legend_only=legend_only)
 
     return ax
 
@@ -1479,6 +1482,7 @@ def taxa_abundance_box_plot(taxa,
                 **kwargs)
 
     if add_datapoints:
+        remove_duplicates = True
         sns.swarmplot(x='variable',
                       y='value',
                       hue=hue,
@@ -1487,6 +1491,8 @@ def taxa_abundance_box_plot(taxa,
                       color='black',
                       size=size,
                       dodge=True)
+    else:
+        remove_duplicates = False
 
     ax.set_xlabel('')
     ax.set_ylabel('Relative abundance (%)')
@@ -1522,7 +1528,7 @@ def taxa_abundance_box_plot(taxa,
     if title is not None:
         ax.set_title(title)
 
-    ax = _legend_handler(ax, show_legend, legend_loc, remove_duplicates=True)
+    ax = _legend_handler(ax, show_legend, legend_loc, remove_duplicates=remove_duplicates)
 
     return ax
 
