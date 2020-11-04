@@ -194,6 +194,29 @@ def _legend_handler(ax,
 
 
 
+
+def _graph_hanlder(ax,
+                   hide_xlabels,
+                   hide_ylabels):
+    "Handles the graph of a figure."
+    if hide_xlabels:
+        ax.set_xticks([])
+
+    if hide_ylabels:
+        ax.set_ylabel('')
+        ax.set_yticklabels([])
+
+    return ax
+
+
+
+
+
+
+
+
+
+
 # -- General methods ---------------------------------------------------------
 
 def get_mf(metadata):
@@ -1502,14 +1525,7 @@ def taxa_abundance_box_plot(taxa,
     ax.set_xlabel('')
     ax.set_ylabel('Relative abundance (%)')
 
-    # Control the x-axis labels.
-    if hide_xlabels:
-        ax.set_xticks([])
-
-    # Control the y-axis labels.
-    if hide_ylabels:
-        ax.set_ylabel('')
-        ax.set_yticklabels([])
+    ax = _graph_hanlder(ax, hide_xlabels, hide_ylabels)
 
     # If provided, output the dataframe as a .csv file.
     if csv_file is not None:
