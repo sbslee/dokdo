@@ -1283,6 +1283,7 @@ def taxa_abundance_bar_plot(taxa,
 
 def taxa_abundance_box_plot(taxa,
                             hue=None,
+                            hue_order=None,
                             add_datapoints=False,
                             level=1,
                             by=[],
@@ -1295,7 +1296,6 @@ def taxa_abundance_box_plot(taxa,
                             sort_by_names=False,
                             hide_xlabels=False,
                             hide_ylabels=False,
-                            orders={},
                             sample_names=[],
                             csv_file=None,
                             size=5,
@@ -1321,6 +1321,8 @@ def taxa_abundance_box_plot(taxa,
         Path to the visualization file from the 'qiime taxa barplot'.
     hue : str, optional
         Grouping variable that will produce boxes with different colors.
+    hue_order : list, optional
+        Specify the order of categorical levels of the 'hue' semantic.
     add_datapoints : bool, default: False
         Show datapoints on top of the boxes.
     level : int
@@ -1350,11 +1352,6 @@ def taxa_abundance_box_plot(taxa,
         Hide all the x-axis labels.
     hide_ylabels : bool, default: False
         Hide all the y-axis labels.
-    orders : dict
-        Dictionary of {column1: [element1, element2, ...], column2: 
-        [element1, element2...], ...} to indicate the order of items. Used to 
-        sort the sampels by the user-specified order instead of ordering 
-        numerically or alphabetically.
     sample_names : list
         List of sample IDs to be included.
     csv_file : str
@@ -1391,34 +1388,9 @@ def taxa_abundance_box_plot(taxa,
     Visualization.load(taxa).export_data(t.name)
     df = pd.read_csv(f'{t.name}/level-{level}.csv', index_col=0)
 
-    # If provided, sort the samples by the user-specified order instead of 
-    # ordering numerically or alphabetically. To do this, we will first add a 
-    # new temporary column filled with the indicies of the user-provided 
-    # list. This column will be used for sorting the samples later instead of 
-    # the original column. After sorting, the new column will be dropped from 
-    # the dataframe and the original column will replace its place.
-    for k, v in orders.items():
-        u = df[k].unique().tolist()
-
-        if set(u) != set(v):
-            message = (f"Target values {u} not matched with user-provided "
-                       f"values {v} for metadata column `{k}`")
-            raise ValueError(message)
-
-        l = [x for x in range(len(v))]
-        d = dict(zip(v, l))
-        df.rename(columns={k: f'@{k}'}, inplace=True)
-        df[k] = df[f'@{k}'].map(d)
-
     # If provided, sort the samples for display in the x-axis.
     if by:
         df = df.sort_values(by=by)
-
-    # If sorting was performed by the user-specified order, remove the 
-    # temporary columns and then bring back the original column.
-    for k in orders:
-        df.drop(columns=[k], inplace=True)
-        df.rename(columns={f'@{k}': k}, inplace=True)
 
     # If provided, exclude the specified taxa.
     if exclude_taxa:
@@ -1501,6 +1473,7 @@ def taxa_abundance_box_plot(taxa,
     sns.boxplot(x='variable',
                 y='value',
                 hue=hue,
+                hue_order=hue_order,
                 data=df2,
                 ax=ax,
                 **kwargs)
