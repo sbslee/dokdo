@@ -1509,7 +1509,8 @@ def taxa_abundance_box_plot(taxa,
 
     # If provided, output the dataframe as a .csv file.
     if csv_file is not None:
-        df.to_csv(csv_file)
+        df3 = pd.concat([df, mf], axis=1, join='inner')
+        df3.to_csv(csv_file)
 
 
     if xlabels is not None:
