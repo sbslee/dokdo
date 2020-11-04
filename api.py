@@ -111,6 +111,9 @@ def _pretty_taxa(s):
         if rank.split('__')[1] is '':
             continue
 
+        if 'uncultured' in rank:
+            continue
+
         # The species name can be sometimes tricky to parse because it could 
         # be full (e.g. Helicobacter pylori) or partial (e.g. pylori). In the 
         # latter case, I will borrow the genus name (e.g. Helicobacter) to 
