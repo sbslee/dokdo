@@ -1433,16 +1433,20 @@ def taxa_abundance_box_plot(taxa,
     df = _sort_by_mean(df)
 
     # If provided, collapse extra species to the Others column.
-    if count is not 0:
+    if count is not 0 and taxa_names is not None:
+        m = "Cannot use 'count' and 'taxa_names' arguments together"
+        raise ValueError(m)
+    elif count is not 0:
         others = df.iloc[:, count-1:].sum(axis=1)
         df = df.iloc[:, :count-1]
         df['Others'] = others
+    elif taxa_names is not None:
+        df = df[taxa_names]
+    else:
+        pass
 
     if sort_by_names:
         df = df.reindex(sorted(df.columns), axis=1)
-
-    if taxa_names is not None:
-        df = df[taxa_names]
 
     _taxa_names = df.columns
 
