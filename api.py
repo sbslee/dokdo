@@ -111,12 +111,19 @@ def _pretty_taxa(s):
         if rank.split('__')[1] is '':
             continue
 
+        # The species name can be sometimes tricky to parse because it could 
+        # be full (e.g. Helicobacter pylori) or partial (e.g. pylori). In the 
+        # latter case, I will borrow the genus name (e.g. Helicobacter) to 
+        # form the full species name.
         if 's__' in rank:
             rank = rank.split('__')[1]
+
             if len(rank.split('_')) == 1:
                 genus = ranks[i+1].split('__')[1].split('_')[0]
                 species = rank.split('_')[0]
                 rank = f'{genus} {species}'
+            else:
+                rank = rank.replace('_', ' ')
 
         if '__' in rank:
             rank = rank.split('__')[1]
