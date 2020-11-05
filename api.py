@@ -195,21 +195,51 @@ def _legend_handler(ax,
 
 
 
-def _graph_hanlder(ax,
-                   hide_xlabels,
-                   hide_ylabels,
-                   xlabels=None):
-    "Handles the graph of a figure."
-    if xlabels is not None:
-        ax.set_xticklabels(xlabels)
+def _artist(ax,
+            title=None,
+            hide_xlabel=False,
+            hide_ylabel=False,
+            hide_xticks=False,
+            hide_yticks=False,
+            hide_xticklabels=False,
+            hide_yticklabels=False,
+            xmin=None,
+            xmax=None,
+            ymin=None,
+            ymax=None,
+            xlog=False,
+            ylog=False,
+            **kwargs):
+    """Handles various properties of the given figure."""
+    if isinstance(title, str):
+        ax.set_title(title)
 
-    if hide_xlabels:
+    if hide_xlabel:
         ax.set_xlabel('')
+
+    if hide_ylabel:
+        ax.set_ylabel('')
+
+    if hide_xticks:
         ax.set_xticks([])
 
-    if hide_ylabels:
-        ax.set_ylabel('')
+    if hide_yticks:
+        ax.set_yticks([])
+
+    if hide_xticklabels:
+        ax.set_xticklabels([])
+
+    if hide_yticklabels:
         ax.set_yticklabels([])
+
+    ax.set_xlim(left=xmin, right=xmax)
+    ax.set_ylim(bottom=ymin, top=ymax)
+
+    if xlog:
+        ax.set_xscale('log')
+
+    if ylog:
+        ax.set_yscale('log')
 
     return ax
 
@@ -335,14 +365,13 @@ def ordinate(table,
 
 
 
-# -- Plotting methods --------------------------------------------------------
+# -- Main plotting methods ---------------------------------------------------
 
 def read_quality_plot(demux,
                       strand='forward',
                       ax=None,
                       figsize=None,
-                      hide_xlabels=False,
-                      hide_ylabels=False):
+                      **kwargs):
     """
     This method creates a read quality plot.
 
@@ -357,10 +386,6 @@ def read_quality_plot(demux,
         Axes object to draw the plot onto, otherwise uses the current Axes.
     figsize : tuple, optional
         Width, height in inches. Format: (float, float).
-    hide_xlabels : bool, default: False
-        Hide all the x-axis labels.
-    hide_ylabels : bool, default: False
-        Hide all the y-axis labels.
 
     Returns
     -------
@@ -393,9 +418,7 @@ def read_quality_plot(demux,
     ax.set_xticks(a)
     ax.set_xticklabels(a)
 
-    ax = _graph_hanlder(ax,
-                        hide_xlabels,
-                        hide_ylabels)
+    ax = _artist(ax, **kwargs)
 
     return ax
 
@@ -413,12 +436,10 @@ def denoising_stats_plot(stats,
                          where,
                          ax=None,
                          figsize=None,
-                         log_scale=False,
-                         ylimits=None,
+                         pseudocount=False,
                          order=None,
                          hide_nsizes=False,
-                         hide_xlabels=False,
-                         hide_ylabels=False):
+                         **kwargs):
     """
     This method creates a grouped box plot using denoising statistics from 
     DADA2 (i.e. the 'qiime dada2 denoise-paired' command).
@@ -435,18 +456,12 @@ def denoising_stats_plot(stats,
         Axes object to draw the plot onto, otherwise uses the current Axes.
     figsize : tuple, optional
         Width, height in inches. Format: (float, float).
-    log_scale : bool, default: False
-        Draw the y-axis in log scale.
-    ylimits : list, optional
-        Y-axis limits. Format: [float, float].
+    pseudocount : bool, default: False
+        Add pseudocount to remove zeros.
     order : list, optional
         Order to plot the categorical levels in.
     hide_nsizes : bool, default: False
         Hide sample size from x-axis labels.
-    hide_xlabels : bool, default: False
-        Hide all the x-axis labels.
-    hide_ylabels : bool, default: False
-        Hide all the y-axis labels.
 
     Returns
     -------
@@ -467,9 +482,8 @@ def denoising_stats_plot(stats,
     if ax is None:
         fig, ax = plt.subplots(figsize=figsize)
 
-    if log_scale:
-        df3['value'].replace(0, 1, inplace=True)
-        ax.set_yscale('log')
+    if pseudocount:
+        df3['value'] = df3['value'] + 1
 
     sns.boxplot(x=where,
                 y='value',
@@ -484,12 +498,7 @@ def denoising_stats_plot(stats,
         xtexts = [f'{x} ({nsizes[x]})' for x in xtexts]
         ax.set_xticklabels(xtexts)
 
-    if ylimits:
-        ax.set_ylim(ylimits)
-
-    ax = _graph_hanlder(ax,
-                        hide_xlabels,
-                        hide_ylabels)
+    ax = _artist(ax, **kwargs)
 
     return ax
 
@@ -578,13 +587,14 @@ def alpha_rarefaction_plot(rarefaction,
                  ax=ax,
                  err_style='bars',
                  sort=False,
-                 hue_order=hue_order,
-                 **kwargs)
+                 hue_order=hue_order)
 
     ax.set_xlabel('Sequencing depth')
     ax.set_ylabel(metric)
 
     ax = _legend_handler(ax, show_legend, legend_loc, legend_ncol=legend_ncol, legend_only=legend_only)
+
+    ax = _artist(ax, **kwargs)
 
     return ax
 
@@ -603,7 +613,8 @@ def alpha_diversity_plot(significance,
                          figsize=None,
                          add_swarmplot=False,
                          order=None,
-                         ylabel=None):
+                         ylabel=None,
+                         **kwargs):
     """
     This method creates an alpha diversity plot.
 
@@ -639,15 +650,17 @@ def alpha_diversity_plot(significance,
 
     boxprops = dict(color='white', edgecolor='black')
 
-    kwargs = {'x': where, 'y': metric, 'ax': ax, 'order': order, 'data': df}
+    d = {'x': where, 'y': metric, 'ax': ax, 'order': order, 'data': df}
 
-    sns.boxplot(boxprops=boxprops, **kwargs)
+    sns.boxplot(boxprops=boxprops, **d)
 
     if add_swarmplot:
-        sns.swarmplot(**kwargs)
+        sns.swarmplot(**d)
 
     if ylabel:
         ax.set_ylabel(ylabel)
+
+    ax = _artist(ax, **kwargs)
 
     return ax
 
@@ -756,8 +769,7 @@ def beta_2d_plot(ordination,
                     ax=ax,
                     s=s,
                     alpha=alpha,
-                    legend=legend_type,
-                    **kwargs)
+                    legend=legend_type)
 
     ax.set_xticks([])
     ax.set_yticks([])
@@ -766,93 +778,9 @@ def beta_2d_plot(ordination,
 
     ax = _legend_handler(ax, show_legend, legend_loc, legend_ncol=legend_ncol)
 
+    ax = _artist(ax, **kwargs)
+
     return ax
-
-
-
-
-
-
-
-
-
-
-def beta_2d_plot_gallery(ordination,
-                         metadata,
-                         prefix,
-                         targets=None,
-                         nrows=3,
-                         ncols=4,
-                         figsize=None,
-                         **kwargs):
-
-    """
-    This method extends the 'beta_2d_plot' method and allows the user to 
-    automatically create multiple figures of 2D beta diversity plot. This 
-    method is useful when there are multiple variables to be tested.
-
-    Parameters
-    ----------
-    ordination : str or qiime2.sdk.result.Artifact
-        Artifact file or object from ordination.
-    metadata : str or qiime2.metadata.metadata.Metadata
-        Metadata file or object.
-    prefix : str
-        File prefix.
-    targets: list, optional
-        List of targeted columns. Otherwise, use all columns in the metadata.
-    nrows : int, default: 3
-        Number of rows of the subplot grid.
-    ncols : int, default: 4
-        Number of rows of the subplot grid.
-    figsize : tuple, optional
-        Width, height in inches. Format: (float, float).
-    """
-    if targets is None:
-        mf = get_mf(metadata)
-        _targets = mf.columns
-    else:
-        _targets = targets
-
-    n_total = len(_targets)
-    n_panels = nrows * ncols
-    n_figures = math.ceil(len(_targets) / n_panels)
-
-    i = 0 # Total number of panels.
-
-    for j in range(n_figures):
-        k = 0 # Number of panels within figure.
-        filename = f'{prefix}-{j}.png'
-
-        fig, axes = plt.subplots(nrows=nrows, ncols=ncols, figsize=figsize)
-        
-        for row in axes:
-            for col in row:
-
-                kwargs = {**kwargs,
-                          'ax': col,
-                          'hue': _targets[i]}
-
-                beta_2d_plot(ordination, metadata, show_legend=True, **kwargs)
-
-                legend_labels = [x.get_text() for x in col.legend().get_texts()] 
-                if len(legend_labels) > 10:
-                    col.get_legend().remove()
-                
-                k += 1
-                i += 1
-
-                if k == n_panels:
-                    print(f"Figure saved to: {filename}")
-                    plt.tight_layout()
-                    plt.savefig(filename)
-                    k = 0
-
-                elif i == n_total:
-                    print(f"Figure saved to: {filename}")
-                    plt.tight_layout()
-                    plt.savefig(filename)
-                    return
 
 
 
@@ -942,13 +870,13 @@ def beta_3d_plot(ordination,
     ax.set_yticks([])
     ax.set_zticks([])
 
-    kwargs = {'s': s, **kwargs}
+    d = {'s': s}
 
     if hue is None:
         ax.scatter(df.iloc[:, 0],
                    df.iloc[:, 1],
                    df.iloc[:, 2],
-                   **kwargs)
+                   **d)
     else:
         if hue_order is None:
             levels = sorted(mf[hue].unique())
@@ -962,9 +890,11 @@ def beta_3d_plot(ordination,
                        df2.iloc[:, 1],
                        df2.iloc[:, 2],
                        label=c,
-                       **kwargs)
+                       **d)
 
     ax = _legend_handler(ax, show_legend, legend_loc, legend_ncol=legend_ncol)
+
+    ax = _artist(ax, **kwargs)
 
     return ax
 
@@ -981,7 +911,8 @@ def distance_matrix_plot(distance_matrix,
                          bins=100,
                          pairs=None,
                          ax=None,
-                         figsize=None):
+                         figsize=None,
+                         **kwargs):
     """
     This method creates a histogram from a distance matrix.
 
@@ -1037,6 +968,8 @@ def distance_matrix_plot(distance_matrix,
         for i in idx:
             ax.axvline(x=i, c='red')
 
+    ax = _artist(ax, **kwargs)
+
     return ax
 
 
@@ -1066,8 +999,6 @@ def taxa_abundance_bar_plot(taxa,
                             legend_only=False,
                             sort_by_names=False,
                             colors=[],
-                            hide_xlabels=False,
-                            hide_ylabels=False,
                             label_columns=[],
                             orders={},
                             sample_names=[],
@@ -1126,10 +1057,6 @@ def taxa_abundance_bar_plot(taxa,
         If true, sort the columns (i.e. species) to be displayed by name.
     colors : list
         The bar colors.
-    hide_xlabels : bool, default: False
-        Hide all the x-axis labels.
-    hide_ylabels : bool, default: False
-        Hide all the y-axis labels.
     label_columns : list
         The column names to be used as the x-axis labels.
     orders : dict
@@ -1266,8 +1193,7 @@ def taxa_abundance_bar_plot(taxa,
                 ax=ax,
                 width=width,
                 color=c,
-                linewidth=0,
-                **kwargs)
+                linewidth=0)
 
     ax.set_xlabel('')
     ax.set_ylabel('Relative abundance (%)')
@@ -1279,10 +1205,7 @@ def taxa_abundance_bar_plot(taxa,
     else:
         smart_xlabels = None
 
-    ax = _graph_hanlder(ax,
-                        hide_xlabels,
-                        hide_ylabels,
-                        xlabels=smart_xlabels)
+
 
     # If provided, output the dataframe as a .csv file.
     if csv_file is not None:
@@ -1302,6 +1225,8 @@ def taxa_abundance_bar_plot(taxa,
                          legend_labels=legend_labels,
                          legend_short=legend_short,
                          legend_only=legend_only)
+
+    ax = _artist(ax, **kwargs)
 
     return ax
 
@@ -1327,25 +1252,20 @@ def taxa_abundance_box_plot(taxa,
                             include_samples=None,
                             exclude_taxa=[],
                             sort_by_names=False,
-                            hide_xlabels=False,
-                            hide_ylabels=False,
                             sample_names=[],
                             csv_file=None,
                             size=5,
                             xlabels=None,
-                            log_scale=False,
+                            pseudocount=False,
                             taxa_names=None,
-                            ylimits=None,
                             brief_xlabels=False,
                             show_legend=False,
                             legend_loc='best',
                             show_means=False,
-                            meanprops=None):
+                            meanprops=None,
+                            **kwargs):
     """
     This method creates a taxa abundance box plot.
-
-    The y-axis can be drawn at log scale with the 'log_scale' option, in 
-    which case a pseudocount of 1 will be added to remove 0 values.
 
     Parameters
     ----------
@@ -1380,10 +1300,6 @@ def taxa_abundance_box_plot(taxa,
         The taxa names to be excluded when matched. Case insenstivie.
     sort_by_names : bool
         If true, sort the columns (i.e. species) to be displayed by name.
-    hide_xlabels : bool, default: False
-        Hide all the x-axis labels.
-    hide_ylabels : bool, default: False
-        Hide all the y-axis labels.
     sample_names : list
         List of sample IDs to be included.
     csv_file : str
@@ -1392,12 +1308,10 @@ def taxa_abundance_box_plot(taxa,
         Radius of the markers, in points.
     xlabels : list, optional
         List of the x-axis labels.
-    log_scale : bool, default: False
-        Draw the y-axis in log scale.
+    pseudocount : bool, default: False
+        Add pseudocount to remove zeros.
     taxa_names : list, optional
         List of taxa names to be displayed.
-    ylimits : list, optional
-        Y-axis limits. Format: [float, float].
     brief_xlabels : bool, default: False
         If true, only display the smallest taxa rank in the x-axis labels.
     show_legend : bool, default: False
@@ -1449,8 +1363,7 @@ def taxa_abundance_box_plot(taxa,
         fig, ax = plt.subplots(figsize=figsize)
 
     # Add a pseudocount.
-    if log_scale:
-        ax.set_yscale('log')
+    if pseudocount:
         df = df + 1
 
     # Convert counts to proportions.
@@ -1485,9 +1398,6 @@ def taxa_abundance_box_plot(taxa,
     else:
         df2 = pd.melt(df2)
 
-    if ylimits:
-        ax.set_ylim(ylimits)
-
 
 
     if meanprops:
@@ -1498,11 +1408,11 @@ def taxa_abundance_box_plot(taxa,
                     'markeredgecolor':'white',
                     'markersize':'10'}
 
-    kwargs = {}
+    d = {}
 
     if show_means:
-        kwargs['showmeans'] = True
-        kwargs['meanprops'] = _meanprops
+        d['showmeans'] = True
+        d['meanprops'] = _meanprops
 
     sns.boxplot(x='variable',
                 y='value',
@@ -1510,7 +1420,7 @@ def taxa_abundance_box_plot(taxa,
                 hue_order=hue_order,
                 data=df2,
                 ax=ax,
-                **kwargs)
+                **d)
 
     if add_datapoints:
         remove_duplicates = True
@@ -1529,9 +1439,7 @@ def taxa_abundance_box_plot(taxa,
     ax.set_xlabel('')
     ax.set_ylabel('Relative abundance (%)')
 
-    ax = _graph_hanlder(ax,
-                        hide_xlabels,
-                        hide_ylabels)
+
 
     # If provided, output the dataframe as a .csv file.
     if csv_file is not None:
@@ -1558,6 +1466,8 @@ def taxa_abundance_box_plot(taxa,
                          legend_loc,
                          remove_duplicates=remove_duplicates)
 
+    ax = _artist(ax, **kwargs)
+
     return ax
 
 
@@ -1571,7 +1481,8 @@ def taxa_abundance_box_plot(taxa,
 
 def ancom_volcano_plot(ancom,
                        ax=None,
-                       figsize=None):
+                       figsize=None,
+                       **kwargs):
     """
     This method creates an ANCOM volcano plot.
 
@@ -1599,7 +1510,97 @@ def ancom_volcano_plot(ancom,
     ax.set_xlabel('clr')
     ax.set_ylabel('W')
 
+    ax = _artist(ax, **kwargs)
+
     return ax
+
+
+
+
+
+
+
+
+
+
+# -- Other plotting methods --------------------------------------------------
+
+def beta_2d_plot_gallery(ordination,
+                         metadata,
+                         prefix,
+                         targets=None,
+                         nrows=3,
+                         ncols=4,
+                         figsize=None,
+                         **kwargs):
+
+    """
+    This method extends the 'beta_2d_plot' method and allows the user to 
+    automatically create multiple figures of 2D beta diversity plot. This 
+    method is useful when there are multiple variables to be tested.
+
+    Parameters
+    ----------
+    ordination : str or qiime2.sdk.result.Artifact
+        Artifact file or object from ordination.
+    metadata : str or qiime2.metadata.metadata.Metadata
+        Metadata file or object.
+    prefix : str
+        File prefix.
+    targets: list, optional
+        List of targeted columns. Otherwise, use all columns in the metadata.
+    nrows : int, default: 3
+        Number of rows of the subplot grid.
+    ncols : int, default: 4
+        Number of rows of the subplot grid.
+    figsize : tuple, optional
+        Width, height in inches. Format: (float, float).
+    """
+    if targets is None:
+        mf = get_mf(metadata)
+        _targets = mf.columns
+    else:
+        _targets = targets
+
+    n_total = len(_targets)
+    n_panels = nrows * ncols
+    n_figures = math.ceil(len(_targets) / n_panels)
+
+    i = 0 # Total number of panels.
+
+    for j in range(n_figures):
+        k = 0 # Number of panels within figure.
+        filename = f'{prefix}-{j}.png'
+
+        fig, axes = plt.subplots(nrows=nrows, ncols=ncols, figsize=figsize)
+        
+        for row in axes:
+            for col in row:
+
+                kwargs = {**kwargs,
+                          'ax': col,
+                          'hue': _targets[i]}
+
+                beta_2d_plot(ordination, metadata, show_legend=True, **kwargs)
+
+                legend_labels = [x.get_text() for x in col.legend().get_texts()] 
+                if len(legend_labels) > 10:
+                    col.get_legend().remove()
+                
+                k += 1
+                i += 1
+
+                if k == n_panels:
+                    print(f"Figure saved to: {filename}")
+                    plt.tight_layout()
+                    plt.savefig(filename)
+                    k = 0
+
+                elif i == n_total:
+                    print(f"Figure saved to: {filename}")
+                    plt.tight_layout()
+                    plt.savefig(filename)
+                    return
 
 
 
