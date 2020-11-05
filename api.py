@@ -197,9 +197,14 @@ def _legend_handler(ax,
 
 def _graph_hanlder(ax,
                    hide_xlabels,
-                   hide_ylabels):
+                   hide_ylabels,
+                   xlabels=None):
     "Handles the graph of a figure."
+    if xlabels is not None:
+        ax.set_xticklabels(xlabels)
+
     if hide_xlabels:
+        ax.set_xlabel('')
         ax.set_xticks([])
 
     if hide_ylabels:
@@ -335,7 +340,9 @@ def ordinate(table,
 def read_quality_plot(demux,
                       strand='forward',
                       ax=None,
-                      figsize=None):
+                      figsize=None,
+                      hide_xlabels=False,
+                      hide_ylabels=False):
     """
     This method creates a read quality plot.
 
@@ -350,6 +357,10 @@ def read_quality_plot(demux,
         Axes object to draw the plot onto, otherwise uses the current Axes.
     figsize : tuple, optional
         Width, height in inches. Format: (float, float).
+    hide_xlabels : bool, default: False
+        Hide all the x-axis labels.
+    hide_ylabels : bool, default: False
+        Hide all the y-axis labels.
 
     Returns
     -------
@@ -382,6 +393,10 @@ def read_quality_plot(demux,
     ax.set_xticks(a)
     ax.set_xticklabels(a)
 
+    ax = _graph_hanlder(ax,
+                        hide_xlabels,
+                        hide_ylabels)
+
     return ax
 
 
@@ -401,7 +416,9 @@ def denoising_stats_plot(stats,
                          log_scale=False,
                          ylimits=None,
                          order=None,
-                         hide_nsizes=False):
+                         hide_nsizes=False,
+                         hide_xlabels=False,
+                         hide_ylabels=False):
     """
     This method creates a grouped box plot using denoising statistics from 
     DADA2 (i.e. the 'qiime dada2 denoise-paired' command).
@@ -426,6 +443,10 @@ def denoising_stats_plot(stats,
         Order to plot the categorical levels in.
     hide_nsizes : bool, default: False
         Hide sample size from x-axis labels.
+    hide_xlabels : bool, default: False
+        Hide all the x-axis labels.
+    hide_ylabels : bool, default: False
+        Hide all the y-axis labels.
 
     Returns
     -------
@@ -465,6 +486,10 @@ def denoising_stats_plot(stats,
 
     if ylimits:
         ax.set_ylim(ylimits)
+
+    ax = _graph_hanlder(ax,
+                        hide_xlabels,
+                        hide_ylabels)
 
     return ax
 
@@ -646,7 +671,6 @@ def beta_2d_plot(ordination,
                  figsize=None,
                  show_legend=False,
                  legend_loc='best',
-                 title=None,
                  hue_order=None,
                  style_order=None,
                  legend_ncol=1,
@@ -679,8 +703,6 @@ def beta_2d_plot(ordination,
         Show the legend.
     legend_loc : str, default: 'best'
         Legend location specified as in matplotlib.pyplot.legend.
-    title : str, optional
-        Plot title.
     hue_order : list, optional
         Specify the order of categorical levels of the 'hue' semantic.
     style_order : list, optional
@@ -743,9 +765,6 @@ def beta_2d_plot(ordination,
     ax.set_ylabel(f'Axis 2 ({v[1]} %)')
 
     ax = _legend_handler(ax, show_legend, legend_loc, legend_ncol=legend_ncol)
-
-    if title is not None:
-        ax.set_title(title)
 
     return ax
 
@@ -812,8 +831,7 @@ def beta_2d_plot_gallery(ordination,
 
                 kwargs = {**kwargs,
                           'ax': col,
-                          'hue': _targets[i],
-                          'title': _targets[i]}
+                          'hue': _targets[i]}
 
                 beta_2d_plot(ordination, metadata, show_legend=True, **kwargs)
 
@@ -1056,7 +1074,6 @@ def taxa_abundance_bar_plot(taxa,
                             csv_file=None,
                             xlabels=None,
                             taxa_names=None,
-                            title=None,
                             sort_by_mean1=True,
                             sort_by_mean2=True,
                             **kwargs):
@@ -1128,8 +1145,6 @@ def taxa_abundance_bar_plot(taxa,
         List of the x-axis labels.
     taxa_names : list, optional
         List of taxa names to be displayed.
-    title : str, optional
-        Plot title.
     sort_by_mean1 : bool, default: True
         Sort taxa by their mean abundance before sample filtration.
     sort_by_mean2 : bool, default: True
@@ -1258,20 +1273,16 @@ def taxa_abundance_bar_plot(taxa,
     ax.set_ylabel('Relative abundance (%)')
 
 
-    # Control the x-axis labels.
-    if hide_xlabels:
-        ax.set_xticks([])
-    elif label_columns:
+    if label_columns is not None:
         f = lambda row: ' : '.join(row.values.astype(str))
-        new_labels = mf[label_columns].apply(f, axis=1)
-        ax.set_xticklabels(new_labels)
+        smart_xlabels = mf[label_columns].apply(f, axis=1)
     else:
-        pass
+        smart_xlabels = None
 
-    # Control the y-axis labels.
-    if hide_ylabels:
-        ax.set_ylabel('')
-        ax.set_yticks([])
+    ax = _graph_hanlder(ax,
+                        hide_xlabels,
+                        hide_ylabels,
+                        xlabels=smart_xlabels)
 
     # If provided, output the dataframe as a .csv file.
     if csv_file is not None:
@@ -1284,10 +1295,6 @@ def taxa_abundance_bar_plot(taxa,
             m = f"Expected {len(xtexts)} items, but found {len(xlabels)}"
             raise ValueError(m)
         ax.set_xticklabels(xlabels)
-
-    # Manage the plot title.
-    if title is not None:
-        ax.set_title(title)
 
     ax = _legend_handler(ax,
                          show_legend,
@@ -1329,7 +1336,6 @@ def taxa_abundance_box_plot(taxa,
                             log_scale=False,
                             taxa_names=None,
                             ylimits=None,
-                            title=None,
                             brief_xlabels=False,
                             show_legend=False,
                             legend_loc='best',
@@ -1392,8 +1398,6 @@ def taxa_abundance_box_plot(taxa,
         List of taxa names to be displayed.
     ylimits : list, optional
         Y-axis limits. Format: [float, float].
-    title : str, optional
-        Plot title.
     brief_xlabels : bool, default: False
         If true, only display the smallest taxa rank in the x-axis labels.
     show_legend : bool, default: False
@@ -1525,7 +1529,9 @@ def taxa_abundance_box_plot(taxa,
     ax.set_xlabel('')
     ax.set_ylabel('Relative abundance (%)')
 
-    ax = _graph_hanlder(ax, hide_xlabels, hide_ylabels)
+    ax = _graph_hanlder(ax,
+                        hide_xlabels,
+                        hide_ylabels)
 
     # If provided, output the dataframe as a .csv file.
     if csv_file is not None:
@@ -1547,10 +1553,10 @@ def taxa_abundance_box_plot(taxa,
 
     ax.set_xticklabels(a, rotation=45, ha='right')
 
-    if title is not None:
-        ax.set_title(title)
-
-    ax = _legend_handler(ax, show_legend, legend_loc, remove_duplicates=remove_duplicates)
+    ax = _legend_handler(ax,
+                         show_legend,
+                         legend_loc,
+                         remove_duplicates=remove_duplicates)
 
     return ax
 
