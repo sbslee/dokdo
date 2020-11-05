@@ -210,7 +210,45 @@ def _artist(ax,
             xlog=False,
             ylog=False,
             **kwargs):
-    """Handles various properties of the given figure."""
+    """
+    This method sets various properties of the given figure.
+
+    Parameters
+    ----------
+    ax : matplotlib.axes.Axes
+        Axes object to draw the plot onto.
+    title : str, optional
+        Sets the figure title.
+    hide_xlabel : bool, default: False
+        Hides the x-axis label.
+    hide_ylabel : bool, default: False
+        Hides the y-axis label.
+    hide_xticks : bool, default: False
+        Hides ticks and tick labels for the x-axis.
+    hide_yticks : bool, default: False
+        Hides ticks and tick labels for the y-axis.
+    hide_xticklabels : bool, default: False
+        Hides tick labels for the x-axis.
+    hide_yticklabels : bool, default: False
+        Hides tick labels for the y-axis.
+    xmin : float, optional
+        Minimum value for the x-axis.
+    xmax : float, optional
+        Maximum value for the x-axis.
+    ymin : float, optional
+        Minimum value for the y-axis.
+    ymax : float, optional
+        Maximum value for the x-axis.
+    xlog : bool, default: False
+        Draw the x-axis in log scale.
+    ylog : bool, default: False
+        Draw the y-axis in log scale.
+
+    Returns
+    -------
+    matplotlib.axes.Axes
+        Returns the Axes object with the plot drawn onto it.
+    """
     if isinstance(title, str):
         ax.set_title(title)
 
