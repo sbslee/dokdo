@@ -211,7 +211,7 @@ def _artist(ax,
             ylog=False,
             **kwargs):
     """
-    This method sets various properties of the given figure.
+    This method controls various properties of a figure.
 
     Parameters
     ----------
@@ -424,6 +424,8 @@ def read_quality_plot(demux,
         Axes object to draw the plot onto, otherwise uses the current Axes.
     figsize : tuple, optional
         Width, height in inches. Format: (float, float).
+    kwargs : dict, optional
+        Other keyword arguments passed down to _artist.
 
     Returns
     -------
@@ -500,6 +502,8 @@ def denoising_stats_plot(stats,
         Order to plot the categorical levels in.
     hide_nsizes : bool, default: False
         Hide sample size from x-axis labels.
+    kwargs : dict, optional
+        Other keyword arguments passed down to _artist.
 
     Returns
     -------
@@ -586,7 +590,7 @@ def alpha_rarefaction_plot(rarefaction,
     hue_order : list, optional
         Specify the order of categorical levels of the 'hue' semantic.
     kwargs : dict, optional
-        Other keyword arguments passed down to matplotlib.axes.Axes.scatter.
+        Other keyword arguments passed down to _artist.
 
     Returns
     -------
@@ -673,6 +677,8 @@ def alpha_diversity_plot(significance,
         Order to plot the categorical levels in.
     ylabel : str, optional
         Y-axis label.
+    kwargs : dict, optional
+        Other keyword arguments passed down to _artist.
 
     Returns
     -------
@@ -763,7 +769,7 @@ def beta_2d_plot(ordination,
     legend_type : str, default: 'brief'
         Legend type as in seaborn.scatterplot ('brief' or 'full').
     kwargs : dict, optional
-        Other keyword arguments passed down to matplotlib.axes.Axes.scatter.
+        Other keyword arguments passed down to _artist.
 
     Returns
     -------
@@ -873,7 +879,7 @@ def beta_3d_plot(ordination,
     legend_ncol : int, default: 1
         The number of columns that the legend has.
     kwargs : dict, optional
-        Other keyword arguments passed down to matplotlib.axes.Axes.scatter.
+        Other keyword arguments passed down to _artist.
 
     Returns
     -------
@@ -966,6 +972,8 @@ def distance_matrix_plot(distance_matrix,
         Axes object to draw the plot onto, otherwise uses the current Axes.
     figsize : tuple, optional
         Width, height in inches. Format: (float, float).
+    kwargs : dict, optional
+        Other keyword arguments passed down to _artist.
 
     Returns
     -------
@@ -1115,7 +1123,7 @@ def taxa_abundance_bar_plot(taxa,
     sort_by_mean2 : bool, default: True
         Sort taxa by their mean abundance after sample filtration.
     kwargs : dict, optional
-        Additional keyword arguments are documented in DataFrame.plot.
+        Other keyword arguments passed down to _artist.
 
     Returns
     -------
@@ -1360,6 +1368,8 @@ def taxa_abundance_box_plot(taxa,
         Add means to the boxes.
     meanprops : dict, optional
         The meanprops argument as in matplotlib.pyplot.boxplot.
+    kwargs : dict, optional
+        Other keyword arguments passed down to _artist.
 
     Returns
     -------
@@ -1533,6 +1543,8 @@ def ancom_volcano_plot(ancom,
         Axes object to draw the plot onto, otherwise uses the current Axes.
     figsize : tuple, optional
         Width, height in inches. Format: (float, float).
+    kwargs : dict, optional
+        Other keyword arguments passed down to _artist.
 
     Returns
     -------
