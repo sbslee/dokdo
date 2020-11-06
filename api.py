@@ -1093,7 +1093,7 @@ def taxa_abundance_bar_plot(taxa,
                             exclude_taxa=[],
                             sort_by_names=False,
                             colors=[],
-                            label_columns=[],
+                            label_columns=None,
                             orders={},
                             sample_names=[],
                             csv_file=None,
@@ -1140,7 +1140,7 @@ def taxa_abundance_bar_plot(taxa,
         If true, sort the columns (i.e. species) to be displayed by name.
     colors : list
         The bar colors.
-    label_columns : list
+    label_columns : list, optional
         The column names to be used as the x-axis labels.
     orders : dict
         Dictionary of {column1: [element1, element2, ...], column2: 
@@ -1284,11 +1284,11 @@ def taxa_abundance_bar_plot(taxa,
         f = lambda row: ' : '.join(row.values.astype(str))
         xticklabels = mf[label_columns].apply(f, axis=1).tolist()
     else:
-        xticklabels = None
+        xticklabels = [x.get_text() for x in ax.get_xticklabels()]
 
     kwargs = {'xlabel': '',
               'ylabel': 'Relative abundance (%)',
-              'xticklabels': xticklabels,
+             'xticklabels': xticklabels,
               **kwargs}
 
     ax = _artist(ax, **kwargs)
@@ -1670,7 +1670,7 @@ def addsig(x1,
            lc='black',
            tc='black'):
     """
-    This method adds a signifiance annotation between two groups in a box plot.
+    This method adds signifiance annotation between two groups in a box plot.
 
     Parameters
     ----------
