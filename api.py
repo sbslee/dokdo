@@ -142,59 +142,6 @@ def _pretty_taxa(s):
 
 
 
-def _legend_handler(ax,
-                    show_legend,
-                    legend_loc,
-                    legend_ncol=1,
-                    legend_labels=None,
-                    legend_short=False,
-                    remove_duplicates=False,
-                    legend_only=False):
-    "Handles the legend of a figure."
-    h, l = ax.get_legend_handles_labels()
-
-    if legend_short:
-        l = [_pretty_taxa(x) for x in l]
-
-    if legend_labels:
-        a = len(legend_labels)
-        b = len(l)
-        if a != b:
-            m = f"Expected {b} legend labels, received {a}"
-            raise ValueError(m)
-        l = legend_labels
-
-    if remove_duplicates:
-        if h:
-            n = int(len(h) / 2)
-            h, l = h[:n], l[:n]
-
-    if legend_only:
-        ax.clear()
-        ax.legend(h, l, loc=legend_loc, ncol=legend_ncol)
-        ax.axis('off')
-    elif show_legend:
-        if h:
-            ax.legend(h, l, loc=legend_loc, ncol=legend_ncol)
-        else:
-            warnings.warn("No handles with labels found to put in legend.")
-    else:
-        if ax.get_legend():
-            ax.get_legend().remove()
-        else:
-            pass
-
-    return ax
-
-
-
-
-
-
-
-
-
-
 def _artist(ax,
             title=None,
             hide_xlabel=False,
@@ -209,6 +156,13 @@ def _artist(ax,
             ymax=None,
             xlog=False,
             ylog=False,
+            show_legend=False,
+            legend_loc='best',
+            legend_ncol=1,
+            legend_labels=None,
+            legend_short=False,
+            remove_duplicates=False,
+            legend_only=False,
             **kwargs):
     """
     This method controls various properties of a figure.
@@ -243,6 +197,14 @@ def _artist(ax,
         Draw the x-axis in log scale.
     ylog : bool, default: False
         Draw the y-axis in log scale.
+    show_legend : bool, default: False
+        Show the figure legend.
+    legend_loc : str, default: 'best'
+        Legend location specified as in matplotlib.pyplot.legend.
+    legend_ncol : int, default: 1
+        Number of columns that the legend has.
+    legend_only : bool, default: False
+        Clear the figure and display the legend only.
 
     Returns
     -------
@@ -278,6 +240,44 @@ def _artist(ax,
 
     if ylog:
         ax.set_yscale('log')
+
+
+
+
+
+    # Control the figure legend.
+    h, l = ax.get_legend_handles_labels()
+
+    if legend_short:
+        l = [_pretty_taxa(x) for x in l]
+
+    if legend_labels:
+        a = len(legend_labels)
+        b = len(l)
+        if a != b:
+            m = f"Expected {b} legend labels, received {a}"
+            raise ValueError(m)
+        l = legend_labels
+
+    if remove_duplicates:
+        if h:
+            n = int(len(h) / 2)
+            h, l = h[:n], l[:n]
+
+    if legend_only:
+        ax.clear()
+        ax.legend(h, l, loc=legend_loc, ncol=legend_ncol)
+        ax.axis('off')
+    elif show_legend:
+        if h:
+            ax.legend(h, l, loc=legend_loc, ncol=legend_ncol)
+        else:
+            warnings.warn("No handles with labels found to put in legend.")
+    else:
+        if ax.get_legend():
+            ax.get_legend().remove()
+        else:
+            pass
 
     return ax
 
@@ -558,10 +558,6 @@ def alpha_rarefaction_plot(rarefaction,
                            metric='shannon',
                            ax=None,
                            figsize=None,
-                           show_legend=False,
-                           legend_loc='best',
-                           legend_ncol=1,
-                           legend_only=False,
                            hue_order=None,
                            **kwargs):
     """
@@ -579,14 +575,6 @@ def alpha_rarefaction_plot(rarefaction,
         Axes object to draw the plot onto, otherwise uses the current Axes.
     figsize : tuple, optional
         Width, height in inches. Format: (float, float).
-    show_legend : bool, default: False
-        Show the legend.
-    legend_loc : str, default: 'best'
-        Legend location specified as in matplotlib.pyplot.legend.
-    legend_ncol : int, default: 1
-        The number of columns that the legend has.
-    legend_only : bool, default: False
-        Plot the legend only.
     hue_order : list, optional
         Specify the order of categorical levels of the 'hue' semantic.
     kwargs : key, value mappings
@@ -633,8 +621,6 @@ def alpha_rarefaction_plot(rarefaction,
 
     ax.set_xlabel('Sequencing depth')
     ax.set_ylabel(metric)
-
-    ax = _legend_handler(ax, show_legend, legend_loc, legend_ncol=legend_ncol, legend_only=legend_only)
 
     ax = _artist(ax, **kwargs)
 
@@ -726,11 +712,8 @@ def beta_2d_plot(ordination,
                  alpha=None,
                  ax=None,
                  figsize=None,
-                 show_legend=False,
-                 legend_loc='best',
                  hue_order=None,
                  style_order=None,
-                 legend_ncol=1,
                  legend_type='brief',
                  **kwargs):
     """
@@ -758,14 +741,10 @@ def beta_2d_plot(ordination,
         Width, height in inches. Format: (float, float).
     show_legend : bool, default: False
         Show the legend.
-    legend_loc : str, default: 'best'
-        Legend location specified as in matplotlib.pyplot.legend.
     hue_order : list, optional
         Specify the order of categorical levels of the 'hue' semantic.
     style_order : list, optional
         Specify the order of categorical levels of the 'style' semantic.
-    legend_ncol : int, default: 1
-        The number of columns that the legend has.
     legend_type : str, default: 'brief'
         Legend type as in seaborn.scatterplot ('brief' or 'full').
     kwargs : key, value mappings
@@ -820,8 +799,6 @@ def beta_2d_plot(ordination,
     ax.set_xlabel(f'Axis 1 ({v[0]} %)')
     ax.set_ylabel(f'Axis 2 ({v[1]} %)')
 
-    ax = _legend_handler(ax, show_legend, legend_loc, legend_ncol=legend_ncol)
-
     ax = _artist(ax, **kwargs)
 
     return ax
@@ -843,10 +820,7 @@ def beta_3d_plot(ordination,
                  s=80, 
                  ax=None,
                  figsize=None,
-                 show_legend=False,
-                 legend_loc='best',
                  hue_order=None,
-                 legend_ncol=1,
                  **kwargs):
     """
     This method creates a 3D beta diversity plot.
@@ -870,14 +844,8 @@ def beta_3d_plot(ordination,
         Axes object to draw the plot onto, otherwise uses the current Axes.
     figsize : tuple, optional
         Width, height in inches. Format: (float, float).
-    show_legend : bool, default: False
-        Show the legend.
-    legend_loc : str, default: 'best'
-        Legend location specified as in matplotlib.pyplot.legend.
     hue_order : list, optional
         Specify the order of categorical levels of the 'hue' semantic.
-    legend_ncol : int, default: 1
-        The number of columns that the legend has.
     kwargs : key, value mappings
         Other keyword arguments passed down to _artist.
 
@@ -935,8 +903,6 @@ def beta_3d_plot(ordination,
                        df2.iloc[:, 2],
                        label=c,
                        **d)
-
-    ax = _legend_handler(ax, show_legend, legend_loc, legend_ncol=legend_ncol)
 
     ax = _artist(ax, **kwargs)
 
@@ -1038,11 +1004,6 @@ def taxa_abundance_bar_plot(taxa,
                             exclude_samples=None,
                             include_samples=None,
                             exclude_taxa=[],
-                            show_legend=False,
-                            legend_short=False,
-                            legend_loc='best',
-                            legend_labels=None,
-                            legend_only=False,
                             sort_by_names=False,
                             colors=[],
                             label_columns=[],
@@ -1089,16 +1050,6 @@ def taxa_abundance_bar_plot(taxa,
         Format: {'col': ['item', ...], ...}.
     exclude_taxa : list
         The taxa names to be excluded when matched. Case insenstivie.
-    show_legend : bool, default: False
-        Show the legend.
-    legend_short : bool
-        If true, only display the smallest taxa rank in the legend.
-    legend_loc : str, default: 'best'
-        Legend location specified as in matplotlib.pyplot.legend.
-    legend_labels : list, optional
-        Legend texts.
-    legend_only : bool, default: False
-        Plot the legend only.
     sort_by_names : bool
         If true, sort the columns (i.e. species) to be displayed by name.
     colors : list
@@ -1265,13 +1216,6 @@ def taxa_abundance_bar_plot(taxa,
             raise ValueError(m)
         ax.set_xticklabels(xlabels)
 
-    ax = _legend_handler(ax,
-                         show_legend,
-                         legend_loc,
-                         legend_labels=legend_labels,
-                         legend_short=legend_short,
-                         legend_only=legend_only)
-
     ax = _artist(ax, **kwargs)
 
     return ax
@@ -1305,8 +1249,6 @@ def taxa_abundance_box_plot(taxa,
                             pseudocount=False,
                             taxa_names=None,
                             brief_xlabels=False,
-                            show_legend=False,
-                            legend_loc='best',
                             show_means=False,
                             meanprops=None,
                             **kwargs):
@@ -1360,10 +1302,6 @@ def taxa_abundance_box_plot(taxa,
         List of taxa names to be displayed.
     brief_xlabels : bool, default: False
         If true, only display the smallest taxa rank in the x-axis labels.
-    show_legend : bool, default: False
-        Show the legend.
-    legend_loc : str, default: 'best'
-        Legend location specified as in matplotlib.pyplot.legend.
     show_means : bool, default: False
         Add means to the boxes.
     meanprops : dict, optional
@@ -1509,12 +1447,7 @@ def taxa_abundance_box_plot(taxa,
 
     ax.set_xticklabels(a, rotation=45, ha='right')
 
-    ax = _legend_handler(ax,
-                         show_legend,
-                         legend_loc,
-                         remove_duplicates=remove_duplicates)
-
-    ax = _artist(ax, **kwargs)
+    ax = _artist(ax, **kwargs, remove_duplicates=remove_duplicates)
 
     return ax
 
