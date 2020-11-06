@@ -739,8 +739,6 @@ def beta_2d_plot(ordination,
         Axes object to draw the plot onto, otherwise uses the current Axes.
     figsize : tuple, optional
         Width, height in inches. Format: (float, float).
-    show_legend : bool, default: False
-        Show the legend.
     hue_order : list, optional
         Specify the order of categorical levels of the 'hue' semantic.
     style_order : list, optional
