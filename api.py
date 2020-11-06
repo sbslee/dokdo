@@ -150,6 +150,8 @@ def _artist(ax,
             hide_yticks=False,
             hide_xticklabels=False,
             hide_yticklabels=False,
+            xticklabels=None,
+            yticklabels=None,
             xmin=None,
             xmax=None,
             ymin=None,
@@ -185,6 +187,10 @@ def _artist(ax,
         Hides tick labels for the x-axis.
     hide_yticklabels : bool, default: False
         Hides tick labels for the y-axis.
+    xticklabels : list, optional
+        Tick labels for the x-axis.
+    yticklabels : list, optional
+        Tick labels for the y-axis.
     xmin : float, optional
         Minimum value for the x-axis.
     xmax : float, optional
@@ -231,6 +237,20 @@ def _artist(ax,
 
     if hide_yticklabels:
         ax.set_yticklabels([])
+
+    if isinstance(xticklabels, list):
+        a = len(ax.get_xticklabels())
+        b = len(xticklabels)
+        if a != b:
+            raise ValueError(f"Expected {a} items, but found {b}")
+        ax.set_xticklabels(xticklabels)
+
+    if isinstance(yticklabels, list):
+        a = len(ax.get_yticklabels())
+        b = len(yticklabels)
+        if a != b:
+            raise ValueError(f"Expected {a} items, but found {b}")
+        ax.set_yticklabels(yticklabels)
 
     ax.set_xlim(left=xmin, right=xmax)
     ax.set_ylim(bottom=ymin, top=ymax)
@@ -1008,7 +1028,6 @@ def taxa_abundance_bar_plot(taxa,
                             orders={},
                             sample_names=[],
                             csv_file=None,
-                            xlabels=None,
                             taxa_names=None,
                             sort_by_mean1=True,
                             sort_by_mean2=True,
@@ -1063,8 +1082,6 @@ def taxa_abundance_bar_plot(taxa,
         List of sample IDs to be included.
     csv_file : str
         Path of the .csv file to output the dataframe to.
-    xlabels : list, optional
-        List of the x-axis labels.
     taxa_names : list, optional
         List of taxa names to be displayed.
     sort_by_mean1 : bool, default: True
@@ -1206,14 +1223,6 @@ def taxa_abundance_bar_plot(taxa,
     if csv_file is not None:
         df.to_csv(csv_file)
 
-    # Manage the x-axis labels.
-    if xlabels is not None:
-        xtexts = [x.get_text() for x in ax.get_xticklabels()]
-        if len(xtexts) != len(xlabels):
-            m = f"Expected {len(xtexts)} items, but found {len(xlabels)}"
-            raise ValueError(m)
-        ax.set_xticklabels(xlabels)
-
     ax = _artist(ax, **kwargs)
 
     return ax
@@ -1243,7 +1252,6 @@ def taxa_abundance_box_plot(taxa,
                             sample_names=[],
                             csv_file=None,
                             size=5,
-                            xlabels=None,
                             pseudocount=False,
                             taxa_names=None,
                             brief_xlabels=False,
@@ -1292,8 +1300,6 @@ def taxa_abundance_box_plot(taxa,
         Path of the .csv file to output the dataframe to.
     size : float, default: 5.0
         Radius of the markers, in points.
-    xlabels : list, optional
-        List of the x-axis labels.
     pseudocount : bool, default: False
         Add pseudocount to remove zeros.
     taxa_names : list, optional
@@ -1429,14 +1435,6 @@ def taxa_abundance_box_plot(taxa,
     if csv_file is not None:
         df3 = pd.concat([df, mf], axis=1, join='inner')
         df3.to_csv(csv_file)
-
-
-    if xlabels is not None:
-        xtexts = [x.get_text() for x in ax.get_xticklabels()]
-        if len(xtexts) != len(xlabels):
-            m = f"Expected {len(xtexts)} items, but found {len(xlabels)}"
-            raise ValueError(m)
-        ax.set_xticklabels(xlabels)
 
     a = ax.get_xticklabels()
 
