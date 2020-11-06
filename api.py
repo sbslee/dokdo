@@ -2,6 +2,7 @@
 import math
 from tempfile import TemporaryDirectory
 import warnings
+import numbers
 
 # Import external libraries.
 import numpy as np
@@ -144,14 +145,24 @@ def _pretty_taxa(s):
 
 def _artist(ax,
             title=None,
+            xlabel=None,
+            ylabel=None,
+            zlabel=None,
             hide_xlabel=False,
             hide_ylabel=False,
+            hide_zlabel=False,
             hide_xticks=False,
             hide_yticks=False,
+            hide_zticks=False,
             hide_xticklabels=False,
             hide_yticklabels=False,
+            hide_zticklabels=False,
+            xticks=None,
+            yticks=None,
             xticklabels=None,
             yticklabels=None,
+            xrot=None,
+            xha=None,
             xmin=None,
             xmax=None,
             ymin=None,
@@ -175,22 +186,42 @@ def _artist(ax,
         Axes object to draw the plot onto.
     title : str, optional
         Sets the figure title.
+    xlabel : str, optional
+        Set the x-axis label.
+    ylabel : str, optional
+        Set the y-axis label.
+    zlabel : str, optional
+        Set the z-axis label.
     hide_xlabel : bool, default: False
         Hides the x-axis label.
     hide_ylabel : bool, default: False
         Hides the y-axis label.
+    hide_zlabel : bool, default: False
+        Hides the z-axis label.
     hide_xticks : bool, default: False
         Hides ticks and tick labels for the x-axis.
     hide_yticks : bool, default: False
         Hides ticks and tick labels for the y-axis.
+    hide_zticks : bool, default: False
+        Hides ticks and tick labels for the z-axis.
     hide_xticklabels : bool, default: False
         Hides tick labels for the x-axis.
     hide_yticklabels : bool, default: False
         Hides tick labels for the y-axis.
+    hide_zticklabels : bool, default: False
+        Hides tick labels for the z-axis.
+    xticks : list, optional
+        Positions of x-axis ticks.
+    yticks : list, optional
+        Positions of y-axis ticks.
     xticklabels : list, optional
         Tick labels for the x-axis.
     yticklabels : list, optional
         Tick labels for the y-axis.
+    xrot : float, optional
+        Rotation degree of tick labels for the x-axis.
+    xha : str, optional
+        Horizontal alignment of tick labels for the x-axis.
     xmin : float, optional
         Minimum value for the x-axis.
     xmax : float, optional
@@ -220,11 +251,23 @@ def _artist(ax,
     if isinstance(title, str):
         ax.set_title(title)
 
+    if isinstance(xlabel, str):
+        ax.set_xlabel(xlabel)
+
+    if isinstance(ylabel, str):
+        ax.set_ylabel(ylabel)
+
+    if isinstance(zlabel, str):
+        ax.set_zlabel(zlabel)
+
     if hide_xlabel:
         ax.set_xlabel('')
 
     if hide_ylabel:
         ax.set_ylabel('')
+
+    if hide_zlabel:
+        ax.set_zlabel('')
 
     if hide_xticks:
         ax.set_xticks([])
@@ -232,11 +275,20 @@ def _artist(ax,
     if hide_yticks:
         ax.set_yticks([])
 
+    if hide_zticks:
+        ax.set_zticks([])
+
     if hide_xticklabels:
         ax.set_xticklabels([])
 
     if hide_yticklabels:
         ax.set_yticklabels([])
+
+    if isinstance(xticks, list):
+        ax.set_xticks(xticks)
+
+    if isinstance(yticks, list):
+        ax.set_yticks(yticks)
 
     if isinstance(xticklabels, list):
         a = len(ax.get_xticklabels())
@@ -251,6 +303,12 @@ def _artist(ax,
         if a != b:
             raise ValueError(f"Expected {a} items, but found {b}")
         ax.set_yticklabels(yticklabels)
+
+    if isinstance(xrot, numbers.Number):
+        ax.set_xticklabels(ax.get_xticklabels(), rotation=xrot)
+
+    if isinstance(xha, str):
+        ax.set_xticklabels(ax.get_xticklabels(), ha=xha)
 
     ax.set_xlim(left=xmin, right=xmax)
     ax.set_ylim(bottom=ymin, top=ymax)
@@ -466,17 +524,24 @@ def read_quality_plot(demux,
     if ax is None:
         fig, ax = plt.subplots(figsize=figsize)
 
-    sns.boxplot(x='variable', y='value', data=df, ax=ax, fliersize=0,
+    sns.boxplot(x='variable',
+                y='value',
+                data=df,
+                ax=ax,
+                fliersize=0,
                 boxprops=dict(color='white', edgecolor='black'),
                 medianprops=dict(color='red'),
                 whiskerprops=dict(linestyle=':'))
 
-    ax.set_ylim([0, 45])
-    ax.set_xlabel('Sequence base')
-    ax.set_ylabel('Quality score')
-    a = np.arange(df['variable'].min(), df['variable'].max(), 20)
-    ax.set_xticks(a)
-    ax.set_xticklabels(a)
+    xticks = np.arange(df['variable'].min(), df['variable'].max(), 20).tolist()
+
+    kwargs = {'xlabel': 'Sequence base',
+              'ylabel': 'Quality score',
+              'xticks': xticks,
+              'xticklabels': xticks,
+              'ylim': 0,
+              'ymax': 45,
+              **kwargs}
 
     ax = _artist(ax, **kwargs)
 
@@ -639,8 +704,9 @@ def alpha_rarefaction_plot(rarefaction,
                  sort=False,
                  hue_order=hue_order)
 
-    ax.set_xlabel('Sequencing depth')
-    ax.set_ylabel(metric)
+    kwargs = {'xlabel': 'Sequencing depth',
+              'ylabel': metric,
+              **kwargs}
 
     ax = _artist(ax, **kwargs)
 
@@ -812,10 +878,11 @@ def beta_2d_plot(ordination,
                     alpha=alpha,
                     legend=legend_type)
 
-    ax.set_xticks([])
-    ax.set_yticks([])
-    ax.set_xlabel(f'Axis 1 ({v[0]} %)')
-    ax.set_ylabel(f'Axis 2 ({v[1]} %)')
+    kwargs = {'xlabel': f'Axis 1 ({v[0]} %)',
+              'ylabel': f'Axis 2 ({v[1]} %)',
+              'hide_xticks': True,
+              'hide_yticks': True,
+              **kwargs}
 
     ax = _artist(ax, **kwargs)
 
@@ -893,12 +960,6 @@ def beta_3d_plot(ordination,
         ax = fig.add_subplot(1, 1, 1, projection='3d')
 
     ax.view_init(azim=azim, elev=elev)
-    ax.set_xlabel(f'Axis 1 ({v[0]} %)')
-    ax.set_ylabel(f'Axis 2 ({v[1]} %)')
-    ax.set_zlabel(f'Axis 3 ({v[2]} %)')
-    ax.set_xticks([])
-    ax.set_yticks([])
-    ax.set_zticks([])
 
     d = {'s': s}
 
@@ -921,6 +982,14 @@ def beta_3d_plot(ordination,
                        df2.iloc[:, 2],
                        label=c,
                        **d)
+
+    kwargs = {'xlabel': f'Axis 1 ({v[0]} %)',
+              'ylabel': f'Axis 2 ({v[1]} %)',
+              'zlabel': f'Axis 3 ({v[2]} %)',
+              'hide_xticks': True,
+              'hide_yticks': True,
+              'hide_zticks': True,
+              **kwargs}
 
     ax = _artist(ax, **kwargs)
 
@@ -1207,21 +1276,20 @@ def taxa_abundance_bar_plot(taxa,
                 color=c,
                 linewidth=0)
 
-    ax.set_xlabel('')
-    ax.set_ylabel('Relative abundance (%)')
-
-
-    if label_columns is not None:
-        f = lambda row: ' : '.join(row.values.astype(str))
-        smart_xlabels = mf[label_columns].apply(f, axis=1)
-    else:
-        smart_xlabels = None
-
-
-
     # If provided, output the dataframe as a .csv file.
     if csv_file is not None:
         df.to_csv(csv_file)
+
+    if label_columns is not None:
+        f = lambda row: ' : '.join(row.values.astype(str))
+        xticklabels = mf[label_columns].apply(f, axis=1).tolist()
+    else:
+        xticklabels = None
+
+    kwargs = {'xlabel': '',
+              'ylabel': 'Relative abundance (%)',
+              'xticklabels': xticklabels,
+              **kwargs}
 
     ax = _artist(ax, **kwargs)
 
@@ -1426,24 +1494,25 @@ def taxa_abundance_box_plot(taxa,
     else:
         remove_duplicates = False
 
-    ax.set_xlabel('')
-    ax.set_ylabel('Relative abundance (%)')
-
-
-
     # If provided, output the dataframe as a .csv file.
     if csv_file is not None:
         df3 = pd.concat([df, mf], axis=1, join='inner')
         df3.to_csv(csv_file)
 
-    a = ax.get_xticklabels()
-
     if brief_xlabels:
-        a = [_pretty_taxa(x) for x in a]
+        xticklabels = [_pretty_taxa(x) for x in ax.get_xticklabels()]
+    else:
+        xticklabels = None
 
-    ax.set_xticklabels(a, rotation=45, ha='right')
+    kwargs = {'xrot': 45,
+              'xha': 'right',
+              'xlabel': '',
+              'ylabel': 'Relative abundance (%)',
+              'xticklabels': xticklabels,
+              'remove_duplicates': remove_duplicates,
+              **kwargs}
 
-    ax = _artist(ax, **kwargs, remove_duplicates=remove_duplicates)
+    ax = _artist(ax, **kwargs)
 
     return ax
 
@@ -1486,8 +1555,10 @@ def ancom_volcano_plot(ancom,
     if ax is None:
         fig, ax = plt.subplots(figsize=figsize)
     ax.scatter(df.clr, df.W, s=80, c='black', alpha=0.5)
-    ax.set_xlabel('clr')
-    ax.set_ylabel('W')
+
+    kwargs = {'xlabel': 'clr',
+              'ylabel': 'W',
+              **kwargs}
 
     ax = _artist(ax, **kwargs)
 
