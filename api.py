@@ -431,7 +431,7 @@ def ordinate(table,
 
     Returns
     -------
-    qiime2.sdk.result.Artifact
+    qiime2.Artifact
         Artifact containing PCoA results from 'diversity.methods.pcoa'.
     """
     if where:
@@ -807,7 +807,7 @@ def beta_2d_plot(ordination,
 
     Parameters
     ----------
-    ordination : str or qiime2.sdk.result.Artifact
+    ordination : str or qiime2.Artifact
         Artifact file or object from ordination.
     metadata : str or qiime2.Metadata, optional
         Metadata file or object.
@@ -841,7 +841,7 @@ def beta_2d_plot(ordination,
     """
     t = TemporaryDirectory()
 
-    if isinstance(ordination, qiime2.sdk.result.Artifact):
+    if isinstance(ordination, qiime2.Artifact):
         fn = f'{t.name}/ordination.qza'
         ordination.save(fn)
         ordination = fn
@@ -1015,7 +1015,7 @@ def distance_matrix_plot(distance_matrix,
 
     Parameters
     ----------
-    distance_matrix : str or qiime2.sdk.result.Artifact
+    distance_matrix : str or qiime2.Artifact
          Artifact file or object from distance matrix computation.
     bins : int, optional
         Number of bins to be displayed.
@@ -1035,7 +1035,7 @@ def distance_matrix_plot(distance_matrix,
     """
     t = TemporaryDirectory()
 
-    if isinstance(distance_matrix, qiime2.sdk.result.Artifact):
+    if isinstance(distance_matrix, qiime2.Artifact):
         fn = f'{t.name}/distance-matrix.qza'
         distance_matrix.save(fn)
         distance_matrix = fn
@@ -1066,6 +1066,10 @@ def distance_matrix_plot(distance_matrix,
 
         for i in idx:
             ax.axvline(x=i, c='red')
+
+    kwargs = {'xlabel': 'Distance',
+              'ylabel': 'Frequency',
+              **kwargs}
 
     ax = _artist(ax, **kwargs)
 
@@ -1593,7 +1597,7 @@ def beta_2d_plot_gallery(ordination,
 
     Parameters
     ----------
-    ordination : str or qiime2.sdk.result.Artifact
+    ordination : str or qiime2.Artifact
         Artifact file or object from ordination.
     metadata : str or qiime2.Metadata
         Metadata file or object.
