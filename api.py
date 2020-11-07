@@ -377,7 +377,7 @@ def get_mf(metadata):
 
     Parameters
     ----------
-    metadata : str or qiime2.metadata.metadata.Metadata
+    metadata : str or qiime2.Metadata
         Metadata file or object.
 
     Returns
@@ -387,7 +387,7 @@ def get_mf(metadata):
     """
     if isinstance(metadata, str):
         mf = Metadata.load(metadata).to_dataframe()
-    elif isinstance(metadata, qiime2.metadata.metadata.Metadata):
+    elif isinstance(metadata, qiime2.Metadata):
         mf = metadata.to_dataframe()
     else:
         raise TypeError(f"Incorrect metadata type: {type(metadata)}")
@@ -573,7 +573,7 @@ def denoising_stats_plot(stats,
     ----------
     stats : str
         Path to the denoising-stats.qza file.
-    metadata : str or qiime2.metadata.metadata.Metadata
+    metadata : str or qiime2.Metadata
         Metadata file or object.
     where : str
         Column name of the sample metadata.
@@ -809,7 +809,7 @@ def beta_2d_plot(ordination,
     ----------
     ordination : str or qiime2.sdk.result.Artifact
         Artifact file or object from ordination.
-    metadata : str or qiime2.metadata.metadata.Metadata, optional
+    metadata : str or qiime2.Metadata, optional
         Metadata file or object.
     hue : str, optional
         Grouping variable that will produce points with different colors.
@@ -915,7 +915,7 @@ def beta_3d_plot(ordination,
     ordination : str
         Path to the artifact file from ordination (e.g. 
         bray_curtis_pcoa_results.qza).
-    metadata : str or qiime2.metadata.metadata.Metadata
+    metadata : str or qiime2.Metadata
         Metadata file or object.
     hue : str, optional
         Grouping variable that will produce points with different colors.
@@ -1083,19 +1083,19 @@ def distance_matrix_plot(distance_matrix,
 def taxa_abundance_bar_plot(taxa,
                             metadata=None,
                             level=1,
-                            by=[],
+                            by=None,
                             ax=None,
                             figsize=None,
                             width=0.8,
                             count=0,
                             exclude_samples=None,
                             include_samples=None,
-                            exclude_taxa=[],
+                            exclude_taxa=None,
                             sort_by_names=False,
-                            colors=[],
+                            colors=None,
                             label_columns=None,
-                            orders={},
-                            sample_names=[],
+                            orders=None,
+                            sample_names=None,
                             csv_file=None,
                             taxa_names=None,
                             sort_by_mean1=True,
@@ -1111,11 +1111,11 @@ def taxa_abundance_bar_plot(taxa,
     ----------
     taxa : str
         Path to the visualization file from the 'qiime taxa barplot'.
-    metadata : str or qiime2.metadata.metadata.Metadata
+    metadata : str or qiime2.Metadata, optional
         Metadata file or object.
     level : int, default: 1
         Taxonomic level at which the features should be collapsed.
-    by : list of str
+    by : list, optional
         Column name(s) to be used for sorting the samples. Using 'index' will 
         sort the samples by their name, in addition to other column name(s) 
         that may have been provided. If multiple items are provided, sorting 
@@ -1124,7 +1124,7 @@ def taxa_abundance_bar_plot(taxa,
         Axes object to draw the plot onto, otherwise uses the current Axes.
     figsize : tuple, optional
         Width, height in inches. Format: (float, float).
-    width : float
+    width : float, default: 0.8
         The width of the bars.
     count : int, default: 0
         The number of taxa to display. When 0, display all.
@@ -1134,22 +1134,22 @@ def taxa_abundance_bar_plot(taxa,
     include_samples : dict, optional
         Filtering logic used for sample inclusion.
         Format: {'col': ['item', ...], ...}.
-    exclude_taxa : list
+    exclude_taxa : list, optional
         The taxa names to be excluded when matched. Case insenstivie.
-    sort_by_names : bool
+    sort_by_names : bool, default: False
         If true, sort the columns (i.e. species) to be displayed by name.
-    colors : list
+    colors : list, optional
         The bar colors.
     label_columns : list, optional
         The column names to be used as the x-axis labels.
-    orders : dict
+    orders : dict, optional
         Dictionary of {column1: [element1, element2, ...], column2: 
         [element1, element2...], ...} to indicate the order of items. Used to 
         sort the sampels by the user-specified order instead of ordering 
         numerically or alphabetically.
-    sample_names : list
+    sample_names : list, optional
         List of sample IDs to be included.
-    csv_file : str
+    csv_file : str, optional
         Path of the .csv file to output the dataframe to.
     taxa_names : list, optional
         List of taxa names to be displayed.
@@ -1184,31 +1184,33 @@ def taxa_abundance_bar_plot(taxa,
     # list. This column will be used for sorting the samples later instead of 
     # the original column. After sorting, the new column will be dropped from 
     # the dataframe and the original column will replace its place.
-    for k, v in orders.items():
-        u = df[k].unique().tolist()
+    if isinstance(orders, dict):
+        for k, v in orders.items():
+            u = df[k].unique().tolist()
 
-        if set(u) != set(v):
-            message = (f"Target values {u} not matched with user-provided "
-                       f"values {v} for metadata column `{k}`")
-            raise ValueError(message)
+            if set(u) != set(v):
+                message = (f"Target values {u} not matched with user-provided "
+                           f"values {v} for metadata column `{k}`")
+                raise ValueError(message)
 
-        l = [x for x in range(len(v))]
-        d = dict(zip(v, l))
-        df.rename(columns={k: f'@{k}'}, inplace=True)
-        df[k] = df[f'@{k}'].map(d)
+            l = [x for x in range(len(v))]
+            d = dict(zip(v, l))
+            df.rename(columns={k: f'@{k}'}, inplace=True)
+            df[k] = df[f'@{k}'].map(d)
 
     # If provided, sort the samples for display in the x-axis.
-    if by:
+    if isinstance(by, list):
         df = df.sort_values(by=by)
 
     # If sorting was performed by the user-specified order, remove the 
     # temporary columns and then bring back the original column.
-    for k in orders:
-        df.drop(columns=[k], inplace=True)
-        df.rename(columns={f'@{k}': k}, inplace=True)
+    if isinstance(orders, dict):
+        for k in orders:
+            df.drop(columns=[k], inplace=True)
+            df.rename(columns={f'@{k}': k}, inplace=True)
 
     # If provided, exclude the specified taxa.
-    if exclude_taxa:
+    if isinstance(exclude_taxa, list):
         dropped = []
         for tax in exclude_taxa:
             for col in df.columns:
@@ -1231,7 +1233,7 @@ def taxa_abundance_bar_plot(taxa,
     df, mf = _filter_samples(df, mf, exclude_samples, include_samples)
 
     # If provided, only include the specified samples.
-    if sample_names:
+    if isinstance(sample_names, list):
         df = df.loc[sample_names]
         mf = mf.loc[sample_names]
 
@@ -1262,7 +1264,7 @@ def taxa_abundance_bar_plot(taxa,
     if ax is None:
         fig, ax = plt.subplots(figsize=figsize)
 
-    if colors:
+    if isinstance(colors, list):
         c = colors
     else:
         c = plt.cm.get_cmap('Accent').colors
@@ -1309,15 +1311,15 @@ def taxa_abundance_box_plot(taxa,
                             hue_order=None,
                             add_datapoints=False,
                             level=1,
-                            by=[],
+                            by=None,
                             ax=None,
                             figsize=None,
                             count=0,
                             exclude_samples=None,
                             include_samples=None,
-                            exclude_taxa=[],
+                            exclude_taxa=None,
                             sort_by_names=False,
-                            sample_names=[],
+                            sample_names=None,
                             csv_file=None,
                             size=5,
                             pseudocount=False,
@@ -1341,7 +1343,7 @@ def taxa_abundance_box_plot(taxa,
         Show datapoints on top of the boxes.
     level : int, default: 1
         Taxonomic level at which the features should be collapsed.
-    by : list of str
+    by : list, optional
         Column name(s) to be used for sorting the samples. Using 'index' will 
         sort the samples by their name, in addition to other column name(s) 
         that may have been provided. If multiple items are provided, sorting 
@@ -1358,13 +1360,13 @@ def taxa_abundance_box_plot(taxa,
     include_samples : dict, optional
         Filtering logic used for sample inclusion.
         Format: {'col': ['item', ...], ...}.
-    exclude_taxa : list
+    exclude_taxa : list, optional
         The taxa names to be excluded when matched. Case insenstivie.
-    sort_by_names : bool
+    sort_by_names : bool, default: False
         If true, sort the columns (i.e. species) to be displayed by name.
-    sample_names : list
+    sample_names : list, optional
         List of sample IDs to be included.
-    csv_file : str
+    csv_file : str, optional
         Path of the .csv file to output the dataframe to.
     size : float, default: 5.0
         Radius of the markers, in points.
@@ -1395,7 +1397,7 @@ def taxa_abundance_box_plot(taxa,
         df = df.sort_values(by=by)
 
     # If provided, exclude the specified taxa.
-    if exclude_taxa:
+    if isinstance(exclude_taxa, list):
         dropped = []
         for tax in exclude_taxa:
             for col in df.columns:
@@ -1413,7 +1415,7 @@ def taxa_abundance_box_plot(taxa,
     df, mf = _filter_samples(df, mf, exclude_samples, include_samples)
 
     # If provided, only include the specified samples.
-    if sample_names:
+    if isinstance(sample_names, list):
         df = df.loc[sample_names]
         mf = mf.loc[sample_names]
 
@@ -1593,7 +1595,7 @@ def beta_2d_plot_gallery(ordination,
     ----------
     ordination : str or qiime2.sdk.result.Artifact
         Artifact file or object from ordination.
-    metadata : str or qiime2.metadata.metadata.Metadata
+    metadata : str or qiime2.Metadata
         Metadata file or object.
     prefix : str
         File prefix.
