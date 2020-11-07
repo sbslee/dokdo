@@ -1113,7 +1113,7 @@ def taxa_abundance_bar_plot(taxa,
         Path to the visualization file from the 'qiime taxa barplot'.
     metadata : str or qiime2.metadata.metadata.Metadata
         Metadata file or object.
-    level : int
+    level : int, default: 1
         Taxonomic level at which the features should be collapsed.
     by : list of str
         Column name(s) to be used for sorting the samples. Using 'index' will 
@@ -1339,7 +1339,7 @@ def taxa_abundance_box_plot(taxa,
         Specify the order of categorical levels of the 'hue' semantic.
     add_datapoints : bool, default: False
         Show datapoints on top of the boxes.
-    level : int
+    level : int, default: 1
         Taxonomic level at which the features should be collapsed.
     by : list of str
         Column name(s) to be used for sorting the samples. Using 'index' will 
