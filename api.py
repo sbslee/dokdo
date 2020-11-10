@@ -374,10 +374,13 @@ def _get_others_col(df, count, taxa_names, show_others):
         m = "Cannot use 'count' and 'taxa_names' arguments together"
         raise ValueError(m)
     elif count is not 0:
-        others = df.iloc[:, count-1:].sum(axis=1)
-        df = df.iloc[:, :count-1]
-        if show_others:
-            df = df.assign(Others=others)
+        if count < df.shape[1]:
+            others = df.iloc[:, count-1:].sum(axis=1)
+            df = df.iloc[:, :count-1]
+            if show_others:
+                df = df.assign(Others=others)
+        else:
+            pass
     elif taxa_names is not None:
         others = df.drop(columns=taxa_names).sum(axis=1)
         df = df[taxa_names]
