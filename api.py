@@ -368,6 +368,35 @@ def _artist(ax,
 
 
 
+def _get_others_col(df, count, taxa_names, show_others):
+    "Returns DataFrame object after selecting taxa."
+    if count is not 0 and taxa_names is not None:
+        m = "Cannot use 'count' and 'taxa_names' arguments together"
+        raise ValueError(m)
+    elif count is not 0:
+        others = df.iloc[:, count-1:].sum(axis=1)
+        df = df.iloc[:, :count-1]
+        if show_others:
+            df = df.assign(Others=others)
+    elif taxa_names is not None:
+        others = df.drop(columns=taxa_names).sum(axis=1)
+        df = df[taxa_names]
+        if show_others:
+            df = df.assign(Others=others)
+    else:
+        pass
+
+    return df
+
+
+
+
+
+
+
+
+
+
 # -- General methods ---------------------------------------------------------
 
 def get_mf(metadata):
@@ -1104,6 +1133,7 @@ def taxa_abundance_bar_plot(taxa,
                             taxa_names=None,
                             sort_by_mean1=True,
                             sort_by_mean2=True,
+                            show_others=True,
                             **kwargs):
     """
     This method creates a taxa abundance plot.
@@ -1161,6 +1191,8 @@ def taxa_abundance_bar_plot(taxa,
         Sort taxa by their mean abundance before sample filtration.
     sort_by_mean2 : bool, default: True
         Sort taxa by their mean abundance after sample filtration.
+    show_others : bool, default: True
+        Include the 'Others' category.
     kwargs : key, value mappings
         Other keyword arguments passed down to _artist.
 
@@ -1247,20 +1279,7 @@ def taxa_abundance_bar_plot(taxa,
     if sort_by_mean2:
         df = _sort_by_mean(df)
 
-    # If provided, collapse species to the Others column.
-    if count is not 0 and taxa_names is not None:
-        m = "Cannot use 'count' and 'taxa_names' arguments together"
-        raise ValueError(m)
-    elif count is not 0:
-        others = df.iloc[:, count-1:].sum(axis=1)
-        df = df.iloc[:, :count-1]
-        df['Others'] = others
-    elif taxa_names is not None:
-        others = df.drop(columns=taxa_names).sum(axis=1)
-        df = df[taxa_names]
-        df['Others'] = others
-    else:
-        pass
+    df = _get_others_col(df, count, taxa_names, show_others)
 
     if sort_by_names:
         df = df.reindex(sorted(df.columns), axis=1)
@@ -1331,6 +1350,7 @@ def taxa_abundance_box_plot(taxa,
                             brief_xlabels=False,
                             show_means=False,
                             meanprops=None,
+                            show_others=True,
                             **kwargs):
     """
     This method creates a taxa abundance box plot.
@@ -1384,6 +1404,8 @@ def taxa_abundance_box_plot(taxa,
         Add means to the boxes.
     meanprops : dict, optional
         The meanprops argument as in matplotlib.pyplot.boxplot.
+    show_others : bool, default: True
+        Include the 'Others' category.
     kwargs : key, value mappings
         Other keyword arguments passed down to _artist.
 
@@ -1436,18 +1458,7 @@ def taxa_abundance_box_plot(taxa,
     # Sort the columns (i.e. species) by their mean abundance.
     df = _sort_by_mean(df)
 
-    # If provided, collapse extra species to the Others column.
-    if count is not 0 and taxa_names is not None:
-        m = "Cannot use 'count' and 'taxa_names' arguments together"
-        raise ValueError(m)
-    elif count is not 0:
-        others = df.iloc[:, count-1:].sum(axis=1)
-        df = df.iloc[:, :count-1]
-        df['Others'] = others
-    elif taxa_names is not None:
-        df = df[taxa_names]
-    else:
-        pass
+    df = _get_others_col(df, count, taxa_names, show_others)
 
     if sort_by_names:
         df = df.reindex(sorted(df.columns), axis=1)
