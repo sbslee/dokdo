@@ -1290,7 +1290,7 @@ def taxa_abundance_bar_plot(taxa,
         f = lambda row: ' : '.join(row.values.astype(str))
         xticklabels = mf[label_columns].apply(f, axis=1).tolist()
     else:
-        xticklabels = [x.get_text() for x in ax.get_xticklabels()]
+        xticklabels = None
 
     kwargs = {'xlabel': '',
               'ylabel': 'Relative abundance (%)',
