@@ -1137,6 +1137,7 @@ def taxa_abundance_bar_plot(taxa,
                             taxa_names=None,
                             sort_by_mean1=True,
                             sort_by_mean2=True,
+                            sort_by_mean3=True,
                             show_others=True,
                             **kwargs):
     """
@@ -1144,6 +1145,13 @@ def taxa_abundance_bar_plot(taxa,
 
     Although the input visualization file should contain medatadata already, 
     you can replace it with new metadata by using the 'metadata' option.
+
+    By default, the method will sort the columns (taxa) three times by their 
+    mean relative abundance. Each sorting is described by the 'sort_by_mean' 
+    arguments below. Note that depending on the situation, you may have to 
+    turn off more than one sort_by_mean. For example, if you want to maintain 
+    the taxa order after sort_by_mean1, you would have to turn off both 
+    sort_by_mean2 and sort_by_mean3.
 
     Parameters
     ----------
@@ -1192,9 +1200,13 @@ def taxa_abundance_bar_plot(taxa,
     taxa_names : list, optional
         List of taxa names to be displayed.
     sort_by_mean1 : bool, default: True
-        Sort taxa by their mean abundance before sample filtration.
+        Sort taxa by their mean abundance before any sample filtration.
     sort_by_mean2 : bool, default: True
-        Sort taxa by their mean abundance after sample filtration.
+        Sort taxa by their mean abundance after sample filtration by 
+        'include_samples' or 'exclude_samples'.
+    sort_by_mean3 : bool, default: True
+        Sort taxa by their mean abundance after sample filtration by
+        'sample_names'.
     show_others : bool, default: True
         Include the 'Others' category.
     kwargs : key, value mappings
@@ -1272,6 +1284,11 @@ def taxa_abundance_bar_plot(taxa,
 
     df, mf = _filter_samples(df, mf, exclude_samples, include_samples)
 
+    if sort_by_mean2:
+        a = df.div(df.sum(axis=1), axis=0)
+        a = _sort_by_mean(a)
+        df = df[a.columns]
+
     # If provided, only include the specified samples.
     if isinstance(sample_names, list):
         df = df.loc[sample_names]
@@ -1280,7 +1297,7 @@ def taxa_abundance_bar_plot(taxa,
     # Convert counts to proportions.
     df = df.div(df.sum(axis=1), axis=0)
 
-    if sort_by_mean2:
+    if sort_by_mean3:
         df = _sort_by_mean(df)
 
     df = _get_others_col(df, count, taxa_names, show_others)
