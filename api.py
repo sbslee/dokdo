@@ -85,8 +85,10 @@ def _filter_samples(df, mf, exclude_samples, include_samples):
 
 
 def _sort_by_mean(df):
-    "Returns DataFrame object after sorting columns by their mean."
-    return df.loc[:, df.mean().sort_values(ascending=False).index]
+    "Returns DataFrame object after sorting taxa by mean relative abundance."
+    a = df.div(df.sum(axis=1), axis=0)
+    a = a.loc[:, a.mean().sort_values(ascending=False).index]
+    return df[a.columns]
 
 
 
@@ -1146,13 +1148,6 @@ def taxa_abundance_bar_plot(taxa,
     Although the input visualization file should contain medatadata already, 
     you can replace it with new metadata by using the 'metadata' option.
 
-    By default, the method will sort the columns (taxa) three times by their 
-    mean relative abundance. Each sorting is described by the 'sort_by_mean' 
-    arguments below. Note that depending on the situation, you may have to 
-    turn off more than one sort_by_mean. For example, if you want to maintain 
-    the taxa order after sort_by_mean1, you would have to turn off both 
-    sort_by_mean2 and sort_by_mean3.
-
     Parameters
     ----------
     taxa : str
@@ -1200,12 +1195,12 @@ def taxa_abundance_bar_plot(taxa,
     taxa_names : list, optional
         List of taxa names to be displayed.
     sort_by_mean1 : bool, default: True
-        Sort taxa by their mean abundance before any sample filtration.
+        Sort taxa by their mean relative abundance before sample filtration.
     sort_by_mean2 : bool, default: True
-        Sort taxa by their mean abundance after sample filtration by 
+        Sort taxa by their mean relative abundance after sample filtration by 
         'include_samples' or 'exclude_samples'.
     sort_by_mean3 : bool, default: True
-        Sort taxa by their mean abundance after sample filtration by
+        Sort taxa by their mean relative abundance after sample filtration by 
         'sample_names'.
     show_others : bool, default: True
         Include the 'Others' category.
@@ -1278,27 +1273,24 @@ def taxa_abundance_bar_plot(taxa,
     df = df.drop(columns=cols)
 
     if sort_by_mean1:
-        a = df.div(df.sum(axis=1), axis=0)
-        a = _sort_by_mean(a)
-        df = df[a.columns]
+        df = _sort_by_mean(df)
 
     df, mf = _filter_samples(df, mf, exclude_samples, include_samples)
 
     if sort_by_mean2:
-        a = df.div(df.sum(axis=1), axis=0)
-        a = _sort_by_mean(a)
-        df = df[a.columns]
+        df = _sort_by_mean(df)
 
     # If provided, only include the specified samples.
     if isinstance(sample_names, list):
         df = df.loc[sample_names]
         mf = mf.loc[sample_names]
 
+        if sort_by_mean3:
+            df = _sort_by_mean(df)
+
+
     # Convert counts to proportions.
     df = df.div(df.sum(axis=1), axis=0)
-
-    if sort_by_mean3:
-        df = _sort_by_mean(df)
 
     df = _get_others_col(df, count, taxa_names, show_others)
 
@@ -1372,6 +1364,7 @@ def taxa_abundance_box_plot(taxa,
                             show_means=False,
                             meanprops=None,
                             show_others=True,
+                            sort_by_mean=True,
                             **kwargs):
     """
     This method creates a taxa abundance box plot.
@@ -1427,6 +1420,8 @@ def taxa_abundance_box_plot(taxa,
         The meanprops argument as in matplotlib.pyplot.boxplot.
     show_others : bool, default: True
         Include the 'Others' category.
+    sort_by_mean : bool, default: True
+        Sort taxa by their mean relative abundance after sample filtration.
     kwargs : key, value mappings
         Other keyword arguments passed down to _artist.
 
@@ -1466,6 +1461,9 @@ def taxa_abundance_box_plot(taxa,
         df = df.loc[sample_names]
         mf = mf.loc[sample_names]
 
+    if sort_by_mean:
+        df = _sort_by_mean(df)
+
     if ax is None:
         fig, ax = plt.subplots(figsize=figsize)
 
@@ -1475,9 +1473,6 @@ def taxa_abundance_box_plot(taxa,
 
     # Convert counts to proportions.
     df = df.div(df.sum(axis=1), axis=0)
-
-    # Sort the columns (i.e. species) by their mean abundance.
-    df = _sort_by_mean(df)
 
     df = _get_others_col(df, count, taxa_names, show_others)
 
