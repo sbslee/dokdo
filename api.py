@@ -11,6 +11,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 import seaborn as sns
 import skbio as sb
+from scipy import stats
 
 # Import QIIME 2 libraries
 import qiime2
@@ -1468,13 +1469,13 @@ def taxa_abundance_box_plot(taxa,
 
     _taxa_names = df.columns
 
-    df2 = df * 100
+    df = df * 100
 
     if hue is not None:
-        df2 = pd.concat([df2, mf[hue]], axis=1, join='inner')
+        df2 = pd.concat([df, mf[hue]], axis=1, join='inner')
         df2 = pd.melt(df2, id_vars=[hue])
     else:
-        df2 = pd.melt(df2)
+        df2 = pd.melt(df)
 
 
 
@@ -1688,7 +1689,9 @@ def addsig(x1,
            h=1.0,
            lw=1.0,
            lc='black',
-           tc='black'):
+           tc='black',
+           ax=None,
+           figsize=None):
     """
     This method adds signifiance annotation between two groups in a box plot.
 
@@ -1710,9 +1713,86 @@ def addsig(x1,
         Line color.
     tc : str, default: 'black'
         Text color.
+    ax : matplotlib.axes.Axes, optional
+        Axes object to draw the plot onto, otherwise uses the current Axes.
+    figsize : tuple, optional
+        Width, height in inches. Format: (float, float).
     """
-    plt.plot([x1, x1, x2, x2], [y, y+h, y+h, y], lw=lw, c=lc)
-    plt.text((x1+x2)*0.5, y+h, t, ha='center', va='bottom', color=tc)
+    if ax is None:
+        fig, ax = plt.subplots(figsize=figsize)
+    ax.plot([x1, x1, x2, x2], [y, y+h, y+h, y], lw=lw, c=lc)
+    ax.text((x1+x2)*0.5, y+h, t, ha='center', va='bottom', color=tc)
+
+
+
+
+
+
+
+
+
+
+def addpairs(taxon,
+             csv_file,
+             subject,
+             category,
+             group1,
+             group2,
+             p1=-0.2,
+             p2=0.2,
+             ax=None,
+             figsize=None):
+    """
+    This method adds lines between two groups.
+
+    This method also prints the p-value for Wilcoxon signed-rank test.
+
+    Parameters
+    ----------
+    taxon : str
+        Target taxon name.
+    csv_file : str
+        Path to csv file.
+    subject : str
+        Column name to indicate pair information.
+    category : str
+        Column name to be studied.
+    group1 : str
+        First group in the category column.
+    group2 : str
+        Second group in the category column.
+    p1 : float, default: -0.2
+        Start position of the lines.
+    p2 : float, default: 0.2
+        End position of the lines.
+    ax : matplotlib.axes.Axes, optional
+        Axes object to draw the plot onto, otherwise uses the current Axes.
+    figsize : tuple, optional
+        Width, height in inches. Format: (float, float).
+
+    Returns
+    -------
+    matplotlib.axes.Axes
+        Returns the Axes object with the plot drawn onto it.
+    """
+    if ax is None:
+        fig, ax = plt.subplots(figsize=figsize)
+
+    df = pd.read_csv(csv_file)
+    df = df.sort_values([subject, category])
+    g1 = df[df[category] == group1]
+    g2 = df[df[category] == group2]
+
+    pvalue = stats.wilcoxon(g1[taxon], g2[taxon])[1]
+    print(pvalue)
+
+    y1 = g1[taxon].tolist()
+    y2 = g2[taxon].tolist()
+    x1 = [p1 for x in y1]
+    x2 = [p2 for x in y1]
+
+    for i in range(len(x1)):
+        ax.plot([x1[i],x2[i]], [y1[i], y2[i]])
 
 
 
