@@ -151,6 +151,9 @@ def _artist(ax,
             xlabel=None,
             ylabel=None,
             zlabel=None,
+            hide_xtexts=False,
+            hide_ytexts=False,
+            hide_ztexts=False,
             hide_xlabel=False,
             hide_ylabel=False,
             hide_zlabel=False,
@@ -195,6 +198,12 @@ def _artist(ax,
         Set the y-axis label.
     zlabel : str, optional
         Set the z-axis label.
+    hide_xtexts : bool, default: False
+        Hides all the x-axis texts.
+    hide_ytexts : bool, default: False
+        Hides all the y-axis texts.
+    hide_ztexts : bool, default: False
+        Hides all the z-axis texts.
     hide_xlabel : bool, default: False
         Hides the x-axis label.
     hide_ylabel : bool, default: False
@@ -262,6 +271,18 @@ def _artist(ax,
 
     if isinstance(zlabel, str):
         ax.set_zlabel(zlabel)
+
+    if hide_xtexts:
+        ax.set_xlabel('')
+        ax.set_xticklabels([])
+
+    if hide_ytexts:
+        ax.set_ylabel('')
+        ax.set_yticklabels([])
+
+    if hide_ztexts:
+        ax.set_zlabel('')
+        ax.set_zticklabels([])
 
     if hide_xlabel:
         ax.set_xlabel('')
