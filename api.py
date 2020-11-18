@@ -474,8 +474,8 @@ def ordinate(table,
     ----------
     table : str
         Table file.
-    metadata : str, optional
-        Metadata file.
+    metadata : str or qiime2.Metadata, optional
+        Metadata file or object.
     where : str, optional
         SQLite WHERE clause specifying sample metadata criteria.
     metric : str, default: 'jaccard'
@@ -494,10 +494,16 @@ def ordinate(table,
         if metadata is None:
             m = "To use 'where' argument, you must provide metadata"
             raise ValueError(m)
+        elif isinstance(metadata, str):
+            _metadata = Metadata.load(metadata)
+        elif isinstance(metadata, qiime2.Metadata):
+            _metadata = metadata
+        else:
+            raise TypeError(f"Incorrect metadata type: {type(metadata)}")
 
         filter_result = feature_table.methods.filter_samples(
             table=Artifact.load(table),
-            metadata=Metadata.load(metadata),
+            metadata=_metadata,
             where=where,
         )
         _table = filter_result.filtered_table
