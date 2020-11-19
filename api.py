@@ -181,8 +181,7 @@ def _artist(ax,
             legend_labels=None,
             legend_short=False,
             remove_duplicates=False,
-            legend_only=False,
-            **kwargs):
+            legend_only=False):
     """
     This method controls various properties of a figure.
 
