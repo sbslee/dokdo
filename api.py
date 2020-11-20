@@ -548,7 +548,7 @@ def read_quality_plot(demux,
                       strand='forward',
                       ax=None,
                       figsize=None,
-                      **kwargs):
+                      artist_kwargs=None):
     """
     This method creates a read quality plot.
 
@@ -563,8 +563,8 @@ def read_quality_plot(demux,
         Axes object to draw the plot onto, otherwise uses the current Axes.
     figsize : tuple, optional
         Width, height in inches. Format: (float, float).
-    kwargs : key, value mappings
-        Other keyword arguments passed down to _artist.
+    artist_kwargs : dict, optional
+        Keyword arguments passed down to the _artist() method.
 
     Returns
     -------
@@ -596,15 +596,18 @@ def read_quality_plot(demux,
 
     xticks = np.arange(df['variable'].min(), df['variable'].max(), 20).tolist()
 
-    kwargs = {'xlabel': 'Sequence base',
-              'ylabel': 'Quality score',
-              'xticks': xticks,
-              'xticklabels': xticks,
-              'ylim': 0,
-              'ymax': 45,
-              **kwargs}
+    if artist_kwargs is None:
+        artist_kwargs = {}
 
-    ax = _artist(ax, **kwargs)
+    artist_kwargs = {'xlabel': 'Sequence base',
+                     'ylabel': 'Quality score',
+                     'xticks': xticks,
+                     'xticklabels': xticks,
+                     'ymin': 0,
+                     'ymax': 45,
+                     **artist_kwargs}
+
+    ax = _artist(ax, **artist_kwargs)
 
     return ax
 
@@ -625,7 +628,7 @@ def denoising_stats_plot(stats,
                          pseudocount=False,
                          order=None,
                          hide_nsizes=False,
-                         **kwargs):
+                         artist_kwargs=None):
     """
     This method creates a grouped box plot using denoising statistics from 
     DADA2 (i.e. the 'qiime dada2 denoise-paired' command).
@@ -648,8 +651,8 @@ def denoising_stats_plot(stats,
         Order to plot the categorical levels in.
     hide_nsizes : bool, default: False
         Hide sample size from x-axis labels.
-    kwargs : key, value mappings
-        Other keyword arguments passed down to _artist.
+    artist_kwargs : dict, optional
+        Keyword arguments passed down to the _artist() method.
 
     Returns
     -------
@@ -686,7 +689,13 @@ def denoising_stats_plot(stats,
         xtexts = [f'{x} ({nsizes[x]})' for x in xtexts]
         ax.set_xticklabels(xtexts)
 
-    ax = _artist(ax, **kwargs)
+    if artist_kwargs is None:
+        artist_kwargs = {}
+
+    artist_kwargs = {'ylabel': 'Read depth',
+                     **artist_kwargs}
+
+    ax = _artist(ax, **artist_kwargs)
 
     return ax
 
@@ -705,7 +714,7 @@ def alpha_rarefaction_plot(rarefaction,
                            ax=None,
                            figsize=None,
                            hue_order=None,
-                           **kwargs):
+                           artist_kwargs=None):
     """
     This method creates an alpha rarefaction plot.
 
@@ -723,8 +732,8 @@ def alpha_rarefaction_plot(rarefaction,
         Width, height in inches. Format: (float, float).
     hue_order : list, optional
         Specify the order of categorical levels of the 'hue' semantic.
-    kwargs : key, value mappings
-        Other keyword arguments passed down to _artist.
+    artist_kwargs : dict, optional
+        Keyword arguments passed down to the _artist() method.
 
     Returns
     -------
@@ -765,11 +774,14 @@ def alpha_rarefaction_plot(rarefaction,
                  sort=False,
                  hue_order=hue_order)
 
-    kwargs = {'xlabel': 'Sequencing depth',
-              'ylabel': metric,
-              **kwargs}
+    if artist_kwargs is None:
+        artist_kwargs = {}
 
-    ax = _artist(ax, **kwargs)
+    artist_kwargs = {'xlabel': 'Sequencing depth',
+                     'ylabel': metric,
+                     **artist_kwargs}
+
+    ax = _artist(ax, **artist_kwargs)
 
     return ax
 
@@ -788,8 +800,7 @@ def alpha_diversity_plot(significance,
                          figsize=None,
                          add_swarmplot=False,
                          order=None,
-                         ylabel=None,
-                         **kwargs):
+                         artist_kwargs=None):
     """
     This method creates an alpha diversity plot.
 
@@ -808,10 +819,8 @@ def alpha_diversity_plot(significance,
         Add a swarm plot on top of the box plot.
     order : list, optional
         Order to plot the categorical levels in.
-    ylabel : str, optional
-        Y-axis label.
-    kwargs : key, value mappings
-        Other keyword arguments passed down to _artist.
+    artist_kwargs : dict, optional
+        Keyword arguments passed down to the _artist() method.
 
     Returns
     -------
@@ -834,10 +843,10 @@ def alpha_diversity_plot(significance,
     if add_swarmplot:
         sns.swarmplot(**d)
 
-    if ylabel:
-        ax.set_ylabel(ylabel)
+    if artist_kwargs is None:
+        artist_kwargs = {}
 
-    ax = _artist(ax, **kwargs)
+    ax = _artist(ax, **artist_kwargs)
 
     return ax
 
@@ -862,7 +871,7 @@ def beta_2d_plot(ordination,
                  hue_order=None,
                  style_order=None,
                  legend_type='brief',
-                 **kwargs):
+                 artist_kwargs=None):
     """
     This method creates a 2D beta diversity plot.
 
@@ -892,8 +901,8 @@ def beta_2d_plot(ordination,
         Specify the order of categorical levels of the 'style' semantic.
     legend_type : str, default: 'brief'
         Legend type as in seaborn.scatterplot ('brief' or 'full').
-    kwargs : key, value mappings
-        Other keyword arguments passed down to _artist.
+    artist_kwargs : dict, optional
+        Keyword arguments passed down to the _artist() method.
 
     Returns
     -------
@@ -939,13 +948,16 @@ def beta_2d_plot(ordination,
                     alpha=alpha,
                     legend=legend_type)
 
-    kwargs = {'xlabel': f'Axis 1 ({v[0]} %)',
-              'ylabel': f'Axis 2 ({v[1]} %)',
-              'hide_xticks': True,
-              'hide_yticks': True,
-              **kwargs}
+    if artist_kwargs is None:
+        artist_kwargs = {}
 
-    ax = _artist(ax, **kwargs)
+    artist_kwargs = {'xlabel': f'Axis 1 ({v[0]} %)',
+                     'ylabel': f'Axis 2 ({v[1]} %)',
+                     'hide_xticks': True,
+                     'hide_yticks': True,
+                     **artist_kwargs}
+
+    ax = _artist(ax, **artist_kwargs)
 
     return ax
 
@@ -967,7 +979,7 @@ def beta_3d_plot(ordination,
                  ax=None,
                  figsize=None,
                  hue_order=None,
-                 **kwargs):
+                 artist_kwargs=None):
     """
     This method creates a 3D beta diversity plot.
 
@@ -992,8 +1004,8 @@ def beta_3d_plot(ordination,
         Width, height in inches. Format: (float, float).
     hue_order : list, optional
         Specify the order of categorical levels of the 'hue' semantic.
-    kwargs : key, value mappings
-        Other keyword arguments passed down to _artist.
+    artist_kwargs : dict, optional
+        Keyword arguments passed down to the _artist() method.
 
     Returns
     -------
@@ -1044,15 +1056,18 @@ def beta_3d_plot(ordination,
                        label=c,
                        **d)
 
-    kwargs = {'xlabel': f'Axis 1 ({v[0]} %)',
-              'ylabel': f'Axis 2 ({v[1]} %)',
-              'zlabel': f'Axis 3 ({v[2]} %)',
-              'hide_xticks': True,
-              'hide_yticks': True,
-              'hide_zticks': True,
-              **kwargs}
+    if artist_kwargs is None:
+        artist_kwargs = {}
 
-    ax = _artist(ax, **kwargs)
+    artist_kwargs = {'xlabel': f'Axis 1 ({v[0]} %)',
+                     'ylabel': f'Axis 2 ({v[1]} %)',
+                     'zlabel': f'Axis 3 ({v[2]} %)',
+                     'hide_xticks': True,
+                     'hide_yticks': True,
+                     'hide_zticks': True,
+                     **artist_kwargs}
+
+    ax = _artist(ax, **artist_kwargs)
 
     return ax
 
@@ -1070,7 +1085,7 @@ def distance_matrix_plot(distance_matrix,
                          pairs=None,
                          ax=None,
                          figsize=None,
-                         **kwargs):
+                         artist_kwargs=None):
     """
     This method creates a histogram from a distance matrix.
 
@@ -1086,8 +1101,8 @@ def distance_matrix_plot(distance_matrix,
         Axes object to draw the plot onto, otherwise uses the current Axes.
     figsize : tuple, optional
         Width, height in inches. Format: (float, float).
-    kwargs : key, value mappings
-        Other keyword arguments passed down to _artist.
+    artist_kwargs : dict, optional
+        Keyword arguments passed down to the _artist() method.
 
     Returns
     -------
@@ -1128,11 +1143,14 @@ def distance_matrix_plot(distance_matrix,
         for i in idx:
             ax.axvline(x=i, c='red')
 
-    kwargs = {'xlabel': 'Distance',
-              'ylabel': 'Frequency',
-              **kwargs}
+    if artist_kwargs is None:
+        artist_kwargs = {}
 
-    ax = _artist(ax, **kwargs)
+    artist_kwargs = {'xlabel': 'Distance',
+                     'ylabel': 'Frequency',
+                     **artist_kwargs}
+
+    ax = _artist(ax, **artist_kwargs)
 
     return ax
 
@@ -1167,7 +1185,7 @@ def taxa_abundance_bar_plot(taxa,
                             sort_by_mean2=True,
                             sort_by_mean3=True,
                             show_others=True,
-                            **kwargs):
+                            artist_kwargs=None):
     """
     This method creates a taxa abundance plot.
 
@@ -1230,8 +1248,8 @@ def taxa_abundance_bar_plot(taxa,
         'sample_names'.
     show_others : bool, default: True
         Include the 'Others' category.
-    kwargs : key, value mappings
-        Other keyword arguments passed down to _artist.
+    artist_kwargs : dict, optional
+        Keyword arguments passed down to the _artist() method.
 
     Returns
     -------
@@ -1350,12 +1368,15 @@ def taxa_abundance_bar_plot(taxa,
     else:
         xticklabels = None
 
-    kwargs = {'xlabel': '',
-              'ylabel': 'Relative abundance (%)',
-             'xticklabels': xticklabels,
-              **kwargs}
+    if artist_kwargs is None:
+        artist_kwargs = {}
 
-    ax = _artist(ax, **kwargs)
+    artist_kwargs = {'xlabel': '',
+                     'ylabel': 'Relative abundance (%)',
+                     'xticklabels': xticklabels,
+                     **artist_kwargs}
+
+    ax = _artist(ax, **artist_kwargs)
 
     return ax
 
@@ -1391,7 +1412,7 @@ def taxa_abundance_box_plot(taxa,
                             meanprops=None,
                             show_others=True,
                             sort_by_mean=True,
-                            **kwargs):
+                            artist_kwargs=None):
     """
     This method creates a taxa abundance box plot.
 
@@ -1448,8 +1469,8 @@ def taxa_abundance_box_plot(taxa,
         Include the 'Others' category.
     sort_by_mean : bool, default: True
         Sort taxa by their mean relative abundance after sample filtration.
-    kwargs : key, value mappings
-        Other keyword arguments passed down to _artist.
+    artist_kwargs : dict, optional
+        Keyword arguments passed down to the _artist() method.
 
     Returns
     -------
@@ -1563,15 +1584,18 @@ def taxa_abundance_box_plot(taxa,
     else:
         xticklabels = None
 
-    kwargs = {'xrot': 45,
-              'xha': 'right',
-              'xlabel': '',
-              'ylabel': 'Relative abundance (%)',
-              'xticklabels': xticklabels,
-              'remove_duplicates': remove_duplicates,
-              **kwargs}
+    if artist_kwargs is None:
+        artist_kwargs = {}
 
-    ax = _artist(ax, **kwargs)
+    artist_kwargs = {'xrot': 45,
+                     'xha': 'right',
+                     'xlabel': '',
+                     'ylabel': 'Relative abundance (%)',
+                     'xticklabels': xticklabels,
+                     'remove_duplicates': remove_duplicates,
+                     **artist_kwargs}
+
+    ax = _artist(ax, **artist_kwargs)
 
     return ax
 
@@ -1587,7 +1611,7 @@ def taxa_abundance_box_plot(taxa,
 def ancom_volcano_plot(ancom,
                        ax=None,
                        figsize=None,
-                       **kwargs):
+                       artist_kwargs=None):
     """
     This method creates an ANCOM volcano plot.
 
@@ -1600,8 +1624,8 @@ def ancom_volcano_plot(ancom,
         Axes object to draw the plot onto, otherwise uses the current Axes.
     figsize : tuple, optional
         Width, height in inches. Format: (float, float).
-    kwargs : key, value mappings
-        Other keyword arguments passed down to _artist.
+    artist_kwargs : dict, optional
+        Keyword arguments passed down to the _artist() method.
 
     Returns
     -------
@@ -1615,11 +1639,14 @@ def ancom_volcano_plot(ancom,
         fig, ax = plt.subplots(figsize=figsize)
     ax.scatter(df.clr, df.W, s=80, c='black', alpha=0.5)
 
-    kwargs = {'xlabel': 'clr',
-              'ylabel': 'W',
-              **kwargs}
+    if artist_kwargs is None:
+        artist_kwargs = {}
 
-    ax = _artist(ax, **kwargs)
+    artist_kwargs = {'xlabel': 'clr',
+                     'ylabel': 'W',
+                     **artist_kwargs}
+
+    ax = _artist(ax, **artist_kwargs)
 
     return ax
 

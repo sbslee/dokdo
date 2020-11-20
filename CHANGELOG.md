@@ -10,6 +10,7 @@
     * `taxa_abundance_box_plot()`
     * `_artist()`
 * Fixed some bugs.
+* Keyword arguments for the `_artist()` method became more explicit with `artist_kwargs`.
 
 ## 1.0.0
 
