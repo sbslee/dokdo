@@ -10,7 +10,8 @@
     * `taxa_abundance_box_plot()`
     * `_artist()`
 * Fixed some bugs.
-* Keyword arguments for the `_artist()` method became more explicit with `artist_kwargs`.
+* Made keyword arguments for the `_artist()` method more explicit with `artist_kwargs`.
+* Temporary files will be deleted automatically from now on.
 
 ## 1.0.0
 

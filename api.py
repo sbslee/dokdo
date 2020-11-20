@@ -1,6 +1,6 @@
 # Import standard libraries.
 import math
-from tempfile import TemporaryDirectory
+import tempfile
 import warnings
 import numbers
 
@@ -342,10 +342,6 @@ def _artist(ax,
     if ylog:
         ax.set_yscale('log')
 
-
-
-
-
     # Control the figure legend.
     h, l = ax.get_legend_handles_labels()
 
@@ -466,8 +462,9 @@ def ordinate(table,
     This method wraps multiple QIIME 2 methods to perform ordination and 
     returns Artifact object containing PCoA results.
 
-    Under the hood, this method performs sample filtration, rarefaction, 
-    distance matrix computation, and PCoA analysis.
+    Under the hood, this method filters the samples (if requested), performs 
+    rarefying to the sample with the minimum read depth, computes distance 
+    matrix, and then runs PCoA.
 
     Parameters
     ----------
@@ -487,7 +484,16 @@ def ordinate(table,
     Returns
     -------
     qiime2.Artifact
-        Artifact containing PCoA results from 'diversity.methods.pcoa'.
+        Artifact object containing PCoA results.
+
+    See Also
+    --------
+    beta_2d_plot
+
+    Notes
+    -----
+    The resulting Artifact object can be directly used for plotting by the 
+    beta_2d_plot() method.
     """
     if where:
         if metadata is None:
@@ -571,15 +577,18 @@ def read_quality_plot(demux,
     matplotlib.axes.Axes
         Returns the Axes object with the plot drawn onto it.
     """
-    t = TemporaryDirectory()
-    Visualization.load(demux).export_data(t.name)
-
     l = ['forward', 'reverse']
+
     if strand not in l:
         raise ValueError(f"Strand should be one of the following: {l}")
 
-    df = pd.read_table(f'{t.name}/{strand}-seven-number-summaries.tsv',
-                       index_col=0, skiprows=[1])
+    with tempfile.TemporaryDirectory() as t:
+        Visualization.load(demux).export_data(t)
+
+        df = pd.read_table(f'{t}/{strand}-seven-number-summaries.tsv',
+                           index_col=0,
+                           skiprows=[1])
+
     df = pd.melt(df.reset_index(), id_vars=['index'])
     df['variable'] = df['variable'].astype('int64')
     if ax is None:
@@ -630,8 +639,8 @@ def denoising_stats_plot(stats,
                          hide_nsizes=False,
                          artist_kwargs=None):
     """
-    This method creates a grouped box plot using denoising statistics from 
-    DADA2 (i.e. the 'qiime dada2 denoise-paired' command).
+    This method creates a grouped box chart using denoising statistics from 
+    the DADA 2 algorithm.
 
     Parameters
     ----------
@@ -659,9 +668,9 @@ def denoising_stats_plot(stats,
     matplotlib.axes.Axes
         Returns the Axes object with the plot drawn onto it.
     """
-    t = TemporaryDirectory()
-    Artifact.load(stats).export_data(t.name)
-    df1 = pd.read_table(f'{t.name}/stats.tsv', skiprows=[1], index_col=0)
+    with tempfile.TemporaryDirectory() as t:
+        Artifact.load(stats).export_data(t)
+        df1 = pd.read_table(f'{t}/stats.tsv', skiprows=[1], index_col=0)
 
     mf = get_mf(metadata)
 
@@ -720,7 +729,7 @@ def alpha_rarefaction_plot(rarefaction,
 
     Parameters
     ----------
-    rarefaction : str or qiime2.sdk.result.Visualization
+    rarefaction : str or qiime2.Visualization
         Visualization file or object from alpha rarefaction.
     hue : str, default: 'sample-id'
         Grouping variable that will produce lines with different colors.
@@ -740,20 +749,20 @@ def alpha_rarefaction_plot(rarefaction,
     matplotlib.axes.Axes
         Returns the Axes object with the plot drawn onto it.
     """
-    t = TemporaryDirectory()
-
-    if isinstance(rarefaction, qiime2.sdk.result.Visualization):
-        fn = f'{t.name}/alpha-rarefaction.qzv'
-        rarefaction.save(fn)
-        rarefaction = fn
-
-    Visualization.load(rarefaction).export_data(t.name)
-
     l = ['observed_features', 'faith_pd', 'shannon']
+
     if metric not in l:
         raise ValueError(f"Metric should be one of the following: {l}")
 
-    df = pd.read_csv(f'{t.name}/{metric}.csv', index_col=0)
+    with tempfile.TemporaryDirectory() as t:
+        if isinstance(rarefaction, qiime2.Visualization):
+            fn = f'{t}/alpha-rarefaction.qzv'
+            rarefaction.save(fn)
+            rarefaction = fn
+
+        Visualization.load(rarefaction).export_data(t)
+
+        df = pd.read_csv(f'{t}/{metric}.csv', index_col=0)
 
     metadata_columns = [x for x in df.columns if 'iter' not in x]
 
@@ -827,11 +836,13 @@ def alpha_diversity_plot(significance,
     matplotlib.axes.Axes
         Returns the Axes object with the plot drawn onto it.
     """
-    t = TemporaryDirectory()
-    Visualization.load(significance).export_data(t.name)
-    df = Metadata.load(f'{t.name}/metadata.tsv').to_dataframe()
+    with tempfile.TemporaryDirectory() as t:
+        Visualization.load(significance).export_data(t)
+        df = Metadata.load(f'{t}/metadata.tsv').to_dataframe()
+
     if ax is None:
         fig, ax = plt.subplots(figsize=figsize)
+
     metric = df.columns[-1]
 
     boxprops = dict(color='white', edgecolor='black')
@@ -909,28 +920,29 @@ def beta_2d_plot(ordination,
     matplotlib.axes.Axes
         Returns the Axes object with the plot drawn onto it.
     """
-    t = TemporaryDirectory()
+    with tempfile.TemporaryDirectory() as t:
 
-    if isinstance(ordination, qiime2.Artifact):
-        fn = f'{t.name}/ordination.qza'
-        ordination.save(fn)
-        ordination = fn
+        if isinstance(ordination, qiime2.Artifact):
+            fn = f'{t}/ordination.qza'
+            ordination.save(fn)
+            ordination = fn
 
-    Artifact.load(ordination).export_data(t.name)
+        Artifact.load(ordination).export_data(t)
 
-    df1 = pd.read_table(f'{t.name}/ordination.txt', header=None, index_col=0,
-                        skiprows=[0, 1, 2, 3, 4, 5, 6, 7, 8],
-                        skipfooter=4, engine='python', usecols=[0, 1, 2])
-    df1.columns = ['A1', 'A2']
+        df1 = pd.read_table(f'{t}/ordination.txt', header=None, index_col=0,
+                            skiprows=[0, 1, 2, 3, 4, 5, 6, 7, 8],
+                            skipfooter=4, engine='python', usecols=[0, 1, 2])
 
-    if metadata is None:
-        df2 = df1
-    else:
-        mf = get_mf(metadata)
-        df2 = pd.concat([df1, mf], axis=1, join='inner')
+        df1.columns = ['A1', 'A2']
 
-    with open(f'{t.name}/ordination.txt') as f:
-        v = [round(float(x) * 100, 2) for x in f.readlines()[4].split('\t')]
+        if metadata is None:
+            df2 = df1
+        else:
+            mf = get_mf(metadata)
+            df2 = pd.concat([df1, mf], axis=1, join='inner')
+
+        with open(f'{t}/ordination.txt') as f:
+            v = [round(float(x) * 100, 2) for x in f.readlines()[4].split('\t')]
 
     if ax is None:
         fig, ax = plt.subplots(figsize=figsize)
@@ -1012,21 +1024,24 @@ def beta_3d_plot(ordination,
     matplotlib.axes.Axes
         Returns the Axes object with the plot drawn onto it.
     """
+    with tempfile.TemporaryDirectory() as t:
+        Artifact.load(ordination).export_data(t)
 
-    t = TemporaryDirectory()
-    Artifact.load(ordination).export_data(t.name)
+        df = pd.read_table(f'{t}/ordination.txt',
+                           header=None,
+                           index_col=0,
+                           skiprows=[0, 1, 2, 3, 4, 5, 6, 7, 8],
+                           skipfooter=4,
+                           engine='python')
 
-    df = pd.read_table(f'{t.name}/ordination.txt', header=None, index_col=0,
-                        skiprows=[0, 1, 2, 3, 4, 5, 6, 7, 8],
-                        skipfooter=4, engine='python')
-    df = df.sort_index()
+        df = df.sort_index()
 
-    mf = get_mf(metadata)
-    mf = mf.sort_index()
-    mf = mf.assign(**{'sample-id': mf.index})
+        mf = get_mf(metadata)
+        mf = mf.sort_index()
+        mf = mf.assign(**{'sample-id': mf.index})
 
-    with open(f'{t.name}/ordination.txt') as f:
-        v = [round(float(x) * 100, 2) for x in f.readlines()[4].split('\t')]
+        with open(f'{t}/ordination.txt') as f:
+            v = [round(float(x) * 100, 2) for x in f.readlines()[4].split('\t')]
 
     if ax is None:
         fig = plt.figure(figsize=figsize)
@@ -1109,15 +1124,15 @@ def distance_matrix_plot(distance_matrix,
     matplotlib.axes.Axes
         Returns the Axes object with the plot drawn onto it.
     """
-    t = TemporaryDirectory()
+    with tempfile.TemporaryDirectory() as t:
+        if isinstance(distance_matrix, qiime2.Artifact):
+            fn = f'{t}/distance-matrix.qza'
+            distance_matrix.save(fn)
+            distance_matrix = fn
 
-    if isinstance(distance_matrix, qiime2.Artifact):
-        fn = f'{t.name}/distance-matrix.qza'
-        distance_matrix.save(fn)
-        distance_matrix = fn
+        Artifact.load(distance_matrix).export_data(t)
+        df = pd.read_table(f'{t}/distance-matrix.tsv', index_col=0)
 
-    Artifact.load(distance_matrix).export_data(t.name)
-    df = pd.read_table(f'{t.name}/distance-matrix.tsv', index_col=0)
     dist = sb.stats.distance.DistanceMatrix(df, ids=df.columns)
     cdist = dist.condensed_form()
 
@@ -1256,9 +1271,9 @@ def taxa_abundance_bar_plot(taxa,
     matplotlib.axes.Axes
         Returns the Axes object with the plot drawn onto it.
     """
-    t = TemporaryDirectory()
-    Visualization.load(taxa).export_data(t.name)
-    df = pd.read_csv(f'{t.name}/level-{level}.csv', index_col=0)
+    with tempfile.TemporaryDirectory() as t:
+        Visualization.load(taxa).export_data(t)
+        df = pd.read_csv(f'{t}/level-{level}.csv', index_col=0)
 
     # If provided, update the metadata.
     if metadata is None:
@@ -1477,9 +1492,9 @@ def taxa_abundance_box_plot(taxa,
     matplotlib.axes.Axes
         Returns the Axes object with the plot drawn onto it.
     """
-    t = TemporaryDirectory()
-    Visualization.load(taxa).export_data(t.name)
-    df = pd.read_csv(f'{t.name}/level-{level}.csv', index_col=0)
+    with tempfile.TemporaryDirectory() as t:
+        Visualization.load(taxa).export_data(t)
+        df = pd.read_csv(f'{t}/level-{level}.csv', index_col=0)
 
     # If provided, sort the samples for display in the x-axis.
     if by:
@@ -1632,9 +1647,10 @@ def ancom_volcano_plot(ancom,
     matplotlib.axes.Axes
         Returns the Axes object with the plot drawn onto it.
     """
-    t = TemporaryDirectory()
-    Visualization.load(ancom).export_data(t.name)
-    df = pd.read_table(f'{t.name}/data.tsv')
+    with tempfile.TemporaryDirectory() as t:
+        Visualization.load(ancom).export_data(t)
+        df = pd.read_table(f'{t}/data.tsv')
+
     if ax is None:
         fig, ax = plt.subplots(figsize=figsize)
     ax.scatter(df.clr, df.W, s=80, c='black', alpha=0.5)
