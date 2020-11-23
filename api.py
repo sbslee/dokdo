@@ -419,6 +419,34 @@ def _get_others_col(df, count, taxa_names, show_others):
 
 
 
+def _parse_input(input, temp_dir):
+    """Parse the input QIIME 2 object and export the files."""
+    if isinstance(input, qiime2.Artifact):
+        fn = f'{temp_dir}/dokdo-temporary.qza'
+        input.save(fn)
+        input = fn
+        Artifact.load(input).export_data(temp_dir)
+    elif isinstance(input, qiime2.Visualization):
+        fn = f'{temp_dir}/dokdo-temporary.qzv'
+        input.save(fn)
+        input = fn
+        Visualization.load(input).export_data(temp_dir)
+    elif isinstance(input, str) and input.endswith('.qza'):
+        Artifact.load(input).export_data(temp_dir)
+    elif isinstance(input, str) and input.endswith('.qzv'):
+        Visualization.load(input).export_data(temp_dir)
+    else:
+        pass
+
+
+
+
+
+
+
+
+
+
 # -- General methods ---------------------------------------------------------
 
 def get_mf(metadata):
@@ -489,6 +517,7 @@ def ordinate(table,
     See Also
     --------
     beta_2d_plot
+    beta_3d_plot
 
     Notes
     -----
@@ -560,9 +589,8 @@ def read_quality_plot(demux,
 
     Parameters
     ----------
-    demux : str
-        Path to the visualization file from the 'qiime demux summarize' 
-        command.
+    demux : str or qiime2.Visualization
+        Visualization file or object from the q2-demux plugin.
     strand : str, default: 'forward'
         Read strand to be displayed (either 'forward' or 'reverse').
     ax : matplotlib.axes.Axes, optional
@@ -576,6 +604,12 @@ def read_quality_plot(demux,
     -------
     matplotlib.axes.Axes
         Returns the Axes object with the plot drawn onto it.
+
+    Notes
+    -----
+    Example usage of the q2-demux plugin:
+        CLI -> $ qiime demux summarize [OPTIONS]
+        API -> from qiime2.plugins.demux.visualizers import summarize
     """
     l = ['forward', 'reverse']
 
@@ -583,7 +617,7 @@ def read_quality_plot(demux,
         raise ValueError(f"Strand should be one of the following: {l}")
 
     with tempfile.TemporaryDirectory() as t:
-        Visualization.load(demux).export_data(t)
+        _parse_input(demux, t)
 
         df = pd.read_table(f'{t}/{strand}-seven-number-summaries.tsv',
                            index_col=0,
@@ -644,8 +678,8 @@ def denoising_stats_plot(stats,
 
     Parameters
     ----------
-    stats : str
-        Path to the denoising-stats.qza file.
+    stats : str or qiime2.Artifact
+        Artifact file or object from the q2-dada2 plugin.
     metadata : str or qiime2.Metadata
         Metadata file or object.
     where : str
@@ -667,9 +701,16 @@ def denoising_stats_plot(stats,
     -------
     matplotlib.axes.Axes
         Returns the Axes object with the plot drawn onto it.
+
+    Notes
+    -----
+    Example usage of the q2-dada2 plugin:
+        CLI -> qiime dada2 denoise-paired [OPTIONS]
+        API -> from qiime2.plugins.dada2.methods import denoise_paired
     """
     with tempfile.TemporaryDirectory() as t:
-        Artifact.load(stats).export_data(t)
+        _parse_input(stats, t)
+
         df1 = pd.read_table(f'{t}/stats.tsv', skiprows=[1], index_col=0)
 
     mf = get_mf(metadata)
@@ -730,7 +771,7 @@ def alpha_rarefaction_plot(rarefaction,
     Parameters
     ----------
     rarefaction : str or qiime2.Visualization
-        Visualization file or object from alpha rarefaction.
+        Visualization file or object from the q2-diversity plugin.
     hue : str, default: 'sample-id'
         Grouping variable that will produce lines with different colors.
     metric : str, default: 'shannon'
@@ -748,6 +789,12 @@ def alpha_rarefaction_plot(rarefaction,
     -------
     matplotlib.axes.Axes
         Returns the Axes object with the plot drawn onto it.
+
+    Notes
+    -----
+    Example usage of the q2-diversity plugin:
+        CLI -> qiime diversity alpha-rarefaction [OPTIONS]
+        API -> from qiime2.plugins.diversity.visualizers import alpha_rarefaction
     """
     l = ['observed_features', 'faith_pd', 'shannon']
 
@@ -755,12 +802,7 @@ def alpha_rarefaction_plot(rarefaction,
         raise ValueError(f"Metric should be one of the following: {l}")
 
     with tempfile.TemporaryDirectory() as t:
-        if isinstance(rarefaction, qiime2.Visualization):
-            fn = f'{t}/alpha-rarefaction.qzv'
-            rarefaction.save(fn)
-            rarefaction = fn
-
-        Visualization.load(rarefaction).export_data(t)
+        _parse_input(rarefaction, t)
 
         df = pd.read_csv(f'{t}/{metric}.csv', index_col=0)
 
@@ -815,9 +857,8 @@ def alpha_diversity_plot(significance,
 
     Parameters
     ----------
-    significance : str
-        Path to the visualization file from the 'qiime diversity 
-        alpha-group-significance' command.
+    significance : str or qiime2.Visualization
+        Visualization file or object from the q2-diversity plugin.
     where : str
         Column name to be used for the x-axis.
     ax : matplotlib.axes.Axes, optional
@@ -835,9 +876,16 @@ def alpha_diversity_plot(significance,
     -------
     matplotlib.axes.Axes
         Returns the Axes object with the plot drawn onto it.
+
+    Notes
+    -----
+    Example usage of the q2-diversity plugin:
+        CLI -> qiime diversity alpha-group-significance [OPTIONS]
+        API -> from qiime2.plugins.diversity.visualizers import alpha_group_significance
     """
     with tempfile.TemporaryDirectory() as t:
-        Visualization.load(significance).export_data(t)
+        _parse_input(significance, t)
+
         df = Metadata.load(f'{t}/metadata.tsv').to_dataframe()
 
     if ax is None:
@@ -889,7 +937,7 @@ def beta_2d_plot(ordination,
     Parameters
     ----------
     ordination : str or qiime2.Artifact
-        Artifact file or object from ordination.
+        Artifact file or object from the q2-diversity plugin.
     metadata : str or qiime2.Metadata, optional
         Metadata file or object.
     hue : str, optional
@@ -919,15 +967,20 @@ def beta_2d_plot(ordination,
     -------
     matplotlib.axes.Axes
         Returns the Axes object with the plot drawn onto it.
+
+    See Also
+    --------
+    ordinate
+    beta_3d_plot
+
+    Notes
+    -----
+    Example usage of the q2-diversity plugin:
+        CLI -> qiime diversity pcoa [OPTIONS]
+        API -> from qiime2.plugins.diversity.methods import pcoa
     """
     with tempfile.TemporaryDirectory() as t:
-
-        if isinstance(ordination, qiime2.Artifact):
-            fn = f'{t}/ordination.qza'
-            ordination.save(fn)
-            ordination = fn
-
-        Artifact.load(ordination).export_data(t)
+        _parse_input(ordination, t)
 
         df1 = pd.read_table(f'{t}/ordination.txt', header=None, index_col=0,
                             skiprows=[0, 1, 2, 3, 4, 5, 6, 7, 8],
@@ -997,9 +1050,8 @@ def beta_3d_plot(ordination,
 
     Parameters
     ----------
-    ordination : str
-        Path to the artifact file from ordination (e.g. 
-        bray_curtis_pcoa_results.qza).
+    ordination : str or qiime2.Artifact
+        Artifact file or object from the q2-diversity plugin.
     metadata : str or qiime2.Metadata
         Metadata file or object.
     hue : str, optional
@@ -1023,9 +1075,20 @@ def beta_3d_plot(ordination,
     -------
     matplotlib.axes.Axes
         Returns the Axes object with the plot drawn onto it.
+
+    See Also
+    --------
+    ordinate
+    beta_2d_plot
+
+    Notes
+    -----
+    Example usage of the q2-diversity plugin:
+        CLI -> qiime diversity pcoa [OPTIONS]
+        API -> from qiime2.plugins.diversity.methods import pcoa
     """
     with tempfile.TemporaryDirectory() as t:
-        Artifact.load(ordination).export_data(t)
+        _parse_input(ordination, t)
 
         df = pd.read_table(f'{t}/ordination.txt',
                            header=None,
@@ -1107,7 +1170,7 @@ def distance_matrix_plot(distance_matrix,
     Parameters
     ----------
     distance_matrix : str or qiime2.Artifact
-         Artifact file or object from distance matrix computation.
+        Artifact file or object from the q2-diversity-lib plugin.
     bins : int, optional
         Number of bins to be displayed.
     pairs : list, optional
@@ -1123,14 +1186,15 @@ def distance_matrix_plot(distance_matrix,
     -------
     matplotlib.axes.Axes
         Returns the Axes object with the plot drawn onto it.
+
+    Notes
+    -----
+    Example usage of the q2-diversity-lib plugin:
+        CLI -> qiime diversity-lib jaccard [OPTIONS]
+        API -> from qiime2.plugins.diversity_lib.methods import jaccard
     """
     with tempfile.TemporaryDirectory() as t:
-        if isinstance(distance_matrix, qiime2.Artifact):
-            fn = f'{t}/distance-matrix.qza'
-            distance_matrix.save(fn)
-            distance_matrix = fn
-
-        Artifact.load(distance_matrix).export_data(t)
+        _parse_input(distance_matrix, t)
         df = pd.read_table(f'{t}/distance-matrix.tsv', index_col=0)
 
     dist = sb.stats.distance.DistanceMatrix(df, ids=df.columns)
@@ -1209,8 +1273,8 @@ def taxa_abundance_bar_plot(taxa,
 
     Parameters
     ----------
-    taxa : str
-        Path to the visualization file from the 'qiime taxa barplot'.
+    taxa : str or qiime2.Visualization
+        Visualization file or object from the q2-taxa plugin.
     metadata : str or qiime2.Metadata, optional
         Metadata file or object.
     level : int, default: 1
@@ -1270,9 +1334,19 @@ def taxa_abundance_bar_plot(taxa,
     -------
     matplotlib.axes.Axes
         Returns the Axes object with the plot drawn onto it.
+
+    See Also
+    --------
+    taxa_abundance_box_plot
+
+    Notes
+    -----
+    Example usage of the q2-taxa plugin:
+        CLI -> qiime taxa barplot [OPTIONS]
+        API -> from qiime2.plugins.taxa.visualizers import barplot
     """
     with tempfile.TemporaryDirectory() as t:
-        Visualization.load(taxa).export_data(t)
+        _parse_input(taxa, t)
         df = pd.read_csv(f'{t}/level-{level}.csv', index_col=0)
 
     # If provided, update the metadata.
@@ -1433,8 +1507,8 @@ def taxa_abundance_box_plot(taxa,
 
     Parameters
     ----------
-    taxa : str
-        Path to the visualization file from the 'qiime taxa barplot'.
+    taxa : str or qiime2.Visualization
+        Visualization file or object from the q2-taxa plugin.
     hue : str, optional
         Grouping variable that will produce boxes with different colors.
     hue_order : list, optional
@@ -1491,9 +1565,19 @@ def taxa_abundance_box_plot(taxa,
     -------
     matplotlib.axes.Axes
         Returns the Axes object with the plot drawn onto it.
+
+    See Also
+    --------
+    taxa_abundance_bax_plot
+
+    Notes
+    -----
+    Example usage of the q2-taxa plugin:
+        CLI -> qiime taxa barplot [OPTIONS]
+        API -> from qiime2.plugins.taxa.visualizers import barplot
     """
     with tempfile.TemporaryDirectory() as t:
-        Visualization.load(taxa).export_data(t)
+        _parse_input(taxa, t)
         df = pd.read_csv(f'{t}/level-{level}.csv', index_col=0)
 
     # If provided, sort the samples for display in the x-axis.
@@ -1633,8 +1717,7 @@ def ancom_volcano_plot(ancom,
     Parameters
     ----------
     ancom : str
-        Path to the visualization file from the 'qiime composition ancom' 
-        command.
+        Visualization file or object from the q2-composition plugin.
     ax : matplotlib.axes.Axes, optional
         Axes object to draw the plot onto, otherwise uses the current Axes.
     figsize : tuple, optional
@@ -1646,9 +1729,15 @@ def ancom_volcano_plot(ancom,
     -------
     matplotlib.axes.Axes
         Returns the Axes object with the plot drawn onto it.
+
+    Notes
+    -----
+    Example usage of the q2-composition plugin:
+        CLI -> qiime composition ancom [OPTIONS]
+        API -> from qiime2.plugins.composition.visualizers import ancom
     """
     with tempfile.TemporaryDirectory() as t:
-        Visualization.load(ancom).export_data(t)
+        _parse_input(ancom, t)
         df = pd.read_table(f'{t}/data.tsv')
 
     if ax is None:

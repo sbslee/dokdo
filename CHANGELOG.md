@@ -12,6 +12,8 @@
 * Fixed some bugs.
 * Made keyword arguments for the `_artist()` method more explicit with `artist_kwargs`.
 * Temporary files will be deleted automatically from now on.
+* Updated the docstring.
+* Plotting methods now accept Artifact and Visualization objects as input.
 
 ## 1.0.0
 
