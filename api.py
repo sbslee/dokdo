@@ -148,9 +148,13 @@ def _pretty_taxa(s):
 
 def _artist(ax,
             title=None,
+            title_fontsize=None,
             xlabel=None,
+            xlabel_fontsize=None,
             ylabel=None,
+            ylabel_fontsize=None,
             zlabel=None,
+            zlabel_fontsize=None,
             hide_xtexts=False,
             hide_ytexts=False,
             hide_ztexts=False,
@@ -166,7 +170,9 @@ def _artist(ax,
             xticks=None,
             yticks=None,
             xticklabels=None,
+            xticklabels_fontsize=None,
             yticklabels=None,
+            yticklabels_fontsize=None,
             xrot=None,
             xha=None,
             xmin=None,
@@ -191,12 +197,20 @@ def _artist(ax,
         Axes object to draw the plot onto.
     title : str, optional
         Sets the figure title.
+    title_fontsize : float, optional
+        Sets the title font size.
     xlabel : str, optional
         Set the x-axis label.
+    xlabel_fontsize : float, optional
+        Sets the x-axis label font size.
     ylabel : str, optional
         Set the y-axis label.
+    ylabel_fontsize : float, optional
+        Sets the y-axis label font size.
     zlabel : str, optional
         Set the z-axis label.
+    zlabel_fontsize : float, optional
+        Sets the z-axis label font size.
     hide_xtexts : bool, default: False
         Hides all the x-axis texts.
     hide_ytexts : bool, default: False
@@ -227,8 +241,12 @@ def _artist(ax,
         Positions of y-axis ticks.
     xticklabels : list, optional
         Tick labels for the x-axis.
+    xticklabels_fontsize : float, optional
+        Font size for the x-axis tick labels.
     yticklabels : list, optional
         Tick labels for the y-axis.
+    yticklabels_fontsize : float, optional
+        Font size for the y-axis tick labels.
     xrot : float, optional
         Rotation degree of tick labels for the x-axis.
     xha : str, optional
@@ -260,16 +278,16 @@ def _artist(ax,
         Returns the Axes object with the plot drawn onto it.
     """
     if isinstance(title, str):
-        ax.set_title(title)
+        ax.set_title(title, fontsize=title_fontsize)
 
     if isinstance(xlabel, str):
-        ax.set_xlabel(xlabel)
+        ax.set_xlabel(xlabel, fontsize=xlabel_fontsize)
 
     if isinstance(ylabel, str):
-        ax.set_ylabel(ylabel)
+        ax.set_ylabel(ylabel, fontsize=ylabel_fontsize)
 
     if isinstance(zlabel, str):
-        ax.set_zlabel(zlabel)
+        ax.set_zlabel(zlabel, fontsize=zlabel_fontsize)
 
     if hide_xtexts:
         ax.set_xlabel('')
@@ -320,12 +338,18 @@ def _artist(ax,
             raise ValueError(f"Expected {a} items, but found {b}")
         ax.set_xticklabels(xticklabels)
 
+    if isinstance(xticklabels_fontsize, numbers.Number):
+        ax.tick_params(axis='x', which='major', labelsize=xticklabels_fontsize)
+
     if isinstance(yticklabels, list):
         a = len(ax.get_yticklabels())
         b = len(yticklabels)
         if a != b:
             raise ValueError(f"Expected {a} items, but found {b}")
         ax.set_yticklabels(yticklabels)
+
+    if isinstance(yticklabels_fontsize, numbers.Number):
+        ax.tick_params(axis='y', which='major', labelsize=yticklabels_fontsize)
 
     if isinstance(xrot, numbers.Number):
         ax.set_xticklabels(ax.get_xticklabels(), rotation=xrot)
@@ -742,7 +766,8 @@ def denoising_stats_plot(stats,
     if artist_kwargs is None:
         artist_kwargs = {}
 
-    artist_kwargs = {'ylabel': 'Read depth',
+    artist_kwargs = {'xlabel': where,
+                     'ylabel': 'Read depth',
                      **artist_kwargs}
 
     ax = _artist(ax, **artist_kwargs)
