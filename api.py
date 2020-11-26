@@ -933,6 +933,10 @@ def alpha_diversity_plot(significance,
     if artist_kwargs is None:
         artist_kwargs = {}
 
+    artist_kwargs = {'xlabel': where,
+                     'ylabel': metric,
+                     **artist_kwargs}
+
     ax = _artist(ax, **artist_kwargs)
 
     return ax
