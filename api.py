@@ -188,7 +188,8 @@ def _artist(ax,
             legend_short=False,
             remove_duplicates=False,
             legend_only=False,
-            legend_fontsize=None):
+            legend_fontsize=None,
+            legend_markerscale=None):
     """
     This method controls various properties of a figure.
 
@@ -274,6 +275,8 @@ def _artist(ax,
         Clear the figure and display the legend only.
     legend_fontsize : float, optional
         Sets the legend font size.
+    legend_markerscale : float, optional
+        Relative size of legend markers compared with the original.
 
     Returns
     -------
@@ -390,11 +393,11 @@ def _artist(ax,
 
     if legend_only:
         ax.clear()
-        ax.legend(h, l, loc=legend_loc, ncol=legend_ncol)
+        ax.legend(h, l, loc=legend_loc, ncol=legend_ncol, fontsize=legend_fontsize, markerscale=legend_markerscale)
         ax.axis('off')
     elif show_legend:
         if h:
-            ax.legend(h, l, loc=legend_loc, ncol=legend_ncol, fontsize=legend_fontsize)
+            ax.legend(h, l, loc=legend_loc, ncol=legend_ncol, fontsize=legend_fontsize, markerscale=legend_markerscale)
         else:
             warnings.warn("No handles with labels found to put in legend.")
     else:
