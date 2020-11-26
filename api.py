@@ -187,7 +187,8 @@ def _artist(ax,
             legend_labels=None,
             legend_short=False,
             remove_duplicates=False,
-            legend_only=False):
+            legend_only=False,
+            legend_fontsize=None):
     """
     This method controls various properties of a figure.
 
@@ -271,6 +272,8 @@ def _artist(ax,
         Number of columns that the legend has.
     legend_only : bool, default: False
         Clear the figure and display the legend only.
+    legend_fontsize : float, optional
+        Sets the legend font size.
 
     Returns
     -------
@@ -391,7 +394,7 @@ def _artist(ax,
         ax.axis('off')
     elif show_legend:
         if h:
-            ax.legend(h, l, loc=legend_loc, ncol=legend_ncol)
+            ax.legend(h, l, loc=legend_loc, ncol=legend_ncol, fontsize=legend_fontsize)
         else:
             warnings.warn("No handles with labels found to put in legend.")
     else:
