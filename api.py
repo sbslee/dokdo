@@ -1811,7 +1811,8 @@ def addsig(x1,
            lc='black',
            tc='black',
            ax=None,
-           figsize=None):
+           figsize=None,
+           fontsize=None):
     """
     This method adds signifiance annotation between two groups in a box plot.
 
@@ -1837,6 +1838,8 @@ def addsig(x1,
         Axes object to draw the plot onto, otherwise uses the current Axes.
     figsize : tuple, optional
         Width, height in inches. Format: (float, float).
+    fontsize : float, optional
+        Sets the fontsize.
 
     Returns
     -------
@@ -1846,7 +1849,7 @@ def addsig(x1,
     if ax is None:
         fig, ax = plt.subplots(figsize=figsize)
     ax.plot([x1, x1, x2, x2], [y, y+h, y+h, y], lw=lw, c=lc)
-    ax.text((x1+x2)*0.5, y+h, t, ha='center', va='bottom', color=tc)
+    ax.text((x1+x2)*0.5, y+h, t, ha='center', va='bottom', color=tc, fontsize=fontsize)
     return ax
 
 
