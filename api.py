@@ -199,19 +199,19 @@ def _artist(ax,
         Axes object to draw the plot onto.
     title : str, optional
         Sets the figure title.
-    title_fontsize : float, optional
+    title_fontsize : float or str, optional
         Sets the title font size.
     xlabel : str, optional
         Set the x-axis label.
-    xlabel_fontsize : float, optional
+    xlabel_fontsize : float or str, optional
         Sets the x-axis label font size.
     ylabel : str, optional
         Set the y-axis label.
-    ylabel_fontsize : float, optional
+    ylabel_fontsize : float or str, optional
         Sets the y-axis label font size.
     zlabel : str, optional
         Set the z-axis label.
-    zlabel_fontsize : float, optional
+    zlabel_fontsize : float or str, optional
         Sets the z-axis label font size.
     hide_xtexts : bool, default: False
         Hides all the x-axis texts.
@@ -243,11 +243,11 @@ def _artist(ax,
         Positions of y-axis ticks.
     xticklabels : list, optional
         Tick labels for the x-axis.
-    xticklabels_fontsize : float, optional
+    xticklabels_fontsize : float or str, optional
         Font size for the x-axis tick labels.
     yticklabels : list, optional
         Tick labels for the y-axis.
-    yticklabels_fontsize : float, optional
+    yticklabels_fontsize : float or str, optional
         Font size for the y-axis tick labels.
     xrot : float, optional
         Rotation degree of tick labels for the x-axis.
@@ -273,7 +273,7 @@ def _artist(ax,
         Number of columns that the legend has.
     legend_only : bool, default: False
         Clear the figure and display the legend only.
-    legend_fontsize : float, optional
+    legend_fontsize : float or str, optional
         Sets the legend font size.
     legend_markerscale : float, optional
         Relative size of legend markers compared with the original.
@@ -282,6 +282,11 @@ def _artist(ax,
     -------
     matplotlib.axes.Axes
         Returns the Axes object with the plot drawn onto it.
+
+    Notes
+    -----
+    Font size can be specified by provding a number or a string as defined in: 
+    {'xx-small', 'x-small', 'small', 'medium', 'large', 'x-large', 'xx-large'}.
     """
     if isinstance(title, str):
         ax.set_title(title, fontsize=title_fontsize)
@@ -344,7 +349,7 @@ def _artist(ax,
             raise ValueError(f"Expected {a} items, but found {b}")
         ax.set_xticklabels(xticklabels)
 
-    if isinstance(xticklabels_fontsize, numbers.Number):
+    if xticklabels_fontsize is not None:
         ax.tick_params(axis='x', which='major', labelsize=xticklabels_fontsize)
 
     if isinstance(yticklabels, list):
@@ -354,7 +359,7 @@ def _artist(ax,
             raise ValueError(f"Expected {a} items, but found {b}")
         ax.set_yticklabels(yticklabels)
 
-    if isinstance(yticklabels_fontsize, numbers.Number):
+    if yticklabels_fontsize is not None:
         ax.tick_params(axis='y', which='major', labelsize=yticklabels_fontsize)
 
     if isinstance(xrot, numbers.Number):
