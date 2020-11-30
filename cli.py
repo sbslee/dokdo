@@ -31,38 +31,6 @@ def collapse(table,
 
 
 
-def tax2seq(taxonomy,
-            rep_seqs,
-            output):
-    tax_df = Artifact.load(taxonomy).view(pd.DataFrame)
-
-    _ = Artifact.load(rep_seqs)
-    f = _.view(DNAFASTAFormat).open()
-
-    features = []
-    seqs = []
-
-    for i, line in enumerate(f):
-        if i % 2 == 0:
-            features.append(line.strip().replace('>', ''))
-        else:
-            seqs.append(line.strip())
-
-    seq_df = pd.DataFrame({'Feature ID': features, 'Sequence': seqs})
-    seq_df = seq_df.set_index('Feature ID')
-
-    _ = pd.concat([tax_df, seq_df], axis=1, sort=False)
-    _.to_csv(output)
-
-
-
-
-
-
-
-
-
-
 def make_manifest(fastq_dir,
                   output):
     files = {}
@@ -158,7 +126,6 @@ def merge_metadata(metadata,
 def main():
     commands = {
         'collapse': collapse,
-        'tax2seq': tax2seq,
         'make_manifest': make_manifest,
         'add_metadata': add_metadata,
         'merge_metadata': merge_metadata,
@@ -196,35 +163,6 @@ def main():
     collapse_parser.add_argument(
         'taxonomy',
         help="Path to the input taxonomy.qza file."
-    )
-
-
-
-
-
-
-
-
-
-
-    tax2seq_parser = subparsers.add_parser(
-        'tax2seq',
-        description=("This command returns the mapping between observed ASVs "
-                     "and taxonomic classifications."),
-        help=("This command returns the mapping between observed ASVs and "
-              "taxonomic classifications."),
-    )
-    tax2seq_parser.add_argument(
-        'taxonomy',
-        help="Path to the input taxonomy.qza file."
-    )
-    tax2seq_parser.add_argument(
-        'rep_seqs',
-        help="Path to the input rep-seqs.qza file."
-    )
-    tax2seq_parser.add_argument(
-        'output',
-        help="Path to the output mapping file (.csv)."
     )
 
 
