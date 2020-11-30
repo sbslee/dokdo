@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.2.0
+
+* The `tax2seq` command has been deprecated.
+* Updated the `_artist()` method to set the font size of title, labels, etc.
+
 ## 1.1.0
 
 * Introduced the `addpairs()` method.
