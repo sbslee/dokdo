@@ -118,9 +118,9 @@ def _pretty_taxa(s):
         if 'uncultured' in rank:
             continue
 
-        # The species name can be sometimes tricky to parse because it could 
-        # be full (e.g. Helicobacter pylori) or partial (e.g. pylori). In the 
-        # latter case, I will borrow the genus name (e.g. Helicobacter) to 
+        # The species name can be sometimes tricky to parse because it could
+        # be full (e.g. Helicobacter pylori) or partial (e.g. pylori). In the
+        # latter case, I will borrow the genus name (e.g. Helicobacter) to
         # form the full species name.
         if 's__' in rank:
             rank = rank.split('__')[1]
@@ -285,7 +285,7 @@ def _artist(ax,
 
     Notes
     -----
-    Font size can be specified by provding a number or a string as defined in: 
+    Font size can be specified by provding a number or a string as defined in:
     {'xx-small', 'x-small', 'small', 'medium', 'large', 'x-large', 'xx-large'}.
     """
     if isinstance(title, str):
@@ -486,7 +486,7 @@ def _parse_input(input, temp_dir):
 
 def get_mf(metadata):
     """
-    This method automatically detects the type of input metadata and converts 
+    This method automatically detects the type of input metadata and converts
     it to DataFrame object.
 
     Parameters
@@ -522,11 +522,11 @@ def ordinate(table,
              metric='jaccard',
              phylogeny=None):
     """
-    This method wraps multiple QIIME 2 methods to perform ordination and 
+    This method wraps multiple QIIME 2 methods to perform ordination and
     returns Artifact object containing PCoA results.
 
-    Under the hood, this method filters the samples (if requested), performs 
-    rarefying to the sample with the minimum read depth, computes distance 
+    Under the hood, this method filters the samples (if requested), performs
+    rarefying to the sample with the minimum read depth, computes distance
     matrix, and then runs PCoA.
 
     Parameters
@@ -541,7 +541,7 @@ def ordinate(table,
         Metric used for distance matrix computation ('jaccard',
         'bray_curtis', 'unweighted_unifrac', or 'weighted_unifrac').
     phylogeny : str, optional
-        Rooted tree file. Required if using 'unweighted_unifrac', or 
+        Rooted tree file. Required if using 'unweighted_unifrac', or
         'weighted_unifrac' as metric.
 
     Returns
@@ -556,7 +556,7 @@ def ordinate(table,
 
     Notes
     -----
-    The resulting Artifact object can be directly used for plotting by the 
+    The resulting Artifact object can be directly used for plotting by the
     beta_2d_plot() method.
     """
     if where:
@@ -583,7 +583,7 @@ def ordinate(table,
 
     rarefy_result = feature_table.methods.rarefy(table=_table,
                                                  sampling_depth=min_depth)
-    
+
     rarefied_table = rarefy_result.rarefied_table
 
     if metric == 'jaccard':
@@ -596,9 +596,9 @@ def ordinate(table,
         distance_matrix_result = diversity_lib.methods.weighted_unifrac(table=rarefied_table, phylogeny=Artifact.load(phylogeny))
     else:
         raise ValueError(f"Incorrect metric detected: {metric}")
-    
+
     distance_matrix = distance_matrix_result.distance_matrix
-    
+
     pcoa_result = diversity.methods.pcoa(distance_matrix=distance_matrix)
 
     return pcoa_result.pcoa
@@ -708,7 +708,7 @@ def denoising_stats_plot(stats,
                          hide_nsizes=False,
                          artist_kwargs=None):
     """
-    This method creates a grouped box chart using denoising statistics from 
+    This method creates a grouped box chart using denoising statistics from
     the DADA 2 algorithm.
 
     Parameters
@@ -986,7 +986,7 @@ def beta_2d_plot(ordination,
         Grouping variable that will produce points with different sizes.
     style : str, optional
         Grouping variable that will produce points with different markers.
-    s : int, default: 80
+    s : float, default: 80
         Marker size.
     alpha : float, optional
         Proportional opacity of the points.
@@ -1080,7 +1080,7 @@ def beta_3d_plot(ordination,
                  hue=None,
                  azim=-60,
                  elev=30,
-                 s=80, 
+                 s=80,
                  ax=None,
                  figsize=None,
                  hue_order=None,
@@ -1100,7 +1100,7 @@ def beta_3d_plot(ordination,
         Elevation viewing angle.
     elev : int, default: 30
         Azimuthal viewing angle.
-    s : int, default: 80
+    s : float, default: 80
         Marker size.
     ax : matplotlib.axes.Axes, optional
         Axes object to draw the plot onto, otherwise uses the current Axes.
@@ -1308,7 +1308,7 @@ def taxa_abundance_bar_plot(taxa,
     """
     This method creates a taxa abundance plot.
 
-    Although the input visualization file should contain medatadata already, 
+    Although the input visualization file should contain medatadata already,
     you can replace it with new metadata by using the 'metadata' option.
 
     Parameters
@@ -1320,9 +1320,9 @@ def taxa_abundance_bar_plot(taxa,
     level : int, default: 1
         Taxonomic level at which the features should be collapsed.
     by : list, optional
-        Column name(s) to be used for sorting the samples. Using 'index' will 
-        sort the samples by their name, in addition to other column name(s) 
-        that may have been provided. If multiple items are provided, sorting 
+        Column name(s) to be used for sorting the samples. Using 'index' will
+        sort the samples by their name, in addition to other column name(s)
+        that may have been provided. If multiple items are provided, sorting
         will occur by the order of the items.
     ax : matplotlib.axes.Axes, optional
         Axes object to draw the plot onto, otherwise uses the current Axes.
@@ -1347,9 +1347,9 @@ def taxa_abundance_bar_plot(taxa,
     label_columns : list, optional
         The column names to be used as the x-axis labels.
     orders : dict, optional
-        Dictionary of {column1: [element1, element2, ...], column2: 
-        [element1, element2...], ...} to indicate the order of items. Used to 
-        sort the sampels by the user-specified order instead of ordering 
+        Dictionary of {column1: [element1, element2, ...], column2:
+        [element1, element2...], ...} to indicate the order of items. Used to
+        sort the sampels by the user-specified order instead of ordering
         numerically or alphabetically.
     sample_names : list, optional
         List of sample IDs to be included.
@@ -1360,10 +1360,10 @@ def taxa_abundance_bar_plot(taxa,
     sort_by_mean1 : bool, default: True
         Sort taxa by their mean relative abundance before sample filtration.
     sort_by_mean2 : bool, default: True
-        Sort taxa by their mean relative abundance after sample filtration by 
+        Sort taxa by their mean relative abundance after sample filtration by
         'include_samples' or 'exclude_samples'.
     sort_by_mean3 : bool, default: True
-        Sort taxa by their mean relative abundance after sample filtration by 
+        Sort taxa by their mean relative abundance after sample filtration by
         'sample_names'.
     show_others : bool, default: True
         Include the 'Others' category.
@@ -1398,11 +1398,11 @@ def taxa_abundance_bar_plot(taxa,
         df.drop(columns=cols, inplace=True)
         df = pd.concat([df, mf], axis=1, join='inner')
 
-    # If provided, sort the samples by the user-specified order instead of 
-    # ordering numerically or alphabetically. To do this, we will first add a 
-    # new temporary column filled with the indicies of the user-provided 
-    # list. This column will be used for sorting the samples later instead of 
-    # the original column. After sorting, the new column will be dropped from 
+    # If provided, sort the samples by the user-specified order instead of
+    # ordering numerically or alphabetically. To do this, we will first add a
+    # new temporary column filled with the indicies of the user-provided
+    # list. This column will be used for sorting the samples later instead of
+    # the original column. After sorting, the new column will be dropped from
     # the dataframe and the original column will replace its place.
     if isinstance(orders, dict):
         for k, v in orders.items():
@@ -1422,7 +1422,7 @@ def taxa_abundance_bar_plot(taxa,
     if isinstance(by, list):
         df = df.sort_values(by=by)
 
-    # If sorting was performed by the user-specified order, remove the 
+    # If sorting was performed by the user-specified order, remove the
     # temporary columns and then bring back the original column.
     if isinstance(orders, dict):
         for k in orders:
@@ -1558,9 +1558,9 @@ def taxa_abundance_box_plot(taxa,
     level : int, default: 1
         Taxonomic level at which the features should be collapsed.
     by : list, optional
-        Column name(s) to be used for sorting the samples. Using 'index' will 
-        sort the samples by their name, in addition to other column name(s) 
-        that may have been provided. If multiple items are provided, sorting 
+        Column name(s) to be used for sorting the samples. Using 'index' will
+        sort the samples by their name, in addition to other column name(s)
+        that may have been provided. If multiple items are provided, sorting
         will occur by the order of the items.
     ax : matplotlib.axes.Axes, optional
         Axes object to draw the plot onto, otherwise uses the current Axes.
@@ -1682,7 +1682,7 @@ def taxa_abundance_box_plot(taxa,
         _meanprops = meanprops
     else:
         _meanprops={'marker':'x',
-                    'markerfacecolor':'white', 
+                    'markerfacecolor':'white',
                     'markeredgecolor':'white',
                     'markersize':'10'}
 
@@ -1751,6 +1751,7 @@ def taxa_abundance_box_plot(taxa,
 def ancom_volcano_plot(ancom,
                        ax=None,
                        figsize=None,
+                       s=80,
                        artist_kwargs=None):
     """
     This method creates an ANCOM volcano plot.
@@ -1763,6 +1764,8 @@ def ancom_volcano_plot(ancom,
         Axes object to draw the plot onto, otherwise uses the current Axes.
     figsize : tuple, optional
         Width, height in inches. Format: (float, float).
+    s : float, default: 80
+        Marker size.
     artist_kwargs : dict, optional
         Keyword arguments passed down to the _artist() method.
 
@@ -1783,7 +1786,8 @@ def ancom_volcano_plot(ancom,
 
     if ax is None:
         fig, ax = plt.subplots(figsize=figsize)
-    ax.scatter(df.clr, df.W, s=80, c='black', alpha=0.5)
+    sns.scatterplot(data=df, x='clr', y='W', ax=ax, s=s, alpha=0.5,
+                    color='black')
 
     if artist_kwargs is None:
         artist_kwargs = {}
@@ -1877,7 +1881,7 @@ def addpairs(taxon,
              ax=None,
              figsize=None):
     """
-    This method adds lines between two groups in a plot generated by the 
+    This method adds lines between two groups in a plot generated by the
     taxa_abundance_box_plot() method.
 
     This method also prints the p-value for Wilcoxon signed-rank test.
@@ -1934,12 +1938,3 @@ def addpairs(taxon,
         ax.plot([x1[i],x2[i]], [y1[i], y2[i]])
 
     return ax
-
-
-
-
-
-
-
-
-
