@@ -5,6 +5,7 @@
 * The `tax2seq` command has been deprecated.
 * Updated the `_artist()` method to set the font size of title, labels, etc.
 * Added the `s` argument to the `ancom_volcano_plot()` method for setting marker size.
+* Updated the docstring.
 * See [#1](https://github.com/sbslee/dokdo/issues/1) for more details.
 
 ## 1.1.0
