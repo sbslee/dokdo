@@ -520,14 +520,15 @@ def ordinate(table,
              metadata=None,
              where=None,
              metric='jaccard',
+             sampling_depth=-1,
              phylogeny=None):
     """
     This method wraps multiple QIIME 2 methods to perform ordination and
     returns Artifact object containing PCoA results.
 
     Under the hood, this method filters the samples (if requested), performs
-    rarefying to the sample with the minimum read depth, computes distance
-    matrix, and then runs PCoA.
+    rarefying of the feature table (if requested), computes distance matrix,
+    and then runs PCoA.
 
     Parameters
     ----------
@@ -540,6 +541,9 @@ def ordinate(table,
     metric : str, default: 'jaccard'
         Metric used for distance matrix computation ('jaccard',
         'bray_curtis', 'unweighted_unifrac', or 'weighted_unifrac').
+    sampling_depth : int, default: -1
+        If negative, skip rarefying. If 0, rarefy to the sample with minimum
+        depth. Otherwise, rarefy to the provided sampling depth.
     phylogeny : str, optional
         Rooted tree file. Required if using 'unweighted_unifrac', or
         'weighted_unifrac' as metric.
@@ -559,6 +563,7 @@ def ordinate(table,
     The resulting Artifact object can be directly used for plotting by the
     beta_2d_plot() method.
     """
+    # Perform sample filtration.
     if where:
         if metadata is None:
             m = "To use 'where' argument, you must provide metadata"
@@ -579,21 +584,30 @@ def ordinate(table,
     else:
         _table = Artifact.load(table)
 
-    min_depth = int(_table.view(pd.DataFrame).sum(axis=1).min())
+    # Perform rarefying.
+    if sampling_depth < 0:
+        rarefied_table = _table
+    else:
+        if sampling_depth == 0:
+            sampling_depth = int(_table.view(pd.DataFrame).sum(axis=1).min())
 
-    rarefy_result = feature_table.methods.rarefy(table=_table,
-                                                 sampling_depth=min_depth)
+        rarefy_result = feature_table.methods.rarefy(
+            table=_table, sampling_depth=sampling_depth)
 
-    rarefied_table = rarefy_result.rarefied_table
+        rarefied_table = rarefy_result.rarefied_table
 
     if metric == 'jaccard':
-        distance_matrix_result = diversity_lib.methods.jaccard(table=rarefied_table)
+        distance_matrix_result = diversity_lib.methods.jaccard(
+            table=rarefied_table)
     elif metric == 'bray_curtis':
-        distance_matrix_result = diversity_lib.methods.bray_curtis(table=rarefied_table)
+        distance_matrix_result = diversity_lib.methods.bray_curtis(
+            table=rarefied_table)
     elif metric == 'unweighted_unifrac':
-        distance_matrix_result = diversity_lib.methods.unweighted_unifrac(table=rarefied_table, phylogeny=Artifact.load(phylogeny))
+        distance_matrix_result = diversity_lib.methods.unweighted_unifrac(
+            table=rarefied_table, phylogeny=Artifact.load(phylogeny))
     elif metric == 'weighted_unifrac':
-        distance_matrix_result = diversity_lib.methods.weighted_unifrac(table=rarefied_table, phylogeny=Artifact.load(phylogeny))
+        distance_matrix_result = diversity_lib.methods.weighted_unifrac(
+            table=rarefied_table, phylogeny=Artifact.load(phylogeny))
     else:
         raise ValueError(f"Incorrect metric detected: {metric}")
 
