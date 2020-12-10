@@ -532,8 +532,8 @@ def ordinate(table,
 
     Parameters
     ----------
-    table : str
-        Table file.
+    table : str or qiime2.Artifact
+        Artifact file or object to 'FeatureTable[Frequency]'.
     metadata : str or qiime2.Metadata, optional
         Metadata file or object.
     where : str, optional
@@ -563,6 +563,14 @@ def ordinate(table,
     The resulting Artifact object can be directly used for plotting by the
     beta_2d_plot() method.
     """
+    # Parse the feature table.
+    if isinstance(table, qiime2.Artifact):
+        table = table
+    elif isinstance(table, str):
+        table = Artifact.load(table)
+    else:
+        raise TypeError(f"Incorrect feature table type: {type(table)}")
+
     # Perform sample filtration.
     if where:
         if metadata is None:
@@ -576,13 +584,10 @@ def ordinate(table,
             raise TypeError(f"Incorrect metadata type: {type(metadata)}")
 
         filter_result = feature_table.methods.filter_samples(
-            table=Artifact.load(table),
-            metadata=_metadata,
-            where=where,
-        )
+            table=table, metadata=_metadata, where=where)
         _table = filter_result.filtered_table
     else:
-        _table = Artifact.load(table)
+        _table = table
 
     # Perform rarefying.
     if sampling_depth < 0:
