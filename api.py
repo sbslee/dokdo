@@ -981,7 +981,7 @@ def alpha_diversity_plot(significance,
 
 
 
-def beta_2d_plot(ordination,
+def beta_2d_plot(pcoa_results,
                  metadata=None,
                  hue=None,
                  size=None,
@@ -995,12 +995,12 @@ def beta_2d_plot(ordination,
                  legend_type='brief',
                  artist_kwargs=None):
     """
-    This method creates a 2D beta diversity plot.
+    This method creates a 2D scatter plot from PCoA results.
 
     Parameters
     ----------
-    ordination : str or qiime2.Artifact
-        Artifact file or object from the q2-diversity plugin.
+    pcoa_results : str or qiime2.Artifact
+        Artifact file or object corresponding to PCoAResults.
     metadata : str or qiime2.Metadata, optional
         Metadata file or object.
     hue : str, optional
@@ -1044,23 +1044,23 @@ def beta_2d_plot(ordination,
         CLI -> qiime diversity pcoa [OPTIONS]
         API -> from qiime2.plugins.diversity.methods import pcoa
     """
-    with tempfile.TemporaryDirectory() as t:
-        _parse_input(ordination, t)
+    if isinstance(pcoa_results, str):
+        _pcoa_results = Artifact.load(pcoa_results)
+    else:
+        _pcoa_results = pcoa_results
 
-        df1 = pd.read_table(f'{t}/ordination.txt', header=None, index_col=0,
-                            skiprows=[0, 1, 2, 3, 4, 5, 6, 7, 8],
-                            skipfooter=4, engine='python', usecols=[0, 1, 2])
+    ordination_results = _pcoa_results.view(OrdinationResults)
 
-        df1.columns = ['A1', 'A2']
+    df1 = ordination_results.samples.iloc[:, :2]
+    df1.columns = ['A1', 'A2']
 
-        if metadata is None:
-            df2 = df1
-        else:
-            mf = get_mf(metadata)
-            df2 = pd.concat([df1, mf], axis=1, join='inner')
+    if metadata is None:
+        df2 = df1
+    else:
+        mf = get_mf(metadata)
+        df2 = pd.concat([df1, mf], axis=1, join='inner')
 
-        with open(f'{t}/ordination.txt') as f:
-            v = [round(float(x) * 100, 2) for x in f.readlines()[4].split('\t')]
+    props = ordination_results.proportion_explained
 
     if ax is None:
         fig, ax = plt.subplots(figsize=figsize)
@@ -1081,8 +1081,8 @@ def beta_2d_plot(ordination,
     if artist_kwargs is None:
         artist_kwargs = {}
 
-    artist_kwargs = {'xlabel': f'Axis 1 ({v[0]} %)',
-                     'ylabel': f'Axis 2 ({v[1]} %)',
+    artist_kwargs = {'xlabel': f'Axis 1 ({props[0]*100:.2f} %)',
+                     'ylabel': f'Axis 2 ({props[1]*100:.2f} %)',
                      'hide_xticks': True,
                      'hide_yticks': True,
                      **artist_kwargs}
@@ -1100,8 +1100,8 @@ def beta_2d_plot(ordination,
 
 
 
-def beta_3d_plot(ordination,
-                 metadata,
+def beta_3d_plot(pcoa_results,
+                 metadata=None,
                  hue=None,
                  azim=-60,
                  elev=30,
@@ -1111,13 +1111,13 @@ def beta_3d_plot(ordination,
                  hue_order=None,
                  artist_kwargs=None):
     """
-    This method creates a 3D beta diversity plot.
+    This method creates a 3D scatter plot from PCoA results.
 
     Parameters
     ----------
-    ordination : str or qiime2.Artifact
-        Artifact file or object from the q2-diversity plugin.
-    metadata : str or qiime2.Metadata
+    pcoa_results : str or qiime2.Artifact
+        Artifact file or object corresponding to PCoAResults.
+    metadata : str or qiime2.Metadata, optional
         Metadata file or object.
     hue : str, optional
         Grouping variable that will produce points with different colors.
@@ -1154,24 +1154,23 @@ def beta_3d_plot(ordination,
         CLI -> qiime diversity pcoa [OPTIONS]
         API -> from qiime2.plugins.diversity.methods import pcoa
     """
-    with tempfile.TemporaryDirectory() as t:
-        _parse_input(ordination, t)
+    if isinstance(pcoa_results, str):
+        _pcoa_results = Artifact.load(pcoa_results)
+    else:
+        _pcoa_results = pcoa_results
 
-        df = pd.read_table(f'{t}/ordination.txt',
-                           header=None,
-                           index_col=0,
-                           skiprows=[0, 1, 2, 3, 4, 5, 6, 7, 8],
-                           skipfooter=4,
-                           engine='python')
+    ordination_results = _pcoa_results.view(OrdinationResults)
 
-        df = df.sort_index()
+    df = ordination_results.samples.iloc[:, :3]
+    df.columns = ['A1', 'A2', 'A3']
 
+    props = ordination_results.proportion_explained
+
+    if metadata is None:
+        df = df
+    else:
         mf = get_mf(metadata)
-        mf = mf.sort_index()
-        mf = mf.assign(**{'sample-id': mf.index})
-
-        with open(f'{t}/ordination.txt') as f:
-            v = [round(float(x) * 100, 2) for x in f.readlines()[4].split('\t')]
+        df = pd.concat([df, mf], axis=1, join='inner')
 
     if ax is None:
         fig = plt.figure(figsize=figsize)
@@ -1179,34 +1178,23 @@ def beta_3d_plot(ordination,
 
     ax.view_init(azim=azim, elev=elev)
 
-    d = {'s': s}
-
     if hue is None:
-        ax.scatter(df.iloc[:, 0],
-                   df.iloc[:, 1],
-                   df.iloc[:, 2],
-                   **d)
+        ax.scatter(df['A1'], df['A2'], df['A3'], s=s)
     else:
         if hue_order is None:
-            levels = sorted(mf[hue].unique())
+            _hue_order = df[hue].unique()
         else:
-            levels = hue_order
-
-        for c in levels:
-            i = mf[hue] == c
-            df2 = df.loc[i]
-            ax.scatter(df2.iloc[:, 0],
-                       df2.iloc[:, 1],
-                       df2.iloc[:, 2],
-                       label=c,
-                       **d)
+            _hue_order = hue_order
+        for label in _hue_order:
+            a = df[df[hue] == label]
+            ax.scatter(a['A1'], a['A2'], a['A3'], label=label, s=s)
 
     if artist_kwargs is None:
         artist_kwargs = {}
 
-    artist_kwargs = {'xlabel': f'Axis 1 ({v[0]} %)',
-                     'ylabel': f'Axis 2 ({v[1]} %)',
-                     'zlabel': f'Axis 3 ({v[2]} %)',
+    artist_kwargs = {'xlabel': f'Axis 1 ({props[0]*100:.2f} %)',
+                     'ylabel': f'Axis 2 ({props[1]*100:.2f} %)',
+                     'zlabel': f'Axis 3 ({props[2]*100:.2f} %)',
                      'hide_xticks': True,
                      'hide_yticks': True,
                      'hide_zticks': True,
@@ -1225,7 +1213,7 @@ def beta_3d_plot(ordination,
 
 
 
-def beta_scree_plot(ordination,
+def beta_scree_plot(pcoa_results,
                     count=5,
                     ax=None,
                     figsize=None,
@@ -1236,8 +1224,8 @@ def beta_scree_plot(ordination,
 
     Parameters
     ----------
-    ordination : str or qiime2.Artifact
-        Artifact file or object from the q2-diversity plugin. PCoAResults.
+    pcoa_results : str or qiime2.Artifact
+        Artifact file or object corresponding to PCoAResults.
     count : int, default: 5
         Number of principal components to be displayed.
     ax : matplotlib.axes.Axes, optional
@@ -1267,17 +1255,15 @@ def beta_scree_plot(ordination,
         CLI -> qiime diversity pcoa [OPTIONS]
         API -> from qiime2.plugins.diversity.methods import pcoa
     """
-    if isinstance(ordination, str):
-        pcoa_results = Artifact.load(ordination)
-    elif isinstance(ordination, qiime2.Artifact) and ordination.type == PCoAResults:
-        pcoa_results = ordination
+    if isinstance(pcoa_results, str):
+        _pcoa_results = Artifact.load(pcoa_results)
     else:
-        raise TypeError(f"Expected 'PCoAResults' type, but received: {type(ordination)}")
+        _pcoa_results = pcoa_results
 
-    pcoa = pcoa_results.view(OrdinationResults)
-    pc_names = [f'PC{x+1}' for x in range(len(pcoa.proportion_explained))]
-    df = pd.DataFrame({'PC': pc_names,
-                       'Proportion': pcoa.proportion_explained * 100})
+    ordination_results = _pcoa_results.view(OrdinationResults)
+    props = ordination_results.proportion_explained
+    df = pd.DataFrame({'PC': [f'Axis {x+1}' for x in range(len(props))],
+                       'Proportion': props * 100})
     sliced_df = df.head(count)
 
     if ax is None:
@@ -1361,7 +1347,7 @@ def beta_parallel_plot(pcoa_results,
     ordination_results = _pcoa_results.view(OrdinationResults)
 
     props = ordination_results.proportion_explained * 100
-    props = [f'Axis {i+1} ({x:.2f} %)' for i, x in enumerate(props[:count])]
+    props = [f'Axis {i+1} ({x:.2f}%)' for i, x in enumerate(props[:count])]
 
     df = ordination_results.samples.copy().iloc[:, :count]
 
