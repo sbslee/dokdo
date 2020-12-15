@@ -11,6 +11,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 import seaborn as sns
 import skbio as sb
+from skbio.stats.ordination import OrdinationResults
 from scipy import stats
 
 # Import QIIME 2 libraries
@@ -21,6 +22,7 @@ from qiime2 import Visualization
 from qiime2.plugins import feature_table
 from qiime2.plugins import diversity_lib
 from qiime2.plugins import diversity
+from q2_types.ordination import PCoAResults
 
 
 
@@ -1207,6 +1209,86 @@ def beta_3d_plot(ordination,
     ax = _artist(ax, **artist_kwargs)
 
     return ax
+
+
+
+
+
+
+
+
+
+
+def beta_scree_plot(ordination,
+                    count=5,
+                    ax=None,
+                    figsize=None,
+                    color='blue',
+                    artist_kwargs=None):
+    """
+    This method creates a scree plot from PCoA results.
+
+    Parameters
+    ----------
+    ordination : str or qiime2.Artifact
+        Artifact file or object from the q2-diversity plugin. PCoAResults.
+    count : int, default: 5
+        Number of principal components to be displayed.
+    ax : matplotlib.axes.Axes, optional
+        Axes object to draw the plot onto, otherwise uses the current Axes.
+    figsize : tuple, optional
+        Width, height in inches. Format: (float, float).
+    color : str, default: 'blue'
+        Bar color.
+    artist_kwargs : dict, optional
+        Keyword arguments passed down to the _artist() method.
+
+    Returns
+    -------
+    matplotlib.axes.Axes
+        Returns the Axes object with the plot drawn onto it.
+
+    See Also
+    --------
+    ordinate
+    beta_2d_plot
+    beta_3d_plot
+
+    Notes
+    -----
+    Example usage of the q2-diversity plugin:
+        CLI -> qiime diversity pcoa [OPTIONS]
+        API -> from qiime2.plugins.diversity.methods import pcoa
+    """
+    if isinstance(ordination, str):
+        pcoa_results = Artifact.load(ordination)
+    elif isinstance(ordination, qiime2.Artifact) and ordination.type == PCoAResults:
+        pcoa_results = ordination
+    else:
+        raise TypeError(f"Expected 'PCoAResults' type, but received: {type(ordination)}")
+
+    pcoa = pcoa_results.view(OrdinationResults)
+    pc_names = [f'PC{x+1}' for x in range(len(pcoa.proportion_explained))]
+    df = pd.DataFrame({'PC': pc_names,
+                       'Proportion': pcoa.proportion_explained * 100})
+    sliced_df = df.head(count)
+
+    if ax is None:
+        fig, ax = plt.subplots(figsize=figsize)
+
+    sns.barplot(x='PC', y='Proportion', data=sliced_df, color=color, ax=ax)
+
+    if artist_kwargs is None:
+        artist_kwargs = {}
+
+    artist_kwargs = {'xlabel': '',
+                     'ylabel': 'Variation explained (%)',
+                     **artist_kwargs}
+
+    ax = _artist(ax, **artist_kwargs)
+
+    return ax
+
 
 
 
