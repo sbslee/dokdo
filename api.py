@@ -524,7 +524,9 @@ def ordinate(table,
              where=None,
              metric='jaccard',
              sampling_depth=-1,
-             phylogeny=None):
+             phylogeny=None,
+             number_of_dimensions=None,
+             biplot=False):
     """
     This method wraps multiple QIIME 2 methods to perform ordination and
     returns Artifact object containing PCoA results.
@@ -536,7 +538,7 @@ def ordinate(table,
     Parameters
     ----------
     table : str or qiime2.Artifact
-        Artifact file or object to 'FeatureTable[Frequency]'.
+        Artifact file or object corresponding to FeatureTable[Frequency].
     metadata : str or qiime2.Metadata, optional
         Metadata file or object.
     where : str, optional
@@ -550,11 +552,16 @@ def ordinate(table,
     phylogeny : str, optional
         Rooted tree file. Required if using 'unweighted_unifrac', or
         'weighted_unifrac' as metric.
+    number_of_dimensions : int, optional
+        Dimensions to reduce the distance matrix to.
+    biplot : bool, default: False
+        If true, return PCoAResults % Properties('biplot').
 
     Returns
     -------
     qiime2.Artifact
-        Artifact object containing PCoA results.
+        Artifact object corresponding to PCoAResults or
+        PCoAResults % Properties('biplot').
 
     See Also
     --------
@@ -623,9 +630,18 @@ def ordinate(table,
 
     distance_matrix = distance_matrix_result.distance_matrix
 
-    pcoa_result = diversity.methods.pcoa(distance_matrix=distance_matrix)
+    result_obj = diversity.methods.pcoa(distance_matrix=distance_matrix,
+        number_of_dimensions=number_of_dimensions)
+    pcoa_results = result_obj.pcoa
 
-    return pcoa_result.pcoa
+    if biplot:
+        rf_result = feature_table.methods.relative_frequency(table=table)
+        rf_table = rf_result.relative_frequency_table
+        result_obj = diversity.methods.pcoa_biplot(pcoa=pcoa_results,
+            features=rf_table)
+        pcoa_results = result_obj.biplot
+
+    return pcoa_results
 
 
 
