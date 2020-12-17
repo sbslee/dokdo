@@ -2291,7 +2291,10 @@ def barplot(barplot_file,
             count=0,
             items=None,
             by=None,
-            label_columns=None):
+            label_columns=None,
+            metadata=None,
+            artist_kwargs=None,
+            ylabel_fontsize=None):
     """
     This method creates a grouped abundance bar plot.
 
@@ -2309,8 +2312,8 @@ def barplot(barplot_file,
         stacking.
     figsize : tuple, default: (10, 10)
         Width, height in inches. Format: (float, float).
-    label_columns : list, optional
-        The column names to be used as the x-axis labels.
+    level : int, default: 1
+        Taxonomic level at which the features should be collapsed.
     count : int, default: 0
         The number of taxa to display. When 0, display all.
     items : list, optional
@@ -2322,6 +2325,12 @@ def barplot(barplot_file,
         will occur by the order of the items.
     label_columns : list, optional
         The column names to be used as the x-axis labels.
+    metadata : str or qiime2.Metadata, optional
+        Metadata file or object.
+    artist_kwargs : dict, optional
+        Keyword arguments passed down to the _artist() method.
+    ylabel_fontsize : float or str, optional
+        Sets the y-axis label font size.
 
     See Also
     --------
@@ -2331,6 +2340,12 @@ def barplot(barplot_file,
         vis = Visualization.load(barplot_file)
         vis.export_data(t)
         df = pd.read_csv(f'{t}/level-1.csv', index_col=0)
+
+    if metadata is not None:
+        mf = get_mf(metadata)
+        cols = _get_mf_cols(df)
+        df.drop(columns=cols, inplace=True)
+        df = pd.concat([df, mf], axis=1, join='inner')
 
     if items is None:
         _items = df[group].unique()
@@ -2346,20 +2361,24 @@ def barplot(barplot_file,
 
     fig, axes = plt.subplots(*args, figsize=figsize, gridspec_kw=gridspec_kw)
 
-    artist_kwargs = dict(hide_ytexts=True)
+    if artist_kwargs is None:
+        artist_kwargs = {}
+
+    _artist_kwargs = {'hide_ytexts': True, **artist_kwargs}
 
     plot_kwargs = dict(sort_by_mean2=False,
                        level=level,
                        count=count,
                        by=by,
-                       label_columns=label_columns)
+                       label_columns=label_columns,
+                       metadata=metadata)
 
     if axis == 0:
         for i, ax in enumerate(axes[:, 1]):
             taxa_abundance_bar_plot(barplot_file,
                                     ax=ax,
                                     include_samples={group: [_items[i]]},
-                                    artist_kwargs={'title': _items[i], **artist_kwargs},
+                                    artist_kwargs={'title': _items[i], **_artist_kwargs},
                                     **plot_kwargs)
 
     else:
@@ -2367,7 +2386,7 @@ def barplot(barplot_file,
             taxa_abundance_bar_plot(barplot_file,
                                     ax=ax,
                                     include_samples={group: [_items[i]]},
-                                    artist_kwargs={'title': _items[i], **artist_kwargs},
+                                    artist_kwargs={'title': _items[i], **_artist_kwargs},
                                     **plot_kwargs)
 
     # Add the shared y-axis label.
@@ -2378,7 +2397,7 @@ def barplot(barplot_file,
         axbig = fig.add_subplot(gs[:, 0])
     else:
         axbig = axes[0]
-    axbig.set_ylabel('Relative abundance (%)')
+    axbig.set_ylabel('Relative abundance (%)', fontsize=ylabel_fontsize)
     axbig.xaxis.set_visible(False)
     plt.setp(axbig.spines.values(), visible=False)
     axbig.tick_params(left=False, labelleft=False)
@@ -2395,9 +2414,10 @@ def barplot(barplot_file,
 
     taxa_abundance_bar_plot(barplot_file,
                             ax=axbig,
-                            artist_kwargs=dict(legend_only=True,
-                                               legend_loc='center left',
-                                               legend_short=True),
+                            artist_kwargs={'legend_only': True,
+                                           'legend_loc': 'center left',
+                                           'legend_short': True,
+                                           **_artist_kwargs},
                             **plot_kwargs)
 
     plt.tight_layout()
