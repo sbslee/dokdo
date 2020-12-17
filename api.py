@@ -159,6 +159,12 @@ def _artist(ax,
             ylabel_fontsize=None,
             zlabel=None,
             zlabel_fontsize=None,
+            xticks=None,
+            yticks=None,
+            xticklabels=None,
+            xticklabels_fontsize=None,
+            yticklabels=None,
+            yticklabels_fontsize=None,
             hide_xtexts=False,
             hide_ytexts=False,
             hide_ztexts=False,
@@ -171,12 +177,6 @@ def _artist(ax,
             hide_xticklabels=False,
             hide_yticklabels=False,
             hide_zticklabels=False,
-            xticks=None,
-            yticks=None,
-            xticklabels=None,
-            xticklabels_fontsize=None,
-            yticklabels=None,
-            yticklabels_fontsize=None,
             xrot=None,
             xha=None,
             xmin=None,
@@ -217,6 +217,18 @@ def _artist(ax,
         Set the z-axis label.
     zlabel_fontsize : float or str, optional
         Sets the z-axis label font size.
+    xticks : list, optional
+        Positions of x-axis ticks.
+    yticks : list, optional
+        Positions of y-axis ticks.
+    xticklabels : list, optional
+        Tick labels for the x-axis.
+    xticklabels_fontsize : float or str, optional
+        Font size for the x-axis tick labels.
+    yticklabels : list, optional
+        Tick labels for the y-axis.
+    yticklabels_fontsize : float or str, optional
+        Font size for the y-axis tick labels.
     hide_xtexts : bool, default: False
         Hides all the x-axis texts.
     hide_ytexts : bool, default: False
@@ -241,18 +253,6 @@ def _artist(ax,
         Hides tick labels for the y-axis.
     hide_zticklabels : bool, default: False
         Hides tick labels for the z-axis.
-    xticks : list, optional
-        Positions of x-axis ticks.
-    yticks : list, optional
-        Positions of y-axis ticks.
-    xticklabels : list, optional
-        Tick labels for the x-axis.
-    xticklabels_fontsize : float or str, optional
-        Font size for the x-axis tick labels.
-    yticklabels : list, optional
-        Tick labels for the y-axis.
-    yticklabels_fontsize : float or str, optional
-        Font size for the y-axis tick labels.
     xrot : float, optional
         Rotation degree of tick labels for the x-axis.
     xha : str, optional
@@ -304,6 +304,32 @@ def _artist(ax,
     if isinstance(zlabel, str):
         ax.set_zlabel(zlabel, fontsize=zlabel_fontsize)
 
+    if isinstance(xticks, list):
+        ax.set_xticks(xticks)
+
+    if isinstance(yticks, list):
+        ax.set_yticks(yticks)
+
+    if isinstance(xticklabels, list):
+        a = len(ax.get_xticklabels())
+        b = len(xticklabels)
+        if a != b:
+            raise ValueError(f"Expected {a} items, but found {b}")
+        ax.set_xticklabels(xticklabels)
+
+    if xticklabels_fontsize is not None:
+        ax.tick_params(axis='x', which='major', labelsize=xticklabels_fontsize)
+
+    if isinstance(yticklabels, list):
+        a = len(ax.get_yticklabels())
+        b = len(yticklabels)
+        if a != b:
+            raise ValueError(f"Expected {a} items, but found {b}")
+        ax.set_yticklabels(yticklabels)
+
+    if yticklabels_fontsize is not None:
+        ax.tick_params(axis='y', which='major', labelsize=yticklabels_fontsize)
+
     if hide_xtexts:
         ax.set_xlabel('')
         ax.set_xticklabels([])
@@ -339,32 +365,6 @@ def _artist(ax,
 
     if hide_yticklabels:
         ax.set_yticklabels([])
-
-    if isinstance(xticks, list):
-        ax.set_xticks(xticks)
-
-    if isinstance(yticks, list):
-        ax.set_yticks(yticks)
-
-    if isinstance(xticklabels, list):
-        a = len(ax.get_xticklabels())
-        b = len(xticklabels)
-        if a != b:
-            raise ValueError(f"Expected {a} items, but found {b}")
-        ax.set_xticklabels(xticklabels)
-
-    if xticklabels_fontsize is not None:
-        ax.tick_params(axis='x', which='major', labelsize=xticklabels_fontsize)
-
-    if isinstance(yticklabels, list):
-        a = len(ax.get_yticklabels())
-        b = len(yticklabels)
-        if a != b:
-            raise ValueError(f"Expected {a} items, but found {b}")
-        ax.set_yticklabels(yticklabels)
-
-    if yticklabels_fontsize is not None:
-        ax.tick_params(axis='y', which='major', labelsize=yticklabels_fontsize)
 
     if isinstance(xrot, numbers.Number):
         ax.set_xticklabels(ax.get_xticklabels(), rotation=xrot)
@@ -2294,7 +2294,8 @@ def barplot(barplot_file,
             label_columns=None,
             metadata=None,
             artist_kwargs=None,
-            ylabel_fontsize=None):
+            ylabel_fontsize=None,
+            xaxis_repeated=False):
     """
     This method creates a grouped abundance bar plot.
 
@@ -2331,6 +2332,9 @@ def barplot(barplot_file,
         Keyword arguments passed down to the _artist() method.
     ylabel_fontsize : float or str, optional
         Sets the y-axis label font size.
+    xaxis_repeated : bool, default: False
+        If true, remove all x-axis tick labels except for the bottom subplot.
+        Ignored if `axis=1`.
 
     See Also
     --------
@@ -2374,11 +2378,19 @@ def barplot(barplot_file,
                        metadata=metadata)
 
     if axis == 0:
+        if xaxis_repeated:
+            hide_xtexts = [True for x in range(len(axes[:, 1]))]
+            hide_xtexts[-1] = False
+        else:
+            hide_xtexts = [False for x in range(len(axes[:, 1]))]
+
         for i, ax in enumerate(axes[:, 1]):
             taxa_abundance_bar_plot(barplot_file,
                                     ax=ax,
                                     include_samples={group: [_items[i]]},
-                                    artist_kwargs={'title': _items[i], **_artist_kwargs},
+                                    artist_kwargs={'title': _items[i],
+                                                   'hide_xtexts': hide_xtexts[i],
+                                                   **_artist_kwargs},
                                     **plot_kwargs)
 
     else:
