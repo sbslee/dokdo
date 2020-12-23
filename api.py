@@ -576,8 +576,7 @@ def ordinate(table,
 
     Notes
     -----
-    The resulting Artifact object can be directly used for plotting by the
-    beta_2d_plot() method.
+    The resulting Artifact object can be directly used for plotting.
     """
     # Parse the feature table.
     if isinstance(table, qiime2.Artifact):
@@ -2176,7 +2175,8 @@ def addbiplot(pcoa_results,
               ax=None,
               figsize=None):
     """
-    This methods adds arrows to a PCoA scatter plot (both 2D and 3D).
+    This methods adds arrows (i.e. features) to a PCoA scatter plot (both 2D
+    and 3D).
 
     Parameters
     ----------
@@ -2211,6 +2211,7 @@ def addbiplot(pcoa_results,
 
     See Also
     --------
+    ordinate
     beta_2d_plot
     beta_3d_plot
     """
@@ -2300,7 +2301,7 @@ def barplot(barplot_file,
     This method creates a grouped abundance bar plot.
 
     Under the hood, this method essentially wraps the
-    `taxa_abundance_bar_plot()` method.
+    `taxa_abundance_bar_plot` method.
 
     Parameters
     ----------
