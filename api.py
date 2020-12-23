@@ -9,9 +9,12 @@ import numpy as np
 import pandas as pd
 import matplotlib
 import matplotlib.pyplot as plt
+import matplotlib.gridspec as gridspec
 import seaborn as sns
 import skbio as sb
+from skbio.stats.ordination import OrdinationResults
 from scipy import stats
+from scipy.spatial.distance import euclidean
 
 # Import QIIME 2 libraries
 import qiime2
@@ -21,6 +24,7 @@ from qiime2 import Visualization
 from qiime2.plugins import feature_table
 from qiime2.plugins import diversity_lib
 from qiime2.plugins import diversity
+from q2_types.ordination import PCoAResults
 
 
 
@@ -155,6 +159,12 @@ def _artist(ax,
             ylabel_fontsize=None,
             zlabel=None,
             zlabel_fontsize=None,
+            xticks=None,
+            yticks=None,
+            xticklabels=None,
+            xticklabels_fontsize=None,
+            yticklabels=None,
+            yticklabels_fontsize=None,
             hide_xtexts=False,
             hide_ytexts=False,
             hide_ztexts=False,
@@ -167,12 +177,6 @@ def _artist(ax,
             hide_xticklabels=False,
             hide_yticklabels=False,
             hide_zticklabels=False,
-            xticks=None,
-            yticks=None,
-            xticklabels=None,
-            xticklabels_fontsize=None,
-            yticklabels=None,
-            yticklabels_fontsize=None,
             xrot=None,
             xha=None,
             xmin=None,
@@ -213,6 +217,18 @@ def _artist(ax,
         Set the z-axis label.
     zlabel_fontsize : float or str, optional
         Sets the z-axis label font size.
+    xticks : list, optional
+        Positions of x-axis ticks.
+    yticks : list, optional
+        Positions of y-axis ticks.
+    xticklabels : list, optional
+        Tick labels for the x-axis.
+    xticklabels_fontsize : float or str, optional
+        Font size for the x-axis tick labels.
+    yticklabels : list, optional
+        Tick labels for the y-axis.
+    yticklabels_fontsize : float or str, optional
+        Font size for the y-axis tick labels.
     hide_xtexts : bool, default: False
         Hides all the x-axis texts.
     hide_ytexts : bool, default: False
@@ -237,18 +253,6 @@ def _artist(ax,
         Hides tick labels for the y-axis.
     hide_zticklabels : bool, default: False
         Hides tick labels for the z-axis.
-    xticks : list, optional
-        Positions of x-axis ticks.
-    yticks : list, optional
-        Positions of y-axis ticks.
-    xticklabels : list, optional
-        Tick labels for the x-axis.
-    xticklabels_fontsize : float or str, optional
-        Font size for the x-axis tick labels.
-    yticklabels : list, optional
-        Tick labels for the y-axis.
-    yticklabels_fontsize : float or str, optional
-        Font size for the y-axis tick labels.
     xrot : float, optional
         Rotation degree of tick labels for the x-axis.
     xha : str, optional
@@ -300,6 +304,32 @@ def _artist(ax,
     if isinstance(zlabel, str):
         ax.set_zlabel(zlabel, fontsize=zlabel_fontsize)
 
+    if isinstance(xticks, list):
+        ax.set_xticks(xticks)
+
+    if isinstance(yticks, list):
+        ax.set_yticks(yticks)
+
+    if isinstance(xticklabels, list):
+        a = len(ax.get_xticklabels())
+        b = len(xticklabels)
+        if a != b:
+            raise ValueError(f"Expected {a} items, but found {b}")
+        ax.set_xticklabels(xticklabels)
+
+    if xticklabels_fontsize is not None:
+        ax.tick_params(axis='x', which='major', labelsize=xticklabels_fontsize)
+
+    if isinstance(yticklabels, list):
+        a = len(ax.get_yticklabels())
+        b = len(yticklabels)
+        if a != b:
+            raise ValueError(f"Expected {a} items, but found {b}")
+        ax.set_yticklabels(yticklabels)
+
+    if yticklabels_fontsize is not None:
+        ax.tick_params(axis='y', which='major', labelsize=yticklabels_fontsize)
+
     if hide_xtexts:
         ax.set_xlabel('')
         ax.set_xticklabels([])
@@ -335,32 +365,6 @@ def _artist(ax,
 
     if hide_yticklabels:
         ax.set_yticklabels([])
-
-    if isinstance(xticks, list):
-        ax.set_xticks(xticks)
-
-    if isinstance(yticks, list):
-        ax.set_yticks(yticks)
-
-    if isinstance(xticklabels, list):
-        a = len(ax.get_xticklabels())
-        b = len(xticklabels)
-        if a != b:
-            raise ValueError(f"Expected {a} items, but found {b}")
-        ax.set_xticklabels(xticklabels)
-
-    if xticklabels_fontsize is not None:
-        ax.tick_params(axis='x', which='major', labelsize=xticklabels_fontsize)
-
-    if isinstance(yticklabels, list):
-        a = len(ax.get_yticklabels())
-        b = len(yticklabels)
-        if a != b:
-            raise ValueError(f"Expected {a} items, but found {b}")
-        ax.set_yticklabels(yticklabels)
-
-    if yticklabels_fontsize is not None:
-        ax.tick_params(axis='y', which='major', labelsize=yticklabels_fontsize)
 
     if isinstance(xrot, numbers.Number):
         ax.set_xticklabels(ax.get_xticklabels(), rotation=xrot)
@@ -520,19 +524,25 @@ def ordinate(table,
              metadata=None,
              where=None,
              metric='jaccard',
-             phylogeny=None):
+             sampling_depth=-1,
+             phylogeny=None,
+             number_of_dimensions=None,
+             biplot=False):
     """
     This method wraps multiple QIIME 2 methods to perform ordination and
     returns Artifact object containing PCoA results.
 
     Under the hood, this method filters the samples (if requested), performs
-    rarefying to the sample with the minimum read depth, computes distance
-    matrix, and then runs PCoA.
+    rarefying of the feature table (if requested), computes distance matrix,
+    and then runs PCoA.
+
+    By default, the method returns PCoAResults. For creating a biplot, make
+    sure to use `biplot=True` which returns PCoAResults % Properties('biplot').
 
     Parameters
     ----------
-    table : str
-        Table file.
+    table : str or qiime2.Artifact
+        Artifact file or object corresponding to FeatureTable[Frequency].
     metadata : str or qiime2.Metadata, optional
         Metadata file or object.
     where : str, optional
@@ -540,25 +550,43 @@ def ordinate(table,
     metric : str, default: 'jaccard'
         Metric used for distance matrix computation ('jaccard',
         'bray_curtis', 'unweighted_unifrac', or 'weighted_unifrac').
+    sampling_depth : int, default: -1
+        If negative, skip rarefying. If 0, rarefy to the sample with minimum
+        depth. Otherwise, rarefy to the provided sampling depth.
     phylogeny : str, optional
         Rooted tree file. Required if using 'unweighted_unifrac', or
         'weighted_unifrac' as metric.
+    number_of_dimensions : int, optional
+        Dimensions to reduce the distance matrix to.
+    biplot : bool, default: False
+        If true, return PCoAResults % Properties('biplot').
 
     Returns
     -------
     qiime2.Artifact
-        Artifact object containing PCoA results.
+        Artifact object corresponding to PCoAResults or
+        PCoAResults % Properties('biplot').
 
     See Also
     --------
     beta_2d_plot
     beta_3d_plot
+    beta_scree_plot
+    beta_parallel_plot
 
     Notes
     -----
-    The resulting Artifact object can be directly used for plotting by the
-    beta_2d_plot() method.
+    The resulting Artifact object can be directly used for plotting.
     """
+    # Parse the feature table.
+    if isinstance(table, qiime2.Artifact):
+        table = table
+    elif isinstance(table, str):
+        table = Artifact.load(table)
+    else:
+        raise TypeError(f"Incorrect feature table type: {type(table)}")
+
+    # Perform sample filtration.
     if where:
         if metadata is None:
             m = "To use 'where' argument, you must provide metadata"
@@ -571,37 +599,52 @@ def ordinate(table,
             raise TypeError(f"Incorrect metadata type: {type(metadata)}")
 
         filter_result = feature_table.methods.filter_samples(
-            table=Artifact.load(table),
-            metadata=_metadata,
-            where=where,
-        )
+            table=table, metadata=_metadata, where=where)
         _table = filter_result.filtered_table
     else:
-        _table = Artifact.load(table)
+        _table = table
 
-    min_depth = int(_table.view(pd.DataFrame).sum(axis=1).min())
+    # Perform rarefying.
+    if sampling_depth < 0:
+        rarefied_table = _table
+    else:
+        if sampling_depth == 0:
+            sampling_depth = int(_table.view(pd.DataFrame).sum(axis=1).min())
 
-    rarefy_result = feature_table.methods.rarefy(table=_table,
-                                                 sampling_depth=min_depth)
+        rarefy_result = feature_table.methods.rarefy(
+            table=_table, sampling_depth=sampling_depth)
 
-    rarefied_table = rarefy_result.rarefied_table
+        rarefied_table = rarefy_result.rarefied_table
 
     if metric == 'jaccard':
-        distance_matrix_result = diversity_lib.methods.jaccard(table=rarefied_table)
+        distance_matrix_result = diversity_lib.methods.jaccard(
+            table=rarefied_table)
     elif metric == 'bray_curtis':
-        distance_matrix_result = diversity_lib.methods.bray_curtis(table=rarefied_table)
+        distance_matrix_result = diversity_lib.methods.bray_curtis(
+            table=rarefied_table)
     elif metric == 'unweighted_unifrac':
-        distance_matrix_result = diversity_lib.methods.unweighted_unifrac(table=rarefied_table, phylogeny=Artifact.load(phylogeny))
+        distance_matrix_result = diversity_lib.methods.unweighted_unifrac(
+            table=rarefied_table, phylogeny=Artifact.load(phylogeny))
     elif metric == 'weighted_unifrac':
-        distance_matrix_result = diversity_lib.methods.weighted_unifrac(table=rarefied_table, phylogeny=Artifact.load(phylogeny))
+        distance_matrix_result = diversity_lib.methods.weighted_unifrac(
+            table=rarefied_table, phylogeny=Artifact.load(phylogeny))
     else:
         raise ValueError(f"Incorrect metric detected: {metric}")
 
     distance_matrix = distance_matrix_result.distance_matrix
 
-    pcoa_result = diversity.methods.pcoa(distance_matrix=distance_matrix)
+    result_obj = diversity.methods.pcoa(distance_matrix=distance_matrix,
+        number_of_dimensions=number_of_dimensions)
+    pcoa_results = result_obj.pcoa
 
-    return pcoa_result.pcoa
+    if biplot:
+        rf_result = feature_table.methods.relative_frequency(table=table)
+        rf_table = rf_result.relative_frequency_table
+        result_obj = diversity.methods.pcoa_biplot(pcoa=pcoa_results,
+            features=rf_table)
+        pcoa_results = result_obj.biplot
+
+    return pcoa_results
 
 
 
@@ -958,7 +1001,7 @@ def alpha_diversity_plot(significance,
 
 
 
-def beta_2d_plot(ordination,
+def beta_2d_plot(pcoa_results,
                  metadata=None,
                  hue=None,
                  size=None,
@@ -972,12 +1015,13 @@ def beta_2d_plot(ordination,
                  legend_type='brief',
                  artist_kwargs=None):
     """
-    This method creates a 2D beta diversity plot.
+    This method creates a 2D scatter plot from PCoA results.
 
     Parameters
     ----------
-    ordination : str or qiime2.Artifact
-        Artifact file or object from the q2-diversity plugin.
+    pcoa_results : str or qiime2.Artifact
+        Artifact file or object corresponding to PCoAResults or
+        PCoAResults % Properties('biplot').
     metadata : str or qiime2.Metadata, optional
         Metadata file or object.
     hue : str, optional
@@ -986,7 +1030,7 @@ def beta_2d_plot(ordination,
         Grouping variable that will produce points with different sizes.
     style : str, optional
         Grouping variable that will produce points with different markers.
-    s : float, default: 80
+    s : float, default: 80.0
         Marker size.
     alpha : float, optional
         Proportional opacity of the points.
@@ -1012,6 +1056,9 @@ def beta_2d_plot(ordination,
     --------
     ordinate
     beta_3d_plot
+    beta_scree_plot
+    beta_parallel_plot
+    addbiplot
 
     Notes
     -----
@@ -1019,23 +1066,23 @@ def beta_2d_plot(ordination,
         CLI -> qiime diversity pcoa [OPTIONS]
         API -> from qiime2.plugins.diversity.methods import pcoa
     """
-    with tempfile.TemporaryDirectory() as t:
-        _parse_input(ordination, t)
+    if isinstance(pcoa_results, str):
+        _pcoa_results = Artifact.load(pcoa_results)
+    else:
+        _pcoa_results = pcoa_results
 
-        df1 = pd.read_table(f'{t}/ordination.txt', header=None, index_col=0,
-                            skiprows=[0, 1, 2, 3, 4, 5, 6, 7, 8],
-                            skipfooter=4, engine='python', usecols=[0, 1, 2])
+    ordination_results = _pcoa_results.view(OrdinationResults)
 
-        df1.columns = ['A1', 'A2']
+    df1 = ordination_results.samples.iloc[:, :2]
+    df1.columns = ['A1', 'A2']
 
-        if metadata is None:
-            df2 = df1
-        else:
-            mf = get_mf(metadata)
-            df2 = pd.concat([df1, mf], axis=1, join='inner')
+    if metadata is None:
+        df2 = df1
+    else:
+        mf = get_mf(metadata)
+        df2 = pd.concat([df1, mf], axis=1, join='inner')
 
-        with open(f'{t}/ordination.txt') as f:
-            v = [round(float(x) * 100, 2) for x in f.readlines()[4].split('\t')]
+    props = ordination_results.proportion_explained
 
     if ax is None:
         fig, ax = plt.subplots(figsize=figsize)
@@ -1056,8 +1103,8 @@ def beta_2d_plot(ordination,
     if artist_kwargs is None:
         artist_kwargs = {}
 
-    artist_kwargs = {'xlabel': f'Axis 1 ({v[0]} %)',
-                     'ylabel': f'Axis 2 ({v[1]} %)',
+    artist_kwargs = {'xlabel': f'Axis 1 ({props[0]*100:.2f} %)',
+                     'ylabel': f'Axis 2 ({props[1]*100:.2f} %)',
                      'hide_xticks': True,
                      'hide_yticks': True,
                      **artist_kwargs}
@@ -1075,8 +1122,8 @@ def beta_2d_plot(ordination,
 
 
 
-def beta_3d_plot(ordination,
-                 metadata,
+def beta_3d_plot(pcoa_results,
+                 metadata=None,
                  hue=None,
                  azim=-60,
                  elev=30,
@@ -1086,13 +1133,14 @@ def beta_3d_plot(ordination,
                  hue_order=None,
                  artist_kwargs=None):
     """
-    This method creates a 3D beta diversity plot.
+    This method creates a 3D scatter plot from PCoA results.
 
     Parameters
     ----------
-    ordination : str or qiime2.Artifact
-        Artifact file or object from the q2-diversity plugin.
-    metadata : str or qiime2.Metadata
+    pcoa_results : str or qiime2.Artifact
+        Artifact file or object corresponding to PCoAResults or
+        PCoAResults % Properties('biplot').
+    metadata : str or qiime2.Metadata, optional
         Metadata file or object.
     hue : str, optional
         Grouping variable that will produce points with different colors.
@@ -1100,7 +1148,7 @@ def beta_3d_plot(ordination,
         Elevation viewing angle.
     elev : int, default: 30
         Azimuthal viewing angle.
-    s : float, default: 80
+    s : float, default: 80.0
         Marker size.
     ax : matplotlib.axes.Axes, optional
         Axes object to draw the plot onto, otherwise uses the current Axes.
@@ -1120,6 +1168,9 @@ def beta_3d_plot(ordination,
     --------
     ordinate
     beta_2d_plot
+    beta_scree_plot
+    beta_parallel_plot
+    addbiplot
 
     Notes
     -----
@@ -1127,24 +1178,23 @@ def beta_3d_plot(ordination,
         CLI -> qiime diversity pcoa [OPTIONS]
         API -> from qiime2.plugins.diversity.methods import pcoa
     """
-    with tempfile.TemporaryDirectory() as t:
-        _parse_input(ordination, t)
+    if isinstance(pcoa_results, str):
+        _pcoa_results = Artifact.load(pcoa_results)
+    else:
+        _pcoa_results = pcoa_results
 
-        df = pd.read_table(f'{t}/ordination.txt',
-                           header=None,
-                           index_col=0,
-                           skiprows=[0, 1, 2, 3, 4, 5, 6, 7, 8],
-                           skipfooter=4,
-                           engine='python')
+    ordination_results = _pcoa_results.view(OrdinationResults)
 
-        df = df.sort_index()
+    df = ordination_results.samples.iloc[:, :3]
+    df.columns = ['A1', 'A2', 'A3']
 
+    props = ordination_results.proportion_explained
+
+    if metadata is None:
+        df = df
+    else:
         mf = get_mf(metadata)
-        mf = mf.sort_index()
-        mf = mf.assign(**{'sample-id': mf.index})
-
-        with open(f'{t}/ordination.txt') as f:
-            v = [round(float(x) * 100, 2) for x in f.readlines()[4].split('\t')]
+        df = pd.concat([df, mf], axis=1, join='inner')
 
     if ax is None:
         fig = plt.figure(figsize=figsize)
@@ -1152,37 +1202,203 @@ def beta_3d_plot(ordination,
 
     ax.view_init(azim=azim, elev=elev)
 
-    d = {'s': s}
-
     if hue is None:
-        ax.scatter(df.iloc[:, 0],
-                   df.iloc[:, 1],
-                   df.iloc[:, 2],
-                   **d)
+        ax.scatter(df['A1'], df['A2'], df['A3'], s=s)
     else:
         if hue_order is None:
-            levels = sorted(mf[hue].unique())
+            _hue_order = df[hue].unique()
         else:
-            levels = hue_order
-
-        for c in levels:
-            i = mf[hue] == c
-            df2 = df.loc[i]
-            ax.scatter(df2.iloc[:, 0],
-                       df2.iloc[:, 1],
-                       df2.iloc[:, 2],
-                       label=c,
-                       **d)
+            _hue_order = hue_order
+        for label in _hue_order:
+            a = df[df[hue] == label]
+            ax.scatter(a['A1'], a['A2'], a['A3'], label=label, s=s)
 
     if artist_kwargs is None:
         artist_kwargs = {}
 
-    artist_kwargs = {'xlabel': f'Axis 1 ({v[0]} %)',
-                     'ylabel': f'Axis 2 ({v[1]} %)',
-                     'zlabel': f'Axis 3 ({v[2]} %)',
+    artist_kwargs = {'xlabel': f'Axis 1 ({props[0]*100:.2f} %)',
+                     'ylabel': f'Axis 2 ({props[1]*100:.2f} %)',
+                     'zlabel': f'Axis 3 ({props[2]*100:.2f} %)',
                      'hide_xticks': True,
                      'hide_yticks': True,
                      'hide_zticks': True,
+                     **artist_kwargs}
+
+    ax = _artist(ax, **artist_kwargs)
+
+    return ax
+
+
+
+
+
+
+
+
+
+
+def beta_scree_plot(pcoa_results,
+                    count=5,
+                    ax=None,
+                    figsize=None,
+                    color='blue',
+                    artist_kwargs=None):
+    """
+    This method creates a scree plot from PCoA results.
+
+    Parameters
+    ----------
+    pcoa_results : str or qiime2.Artifact
+        Artifact file or object corresponding to PCoAResults.
+    count : int, default: 5
+        Number of principal components to be displayed.
+    ax : matplotlib.axes.Axes, optional
+        Axes object to draw the plot onto, otherwise uses the current Axes.
+    figsize : tuple, optional
+        Width, height in inches. Format: (float, float).
+    color : str, default: 'blue'
+        Bar color.
+    artist_kwargs : dict, optional
+        Keyword arguments passed down to the _artist() method.
+
+    Returns
+    -------
+    matplotlib.axes.Axes
+        Returns the Axes object with the plot drawn onto it.
+
+    See Also
+    --------
+    ordinate
+    beta_2d_plot
+    beta_3d_plot
+    beta_parallel_plot
+
+    Notes
+    -----
+    Example usage of the q2-diversity plugin:
+        CLI -> qiime diversity pcoa [OPTIONS]
+        API -> from qiime2.plugins.diversity.methods import pcoa
+    """
+    if isinstance(pcoa_results, str):
+        _pcoa_results = Artifact.load(pcoa_results)
+    else:
+        _pcoa_results = pcoa_results
+
+    ordination_results = _pcoa_results.view(OrdinationResults)
+    props = ordination_results.proportion_explained
+    df = pd.DataFrame({'PC': [f'Axis {x+1}' for x in range(len(props))],
+                       'Proportion': props * 100})
+    sliced_df = df.head(count)
+
+    if ax is None:
+        fig, ax = plt.subplots(figsize=figsize)
+
+    sns.barplot(x='PC', y='Proportion', data=sliced_df, color=color, ax=ax)
+
+    if artist_kwargs is None:
+        artist_kwargs = {}
+
+    artist_kwargs = {'xlabel': '',
+                     'ylabel': 'Variation explained (%)',
+                     **artist_kwargs}
+
+    ax = _artist(ax, **artist_kwargs)
+
+    return ax
+
+
+
+
+
+
+
+
+
+
+def beta_parallel_plot(pcoa_results,
+                       hue=None,
+                       hue_order=None,
+                       metadata=None,
+                       count=5,
+                       ax=None,
+                       figsize=None,
+                       artist_kwargs=None):
+    """
+    This method creates a parallel plot from PCoA results.
+
+    Parameters
+    ----------
+    pcoa_results : str or qiime2.Artifact
+        Artifact file or object corresponding to PCoAResults.
+    hue : str, optional
+        Grouping variable that will produce lines with different colors.
+    hue_order : list, optional
+        Specify the order of categorical levels of the 'hue' semantic.
+    metadata : str or qiime2.Metadata, optional
+        Metadata file or object. Required if 'hue' is used.
+    count : int, default: 5
+        Number of principal components to be displayed.
+    ax : matplotlib.axes.Axes, optional
+        Axes object to draw the plot onto, otherwise uses the current Axes.
+    figsize : tuple, optional
+        Width, height in inches. Format: (float, float).
+    artist_kwargs : dict, optional
+        Keyword arguments passed down to the _artist() method.
+
+    Returns
+    -------
+    matplotlib.axes.Axes
+        Returns the Axes object with the plot drawn onto it.
+
+    See Also
+    --------
+    ordinate
+    beta_2d_plot
+    beta_3d_plot
+    beta_scree_plot
+
+    Notes
+    -----
+    Example usage of the q2-diversity plugin:
+        CLI -> qiime diversity pcoa [OPTIONS]
+        API -> from qiime2.plugins.diversity.methods import pcoa
+    """
+    if isinstance(pcoa_results, str):
+        _pcoa_results = Artifact.load(pcoa_results)
+    else:
+        _pcoa_results = pcoa_results
+
+    ordination_results = _pcoa_results.view(OrdinationResults)
+
+    props = ordination_results.proportion_explained * 100
+    props = [f'Axis {i+1} ({x:.2f}%)' for i, x in enumerate(props[:count])]
+
+    df = ordination_results.samples.copy().iloc[:, :count]
+
+    if hue is None:
+        col = df.index
+    else:
+        mf = get_mf(metadata)
+        col = mf[hue]
+
+    df = df.assign(Target=col)
+
+    if isinstance(hue_order, list):
+        d = {x:i for i, x in enumerate(hue_order)}
+        df = df.iloc[df['Target'].map(d).argsort()]
+
+    if ax is None:
+        fig, ax = plt.subplots(figsize=figsize)
+
+    pd.plotting.parallel_coordinates(df, 'Target',
+        color=plt.cm.get_cmap('tab10').colors)
+
+    if artist_kwargs is None:
+        artist_kwargs = {}
+
+    artist_kwargs = {'xlabel': '',
+                     'ylabel': '',
+                     'xticklabels': props,
                      **artist_kwargs}
 
     ax = _artist(ax, **artist_kwargs)
@@ -1764,7 +1980,7 @@ def ancom_volcano_plot(ancom,
         Axes object to draw the plot onto, otherwise uses the current Axes.
     figsize : tuple, optional
         Width, height in inches. Format: (float, float).
-    s : float, default: 80
+    s : float, default: 80.0
         Marker size.
     artist_kwargs : dict, optional
         Keyword arguments passed down to the _artist() method.
@@ -1938,3 +2154,283 @@ def addpairs(taxon,
         ax.plot([x1[i],x2[i]], [y1[i], y2[i]])
 
     return ax
+
+
+
+
+
+
+
+
+
+
+def addbiplot(pcoa_results,
+              taxonomy=None,
+              dim=2,
+              scale=1.0,
+              count=5,
+              fontsize=None,
+              name_type='feature',
+              level=None,
+              ax=None,
+              figsize=None):
+    """
+    This methods adds arrows (i.e. features) to a PCoA scatter plot (both 2D
+    and 3D).
+
+    Parameters
+    ----------
+    pcoa_results : str or qiime2.Artifact
+        Artifact file or object corresponding to
+        PCoAResults % Properties('biplot').
+    taxonomy : str or qiime2.Artifact
+        Artifact file or object corresponding to FeatureData[Taxonomy].
+        Required if `name_type='taxon'` or `name_type='confidence'.
+    dim : [2, 3], default: 2
+        Dimension of the input scatter plot.
+    scale : float, default: 1.0
+        Scale for arrow length.
+    count : int, default: 5
+        Number of important features to be displayed.
+    fontsize : float or str, optional
+        Sets font size.
+    name_type : ['feature', 'taxon', 'confidence'], default: 'feature'
+        Determines the type of names displayed. Using 'taxon' and 'confidence'
+        requires taxonomy.
+    level : int, optional
+        Taxonomic rank to be displayed. Only use with `name_type='taxon'`.
+    ax : matplotlib.axes.Axes, optional
+        Axes object to draw the plot onto, otherwise uses the current Axes.
+    figsize : tuple, optional
+        Width, height in inches. Format: (float, float).
+
+    Returns
+    -------
+    matplotlib.axes.Axes
+        Returns the Axes object with the plot drawn onto it.
+
+    See Also
+    --------
+    ordinate
+    beta_2d_plot
+    beta_3d_plot
+    """
+    if isinstance(pcoa_results, str):
+        _pcoa_results = Artifact.load(pcoa_results)
+    else:
+        _pcoa_results = pcoa_results
+
+    ordination_results = _pcoa_results.view(OrdinationResults)
+
+    feats = ordination_results.features.copy()
+    origin = np.zeros_like(feats.columns)
+    feats['importance'] = feats.apply(euclidean, axis=1, args=(origin,))
+    feats.sort_values('importance', inplace=True, ascending=False)
+    feats.drop(['importance'], inplace=True, axis=1)
+    feats = feats[:count]
+
+    if taxonomy is not None:
+        if isinstance(taxonomy, str):
+            _taxonomy = Artifact.load(taxonomy)
+        else:
+            _taxonomy = taxonomy
+        tax_df = _taxonomy.view(pd.DataFrame)
+        feats = pd.concat([feats, tax_df], axis=1, join='inner')
+
+    def f(s):
+        ranks = list(s.split(';'))
+        if level is None:
+            return s
+        else:
+            return ranks[level-1]
+
+    if name_type == 'feature':
+        names = feats.index
+    elif name_type == 'taxon':
+        names = [f(x) for x in feats['Taxon']]
+    else:
+        names = feats['Confidence']
+
+    if ax is None:
+        if dim == 2:
+            fig, ax = plt.subplots(figsize=figsize)
+        else:
+            fig = plt.figure(figsize=figsize)
+            ax = fig.add_subplot(1, 1, 1, projection='3d')
+
+    for i in range(len(feats)):
+        x = feats.iloc[i, 0]*scale
+        y = feats.iloc[i, 1]*scale
+        z = feats.iloc[i, 2]*scale
+
+        a = [[0, x], [0, y]]
+        b = [x, y]
+
+        if dim == 3:
+            a.append([0, z])
+            b.append(z)
+
+        ax.plot(*a, color='black')
+        ax.text(*b, names[i], ha='center', fontsize=fontsize)
+
+    return ax
+
+
+
+
+
+
+
+
+
+
+def barplot(barplot_file,
+            group,
+            axis=0,
+            figsize=(10, 10),
+            level=1,
+            count=0,
+            items=None,
+            by=None,
+            label_columns=None,
+            metadata=None,
+            artist_kwargs=None,
+            ylabel_fontsize=None,
+            xaxis_repeated=False):
+    """
+    This method creates a grouped abundance bar plot.
+
+    Under the hood, this method essentially wraps the
+    `taxa_abundance_bar_plot` method.
+
+    Parameters
+    ----------
+    barplot_file : str or qiime2.Visualization
+        Visualization file or object from the q2-taxa plugin.
+    group : str
+        Metadata column.
+    axis : int, default : 0
+        By default, charts will be stacked vertically. Use 1 for horizontal
+        stacking.
+    figsize : tuple, default: (10, 10)
+        Width, height in inches. Format: (float, float).
+    level : int, default: 1
+        Taxonomic level at which the features should be collapsed.
+    count : int, default: 0
+        The number of taxa to display. When 0, display all.
+    items : list, optional
+        Specify the order of charts.
+    by : list, optional
+        Column name(s) to be used for sorting the samples. Using 'index' will
+        sort the samples by their name, in addition to other column name(s)
+        that may have been provided. If multiple items are provided, sorting
+        will occur by the order of the items.
+    label_columns : list, optional
+        The column names to be used as the x-axis labels.
+    metadata : str or qiime2.Metadata, optional
+        Metadata file or object.
+    artist_kwargs : dict, optional
+        Keyword arguments passed down to the _artist() method.
+    ylabel_fontsize : float or str, optional
+        Sets the y-axis label font size.
+    xaxis_repeated : bool, default: False
+        If true, remove all x-axis tick labels except for the bottom subplot.
+        Ignored if `axis=1`.
+
+    See Also
+    --------
+    taxa_abundance_bar_plot
+    """
+    with tempfile.TemporaryDirectory() as t:
+        vis = Visualization.load(barplot_file)
+        vis.export_data(t)
+        df = pd.read_csv(f'{t}/level-1.csv', index_col=0)
+
+    if metadata is not None:
+        mf = get_mf(metadata)
+        cols = _get_mf_cols(df)
+        df.drop(columns=cols, inplace=True)
+        df = pd.concat([df, mf], axis=1, join='inner')
+
+    if items is None:
+        _items = df[group].unique()
+    else:
+        _items = items
+
+    if axis == 0:
+        args = [len(_items), 3]
+        gridspec_kw = dict(width_ratios=[0.01, 1, 0.01])
+    else:
+        args = [1, len(_items)+2]
+        gridspec_kw=dict(width_ratios=[0.01]+[1 for x in _items]+[0.01])
+
+    fig, axes = plt.subplots(*args, figsize=figsize, gridspec_kw=gridspec_kw)
+
+    if artist_kwargs is None:
+        artist_kwargs = {}
+
+    _artist_kwargs = {'hide_ytexts': True, **artist_kwargs}
+
+    plot_kwargs = dict(sort_by_mean2=False,
+                       level=level,
+                       count=count,
+                       by=by,
+                       label_columns=label_columns,
+                       metadata=metadata)
+
+    if axis == 0:
+        if xaxis_repeated:
+            hide_xtexts = [True for x in range(len(axes[:, 1]))]
+            hide_xtexts[-1] = False
+        else:
+            hide_xtexts = [False for x in range(len(axes[:, 1]))]
+
+        for i, ax in enumerate(axes[:, 1]):
+            taxa_abundance_bar_plot(barplot_file,
+                                    ax=ax,
+                                    include_samples={group: [_items[i]]},
+                                    artist_kwargs={'title': _items[i],
+                                                   'hide_xtexts': hide_xtexts[i],
+                                                   **_artist_kwargs},
+                                    **plot_kwargs)
+
+    else:
+        for i, ax in enumerate(axes[1:-1]):
+            taxa_abundance_bar_plot(barplot_file,
+                                    ax=ax,
+                                    include_samples={group: [_items[i]]},
+                                    artist_kwargs={'title': _items[i], **_artist_kwargs},
+                                    **plot_kwargs)
+
+    # Add the shared y-axis label.
+    if axis == 0:
+        gs = axes[0, 0].get_gridspec()
+        for ax in axes[:, 0]:
+            ax.remove()
+        axbig = fig.add_subplot(gs[:, 0])
+    else:
+        axbig = axes[0]
+    axbig.set_ylabel('Relative abundance (%)', fontsize=ylabel_fontsize)
+    axbig.xaxis.set_visible(False)
+    plt.setp(axbig.spines.values(), visible=False)
+    axbig.tick_params(left=False, labelleft=False)
+    axbig.patch.set_visible(False)
+
+    # Add the shared legend.
+    if axis == 0:
+        gs = axes[0, -1].get_gridspec()
+        for ax in axes[:, -1]:
+            ax.remove()
+        axbig = fig.add_subplot(gs[:, -1])
+    else:
+        axbig = axes[-1]
+
+    taxa_abundance_bar_plot(barplot_file,
+                            ax=axbig,
+                            artist_kwargs={'legend_only': True,
+                                           'legend_loc': 'center left',
+                                           'legend_short': True,
+                                           **_artist_kwargs},
+                            **plot_kwargs)
+
+    plt.tight_layout()

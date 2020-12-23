@@ -1,5 +1,19 @@
 # Changelog
 
+## 1.3.0
+
+* Updated the `ordinate()` method so that the user can now choose to:
+    * skip rarefying,
+    * provide custom sampling depth for rarefying,
+    * provide `qiime2.Artifact` as input instead of file path, and
+    * output `PCoAResults % Properties('biplot')` as well as `PCoAResults`.
+* Added new plotting methods:
+    * `beta_scree_plot()`
+    * `beta_parallel_plot()`
+    * `addbiplot()`
+    * `barplot()`
+* See [#2](https://github.com/sbslee/dokdo/issues/1) for more details.
+
 ## 1.2.0
 
 * The `tax2seq` command has been deprecated.
