@@ -165,6 +165,14 @@ def _artist(ax,
             xticklabels_fontsize=None,
             yticklabels=None,
             yticklabels_fontsize=None,
+            xrot=None,
+            xha=None,
+            xmin=None,
+            xmax=None,
+            ymin=None,
+            ymax=None,
+            xlog=False,
+            ylog=False,
             hide_xtexts=False,
             hide_ytexts=False,
             hide_ztexts=False,
@@ -177,14 +185,6 @@ def _artist(ax,
             hide_xticklabels=False,
             hide_yticklabels=False,
             hide_zticklabels=False,
-            xrot=None,
-            xha=None,
-            xmin=None,
-            xmax=None,
-            ymin=None,
-            ymax=None,
-            xlog=False,
-            ylog=False,
             show_legend=False,
             legend_loc='best',
             legend_ncol=1,
@@ -229,6 +229,22 @@ def _artist(ax,
         Tick labels for the y-axis.
     yticklabels_fontsize : float or str, optional
         Font size for the y-axis tick labels.
+    xrot : float, optional
+        Rotation degree of tick labels for the x-axis.
+    xha : str, optional
+        Horizontal alignment of tick labels for the x-axis.
+    xmin : float, optional
+        Minimum value for the x-axis.
+    xmax : float, optional
+        Maximum value for the x-axis.
+    ymin : float, optional
+        Minimum value for the y-axis.
+    ymax : float, optional
+        Maximum value for the x-axis.
+    xlog : bool, default: False
+        Draw the x-axis in log scale.
+    ylog : bool, default: False
+        Draw the y-axis in log scale.
     hide_xtexts : bool, default: False
         Hides all the x-axis texts.
     hide_ytexts : bool, default: False
@@ -253,22 +269,6 @@ def _artist(ax,
         Hides tick labels for the y-axis.
     hide_zticklabels : bool, default: False
         Hides tick labels for the z-axis.
-    xrot : float, optional
-        Rotation degree of tick labels for the x-axis.
-    xha : str, optional
-        Horizontal alignment of tick labels for the x-axis.
-    xmin : float, optional
-        Minimum value for the x-axis.
-    xmax : float, optional
-        Maximum value for the x-axis.
-    ymin : float, optional
-        Minimum value for the y-axis.
-    ymax : float, optional
-        Maximum value for the x-axis.
-    xlog : bool, default: False
-        Draw the x-axis in log scale.
-    ylog : bool, default: False
-        Draw the y-axis in log scale.
     show_legend : bool, default: False
         Show the figure legend.
     legend_loc : str, default: 'best'
@@ -330,6 +330,21 @@ def _artist(ax,
     if yticklabels_fontsize is not None:
         ax.tick_params(axis='y', which='major', labelsize=yticklabels_fontsize)
 
+    if isinstance(xrot, numbers.Number):
+        ax.set_xticklabels(ax.get_xticklabels(), rotation=xrot)
+
+    if isinstance(xha, str):
+        ax.set_xticklabels(ax.get_xticklabels(), ha=xha)
+
+    ax.set_xlim(left=xmin, right=xmax)
+    ax.set_ylim(bottom=ymin, top=ymax)
+
+    if xlog:
+        ax.set_xscale('log')
+
+    if ylog:
+        ax.set_yscale('log')
+
     if hide_xtexts:
         ax.set_xlabel('')
         ax.set_xticklabels([])
@@ -365,21 +380,6 @@ def _artist(ax,
 
     if hide_yticklabels:
         ax.set_yticklabels([])
-
-    if isinstance(xrot, numbers.Number):
-        ax.set_xticklabels(ax.get_xticklabels(), rotation=xrot)
-
-    if isinstance(xha, str):
-        ax.set_xticklabels(ax.get_xticklabels(), ha=xha)
-
-    ax.set_xlim(left=xmin, right=xmax)
-    ax.set_ylim(bottom=ymin, top=ymax)
-
-    if xlog:
-        ax.set_xscale('log')
-
-    if ylog:
-        ax.set_yscale('log')
 
     # Control the figure legend.
     h, l = ax.get_legend_handles_labels()
