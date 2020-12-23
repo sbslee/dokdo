@@ -37,7 +37,7 @@ def make_manifest(fastq_dir,
 
     for r, d, f in os.walk(fastq_dir):
         for x in f:
-            name = x.split('_')[0]
+            name = '_'.join(x.split('_')[:-3])
 
             if '_R1_001.fastq' in x:
                 if name not in files:
@@ -51,7 +51,7 @@ def make_manifest(fastq_dir,
                 pass
 
     with open(output, 'w') as f:
-        headers = ['sample-id', 'forward-absolute-filepath', 
+        headers = ['sample-id', 'forward-absolute-filepath',
                    'reverse-absolute-filepath']
         f.write('\t'.join(headers) + '\n')
 
@@ -179,8 +179,12 @@ def main():
         description=("This command creates a manifest file from a directory "
                      "containing FASTQ files. The file names must include "
                      "either '_R1_001.fastq' or '_R1_002.fastq'. The word "
-                     "before the first underscore will be set as the sample "
-                     "ID (e.g. 'EXAMPLE' in EXAMPLE_S1_R1_001.fastq.gz)."),
+                     "before the third-to-last underscore will be set as the "
+                     "sample ID. For example, a file named "
+                     "'EXAMPLE_S1_R1_001.fastq.gz' will produce 'EXAMPLE' as "
+                     "the sample ID and 'EXAM_PLE_S1_R1_001.fastq.gz', "
+                     "'EXAM_PLE'."),
+
         help=("This command creates a manifest file from a directory "
               "containing FASTQ files."),
     )
