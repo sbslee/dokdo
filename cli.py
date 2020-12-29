@@ -123,12 +123,34 @@ def merge_metadata(metadata,
 
 
 
+def summarize(input):
+    table = Artifact.load(input)
+    df = table.view(pd.DataFrame)
+    quantiles = [0, 0.25, 0.5, 0.75, 1]
+    print('Number of samples:', df.shape[0])
+    print('Number of features:', df.shape[1])
+    print('Total frequency:', df.values.sum())
+    print('Frequency per sample:')
+    print(df.sum(axis=1).quantile(quantiles).to_string())
+    print('Frequency per feature:')
+    print(df.sum(axis=0).quantile(quantiles).to_string())
+
+
+
+
+
+
+
+
+
+
 def main():
     commands = {
         'collapse': collapse,
         'make_manifest': make_manifest,
         'add_metadata': add_metadata,
         'merge_metadata': merge_metadata,
+        'summarize': summarize,
     }
 
     parser = argparse.ArgumentParser()
@@ -221,7 +243,7 @@ def main():
     )
     add_metadata_parser.add_argument(
         'columns',
-        help=("Path to a file containing the new columns to be added (.tsv). "
+        help=("Path to a file containing the new columns to be added (.tsv)."
               "The first row should be column names.")
     )
     add_metadata_parser.add_argument(
@@ -249,11 +271,32 @@ def main():
     merge_metadata_parser.add_argument(
         'metadata',
         nargs='+',
-        help="Paths to the sample-metadata.tsv files to be merged. ",
+        help="Paths to the sample-metadata.tsv files to be merged.",
     )
     merge_metadata_parser.add_argument(
         'output',
         help="Path to the output sample-metadata.tsv file.",
+    )
+
+
+
+
+
+
+
+
+
+
+    summarize_parser = subparsers.add_parser(
+        'summarize',
+        description=("This command extracts summary statistics from an "
+                     "Artifact file with the semantic type "
+                     "`FeatureTable[Frequency]`."),
+        help=("This command extracts summary statistics for an Artifact file."),
+    )
+    summarize_parser.add_argument(
+        'input',
+        help="Path to the input Artifact file.",
     )
 
 
