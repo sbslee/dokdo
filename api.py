@@ -843,6 +843,8 @@ def alpha_rarefaction_plot(rarefaction,
                            ax=None,
                            figsize=None,
                            hue_order=None,
+                           units=None,
+                           estimator='mean',
                            artist_kwargs=None):
     """
     This method creates an alpha rarefaction plot.
@@ -852,7 +854,8 @@ def alpha_rarefaction_plot(rarefaction,
     rarefaction : str or qiime2.Visualization
         Visualization file or object from the q2-diversity plugin.
     hue : str, default: 'sample-id'
-        Grouping variable that will produce lines with different colors.
+        Grouping variable that will produce lines with different colors. If not
+        provided, sample IDs will be used.
     metric : str, default: 'shannon'
         Diversity metric ('shannon', 'observed_features', or 'faith_pd').
     ax : matplotlib.axes.Axes, optional
@@ -861,6 +864,13 @@ def alpha_rarefaction_plot(rarefaction,
         Width, height in inches. Format: (float, float).
     hue_order : list, optional
         Specify the order of categorical levels of the 'hue' semantic.
+    units : str, optional
+        Grouping variable identifying sampling units. When used, a separate
+        line will be drawn for each unit with appropriate semantics, but no
+        legend entry will be added.
+    estimator : str, default: 'mean', optional
+        Method for aggregating across multiple observations of the y variable
+        at the same x level. If None, all observations will be drawn.
     artist_kwargs : dict, optional
         Keyword arguments passed down to the _artist() method.
 
@@ -902,6 +912,8 @@ def alpha_rarefaction_plot(rarefaction,
                  ax=ax,
                  err_style='bars',
                  sort=False,
+                 units=units,
+                 estimator=estimator,
                  hue_order=hue_order)
 
     if artist_kwargs is None:
