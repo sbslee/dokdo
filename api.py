@@ -193,7 +193,8 @@ def _artist(ax,
             remove_duplicates=False,
             legend_only=False,
             legend_fontsize=None,
-            legend_markerscale=None):
+            legend_markerscale=None,
+            legend_lw=None):
     """
     This method controls various properties of a figure.
 
@@ -281,6 +282,8 @@ def _artist(ax,
         Sets the legend font size.
     legend_markerscale : float, optional
         Relative size of legend markers compared with the original.
+    legend_lw : float, optional
+        Width of the lines in the legend.
 
     Returns
     -------
@@ -402,11 +405,20 @@ def _artist(ax,
 
     if legend_only:
         ax.clear()
-        ax.legend(h, l, loc=legend_loc, ncol=legend_ncol, fontsize=legend_fontsize, markerscale=legend_markerscale)
+        leg = ax.legend(h, l, loc=legend_loc, ncol=legend_ncol, fontsize=legend_fontsize, markerscale=legend_markerscale)
+
+        if legend_lw is not None:
+            for lh in leg.legendHandles[1:]:
+                lh.set_linewidth(legend_lw)
+
         ax.axis('off')
     elif show_legend:
         if h:
-            ax.legend(h, l, loc=legend_loc, ncol=legend_ncol, fontsize=legend_fontsize, markerscale=legend_markerscale)
+            leg = ax.legend(h, l, loc=legend_loc, ncol=legend_ncol, fontsize=legend_fontsize, markerscale=legend_markerscale)
+
+            if legend_lw is not None:
+                for lh in leg.legendHandles[1:]:
+                    lh.set_linewidth(legend_lw)
         else:
             warnings.warn("No handles with labels found to put in legend.")
     else:
