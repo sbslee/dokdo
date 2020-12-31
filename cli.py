@@ -95,6 +95,10 @@ def add_metadata(metadata,
                    "whether this was intended.")
         warnings.warn(message)
 
+    if mf3.isnull().values.any():
+        warnings.warn("Final metadata contains NaN. Please double check "
+                      "whether this was intended.")
+
     Metadata(mf3).save(output)
 
 
