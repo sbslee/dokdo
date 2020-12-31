@@ -84,6 +84,7 @@ def add_metadata(metadata,
                 mf2[k] = mf2[k].astype(v)
 
     mf3 = mf1.reset_index().merge(mf2).set_index(index_name)
+    mf3 = mf3.reindex(mf1.index)
 
     a = mf1.shape[0]
     b = mf3.shape[0]
