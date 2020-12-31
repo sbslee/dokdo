@@ -12,7 +12,7 @@
     * `beta_parallel_plot()`
     * `addbiplot()`
     * `barplot()`
-* See [#2](https://github.com/sbslee/dokdo/issues/1) for more details.
+* See [#2](https://github.com/sbslee/dokdo/issues/2) for more details.
 
 ## 1.2.0
 
