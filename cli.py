@@ -139,6 +139,10 @@ def summarize(input):
     print(df.sum(axis=1).quantile(quantiles).to_string())
     print('Frequency per feature:')
     print(df.sum(axis=0).quantile(quantiles).to_string())
+    print('Samples:')
+    print(' '.join(df.index.to_list()))
+    print('Features:')
+    print(' '.join(df.columns))
 
 
 
