@@ -407,8 +407,13 @@ def _artist(ax,
         ax.clear()
         leg = ax.legend(h, l, loc=legend_loc, ncol=legend_ncol, fontsize=legend_fontsize, markerscale=legend_markerscale)
 
+        if leg.get_title().get_text() is '':
+            i = 0
+        else:
+            i = 1
+
         if legend_lw is not None:
-            for lh in leg.legendHandles[1:]:
+            for lh in leg.legendHandles[i:]:
                 lh.set_linewidth(legend_lw)
 
         ax.axis('off')
@@ -416,8 +421,13 @@ def _artist(ax,
         if h:
             leg = ax.legend(h, l, loc=legend_loc, ncol=legend_ncol, fontsize=legend_fontsize, markerscale=legend_markerscale)
 
+            if leg.get_title().get_text() is '':
+                i = 0
+            else:
+                i = 1
+
             if legend_lw is not None:
-                for lh in leg.legendHandles[1:]:
+                for lh in leg.legendHandles[i:]:
                     lh.set_linewidth(legend_lw)
         else:
             warnings.warn("No handles with labels found to put in legend.")
