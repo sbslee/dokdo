@@ -128,7 +128,7 @@ def merge_metadata(metadata,
 
 
 
-def summarize(input):
+def summarize(input, verbose):
     table = Artifact.load(input)
     df = table.view(pd.DataFrame)
     quantiles = [0, 0.25, 0.5, 0.75, 1]
@@ -139,10 +139,11 @@ def summarize(input):
     print(df.sum(axis=1).quantile(quantiles).to_string())
     print('Frequency per feature:')
     print(df.sum(axis=0).quantile(quantiles).to_string())
-    print('Samples:')
-    print(' '.join(df.index.to_list()))
-    print('Features:')
-    print(' '.join(df.columns))
+    if verbose:
+        print('Samples:')
+        print(' '.join(df.index.to_list()))
+        print('Features:')
+        print(' '.join(df.columns))
 
 
 
@@ -307,7 +308,10 @@ def main():
         'input',
         help="Path to the input Artifact file.",
     )
-
+    summarize_parser.add_argument(
+        '-v', '--verbose', action='store_true',
+        help="Print a verbose version of the results.",
+    )
 
 
 
