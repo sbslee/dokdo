@@ -15,12 +15,15 @@ from qiime2.plugins import taxa
 # -- Public commands ---------------------------------------------------------
 
 def collapse(table,
-             taxonomy):
+             taxonomy,
+             output_dir):
+    _output_dir = '.' if output_dir is None else output_dir
     for i in range(1, 8):
         _ = taxa.methods.collapse(table=Artifact.load(table),
                                   taxonomy=Artifact.load(taxonomy),
                                   level=i)
-        _.collapsed_table.view(pd.DataFrame).T.to_csv(f'level-{i}.csv')
+        _.collapsed_table.view(pd.DataFrame).T.to_csv(
+            f'{_output_dir}/level-{i}.csv')
 
 
 
@@ -182,9 +185,8 @@ def main():
     collapse_parser = subparsers.add_parser(
         'collapse',
         description=("This command creates seven collapsed ASV tables, one "
-                     "for each taxonomic level. The ouput files (level-1.csv "
-                     "through level-7.csv) will be created in the current "
-                     "directory."),
+                     "for each taxonomic level (i.e. `level-1.csv` to "
+                     "`level-7.csv`)."),
         help=("This command creates seven collapsed ASV tables, one for each "
               "taxonomic level."),
     )
@@ -196,7 +198,10 @@ def main():
         'taxonomy',
         help="Path to the input taxonomy.qza file."
     )
-
+    collapse_parser.add_argument(
+        '--output_dir',
+        help="Output directory. By default, output to the current directory."
+    )
 
 
 
