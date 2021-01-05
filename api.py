@@ -10,6 +10,7 @@ import pandas as pd
 import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
+from matplotlib.patches import Patch
 import seaborn as sns
 import skbio as sb
 from skbio.stats.ordination import OrdinationResults
@@ -600,7 +601,6 @@ def ordinate(table,
     -----
     The resulting Artifact object can be directly used for plotting.
     """
-    # Parse the feature table.
     if isinstance(table, qiime2.Artifact):
         table = table
     elif isinstance(table, str):
@@ -2468,3 +2468,88 @@ def barplot(barplot_file,
                             **plot_kwargs)
 
     plt.tight_layout()
+
+
+
+
+
+
+
+
+
+
+def heatmap(table,
+            metadata=None,
+            where=None,
+            normalize=True,
+            method='average',
+            metric='euclidean',
+            figsize=(10, 10),
+            row_cluster=True,
+            col_cluster=True):
+    """
+    Parameters
+    ----------
+    table : str or qiime2.Artifact
+        Artifact file or object corresponding to FeatureTable[Frequency].
+    metadata : str or qiime2.Metadata, optional
+        Metadata file or object.
+    where : str, optional
+        SQLite WHERE clause specifying sample metadata criteria.
+    normalize : bool, default: True
+        Normalize the feature table by adding a psuedocount of 1 and then
+        taking the log10 of the table.
+    method : str, default: 'average'
+        Linkage method to use for calculating clusters. See
+        `scipy.cluster.hierarchy.linkage()` documentation for more information.
+    metric : str, default: 'euclidean'
+        Distance metric to use for the data. See
+        `scipy.spatial.distance.pdist()` documentation for more options.
+    figsize : tuple, default: (10, 10)
+        Width, height in inches. Format: (float, float).
+    row_cluster : bool, default: True
+        If True, cluster the rows.
+    col_cluster : bool, default: True
+        If True, cluster the columns.
+
+    Returns
+    -------
+    seaborn.matrix.ClusterGrid
+        A ClusterGrid instance.
+    """
+    if isinstance(table, qiime2.Artifact):
+        table = table
+    elif isinstance(table, str):
+        table = Artifact.load(table)
+    else:
+        raise TypeError(f"Incorrect feature table type: {type(table)}")
+
+    colors = plt.cm.get_cmap('Accent').colors
+    row_colors = None
+    lut = None
+    if metadata is not None:
+        mf = get_mf(metadata)
+        if where is not None:
+            a = mf[where].unique()
+            lut = dict(zip(a, colors[:len(a)]))
+            row_colors = mf[where].map(lut)
+
+    df = table.view(pd.DataFrame)
+
+    if normalize:
+        df = df.apply(lambda x: np.log10(x + 1))
+
+    g = sns.clustermap(df,
+                       method=method,
+                       metric=metric,
+                       figsize=figsize,
+                       row_cluster=row_cluster,
+                       col_cluster=col_cluster,
+                       row_colors=row_colors)
+
+    if lut is not None:
+        handles = [Patch(facecolor=lut[name]) for name in lut]
+        plt.legend(handles, lut, title=where,
+                   bbox_to_anchor=(1, 1), bbox_transform=plt.gcf().transFigure, loc='upper right')
+
+    return g
