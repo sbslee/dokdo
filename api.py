@@ -2486,8 +2486,11 @@ def heatmap(table,
             metric='euclidean',
             figsize=(10, 10),
             row_cluster=True,
-            col_cluster=True):
+            col_cluster=True,
+            cmap_name='Accent'):
     """
+    This method creates a heatmap representation of a feature table.
+
     Parameters
     ----------
     table : str or qiime2.Artifact
@@ -2511,6 +2514,8 @@ def heatmap(table,
         If True, cluster the rows.
     col_cluster : bool, default: True
         If True, cluster the columns.
+    cmap_name : str, default: 'Accent'
+        Name of the colormap passed to `matplotlib.cm.get_cmap()`.
 
     Returns
     -------
@@ -2524,20 +2529,24 @@ def heatmap(table,
     else:
         raise TypeError(f"Incorrect feature table type: {type(table)}")
 
-    colors = plt.cm.get_cmap('Accent').colors
-    row_colors = None
-    lut = None
-    if metadata is not None:
-        mf = get_mf(metadata)
-        if where is not None:
-            a = mf[where].unique()
-            lut = dict(zip(a, colors[:len(a)]))
-            row_colors = mf[where].map(lut)
-
     df = table.view(pd.DataFrame)
 
     if normalize:
         df = df.apply(lambda x: np.log10(x + 1))
+
+    if metadata is not None and where is not None:
+        colors = plt.cm.get_cmap(cmap_name).colors
+        mf = get_mf(metadata)
+        df = pd.concat([df, mf], axis=1, join='inner')
+        keys = df[where].unique()
+        lut = dict(zip(keys, colors[:len(keys)]))
+        row_colors = df[where].map(lut)
+        df.drop(mf.columns, axis=1, inplace=True)
+    elif metadata is None and where is not None:
+        raise ValueError("Argument 'where' requires 'metadata' argument")
+    else:
+        lut = None
+        row_colors = None
 
     g = sns.clustermap(df,
                        method=method,
