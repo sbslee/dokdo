@@ -1556,6 +1556,7 @@ def taxa_abundance_bar_plot(taxa,
                             sort_by_mean2=True,
                             sort_by_mean3=True,
                             show_others=True,
+                            cmap_name='Accent',
                             artist_kwargs=None):
     """
     This method creates a taxa abundance plot.
@@ -1619,6 +1620,8 @@ def taxa_abundance_bar_plot(taxa,
         'sample_names'.
     show_others : bool, default: True
         Include the 'Others' category.
+    cmap_name : str, default: 'Accent'
+        Name of the colormap passed to `matplotlib.cm.get_cmap()`.
     artist_kwargs : dict, optional
         Keyword arguments passed down to the _artist() method.
 
@@ -1728,7 +1731,7 @@ def taxa_abundance_bar_plot(taxa,
     if isinstance(colors, list):
         c = colors
     else:
-        c = plt.cm.get_cmap('Accent').colors
+        c = plt.cm.get_cmap(cmap_name).colors
 
     df = df * 100
 
