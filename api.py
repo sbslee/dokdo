@@ -195,7 +195,8 @@ def _artist(ax,
             legend_only=False,
             legend_fontsize=None,
             legend_markerscale=None,
-            legend_lw=None):
+            legend_lw=None,
+            plot_method=None):
     """
     This method controls various properties of a figure.
 
@@ -285,6 +286,9 @@ def _artist(ax,
         Relative size of legend markers compared with the original.
     legend_lw : float, optional
         Width of the lines in the legend.
+    plot_method : str, optional
+        Name of the plotting method. This argument is internally used for
+        the `alpha_rarefaction_plot` method. Not to be used by users.
 
     Returns
     -------
@@ -404,11 +408,13 @@ def _artist(ax,
             n = int(len(h) / 2)
             h, l = h[:n], l[:n]
 
-    if legend_only:
-        ax.clear()
-        leg = ax.legend(h, l, loc=legend_loc, ncol=legend_ncol, fontsize=legend_fontsize, markerscale=legend_markerscale)
+    def _display_legend():
+        leg = ax.legend(h, l, loc=legend_loc, ncol=legend_ncol,
+            fontsize=legend_fontsize, markerscale=legend_markerscale)
 
-        if leg.get_title().get_text() is '':
+        if plot_method == 'alpha_rarefaction_plot':
+            i = 1
+        elif leg.get_title().get_text() is '':
             i = 0
         else:
             i = 1
@@ -417,19 +423,14 @@ def _artist(ax,
             for lh in leg.legendHandles[i:]:
                 lh.set_linewidth(legend_lw)
 
+    if legend_only:
+        # The order matters.
+        ax.clear()
+        _display_legend()
         ax.axis('off')
     elif show_legend:
         if h:
-            leg = ax.legend(h, l, loc=legend_loc, ncol=legend_ncol, fontsize=legend_fontsize, markerscale=legend_markerscale)
-
-            if leg.get_title().get_text() is '':
-                i = 0
-            else:
-                i = 1
-
-            if legend_lw is not None:
-                for lh in leg.legendHandles[i:]:
-                    lh.set_linewidth(legend_lw)
+            _display_legend()
         else:
             warnings.warn("No handles with labels found to put in legend.")
     else:
@@ -943,6 +944,7 @@ def alpha_rarefaction_plot(rarefaction,
 
     artist_kwargs = {'xlabel': 'Sequencing depth',
                      'ylabel': metric,
+                     'plot_method': 'alpha_rarefaction_plot',
                      **artist_kwargs}
 
     ax = _artist(ax, **artist_kwargs)
