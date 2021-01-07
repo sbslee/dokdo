@@ -1796,6 +1796,8 @@ def taxa_abundance_box_plot(taxa,
                             meanprops=None,
                             show_others=True,
                             sort_by_mean=True,
+                            jitter=1,
+                            alpha=None,
                             artist_kwargs=None):
     """
     This method creates a taxa abundance box plot.
@@ -1853,6 +1855,10 @@ def taxa_abundance_box_plot(taxa,
         Include the 'Others' category.
     sort_by_mean : bool, default: True
         Sort taxa by their mean relative abundance after sample filtration.
+    jitter : float, default: 1
+        Amount of jitter (only along the categorical axis) to apply.
+    alpha : float, optional
+        Proportional opacity of the points.
     artist_kwargs : dict, optional
         Keyword arguments passed down to the _artist() method.
 
@@ -1957,7 +1963,8 @@ def taxa_abundance_box_plot(taxa,
 
     if add_datapoints:
         remove_duplicates = True
-        sns.swarmplot(x='variable',
+        # Alternative method: sns.swarmplot()
+        sns.stripplot(x='variable',
                       y='value',
                       hue=hue,
                       hue_order=hue_order,
@@ -1965,7 +1972,9 @@ def taxa_abundance_box_plot(taxa,
                       ax=ax,
                       color='black',
                       size=size,
-                      dodge=True)
+                      dodge=True,
+                      jitter=jitter,
+                      alpha=alpha)
     else:
         remove_duplicates = False
 
