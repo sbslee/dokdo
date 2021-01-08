@@ -1,5 +1,20 @@
 # Changelog
 
+## 1.4.0
+
+* Added a new command called `summarize`.
+* Added a new plotting method called `heatmap()`.
+* Updated the following commands:
+    * `make_manifest`
+    * `add_metadata`
+    * `collapse`
+* Updated the following methods:
+    * `_artist()`
+    * `alpha_rarefaction_plot()`
+    * `taxa_abundance_bar_plot()`
+    * `taxa_abundance_box_plot()`
+* See [#4](https://github.com/sbslee/dokdo/issues/4) for more details.
+
 ## 1.3.0
 
 * Updated the `ordinate()` method so that the user can now choose to:
