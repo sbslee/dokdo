@@ -10,6 +10,7 @@ import pandas as pd
 import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
+from matplotlib.patches import Patch
 import seaborn as sns
 import skbio as sb
 from skbio.stats.ordination import OrdinationResults
@@ -165,6 +166,14 @@ def _artist(ax,
             xticklabels_fontsize=None,
             yticklabels=None,
             yticklabels_fontsize=None,
+            xrot=None,
+            xha=None,
+            xmin=None,
+            xmax=None,
+            ymin=None,
+            ymax=None,
+            xlog=False,
+            ylog=False,
             hide_xtexts=False,
             hide_ytexts=False,
             hide_ztexts=False,
@@ -177,14 +186,6 @@ def _artist(ax,
             hide_xticklabels=False,
             hide_yticklabels=False,
             hide_zticklabels=False,
-            xrot=None,
-            xha=None,
-            xmin=None,
-            xmax=None,
-            ymin=None,
-            ymax=None,
-            xlog=False,
-            ylog=False,
             show_legend=False,
             legend_loc='best',
             legend_ncol=1,
@@ -193,7 +194,9 @@ def _artist(ax,
             remove_duplicates=False,
             legend_only=False,
             legend_fontsize=None,
-            legend_markerscale=None):
+            legend_markerscale=None,
+            legend_lw=None,
+            plot_method=None):
     """
     This method controls various properties of a figure.
 
@@ -229,6 +232,22 @@ def _artist(ax,
         Tick labels for the y-axis.
     yticklabels_fontsize : float or str, optional
         Font size for the y-axis tick labels.
+    xrot : float, optional
+        Rotation degree of tick labels for the x-axis.
+    xha : str, optional
+        Horizontal alignment of tick labels for the x-axis.
+    xmin : float, optional
+        Minimum value for the x-axis.
+    xmax : float, optional
+        Maximum value for the x-axis.
+    ymin : float, optional
+        Minimum value for the y-axis.
+    ymax : float, optional
+        Maximum value for the x-axis.
+    xlog : bool, default: False
+        Draw the x-axis in log scale.
+    ylog : bool, default: False
+        Draw the y-axis in log scale.
     hide_xtexts : bool, default: False
         Hides all the x-axis texts.
     hide_ytexts : bool, default: False
@@ -253,22 +272,6 @@ def _artist(ax,
         Hides tick labels for the y-axis.
     hide_zticklabels : bool, default: False
         Hides tick labels for the z-axis.
-    xrot : float, optional
-        Rotation degree of tick labels for the x-axis.
-    xha : str, optional
-        Horizontal alignment of tick labels for the x-axis.
-    xmin : float, optional
-        Minimum value for the x-axis.
-    xmax : float, optional
-        Maximum value for the x-axis.
-    ymin : float, optional
-        Minimum value for the y-axis.
-    ymax : float, optional
-        Maximum value for the x-axis.
-    xlog : bool, default: False
-        Draw the x-axis in log scale.
-    ylog : bool, default: False
-        Draw the y-axis in log scale.
     show_legend : bool, default: False
         Show the figure legend.
     legend_loc : str, default: 'best'
@@ -281,6 +284,11 @@ def _artist(ax,
         Sets the legend font size.
     legend_markerscale : float, optional
         Relative size of legend markers compared with the original.
+    legend_lw : float, optional
+        Width of the lines in the legend.
+    plot_method : str, optional
+        Name of the plotting method. This argument is internally used for
+        the `alpha_rarefaction_plot` method. Not to be used by users.
 
     Returns
     -------
@@ -330,6 +338,21 @@ def _artist(ax,
     if yticklabels_fontsize is not None:
         ax.tick_params(axis='y', which='major', labelsize=yticklabels_fontsize)
 
+    if isinstance(xrot, numbers.Number):
+        ax.set_xticklabels(ax.get_xticklabels(), rotation=xrot)
+
+    if isinstance(xha, str):
+        ax.set_xticklabels(ax.get_xticklabels(), ha=xha)
+
+    ax.set_xlim(left=xmin, right=xmax)
+    ax.set_ylim(bottom=ymin, top=ymax)
+
+    if xlog:
+        ax.set_xscale('log')
+
+    if ylog:
+        ax.set_yscale('log')
+
     if hide_xtexts:
         ax.set_xlabel('')
         ax.set_xticklabels([])
@@ -366,21 +389,6 @@ def _artist(ax,
     if hide_yticklabels:
         ax.set_yticklabels([])
 
-    if isinstance(xrot, numbers.Number):
-        ax.set_xticklabels(ax.get_xticklabels(), rotation=xrot)
-
-    if isinstance(xha, str):
-        ax.set_xticklabels(ax.get_xticklabels(), ha=xha)
-
-    ax.set_xlim(left=xmin, right=xmax)
-    ax.set_ylim(bottom=ymin, top=ymax)
-
-    if xlog:
-        ax.set_xscale('log')
-
-    if ylog:
-        ax.set_yscale('log')
-
     # Control the figure legend.
     h, l = ax.get_legend_handles_labels()
 
@@ -400,13 +408,29 @@ def _artist(ax,
             n = int(len(h) / 2)
             h, l = h[:n], l[:n]
 
+    def _display_legend():
+        leg = ax.legend(h, l, loc=legend_loc, ncol=legend_ncol,
+            fontsize=legend_fontsize, markerscale=legend_markerscale)
+
+        if plot_method == 'alpha_rarefaction_plot':
+            i = 1
+        elif leg.get_title().get_text() is '':
+            i = 0
+        else:
+            i = 1
+
+        if legend_lw is not None:
+            for lh in leg.legendHandles[i:]:
+                lh.set_linewidth(legend_lw)
+
     if legend_only:
+        # The order matters.
         ax.clear()
-        ax.legend(h, l, loc=legend_loc, ncol=legend_ncol, fontsize=legend_fontsize, markerscale=legend_markerscale)
+        _display_legend()
         ax.axis('off')
     elif show_legend:
         if h:
-            ax.legend(h, l, loc=legend_loc, ncol=legend_ncol, fontsize=legend_fontsize, markerscale=legend_markerscale)
+            _display_legend()
         else:
             warnings.warn("No handles with labels found to put in legend.")
     else:
@@ -578,7 +602,6 @@ def ordinate(table,
     -----
     The resulting Artifact object can be directly used for plotting.
     """
-    # Parse the feature table.
     if isinstance(table, qiime2.Artifact):
         table = table
     elif isinstance(table, str):
@@ -843,6 +866,9 @@ def alpha_rarefaction_plot(rarefaction,
                            ax=None,
                            figsize=None,
                            hue_order=None,
+                           units=None,
+                           estimator='mean',
+                           seed=1,
                            artist_kwargs=None):
     """
     This method creates an alpha rarefaction plot.
@@ -852,7 +878,8 @@ def alpha_rarefaction_plot(rarefaction,
     rarefaction : str or qiime2.Visualization
         Visualization file or object from the q2-diversity plugin.
     hue : str, default: 'sample-id'
-        Grouping variable that will produce lines with different colors.
+        Grouping variable that will produce lines with different colors. If not
+        provided, sample IDs will be used.
     metric : str, default: 'shannon'
         Diversity metric ('shannon', 'observed_features', or 'faith_pd').
     ax : matplotlib.axes.Axes, optional
@@ -861,6 +888,15 @@ def alpha_rarefaction_plot(rarefaction,
         Width, height in inches. Format: (float, float).
     hue_order : list, optional
         Specify the order of categorical levels of the 'hue' semantic.
+    units : str, optional
+        Grouping variable identifying sampling units. When used, a separate
+        line will be drawn for each unit with appropriate semantics, but no
+        legend entry will be added.
+    estimator : str, default: 'mean', optional
+        Method for aggregating across multiple observations of the y variable
+        at the same x level. If None, all observations will be drawn.
+    seed : int, default: 1
+        Seed for reproducible bootstrapping.
     artist_kwargs : dict, optional
         Keyword arguments passed down to the _artist() method.
 
@@ -902,13 +938,17 @@ def alpha_rarefaction_plot(rarefaction,
                  ax=ax,
                  err_style='bars',
                  sort=False,
-                 hue_order=hue_order)
+                 units=units,
+                 estimator=estimator,
+                 hue_order=hue_order,
+                 seed=seed)
 
     if artist_kwargs is None:
         artist_kwargs = {}
 
     artist_kwargs = {'xlabel': 'Sequencing depth',
                      'ylabel': metric,
+                     'plot_method': 'alpha_rarefaction_plot',
                      **artist_kwargs}
 
     ax = _artist(ax, **artist_kwargs)
@@ -1520,6 +1560,7 @@ def taxa_abundance_bar_plot(taxa,
                             sort_by_mean2=True,
                             sort_by_mean3=True,
                             show_others=True,
+                            cmap_name='Accent',
                             artist_kwargs=None):
     """
     This method creates a taxa abundance plot.
@@ -1583,6 +1624,8 @@ def taxa_abundance_bar_plot(taxa,
         'sample_names'.
     show_others : bool, default: True
         Include the 'Others' category.
+    cmap_name : str, default: 'Accent'
+        Name of the colormap passed to `matplotlib.cm.get_cmap()`.
     artist_kwargs : dict, optional
         Keyword arguments passed down to the _artist() method.
 
@@ -1692,7 +1735,7 @@ def taxa_abundance_bar_plot(taxa,
     if isinstance(colors, list):
         c = colors
     else:
-        c = plt.cm.get_cmap('Accent').colors
+        c = plt.cm.get_cmap(cmap_name).colors
 
     df = df * 100
 
@@ -1757,6 +1800,8 @@ def taxa_abundance_box_plot(taxa,
                             meanprops=None,
                             show_others=True,
                             sort_by_mean=True,
+                            jitter=1,
+                            alpha=None,
                             artist_kwargs=None):
     """
     This method creates a taxa abundance box plot.
@@ -1814,6 +1859,10 @@ def taxa_abundance_box_plot(taxa,
         Include the 'Others' category.
     sort_by_mean : bool, default: True
         Sort taxa by their mean relative abundance after sample filtration.
+    jitter : float, default: 1
+        Amount of jitter (only along the categorical axis) to apply.
+    alpha : float, optional
+        Proportional opacity of the points.
     artist_kwargs : dict, optional
         Keyword arguments passed down to the _artist() method.
 
@@ -1918,7 +1967,8 @@ def taxa_abundance_box_plot(taxa,
 
     if add_datapoints:
         remove_duplicates = True
-        sns.swarmplot(x='variable',
+        # Alternative method: sns.swarmplot()
+        sns.stripplot(x='variable',
                       y='value',
                       hue=hue,
                       hue_order=hue_order,
@@ -1926,7 +1976,9 @@ def taxa_abundance_box_plot(taxa,
                       ax=ax,
                       color='black',
                       size=size,
-                      dodge=True)
+                      dodge=True,
+                      jitter=jitter,
+                      alpha=alpha)
     else:
         remove_duplicates = False
 
@@ -2434,3 +2486,97 @@ def barplot(barplot_file,
                             **plot_kwargs)
 
     plt.tight_layout()
+
+
+
+
+
+
+
+
+
+
+def heatmap(table,
+            metadata=None,
+            where=None,
+            normalize=True,
+            method='average',
+            metric='euclidean',
+            figsize=(10, 10),
+            row_cluster=True,
+            col_cluster=True,
+            cmap_name='Accent'):
+    """
+    This method creates a heatmap representation of a feature table.
+
+    Parameters
+    ----------
+    table : str or qiime2.Artifact
+        Artifact file or object corresponding to FeatureTable[Frequency].
+    metadata : str or qiime2.Metadata, optional
+        Metadata file or object.
+    where : str, optional
+        SQLite WHERE clause specifying sample metadata criteria.
+    normalize : bool, default: True
+        Normalize the feature table by adding a psuedocount of 1 and then
+        taking the log10 of the table.
+    method : str, default: 'average'
+        Linkage method to use for calculating clusters. See
+        `scipy.cluster.hierarchy.linkage()` documentation for more information.
+    metric : str, default: 'euclidean'
+        Distance metric to use for the data. See
+        `scipy.spatial.distance.pdist()` documentation for more options.
+    figsize : tuple, default: (10, 10)
+        Width, height in inches. Format: (float, float).
+    row_cluster : bool, default: True
+        If True, cluster the rows.
+    col_cluster : bool, default: True
+        If True, cluster the columns.
+    cmap_name : str, default: 'Accent'
+        Name of the colormap passed to `matplotlib.cm.get_cmap()`.
+
+    Returns
+    -------
+    seaborn.matrix.ClusterGrid
+        A ClusterGrid instance.
+    """
+    if isinstance(table, qiime2.Artifact):
+        table = table
+    elif isinstance(table, str):
+        table = Artifact.load(table)
+    else:
+        raise TypeError(f"Incorrect feature table type: {type(table)}")
+
+    df = table.view(pd.DataFrame)
+
+    if normalize:
+        df = df.apply(lambda x: np.log10(x + 1))
+
+    if metadata is not None and where is not None:
+        colors = plt.cm.get_cmap(cmap_name).colors
+        mf = get_mf(metadata)
+        df = pd.concat([df, mf], axis=1, join='inner')
+        keys = df[where].unique()
+        lut = dict(zip(keys, colors[:len(keys)]))
+        row_colors = df[where].map(lut)
+        df.drop(mf.columns, axis=1, inplace=True)
+    elif metadata is None and where is not None:
+        raise ValueError("Argument 'where' requires 'metadata' argument")
+    else:
+        lut = None
+        row_colors = None
+
+    g = sns.clustermap(df,
+                       method=method,
+                       metric=metric,
+                       figsize=figsize,
+                       row_cluster=row_cluster,
+                       col_cluster=col_cluster,
+                       row_colors=row_colors)
+
+    if lut is not None:
+        handles = [Patch(facecolor=lut[name]) for name in lut]
+        plt.legend(handles, lut, title=where,
+                   bbox_to_anchor=(1, 1), bbox_transform=plt.gcf().transFigure, loc='upper right')
+
+    return g

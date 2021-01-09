@@ -15,12 +15,15 @@ from qiime2.plugins import taxa
 # -- Public commands ---------------------------------------------------------
 
 def collapse(table,
-             taxonomy):
+             taxonomy,
+             output_dir):
+    _output_dir = '.' if output_dir is None else output_dir
     for i in range(1, 8):
         _ = taxa.methods.collapse(table=Artifact.load(table),
                                   taxonomy=Artifact.load(taxonomy),
                                   level=i)
-        _.collapsed_table.view(pd.DataFrame).T.to_csv(f'level-{i}.csv')
+        _.collapsed_table.view(pd.DataFrame).T.to_csv(
+            f'{_output_dir}/level-{i}.csv')
 
 
 
@@ -37,7 +40,7 @@ def make_manifest(fastq_dir,
 
     for r, d, f in os.walk(fastq_dir):
         for x in f:
-            name = x.split('_')[0]
+            name = '_'.join(x.split('_')[:-3])
 
             if '_R1_001.fastq' in x:
                 if name not in files:
@@ -51,7 +54,7 @@ def make_manifest(fastq_dir,
                 pass
 
     with open(output, 'w') as f:
-        headers = ['sample-id', 'forward-absolute-filepath', 
+        headers = ['sample-id', 'forward-absolute-filepath',
                    'reverse-absolute-filepath']
         f.write('\t'.join(headers) + '\n')
 
@@ -84,6 +87,7 @@ def add_metadata(metadata,
                 mf2[k] = mf2[k].astype(v)
 
     mf3 = mf1.reset_index().merge(mf2).set_index(index_name)
+    mf3 = mf3.reindex(mf1.index)
 
     a = mf1.shape[0]
     b = mf3.shape[0]
@@ -93,6 +97,10 @@ def add_metadata(metadata,
                    f"than input metadata (N={a}). Please double check "
                    "whether this was intended.")
         warnings.warn(message)
+
+    if mf3.isnull().values.any():
+        warnings.warn("Final metadata contains NaN. Please double check "
+                      "whether this was intended.")
 
     Metadata(mf3).save(output)
 
@@ -123,12 +131,39 @@ def merge_metadata(metadata,
 
 
 
+def summarize(input, verbose):
+    table = Artifact.load(input)
+    df = table.view(pd.DataFrame)
+    quantiles = [0, 0.25, 0.5, 0.75, 1]
+    print('Number of samples:', df.shape[0])
+    print('Number of features:', df.shape[1])
+    print('Total frequency:', df.values.sum())
+    print('Frequency per sample:')
+    print(df.sum(axis=1).quantile(quantiles).to_string())
+    print('Frequency per feature:')
+    print(df.sum(axis=0).quantile(quantiles).to_string())
+    if verbose:
+        print('Samples:')
+        print(' '.join(df.index.to_list()))
+        print('Features:')
+        print(' '.join(df.columns))
+
+
+
+
+
+
+
+
+
+
 def main():
     commands = {
         'collapse': collapse,
         'make_manifest': make_manifest,
         'add_metadata': add_metadata,
         'merge_metadata': merge_metadata,
+        'summarize': summarize,
     }
 
     parser = argparse.ArgumentParser()
@@ -150,9 +185,8 @@ def main():
     collapse_parser = subparsers.add_parser(
         'collapse',
         description=("This command creates seven collapsed ASV tables, one "
-                     "for each taxonomic level. The ouput files (level-1.csv "
-                     "through level-7.csv) will be created in the current "
-                     "directory."),
+                     "for each taxonomic level (i.e. `level-1.csv` to "
+                     "`level-7.csv`)."),
         help=("This command creates seven collapsed ASV tables, one for each "
               "taxonomic level."),
     )
@@ -164,7 +198,10 @@ def main():
         'taxonomy',
         help="Path to the input taxonomy.qza file."
     )
-
+    collapse_parser.add_argument(
+        '--output_dir',
+        help="Output directory. By default, output to the current directory."
+    )
 
 
 
@@ -179,8 +216,12 @@ def main():
         description=("This command creates a manifest file from a directory "
                      "containing FASTQ files. The file names must include "
                      "either '_R1_001.fastq' or '_R1_002.fastq'. The word "
-                     "before the first underscore will be set as the sample "
-                     "ID (e.g. 'EXAMPLE' in EXAMPLE_S1_R1_001.fastq.gz)."),
+                     "before the third-to-last underscore will be set as the "
+                     "sample ID. For example, a file named "
+                     "'EXAMPLE_S1_R1_001.fastq.gz' will produce 'EXAMPLE' as "
+                     "the sample ID and 'EXAM_PLE_S1_R1_001.fastq.gz', "
+                     "'EXAM_PLE'."),
+
         help=("This command creates a manifest file from a directory "
               "containing FASTQ files."),
     )
@@ -217,7 +258,7 @@ def main():
     )
     add_metadata_parser.add_argument(
         'columns',
-        help=("Path to a file containing the new columns to be added (.tsv). "
+        help=("Path to a file containing the new columns to be added (.tsv)."
               "The first row should be column names.")
     )
     add_metadata_parser.add_argument(
@@ -245,13 +286,37 @@ def main():
     merge_metadata_parser.add_argument(
         'metadata',
         nargs='+',
-        help="Paths to the sample-metadata.tsv files to be merged. ",
+        help="Paths to the sample-metadata.tsv files to be merged.",
     )
     merge_metadata_parser.add_argument(
         'output',
         help="Path to the output sample-metadata.tsv file.",
     )
 
+
+
+
+
+
+
+
+
+
+    summarize_parser = subparsers.add_parser(
+        'summarize',
+        description=("This command extracts summary statistics from an "
+                     "Artifact file with the semantic type "
+                     "`FeatureTable[Frequency]`."),
+        help=("This command extracts summary statistics for an Artifact file."),
+    )
+    summarize_parser.add_argument(
+        'input',
+        help="Path to the input Artifact file.",
+    )
+    summarize_parser.add_argument(
+        '-v', '--verbose', action='store_true',
+        help="Print a verbose version of the results.",
+    )
 
 
 
