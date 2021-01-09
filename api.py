@@ -868,6 +868,7 @@ def alpha_rarefaction_plot(rarefaction,
                            hue_order=None,
                            units=None,
                            estimator='mean',
+                           seed=1,
                            artist_kwargs=None):
     """
     This method creates an alpha rarefaction plot.
@@ -894,6 +895,8 @@ def alpha_rarefaction_plot(rarefaction,
     estimator : str, default: 'mean', optional
         Method for aggregating across multiple observations of the y variable
         at the same x level. If None, all observations will be drawn.
+    seed : int, default: 1
+        Seed for reproducible bootstrapping.
     artist_kwargs : dict, optional
         Keyword arguments passed down to the _artist() method.
 
@@ -937,7 +940,8 @@ def alpha_rarefaction_plot(rarefaction,
                  sort=False,
                  units=units,
                  estimator=estimator,
-                 hue_order=hue_order)
+                 hue_order=hue_order,
+                 seed=seed)
 
     if artist_kwargs is None:
         artist_kwargs = {}
