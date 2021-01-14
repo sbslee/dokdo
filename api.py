@@ -293,7 +293,7 @@ def _artist(ax,
     Returns
     -------
     matplotlib.axes.Axes
-        Returns the Axes object with the plot drawn onto it.
+        Axes object with the plot drawn onto it.
 
     Notes
     -----
@@ -704,7 +704,7 @@ def read_quality_plot(demux,
     Returns
     -------
     matplotlib.axes.Axes
-        Returns the Axes object with the plot drawn onto it.
+        Axes object with the plot drawn onto it.
 
     Notes
     -----
@@ -801,7 +801,7 @@ def denoising_stats_plot(stats,
     Returns
     -------
     matplotlib.axes.Axes
-        Returns the Axes object with the plot drawn onto it.
+        Axes object with the plot drawn onto it.
 
     Notes
     -----
@@ -903,7 +903,7 @@ def alpha_rarefaction_plot(rarefaction,
     Returns
     -------
     matplotlib.axes.Axes
-        Returns the Axes object with the plot drawn onto it.
+        Axes object with the plot drawn onto it.
 
     Notes
     -----
@@ -964,20 +964,23 @@ def alpha_rarefaction_plot(rarefaction,
 
 
 
-def alpha_diversity_plot(significance,
+def alpha_diversity_plot(alpha_diversity,
+                         metadata,
                          where,
                          ax=None,
                          figsize=None,
                          add_swarmplot=False,
                          order=None,
                          artist_kwargs=None):
-    """
-    This method creates an alpha diversity plot.
+    """Create an alpha diversity plot.
 
     Parameters
     ----------
-    significance : str or qiime2.Visualization
-        Visualization file or object from the q2-diversity plugin.
+    alpha_diversity : str or qiime2.Artifact
+        Artifact file or object with the semantic type
+        `SampleData[AlphaDiversity]`.
+    metadata : str or qiime2.Metadata
+        Metadata file or object.
     where : str
         Column name to be used for the x-axis.
     ax : matplotlib.axes.Axes, optional
@@ -994,23 +997,17 @@ def alpha_diversity_plot(significance,
     Returns
     -------
     matplotlib.axes.Axes
-        Returns the Axes object with the plot drawn onto it.
+        Axes object with the plot drawn onto it.
 
-    Notes
-    -----
-    Example usage of the q2-diversity plugin:
-        CLI -> qiime diversity alpha-group-significance [OPTIONS]
-        API -> from qiime2.plugins.diversity.visualizers import alpha_group_significance
     """
-    with tempfile.TemporaryDirectory() as t:
-        _parse_input(significance, t)
-
-        df = Metadata.load(f'{t}/metadata.tsv').to_dataframe()
+    df = Artifact.load(alpha_diversity).view(pd.Series).to_frame()
+    mf = get_mf(metadata)
+    df = pd.concat([df, mf], axis=1, join='inner')
 
     if ax is None:
         fig, ax = plt.subplots(figsize=figsize)
 
-    metric = df.columns[-1]
+    metric = df.columns[0]
 
     boxprops = dict(color='white', edgecolor='black')
 
@@ -1090,7 +1087,7 @@ def beta_2d_plot(pcoa_results,
     Returns
     -------
     matplotlib.axes.Axes
-        Returns the Axes object with the plot drawn onto it.
+        Axes object with the plot drawn onto it.
 
     See Also
     --------
@@ -1202,7 +1199,7 @@ def beta_3d_plot(pcoa_results,
     Returns
     -------
     matplotlib.axes.Axes
-        Returns the Axes object with the plot drawn onto it.
+        Axes object with the plot drawn onto it.
 
     See Also
     --------
@@ -1304,7 +1301,7 @@ def beta_scree_plot(pcoa_results,
     Returns
     -------
     matplotlib.axes.Axes
-        Returns the Axes object with the plot drawn onto it.
+        Axes object with the plot drawn onto it.
 
     See Also
     --------
@@ -1388,7 +1385,7 @@ def beta_parallel_plot(pcoa_results,
     Returns
     -------
     matplotlib.axes.Axes
-        Returns the Axes object with the plot drawn onto it.
+        Axes object with the plot drawn onto it.
 
     See Also
     --------
@@ -1481,7 +1478,7 @@ def distance_matrix_plot(distance_matrix,
     Returns
     -------
     matplotlib.axes.Axes
-        Returns the Axes object with the plot drawn onto it.
+        Axes object with the plot drawn onto it.
 
     Notes
     -----
@@ -1632,7 +1629,7 @@ def taxa_abundance_bar_plot(taxa,
     Returns
     -------
     matplotlib.axes.Axes
-        Returns the Axes object with the plot drawn onto it.
+        Axes object with the plot drawn onto it.
 
     See Also
     --------
@@ -1869,7 +1866,7 @@ def taxa_abundance_box_plot(taxa,
     Returns
     -------
     matplotlib.axes.Axes
-        Returns the Axes object with the plot drawn onto it.
+        Axes object with the plot drawn onto it.
 
     See Also
     --------
@@ -2040,7 +2037,7 @@ def ancom_volcano_plot(ancom,
     Returns
     -------
     matplotlib.axes.Axes
-        Returns the Axes object with the plot drawn onto it.
+        Axes object with the plot drawn onto it.
 
     Notes
     -----
@@ -2121,7 +2118,7 @@ def addsig(x1,
     Returns
     -------
     matplotlib.axes.Axes
-        Returns the Axes object with the plot drawn onto it.
+        Axes object with the plot drawn onto it.
     """
     if ax is None:
         fig, ax = plt.subplots(figsize=figsize)
@@ -2180,7 +2177,7 @@ def addpairs(taxon,
     Returns
     -------
     matplotlib.axes.Axes
-        Returns the Axes object with the plot drawn onto it.
+        Axes object with the plot drawn onto it.
 
     See Also
     --------
@@ -2259,7 +2256,7 @@ def addbiplot(pcoa_results,
     Returns
     -------
     matplotlib.axes.Axes
-        Returns the Axes object with the plot drawn onto it.
+        Axes object with the plot drawn onto it.
 
     See Also
     --------
