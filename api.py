@@ -1441,6 +1441,7 @@ def beta_parallel_plot(pcoa_results,
     artist_kwargs = {'xlabel': '',
                      'ylabel': '',
                      'xticklabels': props,
+                     'legend_title': hue,
                      **artist_kwargs}
 
     ax = _artist(ax, **artist_kwargs)
