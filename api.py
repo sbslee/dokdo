@@ -17,7 +17,7 @@ from skbio.stats.ordination import OrdinationResults
 from scipy import stats
 from scipy.spatial.distance import euclidean
 
-# Import QIIME 2 libraries
+# Import QIIME 2 libraries.
 import qiime2
 from qiime2 import Artifact
 from qiime2 import Metadata
@@ -418,10 +418,8 @@ def _artist(ax,
 
         if plot_method == 'alpha_rarefaction_plot':
             i = 1
-        elif leg.get_title().get_text() is '':
-            i = 0
         else:
-            i = 1
+            i = 0
 
         if legend_lw is not None:
             for lh in leg.legendHandles[i:]:
