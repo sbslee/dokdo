@@ -196,6 +196,7 @@ def _artist(ax,
             legend_fontsize=None,
             legend_markerscale=None,
             legend_lw=None,
+            legend_title=None,
             plot_method=None):
     """
     This method controls various properties of a figure.
@@ -286,6 +287,8 @@ def _artist(ax,
         Relative size of legend markers compared with the original.
     legend_lw : float, optional
         Width of the lines in the legend.
+    legend_title: str, optional
+        Legend title.
     plot_method : str, optional
         Name of the plotting method. This argument is internally used for
         the `alpha_rarefaction_plot` method. Not to be used by users.
@@ -410,7 +413,8 @@ def _artist(ax,
 
     def _display_legend():
         leg = ax.legend(h, l, loc=legend_loc, ncol=legend_ncol,
-            fontsize=legend_fontsize, markerscale=legend_markerscale)
+            fontsize=legend_fontsize, markerscale=legend_markerscale,
+            title=legend_title, title_fontsize=legend_fontsize)
 
         if plot_method == 'alpha_rarefaction_plot':
             i = 1
@@ -1259,6 +1263,7 @@ def beta_3d_plot(pcoa_results,
                      'hide_xticks': True,
                      'hide_yticks': True,
                      'hide_zticks': True,
+                     'legend_title': hue,
                      **artist_kwargs}
 
     ax = _artist(ax, **artist_kwargs)
