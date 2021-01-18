@@ -2349,7 +2349,8 @@ def barplot(barplot_file,
             metadata=None,
             artist_kwargs=None,
             ylabel_fontsize=None,
-            xaxis_repeated=False):
+            xaxis_repeated=False,
+            cmap_name='Accent'):
     """
     This method creates a grouped abundance bar plot.
 
@@ -2389,6 +2390,8 @@ def barplot(barplot_file,
     xaxis_repeated : bool, default: False
         If true, remove all x-axis tick labels except for the bottom subplot.
         Ignored if `axis=1`.
+    cmap_name : str, default: 'Accent'
+        Name of the colormap passed to `matplotlib.cm.get_cmap()`.
 
     See Also
     --------
@@ -2429,7 +2432,8 @@ def barplot(barplot_file,
                        count=count,
                        by=by,
                        label_columns=label_columns,
-                       metadata=metadata)
+                       metadata=metadata,
+                       cmap_name=cmap_name)
 
     if axis == 0:
         if xaxis_repeated:
