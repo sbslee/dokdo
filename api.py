@@ -2518,14 +2518,15 @@ def barplot(barplot_file,
 
 def heatmap(table,
             metadata=None,
-            where=None,
+            hue=None,
+            hue_order=None,
             normalize=True,
             method='average',
             metric='euclidean',
             figsize=(10, 10),
             row_cluster=True,
             col_cluster=True,
-            cmap_name='Accent'):
+            cmap_name='tab10'):
     """
     This method creates a heatmap representation of a feature table.
 
@@ -2535,8 +2536,10 @@ def heatmap(table,
         Artifact file or object corresponding to FeatureTable[Frequency].
     metadata : str or qiime2.Metadata, optional
         Metadata file or object.
-    where : str, optional
-        SQLite WHERE clause specifying sample metadata criteria.
+    hue : str, optional
+        Grouping variable that will produce labels with different colors.
+    hue_order : list, optional
+        Specify the order of categorical levels of the 'hue' semantic.
     normalize : bool, default: True
         Normalize the feature table by adding a psuedocount of 1 and then
         taking the log10 of the table.
@@ -2552,7 +2555,7 @@ def heatmap(table,
         If True, cluster the rows.
     col_cluster : bool, default: True
         If True, cluster the columns.
-    cmap_name : str, default: 'Accent'
+    cmap_name : str, default: 'tab10'
         Name of the colormap passed to `matplotlib.cm.get_cmap()`.
 
     Returns
@@ -2572,16 +2575,20 @@ def heatmap(table,
     if normalize:
         df = df.apply(lambda x: np.log10(x + 1))
 
-    if metadata is not None and where is not None:
+    if metadata is not None and hue is not None:
         colors = plt.cm.get_cmap(cmap_name).colors
         mf = get_mf(metadata)
         df = pd.concat([df, mf], axis=1, join='inner')
-        keys = df[where].unique()
+        if hue_order is None:
+            keys = df[hue].unique()
+        else:
+            keys = hue_order
+            df = df[df[hue].isin(hue_order)]
         lut = dict(zip(keys, colors[:len(keys)]))
-        row_colors = df[where].map(lut)
+        row_colors = df[hue].map(lut)
         df.drop(mf.columns, axis=1, inplace=True)
-    elif metadata is None and where is not None:
-        raise ValueError("Argument 'where' requires 'metadata' argument")
+    elif metadata is None and hue is not None:
+        raise ValueError("Argument 'hue' requires 'metadata' argument")
     else:
         lut = None
         row_colors = None
@@ -2596,7 +2603,7 @@ def heatmap(table,
 
     if lut is not None:
         handles = [Patch(facecolor=lut[name]) for name in lut]
-        plt.legend(handles, lut, title=where,
+        plt.legend(handles, lut, title=hue,
                    bbox_to_anchor=(1, 1), bbox_transform=plt.gcf().transFigure, loc='upper right')
 
     return g
