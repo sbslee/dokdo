@@ -1779,6 +1779,7 @@ def taxa_abundance_bar_plot(taxa,
 
 
 def taxa_abundance_box_plot(taxa,
+                            metadata=None,
                             hue=None,
                             hue_order=None,
                             add_datapoints=False,
@@ -1811,6 +1812,8 @@ def taxa_abundance_box_plot(taxa,
     ----------
     taxa : str or qiime2.Visualization
         Visualization file or object from the q2-taxa plugin.
+    metadata : str or qiime2.Metadata, optional
+        Metadata file or object.
     hue : str, optional
         Grouping variable that will produce boxes with different colors.
     hue_order : list, optional
@@ -1886,6 +1889,15 @@ def taxa_abundance_box_plot(taxa,
     with tempfile.TemporaryDirectory() as t:
         _parse_input(taxa, t)
         df = pd.read_csv(f'{t}/level-{level}.csv', index_col=0)
+
+    # If provided, update the metadata.
+    if metadata is None:
+        pass
+    else:
+        mf = get_mf(metadata)
+        cols = _get_mf_cols(df)
+        df.drop(columns=cols, inplace=True)
+        df = pd.concat([df, mf], axis=1, join='inner')
 
     # If provided, sort the samples for display in the x-axis.
     if by:
