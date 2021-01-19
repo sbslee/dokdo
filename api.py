@@ -2016,6 +2016,9 @@ def taxa_abundance_box_plot(taxa,
                      'remove_duplicates': remove_duplicates,
                      **artist_kwargs}
 
+    if hue is not None:
+        artist_kwargs['legend_title'] = hue
+
     ax = _artist(ax, **artist_kwargs)
 
     return ax
