@@ -663,7 +663,7 @@ def ordinate(table,
     pcoa_results = result_obj.pcoa
 
     if biplot:
-        rf_result = feature_table.methods.relative_frequency(table=table)
+        rf_result = feature_table.methods.relative_frequency(table=_table)
         rf_table = rf_result.relative_frequency_table
         result_obj = diversity.methods.pcoa_biplot(pcoa=pcoa_results,
             features=rf_table)
