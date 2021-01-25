@@ -1578,10 +1578,10 @@ def taxa_abundance_bar_plot(taxa,
     level : int, default: 1
         Taxonomic level at which the features should be collapsed.
     by : list, optional
-        Column name(s) to be used for sorting the samples. Using 'index' will
-        sort the samples by their name, in addition to other column name(s)
-        that may have been provided. If multiple items are provided, sorting
-        will occur by the order of the items.
+        Column name(s) to be used for sorting the samples. Using 'sample-id'
+        will sort the samples by their name, in addition to other column
+        name(s) that may have been provided. If multiple items are provided,
+        sorting will occur by the order of the items.
     ax : matplotlib.axes.Axes, optional
         Axes object to draw the plot onto, otherwise uses the current Axes.
     figsize : tuple, optional
@@ -1678,6 +1678,8 @@ def taxa_abundance_bar_plot(taxa,
             df.rename(columns={k: f'@{k}'}, inplace=True)
             df[k] = df[f'@{k}'].map(d)
 
+    df["sample-id"] = df.index
+
     # If provided, sort the samples for display in the x-axis.
     if isinstance(by, list):
         df = df.sort_values(by=by)
@@ -1702,7 +1704,6 @@ def taxa_abundance_bar_plot(taxa,
     # Remove the metadata columns.
     cols = _get_mf_cols(df)
     mf = df[cols]
-    mf = mf.assign(**{'sample-id': mf.index})
     df = df.drop(columns=cols)
 
     if sort_by_mean1:
@@ -1823,10 +1824,10 @@ def taxa_abundance_box_plot(taxa,
     level : int, default: 1
         Taxonomic level at which the features should be collapsed.
     by : list, optional
-        Column name(s) to be used for sorting the samples. Using 'index' will
-        sort the samples by their name, in addition to other column name(s)
-        that may have been provided. If multiple items are provided, sorting
-        will occur by the order of the items.
+        Column name(s) to be used for sorting the samples. Using 'sample-id'
+        will sort the samples by their name, in addition to other column
+        name(s) that may have been provided. If multiple items are provided,
+        sorting will occur by the order of the items.
     ax : matplotlib.axes.Axes, optional
         Axes object to draw the plot onto, otherwise uses the current Axes.
     figsize : tuple, optional
@@ -1899,6 +1900,8 @@ def taxa_abundance_box_plot(taxa,
         df.drop(columns=cols, inplace=True)
         df = pd.concat([df, mf], axis=1, join='inner')
 
+    df["sample-id"] = df.index
+
     # If provided, sort the samples for display in the x-axis.
     if by:
         df = df.sort_values(by=by)
@@ -1916,7 +1919,6 @@ def taxa_abundance_box_plot(taxa,
     # Remove the metadata columns.
     cols = _get_mf_cols(df)
     mf = df[cols]
-    mf = mf.assign(**{'sample-id': mf.index})
     df = df.drop(columns=cols)
 
     df, mf = _filter_samples(df, mf, exclude_samples, include_samples)
