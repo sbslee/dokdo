@@ -2299,7 +2299,9 @@ def regplot(taxon,
     if artist_kwargs is None:
         artist_kwargs = {}
 
-    artist_kwargs = {**artist_kwargs}
+    artist_kwargs = {"xlabel": group1,
+                     "ylabel": group2,
+                     **artist_kwargs}
 
     ax = _artist(ax, **artist_kwargs)
 
