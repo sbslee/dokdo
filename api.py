@@ -2234,6 +2234,66 @@ def addpairs(taxon,
 
 
 
+def regplot(taxon,
+            csv_file,
+            subject,
+            category,
+            group1,
+            group2,
+            ax=None,
+            figsize=None):
+    """Plot data and a linear regression model fit for the given taxon.
+
+    Parameters
+    ----------
+    taxon : str
+        Target taxon name.
+    csv_file : str
+        Path to csv file.
+    subject : str
+        Column name to indicate pair information.
+    category : str
+        Column name to be studied.
+    group1 : str
+        First group in the category column.
+    group2 : str
+        Second group in the category column.
+    ax : matplotlib.axes.Axes, optional
+        Axes object to draw the plot onto, otherwise uses the current Axes.
+    figsize : tuple, optional
+        Width, height in inches. Format: (float, float).
+
+    Returns
+    -------
+    matplotlib.axes.Axes
+        Axes object with the plot drawn onto it.
+
+    See Also
+    --------
+    taxa_abundance_box_plot
+    """
+    if ax is None:
+        fig, ax = plt.subplots(figsize=figsize)
+
+    df = pd.read_csv(csv_file)
+    df = df.sort_values([subject, category])
+    g1 = df[df[category] == group1]
+    g2 = df[df[category] == group2]
+    df = pd.DataFrame({group1: g1[taxon].to_list(),
+                       group2: g2[taxon].to_list()})
+    sns.regplot(data=df, x=group1, y=group2, ax=ax)
+
+    return ax
+
+
+
+
+
+
+
+
+
+
 def addbiplot(pcoa_results,
               taxonomy=None,
               dim=2,
