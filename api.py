@@ -2177,7 +2177,7 @@ def addpairs(taxon,
     taxon : str
         Target taxon name.
     csv_file : str
-        Path to csv file.
+        Path to the .csv file from the `taxa_abundance_box_plot` method.
     subject : str
         Column name to indicate pair information.
     category : str
@@ -2240,16 +2240,19 @@ def regplot(taxon,
             category,
             group1,
             group2,
+            label=None,
             ax=None,
-            figsize=None):
-    """Plot data and a linear regression model fit for the given taxon.
+            figsize=None,
+            artist_kwargs=None):
+    """Plot relative abundance data and a linear regression model fit from
+    paired samples for the given taxon.
 
     Parameters
     ----------
     taxon : str
         Target taxon name.
     csv_file : str
-        Path to csv file.
+        Path to the .csv file from the `taxa_abundance_box_plot` method.
     subject : str
         Column name to indicate pair information.
     category : str
@@ -2258,10 +2261,14 @@ def regplot(taxon,
         First group in the category column.
     group2 : str
         Second group in the category column.
+    label : str
+        Label to use in a legend.
     ax : matplotlib.axes.Axes, optional
         Axes object to draw the plot onto, otherwise uses the current Axes.
     figsize : tuple, optional
         Width, height in inches. Format: (float, float).
+    artist_kwargs : dict, optional
+        Keyword arguments passed down to the _artist() method.
 
     Returns
     -------
@@ -2281,7 +2288,20 @@ def regplot(taxon,
     g2 = df[df[category] == group2]
     df = pd.DataFrame({group1: g1[taxon].to_list(),
                        group2: g2[taxon].to_list()})
-    sns.regplot(data=df, x=group1, y=group2, ax=ax)
+
+    if label is None:
+        _label = taxon
+    else:
+        _label = label
+
+    sns.regplot(data=df, x=group1, y=group2, ax=ax, label=_label)
+
+    if artist_kwargs is None:
+        artist_kwargs = {}
+
+    artist_kwargs = {**artist_kwargs}
+
+    ax = _artist(ax, **artist_kwargs)
 
     return ax
 
