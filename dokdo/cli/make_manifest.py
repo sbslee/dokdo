@@ -1,10 +1,12 @@
 import os
+from pathlib import Path
 
-def make_manifest(fastq_dir,
-                  output):
+def make_manifest(fastq_dir, output_file):
+    _fastq_dir = Path(fastq_dir).resolve()
+
     files = {}
 
-    for r, d, f in os.walk(fastq_dir):
+    for r, d, f in os.walk(_fastq_dir):
         for x in f:
             name = '_'.join(x.split('_')[:-3])
 
@@ -19,7 +21,7 @@ def make_manifest(fastq_dir,
             else:
                 pass
 
-    with open(output, 'w') as f:
+    with open(output_file, 'w') as f:
         headers = ['sample-id', 'forward-absolute-filepath',
                    'reverse-absolute-filepath']
         f.write('\t'.join(headers) + '\n')

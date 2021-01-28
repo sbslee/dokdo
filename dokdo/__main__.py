@@ -78,30 +78,46 @@ def main():
 
 
     make_manifest_parser = subparsers.add_parser(
-        'make-manifest',
-        description=("This command creates a manifest file from a directory "
-                     "containing FASTQ files. The file names must include "
-                     "either '_R1_001.fastq' or '_R1_002.fastq'. The word "
-                     "before the third-to-last underscore will be set as the "
-                     "sample ID. For example, a file named "
+        "make-manifest",
+        add_help=False,
+        description=("This command creates a manifest file (.tsv) from a "
+                     "directory containing FASTQ files. The file names must "
+                     "include either '_R1_001.fastq' or '_R1_002.fastq'. "
+                     "The word before the third-to-last underscore will "
+                     "be set as the sample ID. For example, a file named "
                      "'EXAMPLE_S1_R1_001.fastq.gz' will produce 'EXAMPLE' as "
-                     "the sample ID and 'EXAM_PLE_S1_R1_001.fastq.gz', "
+                     "sample ID and 'EXAM_PLE_S1_R1_001.fastq.gz', "
                      "'EXAM_PLE'."),
 
-        help=("This command creates a manifest file from a directory "
+        help=("This command creates a manifest file (.tsv) from a directory "
               "containing FASTQ files."),
     )
+
+    make_manifest_parser._optionals.title = "Arguments"
+
     make_manifest_parser.add_argument(
-        'fastq_dir',
-        help="Path to the directory containing input FASTQ files (.fastq.gz)."
+        "-i",
+        "--fastq-dir",
+        required=True,
+        metavar="PATH",
+        help="Path to the directory containing input FASTQ files. [required]"
     )
+
     make_manifest_parser.add_argument(
-        'output',
-        help="Path to the output manifest file (.tsv)."
+        "-o",
+        "--output-file",
+        required=True,
+        metavar="PATH",
+        help="Path to the output file. [required]"
     )
 
-
-
+    make_manifest_parser.add_argument(
+        "-h",
+        "--help",
+        action="help",
+        default=argparse.SUPPRESS,
+        help="Show this help message and exit."
+    )
 
 
 
