@@ -57,15 +57,10 @@ def prepare_lefse(table_file,
         df = _.filtered_table.view(pd.DataFrame)
 
     def f(x):
-        fields = x.split(';')
-        for i in reversed(range(len(fields))):
-            if fields[i] == '__':
-                del fields[i]
-            elif '__' in fields[i]:
-                fields[i] = fields[i].split('__')[1]
-            else:
-                pass
-        return '|'.join(fields)
+        for c in ['-', '[', ']', '(', ')']:
+            x = x.replace(c, '_')
+        x = x.replace(';', '|')
+        return x
 
     df.columns = [f(x) for x in df.columns.to_list()]
 
