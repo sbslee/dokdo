@@ -43,18 +43,20 @@ def main():
 
     collapse_parser.add_argument(
         "-t",
-        "--table",
+        "--table-file",
         metavar="PATH",
         required=True,
         help="Path to the input table.qza file. [required]"
     )
+
     collapse_parser.add_argument(
         "-x",
-        "--taxonomy",
+        "--taxonomy-file",
         metavar="PATH",
         required=True,
         help="Path to the input taxonomy.qza file. [required]"
     )
+
     collapse_parser.add_argument(
         "-o",
         "--output-dir",
@@ -204,9 +206,86 @@ def main():
 
 
 
+    prepare_lefse_parser = subparsers.add_parser(
+        "prepare-lefse",
+        add_help=False,
+        help=("Create a text file which can be used as input for "
+              "the LEfSe tool."),
+        description=("Create a text file which can be used as input for the "
+                     "LEfSe tool. This command 1) collapses the input "
+                     "feature table at the genus level, 2) computes "
+                     "relative frequency of the features, 3) performs "
+                     "sample filtration if requested, 4) changes the "
+                     "format of feature names, 5) adds the relevant "
+                     "metadata as 'Class' and 'Subclass', and 6) writes a "
+                     "text file which can be used as input for LEfSe.")
+    )
 
+    prepare_lefse_parser._optionals.title = "Arguments"
 
+    prepare_lefse_parser.add_argument(
+        "-t",
+        "--table-file",
+        metavar="PATH",
+        required=True,
+        help=("Path to the table file with the 'FeatureTable[Frequency]' "
+              "type. [required]")
+    )
 
+    prepare_lefse_parser.add_argument(
+        "-x",
+        "--taxonomy-file",
+        metavar="PATH",
+        required=True,
+        help=("Path to the taxonomy file with the 'FeatureData[Taxonomy]' "
+              "type. [required]")
+    )
+
+    prepare_lefse_parser.add_argument(
+        "-m",
+        "--metadata-file",
+        metavar="PATH",
+        required=True,
+        help="Path to the metadata file. [required]"
+    )
+
+    prepare_lefse_parser.add_argument(
+        "-o",
+        "--output-file",
+        metavar="PATH",
+        required=True,
+        help=("Path to the output file. [required]")
+    )
+
+    prepare_lefse_parser.add_argument(
+        "-c",
+        "--class-name",
+        metavar="TEXT",
+        required=True,
+        help="Metadata column used as 'Class' by LEfSe. [required]"
+    )
+
+    prepare_lefse_parser.add_argument(
+        "-s",
+        "--subclass-name",
+        metavar="TEXT",
+        help="Metadata column used as 'Subclass' by LEfSe."
+    )
+
+    prepare_lefse_parser.add_argument(
+        "-w",
+        "--where",
+        metavar="TEXT",
+        help="SQLite 'WHERE' clause specifying sample metadata criteria."
+    )
+
+    prepare_lefse_parser.add_argument(
+        "-h",
+        "--help",
+        action="help",
+        default=argparse.SUPPRESS,
+        help="Show this help message and exit."
+    )
 
     args = parser.parse_args()
     command = args.command
