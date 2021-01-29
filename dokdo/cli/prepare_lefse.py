@@ -60,7 +60,7 @@ def prepare_lefse(table_file,
         df = _.filtered_table.view(pd.DataFrame)
 
     def f(x):
-        for c in ['-', '[', ']', '(', ')']:
+        for c in ['-', '[', ']', '(', ')', ' ']:
             x = x.replace(c, '_')
         x = x.replace(';', '|')
         return x
@@ -68,6 +68,7 @@ def prepare_lefse(table_file,
     df.columns = [f(x) for x in df.columns.to_list()]
 
     mf = dokdo.get_mf(metadata_file)
+    mf = mf.replace(' ', '_', regex=True)
     cols = mf.columns.to_list()
     df = pd.concat([df, mf], axis=1, join="inner")
     df.insert(0, class_col, df.pop(class_col))
