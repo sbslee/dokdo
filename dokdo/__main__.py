@@ -259,7 +259,7 @@ def main():
 
     prepare_lefse_parser.add_argument(
         "-c",
-        "--class-name",
+        "--class-col",
         metavar="TEXT",
         required=True,
         help="Metadata column used as 'Class' by LEfSe. [required]"
@@ -267,9 +267,16 @@ def main():
 
     prepare_lefse_parser.add_argument(
         "-s",
-        "--subclass-name",
+        "--subclass-col",
         metavar="TEXT",
         help="Metadata column used as 'Subclass' by LEfSe."
+    )
+
+    prepare_lefse_parser.add_argument(
+        "-u",
+        "--subject-col",
+        metavar="TEXT",
+        help="Metadata column used as 'Subject' by LEfSe."
     )
 
     prepare_lefse_parser.add_argument(

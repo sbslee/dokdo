@@ -9,8 +9,9 @@ def prepare_lefse(table_file,
                   taxonomy_file,
                   metadata_file,
                   output_file,
-                  class_name,
-                  subclass_name=None,
+                  class_col,
+                  subclass_col=None,
+                  subject_col=None,
                   where=None):
     """Create a text file which can be used as input for the LEfSe tool.
 
@@ -32,10 +33,12 @@ def prepare_lefse(table_file,
         Path to the metadata file.
     output_file : str
         Path to the output file.
-    class_name : str
+    class_col : str
         Metadata column used as 'Class' by LEfSe.
-    subclass_name : str, optional
+    subclass_col : str, optional
         Metadata column used as 'Subclass' by LEfSe.
+    subject_col : str, optional
+        Metadata column used as 'Subject' by LEfSe.
     where : str, optional
         SQLite 'WHERE' clause specifying sample metadata criteria.
     """
@@ -67,13 +70,22 @@ def prepare_lefse(table_file,
     mf = dokdo.get_mf(metadata_file)
     cols = mf.columns.to_list()
     df = pd.concat([df, mf], axis=1, join="inner")
-    df.insert(0, "sample_id", df.index)
-    df.insert(0, class_name, df.pop(class_name))
-    cols.remove(class_name)
+    df.insert(0, class_col, df.pop(class_col))
+    cols.remove(class_col)
 
-    if subclass_name is not None:
-        df.insert(1, subclass_name, df.pop(subclass_name))
-        cols.remove(subclass_name)
+    if subclass_col is None and subject_col is None:
+        pass
+    elif subclass_col is not None and subject_col is None:
+        df.insert(1, subclass_col, df.pop(subclass_col))
+        cols.remove(subclass_col)
+    elif subclass_col is None and subject_col is not None:
+        df.insert(1, subject_col, df.pop(subject_col))
+        cols.remove(subject_col)
+    else:
+        df.insert(1, subclass_col, df.pop(subclass_col))
+        df.insert(2, subject_col, df.pop(subject_col))
+        cols.remove(subclass_col)
+        cols.remove(subject_col)
 
     df.drop(columns=cols, inplace=True)
     df.T.to_csv(output_file, header=False, sep='\t')
