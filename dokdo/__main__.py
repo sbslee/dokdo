@@ -121,12 +121,12 @@ def main():
     add_metadata_parser = subparsers.add_parser(
         "add-metadata",
         add_help=False,
-        help=("Add new metadata columns to an existing sample-metadata "
+        help=("Add new metadata columns to an existing metadata "
               "file (.tsv)."),
-        description=("This command adds new columns to an existing "
-                     "sample-metadata file. The 'metadata' file and the "
-                     "'columns' file must have at least one overlapping "
-                     "column.")
+        description=("Add new metadata columns to an existing "
+                     "metadata file (.tsv). The files "
+                     "'-i/--metadata-file' and '-c/--columns-file' "
+                     "must have at least one overlapping column.")
     )
 
     make_manifest_parser._optionals.title = "Arguments"
@@ -135,15 +135,15 @@ def main():
         "-i",
         "--metadata-file",
         metavar="PATH",
-        help="Path to the input sample-metadata file. [required]"
+        help="Path to the metadata file. [required]"
     )
 
     add_metadata_parser.add_argument(
         "-c",
         "--columns-file",
         metavar="PATH",
-        help=("Path to a file containing the new columns to be added (.tsv)."
-              "The first row should be column names. [required]")
+        help=("Path to a text file (.tsv) containing the columns to be "
+              "added. The first row should be column names. [required]")
     )
 
     add_metadata_parser.add_argument(

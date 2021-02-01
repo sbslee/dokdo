@@ -5,16 +5,20 @@ import warnings
 def add_metadata(metadata_file,
                  columns_file,
                  output_file):
-    """Add new metadata columns to an existing sample-metadata file (.tsv).
+    """Add new metadata columns to an existing metadata file (.tsv).
+
+    The files '-i/--metadata-file' and '-c/--columns-file' must have at
+    least one overlapping column.
 
     Parameters
     ----------
     metadata_file
+        Path to the metadata file.
     columns_file
+        Path to a text file (.tsv) containing the columns to be added.
+        The first row should be column names.
     output_file
         Path to the output file.
-
-    Path to the output file.
     """
     mf1 = Metadata.load(metadata_file).to_dataframe()
     index_name = mf1.index.name
