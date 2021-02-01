@@ -9,6 +9,10 @@ def add_metadata(metadata_file,
 
     Parameters
     ----------
+    metadata_file
+    columns_file
+    output_file
+        Path to the output file.
 
     Path to the output file.
     """
