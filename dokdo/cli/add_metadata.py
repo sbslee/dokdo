@@ -2,13 +2,20 @@ import pandas as pd
 from qiime2 import Metadata
 import warnings
 
-def add_metadata(metadata,
-                 columns,
-                 output):
-    mf1 = Metadata.load(metadata).to_dataframe()
+def add_metadata(metadata_file,
+                 columns_file,
+                 output_file):
+    """Add new metadata columns to an existing sample-metadata file (.tsv).
+
+    Parameters
+    ----------
+
+    Path to the output file.
+    """
+    mf1 = Metadata.load(metadata_file).to_dataframe()
     index_name = mf1.index.name
     dtypes = mf1.dtypes.to_dict()
-    mf2 = pd.read_table(columns, keep_default_na=False)
+    mf2 = pd.read_table(columns_file, keep_default_na=False)
 
     for k, v in dtypes.items():
         if k in mf2.columns:
@@ -33,4 +40,4 @@ def add_metadata(metadata,
         warnings.warn("Final metadata contains NaN. Please double check "
                       "whether this was intended.")
 
-    Metadata(mf3).save(output)
+    Metadata(mf3).save(output_file)

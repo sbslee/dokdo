@@ -5,6 +5,8 @@ from .version import __version__
 def main():
     parser = argparse.ArgumentParser(add_help=False)
 
+    help_msg = "Show this help message and exit."
+
     parser.add_argument(
         "-v",
         "--version",
@@ -18,7 +20,7 @@ def main():
         "--help",
         action="help",
         default=argparse.SUPPRESS,
-        help="Show this help message and exit."
+        help=help_msg
     )
 
     subparsers = parser.add_subparsers(
@@ -32,11 +34,11 @@ def main():
     collapse_parser = subparsers.add_parser(
         "collapse",
         add_help=False,
-        description=("This command creates seven collapsed ASV tables, one "
-                     "for each taxonomic level (i.e. `level-1.csv` to "
-                     "`level-7.csv`)."),
-        help=("This command creates seven collapsed ASV tables, one for each "
-              "taxonomic level."),
+        help=("Create seven collapsed feature tables, one for each "
+              "taxonomic level (i.e. 'level-1.csv' to 'level-7.csv')."),
+        description=("Create seven collapsed feature tables, one "
+                     "for each taxonomic level (i.e. 'level-1.csv' "
+                     "to 'level-7.csv').")
     )
 
     collapse_parser._optionals.title = "Arguments"
@@ -46,7 +48,8 @@ def main():
         "--table-file",
         metavar="PATH",
         required=True,
-        help="Path to the input table.qza file. [required]"
+        help=("Path to the table file with the 'FeatureTable[Frequency]' "
+              "type. [required]")
     )
 
     collapse_parser.add_argument(
@@ -54,7 +57,8 @@ def main():
         "--taxonomy-file",
         metavar="PATH",
         required=True,
-        help="Path to the input taxonomy.qza file. [required]"
+        help=("Path to the taxonomy file with the 'FeatureData[Taxonomy]' "
+              "type. [required]")
     )
 
     collapse_parser.add_argument(
@@ -70,29 +74,22 @@ def main():
         "--help",
         action="help",
         default=argparse.SUPPRESS,
-        help="Show this help message and exit."
+        help=help_msg
     )
-
-
-
-
-
-
 
     make_manifest_parser = subparsers.add_parser(
         "make-manifest",
         add_help=False,
-        description=("This command creates a manifest file (.tsv) from a "
-                     "directory containing FASTQ files. The file names must "
-                     "include either '_R1_001.fastq' or '_R1_002.fastq'. "
-                     "The word before the third-to-last underscore will "
-                     "be set as the sample ID. For example, a file named "
-                     "'EXAMPLE_S1_R1_001.fastq.gz' will produce 'EXAMPLE' as "
-                     "sample ID and 'EXAM_PLE_S1_R1_001.fastq.gz', "
+        help=("Create a manifest file (.tsv) from a directory containing "
+              "FASTQ files."),
+        description=("Create a manifest file (.tsv) from a directory "
+                     "containing FASTQ files. The file names must include "
+                     "either '_R1_001.fastq' or '_R1_002.fastq'. The word "
+                     "before the third-to-last underscore will be set "
+                     "as the sample ID. For example, a file named "
+                     "'EXAMPLE_S1_R1_001.fastq.gz' will produce 'EXAMPLE' "
+                     "as sample ID and 'EXAM_PLE_S1_R1_001.fastq.gz', "
                      "'EXAM_PLE'."),
-
-        help=("This command creates a manifest file (.tsv) from a directory "
-              "containing FASTQ files."),
     )
 
     make_manifest_parser._optionals.title = "Arguments"
@@ -118,44 +115,54 @@ def main():
         "--help",
         action="help",
         default=argparse.SUPPRESS,
-        help="Show this help message and exit."
+        help=help_msg
     )
 
-
-
-
-
-
-
     add_metadata_parser = subparsers.add_parser(
-        'add-metadata',
+        "add-metadata",
+        add_help=False,
+        help=("Add new metadata columns to an existing sample-metadata "
+              "file (.tsv)."),
         description=("This command adds new columns to an existing "
                      "sample-metadata file. The 'metadata' file and the "
                      "'columns' file must have at least one overlapping "
-                     "column."),
-        help=("This command adds new columns to an existing sample-metadata "
-              "file."),
+                     "column.")
     )
+
+    make_manifest_parser._optionals.title = "Arguments"
+
     add_metadata_parser.add_argument(
-        'metadata',
-        help="Path to the input sample-metadata.tsv file."
+        "-i",
+        "--metadata-file",
+        metavar="PATH",
+        help="Path to the input sample-metadata file. [required]"
     )
+
     add_metadata_parser.add_argument(
-        'columns',
+        "-c",
+        "--columns-file",
+        metavar="PATH",
         help=("Path to a file containing the new columns to be added (.tsv)."
-              "The first row should be column names.")
+              "The first row should be column names. [required]")
     )
+
     add_metadata_parser.add_argument(
-        'output',
-        help="Path to the output sample-metadata.tsv file."
+        "-o",
+        "--output-file",
+        metavar="PATH",
+        help="Path to the output file. [required]"
     )
 
-
-
-
+    add_metadata_parser.add_argument(
+        "-h",
+        "--help",
+        action="help",
+        default=argparse.SUPPRESS,
+        help=help_msg
+    )
 
     summarize_parser = subparsers.add_parser(
-        'summarize',
+        "summarize",
         add_help=False,
         help=("Extract summary or verbose data from an Artifact file."),
         description=("Extract summary or verbose data from an Artifact "
@@ -169,6 +176,7 @@ def main():
     summarize_parser.add_argument(
         "-i",
         "--input-file",
+        metavar="PATH",
         help="Path to the input Artifact file. [required]",
     )
 
@@ -184,15 +192,15 @@ def main():
         "--help",
         action="help",
         default=argparse.SUPPRESS,
-        help="Show this help message and exit."
+        help=help_msg
     )
 
     prepare_lefse_parser = subparsers.add_parser(
         "prepare-lefse",
         add_help=False,
-        help=("Create a text file which can be used as input for "
+        help=("Create a TSV file which can be used as input for "
               "the LEfSe tool."),
-        description=("Create a text file which can be used as input for the "
+        description=("Create a TSV file which can be used as input for the "
                      "LEfSe tool. This command 1) collapses the input "
                      "feature table at the genus level, 2) computes "
                      "relative frequency of the features, 3) performs "
@@ -273,7 +281,7 @@ def main():
         "--help",
         action="help",
         default=argparse.SUPPRESS,
-        help="Show this help message and exit."
+        help=help_msg
     )
 
     args = parser.parse_args()

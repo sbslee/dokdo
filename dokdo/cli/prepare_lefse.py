@@ -13,7 +13,7 @@ def prepare_lefse(table_file,
                   subclass_col=None,
                   subject_col=None,
                   where=None):
-    """Create a text file which can be used as input for the LEfSe tool.
+    """Create a TSV file which can be used as input for the LEfSe tool.
 
     This command
     1) collapses the input feature table at the genus level,
