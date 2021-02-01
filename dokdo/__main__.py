@@ -154,38 +154,6 @@ def main():
 
 
 
-
-
-
-
-
-    merge_metadata_parser = subparsers.add_parser(
-        'merge-metadata',
-        description=("This command merges two or more sample-metadata.tsv "
-                     "files vertically. All files are assumed to have the "
-                     "same column names."),
-        help=("This command merges two or more sample-metadata.tsv files "
-              "vertically."),
-    )
-    merge_metadata_parser.add_argument(
-        'metadata',
-        nargs='+',
-        help="Paths to the sample-metadata.tsv files to be merged.",
-    )
-    merge_metadata_parser.add_argument(
-        'output',
-        help="Path to the output sample-metadata.tsv file.",
-    )
-
-
-
-
-
-
-
-
-
-
     summarize_parser = subparsers.add_parser(
         'summarize',
         add_help=False,
