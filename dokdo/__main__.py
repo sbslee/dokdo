@@ -188,23 +188,36 @@ def main():
 
     summarize_parser = subparsers.add_parser(
         'summarize',
-        description=("This command extracts summary statistics from an "
-                     "Artifact file with the semantic type "
-                     "`FeatureTable[Frequency]`."),
-        help=("This command extracts summary statistics for an Artifact file."),
+        add_help=False,
+        help=("Extract summary or verbose data from an Artifact file."),
+        description=("Extract summary or verbose data from an Artifact "
+                     "file. This command automatically detects the input "
+                     "file's semantic type and then extracts summary or "
+                     "verbose data from it.")
     )
+
+    summarize_parser._optionals.title = "Arguments"
+
     summarize_parser.add_argument(
-        'input',
-        help="Path to the input Artifact file.",
+        "-i",
+        "--input-file",
+        help="Path to the input Artifact file. [required]",
     )
+
     summarize_parser.add_argument(
-        '-v', '--verbose', action='store_true',
+        "-v",
+        "--verbose",
+        action="store_true",
         help="Print a verbose version of the results.",
     )
 
-
-
-
+    summarize_parser.add_argument(
+        "-h",
+        "--help",
+        action="help",
+        default=argparse.SUPPRESS,
+        help="Show this help message and exit."
+    )
 
     prepare_lefse_parser = subparsers.add_parser(
         "prepare-lefse",
@@ -217,8 +230,9 @@ def main():
                      "relative frequency of the features, 3) performs "
                      "sample filtration if requested, 4) changes the "
                      "format of feature names, 5) adds the relevant "
-                     "metadata as 'Class' and 'Subclass', and 6) writes a "
-                     "text file which can be used as input for LEfSe.")
+                     "metadata as 'Class', 'Subclass', and 'Subject', "
+                     "and 6) writes a text file which can be used as "
+                     "input for LEfSe.")
     )
 
     prepare_lefse_parser._optionals.title = "Arguments"

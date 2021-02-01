@@ -20,7 +20,7 @@ def prepare_lefse(table_file,
     2) computes relative frequency of the features,
     3) performs sample filtration if requested,
     4) changes the format of feature names,
-    5) adds the relevant metadata as 'Class' and 'Subclass', and
+    5) adds the relevant metadata as 'Class', 'Subclass', and 'Subject', and
     6) writes a text file which can be used as input for LEfSe.
 
     Parameters
