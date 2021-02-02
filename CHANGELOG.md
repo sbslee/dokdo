@@ -1,5 +1,25 @@
 # Changelog
 
+## 1.5.0
+
+* Starting this version, Dokdo is packaged with `setuptools`.
+* There have been major changes to the Dokdo CLI.
+* Added a new plotting method called `regplot()`.
+* Added a new command called `prepare-lefse`.
+* The `merge_metadata` command has been deprecated.
+* Updated the following methods:
+    * `_artist()`
+    * `alpha_diversity_plot()`
+    * `beta_3d_plot()`
+    * `beta_parallel_plot()`
+    * `barplot()`
+    * `ordinate()`
+    * `taxa_abundance_bar_plot()`
+    * `taxa_abundance_box_plot()`
+    * `heatmap()`
+* Updated the `make-manifest` command.
+* See [#6](https://github.com/sbslee/dokdo/issues/6) for more details.
+
 ## 1.4.0
 
 * Added a new command called `summarize`.
