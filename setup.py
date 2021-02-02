@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 exec(open("dokdo/version.py").read())
 
@@ -10,5 +10,6 @@ setup(
     description=("A Python package for microbiome "
                  "sequencing analysis with QIIME 2"),
     url="https://github.com/sbslee/dokdo",
+    packages=find_packages(),
     entry_points={"console_scripts": ["dokdo=dokdo.__main__:main"]}
 )
