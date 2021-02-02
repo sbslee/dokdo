@@ -17,7 +17,7 @@
     * `taxa_abundance_bar_plot()`
     * `taxa_abundance_box_plot()`
     * `heatmap()`
-* Updated the `make-manifest` command.
+* Updated the `make_manifest` command.
 * See [#6](https://github.com/sbslee/dokdo/issues/6) for more details.
 
 ## 1.4.0
