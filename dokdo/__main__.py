@@ -129,7 +129,7 @@ def main():
                      "must have at least one overlapping column.")
     )
 
-    make_manifest_parser._optionals.title = "Arguments"
+    add_metadata_parser._optionals.title = "Arguments"
 
     add_metadata_parser.add_argument(
         "-i",
