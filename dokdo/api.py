@@ -17,7 +17,7 @@ from skbio.stats.ordination import OrdinationResults
 from scipy import stats
 from scipy.spatial.distance import euclidean
 
-# Import QIIME 2 libraries
+# Import QIIME 2 libraries.
 import qiime2
 from qiime2 import Artifact
 from qiime2 import Metadata
@@ -196,6 +196,7 @@ def _artist(ax,
             legend_fontsize=None,
             legend_markerscale=None,
             legend_lw=None,
+            legend_title=None,
             plot_method=None):
     """
     This method controls various properties of a figure.
@@ -286,6 +287,8 @@ def _artist(ax,
         Relative size of legend markers compared with the original.
     legend_lw : float, optional
         Width of the lines in the legend.
+    legend_title: str, optional
+        Legend title.
     plot_method : str, optional
         Name of the plotting method. This argument is internally used for
         the `alpha_rarefaction_plot` method. Not to be used by users.
@@ -293,7 +296,7 @@ def _artist(ax,
     Returns
     -------
     matplotlib.axes.Axes
-        Returns the Axes object with the plot drawn onto it.
+        Axes object with the plot drawn onto it.
 
     Notes
     -----
@@ -410,14 +413,13 @@ def _artist(ax,
 
     def _display_legend():
         leg = ax.legend(h, l, loc=legend_loc, ncol=legend_ncol,
-            fontsize=legend_fontsize, markerscale=legend_markerscale)
+            fontsize=legend_fontsize, markerscale=legend_markerscale,
+            title=legend_title, title_fontsize=legend_fontsize)
 
         if plot_method == 'alpha_rarefaction_plot':
             i = 1
-        elif leg.get_title().get_text() is '':
-            i = 0
         else:
-            i = 1
+            i = 0
 
         if legend_lw is not None:
             for lh in leg.legendHandles[i:]:
@@ -661,7 +663,7 @@ def ordinate(table,
     pcoa_results = result_obj.pcoa
 
     if biplot:
-        rf_result = feature_table.methods.relative_frequency(table=table)
+        rf_result = feature_table.methods.relative_frequency(table=_table)
         rf_table = rf_result.relative_frequency_table
         result_obj = diversity.methods.pcoa_biplot(pcoa=pcoa_results,
             features=rf_table)
@@ -704,7 +706,7 @@ def read_quality_plot(demux,
     Returns
     -------
     matplotlib.axes.Axes
-        Returns the Axes object with the plot drawn onto it.
+        Axes object with the plot drawn onto it.
 
     Notes
     -----
@@ -801,7 +803,7 @@ def denoising_stats_plot(stats,
     Returns
     -------
     matplotlib.axes.Axes
-        Returns the Axes object with the plot drawn onto it.
+        Axes object with the plot drawn onto it.
 
     Notes
     -----
@@ -903,7 +905,7 @@ def alpha_rarefaction_plot(rarefaction,
     Returns
     -------
     matplotlib.axes.Axes
-        Returns the Axes object with the plot drawn onto it.
+        Axes object with the plot drawn onto it.
 
     Notes
     -----
@@ -964,20 +966,23 @@ def alpha_rarefaction_plot(rarefaction,
 
 
 
-def alpha_diversity_plot(significance,
+def alpha_diversity_plot(alpha_diversity,
+                         metadata,
                          where,
                          ax=None,
                          figsize=None,
                          add_swarmplot=False,
                          order=None,
                          artist_kwargs=None):
-    """
-    This method creates an alpha diversity plot.
+    """Create an alpha diversity plot.
 
     Parameters
     ----------
-    significance : str or qiime2.Visualization
-        Visualization file or object from the q2-diversity plugin.
+    alpha_diversity : str or qiime2.Artifact
+        Artifact file or object with the semantic type
+        `SampleData[AlphaDiversity]`.
+    metadata : str or qiime2.Metadata
+        Metadata file or object.
     where : str
         Column name to be used for the x-axis.
     ax : matplotlib.axes.Axes, optional
@@ -994,23 +999,17 @@ def alpha_diversity_plot(significance,
     Returns
     -------
     matplotlib.axes.Axes
-        Returns the Axes object with the plot drawn onto it.
+        Axes object with the plot drawn onto it.
 
-    Notes
-    -----
-    Example usage of the q2-diversity plugin:
-        CLI -> qiime diversity alpha-group-significance [OPTIONS]
-        API -> from qiime2.plugins.diversity.visualizers import alpha_group_significance
     """
-    with tempfile.TemporaryDirectory() as t:
-        _parse_input(significance, t)
-
-        df = Metadata.load(f'{t}/metadata.tsv').to_dataframe()
+    df = Artifact.load(alpha_diversity).view(pd.Series).to_frame()
+    mf = get_mf(metadata)
+    df = pd.concat([df, mf], axis=1, join='inner')
 
     if ax is None:
         fig, ax = plt.subplots(figsize=figsize)
 
-    metric = df.columns[-1]
+    metric = df.columns[0]
 
     boxprops = dict(color='white', edgecolor='black')
 
@@ -1090,7 +1089,7 @@ def beta_2d_plot(pcoa_results,
     Returns
     -------
     matplotlib.axes.Axes
-        Returns the Axes object with the plot drawn onto it.
+        Axes object with the plot drawn onto it.
 
     See Also
     --------
@@ -1202,7 +1201,7 @@ def beta_3d_plot(pcoa_results,
     Returns
     -------
     matplotlib.axes.Axes
-        Returns the Axes object with the plot drawn onto it.
+        Axes object with the plot drawn onto it.
 
     See Also
     --------
@@ -1262,6 +1261,7 @@ def beta_3d_plot(pcoa_results,
                      'hide_xticks': True,
                      'hide_yticks': True,
                      'hide_zticks': True,
+                     'legend_title': hue,
                      **artist_kwargs}
 
     ax = _artist(ax, **artist_kwargs)
@@ -1304,7 +1304,7 @@ def beta_scree_plot(pcoa_results,
     Returns
     -------
     matplotlib.axes.Axes
-        Returns the Axes object with the plot drawn onto it.
+        Axes object with the plot drawn onto it.
 
     See Also
     --------
@@ -1388,7 +1388,7 @@ def beta_parallel_plot(pcoa_results,
     Returns
     -------
     matplotlib.axes.Axes
-        Returns the Axes object with the plot drawn onto it.
+        Axes object with the plot drawn onto it.
 
     See Also
     --------
@@ -1439,6 +1439,7 @@ def beta_parallel_plot(pcoa_results,
     artist_kwargs = {'xlabel': '',
                      'ylabel': '',
                      'xticklabels': props,
+                     'legend_title': hue,
                      **artist_kwargs}
 
     ax = _artist(ax, **artist_kwargs)
@@ -1481,7 +1482,7 @@ def distance_matrix_plot(distance_matrix,
     Returns
     -------
     matplotlib.axes.Axes
-        Returns the Axes object with the plot drawn onto it.
+        Axes object with the plot drawn onto it.
 
     Notes
     -----
@@ -1577,10 +1578,10 @@ def taxa_abundance_bar_plot(taxa,
     level : int, default: 1
         Taxonomic level at which the features should be collapsed.
     by : list, optional
-        Column name(s) to be used for sorting the samples. Using 'index' will
-        sort the samples by their name, in addition to other column name(s)
-        that may have been provided. If multiple items are provided, sorting
-        will occur by the order of the items.
+        Column name(s) to be used for sorting the samples. Using 'sample-id'
+        will sort the samples by their name, in addition to other column
+        name(s) that may have been provided. If multiple items are provided,
+        sorting will occur by the order of the items.
     ax : matplotlib.axes.Axes, optional
         Axes object to draw the plot onto, otherwise uses the current Axes.
     figsize : tuple, optional
@@ -1632,7 +1633,7 @@ def taxa_abundance_bar_plot(taxa,
     Returns
     -------
     matplotlib.axes.Axes
-        Returns the Axes object with the plot drawn onto it.
+        Axes object with the plot drawn onto it.
 
     See Also
     --------
@@ -1677,6 +1678,8 @@ def taxa_abundance_bar_plot(taxa,
             df.rename(columns={k: f'@{k}'}, inplace=True)
             df[k] = df[f'@{k}'].map(d)
 
+    df["sample-id"] = df.index
+
     # If provided, sort the samples for display in the x-axis.
     if isinstance(by, list):
         df = df.sort_values(by=by)
@@ -1701,7 +1704,6 @@ def taxa_abundance_bar_plot(taxa,
     # Remove the metadata columns.
     cols = _get_mf_cols(df)
     mf = df[cols]
-    mf = mf.assign(**{'sample-id': mf.index})
     df = df.drop(columns=cols)
 
     if sort_by_mean1:
@@ -1778,6 +1780,7 @@ def taxa_abundance_bar_plot(taxa,
 
 
 def taxa_abundance_box_plot(taxa,
+                            metadata=None,
                             hue=None,
                             hue_order=None,
                             add_datapoints=False,
@@ -1810,6 +1813,8 @@ def taxa_abundance_box_plot(taxa,
     ----------
     taxa : str or qiime2.Visualization
         Visualization file or object from the q2-taxa plugin.
+    metadata : str or qiime2.Metadata, optional
+        Metadata file or object.
     hue : str, optional
         Grouping variable that will produce boxes with different colors.
     hue_order : list, optional
@@ -1819,10 +1824,10 @@ def taxa_abundance_box_plot(taxa,
     level : int, default: 1
         Taxonomic level at which the features should be collapsed.
     by : list, optional
-        Column name(s) to be used for sorting the samples. Using 'index' will
-        sort the samples by their name, in addition to other column name(s)
-        that may have been provided. If multiple items are provided, sorting
-        will occur by the order of the items.
+        Column name(s) to be used for sorting the samples. Using 'sample-id'
+        will sort the samples by their name, in addition to other column
+        name(s) that may have been provided. If multiple items are provided,
+        sorting will occur by the order of the items.
     ax : matplotlib.axes.Axes, optional
         Axes object to draw the plot onto, otherwise uses the current Axes.
     figsize : tuple, optional
@@ -1869,7 +1874,7 @@ def taxa_abundance_box_plot(taxa,
     Returns
     -------
     matplotlib.axes.Axes
-        Returns the Axes object with the plot drawn onto it.
+        Axes object with the plot drawn onto it.
 
     See Also
     --------
@@ -1885,6 +1890,17 @@ def taxa_abundance_box_plot(taxa,
     with tempfile.TemporaryDirectory() as t:
         _parse_input(taxa, t)
         df = pd.read_csv(f'{t}/level-{level}.csv', index_col=0)
+
+    # If provided, update the metadata.
+    if metadata is None:
+        pass
+    else:
+        mf = get_mf(metadata)
+        cols = _get_mf_cols(df)
+        df.drop(columns=cols, inplace=True)
+        df = pd.concat([df, mf], axis=1, join='inner')
+
+    df["sample-id"] = df.index
 
     # If provided, sort the samples for display in the x-axis.
     if by:
@@ -1903,7 +1919,6 @@ def taxa_abundance_box_plot(taxa,
     # Remove the metadata columns.
     cols = _get_mf_cols(df)
     mf = df[cols]
-    mf = mf.assign(**{'sample-id': mf.index})
     df = df.drop(columns=cols)
 
     df, mf = _filter_samples(df, mf, exclude_samples, include_samples)
@@ -2003,6 +2018,9 @@ def taxa_abundance_box_plot(taxa,
                      'remove_duplicates': remove_duplicates,
                      **artist_kwargs}
 
+    if hue is not None:
+        artist_kwargs['legend_title'] = hue
+
     ax = _artist(ax, **artist_kwargs)
 
     return ax
@@ -2040,7 +2058,7 @@ def ancom_volcano_plot(ancom,
     Returns
     -------
     matplotlib.axes.Axes
-        Returns the Axes object with the plot drawn onto it.
+        Axes object with the plot drawn onto it.
 
     Notes
     -----
@@ -2121,7 +2139,7 @@ def addsig(x1,
     Returns
     -------
     matplotlib.axes.Axes
-        Returns the Axes object with the plot drawn onto it.
+        Axes object with the plot drawn onto it.
     """
     if ax is None:
         fig, ax = plt.subplots(figsize=figsize)
@@ -2159,7 +2177,7 @@ def addpairs(taxon,
     taxon : str
         Target taxon name.
     csv_file : str
-        Path to csv file.
+        Path to the .csv file from the `taxa_abundance_box_plot` method.
     subject : str
         Column name to indicate pair information.
     category : str
@@ -2180,7 +2198,7 @@ def addpairs(taxon,
     Returns
     -------
     matplotlib.axes.Axes
-        Returns the Axes object with the plot drawn onto it.
+        Axes object with the plot drawn onto it.
 
     See Also
     --------
@@ -2204,6 +2222,88 @@ def addpairs(taxon,
 
     for i in range(len(x1)):
         ax.plot([x1[i],x2[i]], [y1[i], y2[i]])
+
+    return ax
+
+
+
+
+
+
+
+
+
+
+def regplot(taxon,
+            csv_file,
+            subject,
+            category,
+            group1,
+            group2,
+            label=None,
+            ax=None,
+            figsize=None,
+            artist_kwargs=None):
+    """Plot relative abundance data and a linear regression model fit from
+    paired samples for the given taxon.
+
+    Parameters
+    ----------
+    taxon : str
+        Target taxon name.
+    csv_file : str
+        Path to the .csv file from the `taxa_abundance_box_plot` method.
+    subject : str
+        Column name to indicate pair information.
+    category : str
+        Column name to be studied.
+    group1 : str
+        First group in the category column.
+    group2 : str
+        Second group in the category column.
+    label : str
+        Label to use in a legend.
+    ax : matplotlib.axes.Axes, optional
+        Axes object to draw the plot onto, otherwise uses the current Axes.
+    figsize : tuple, optional
+        Width, height in inches. Format: (float, float).
+    artist_kwargs : dict, optional
+        Keyword arguments passed down to the _artist() method.
+
+    Returns
+    -------
+    matplotlib.axes.Axes
+        Axes object with the plot drawn onto it.
+
+    See Also
+    --------
+    taxa_abundance_box_plot
+    """
+    if ax is None:
+        fig, ax = plt.subplots(figsize=figsize)
+
+    df = pd.read_csv(csv_file)
+    df = df.sort_values([subject, category])
+    g1 = df[df[category] == group1]
+    g2 = df[df[category] == group2]
+    df = pd.DataFrame({group1: g1[taxon].to_list(),
+                       group2: g2[taxon].to_list()})
+
+    if label is None:
+        _label = taxon
+    else:
+        _label = label
+
+    sns.regplot(data=df, x=group1, y=group2, ax=ax, label=_label)
+
+    if artist_kwargs is None:
+        artist_kwargs = {}
+
+    artist_kwargs = {"xlabel": group1,
+                     "ylabel": group2,
+                     **artist_kwargs}
+
+    ax = _artist(ax, **artist_kwargs)
 
     return ax
 
@@ -2259,7 +2359,7 @@ def addbiplot(pcoa_results,
     Returns
     -------
     matplotlib.axes.Axes
-        Returns the Axes object with the plot drawn onto it.
+        Axes object with the plot drawn onto it.
 
     See Also
     --------
@@ -2348,7 +2448,8 @@ def barplot(barplot_file,
             metadata=None,
             artist_kwargs=None,
             ylabel_fontsize=None,
-            xaxis_repeated=False):
+            xaxis_repeated=False,
+            cmap_name='Accent'):
     """
     This method creates a grouped abundance bar plot.
 
@@ -2388,6 +2489,8 @@ def barplot(barplot_file,
     xaxis_repeated : bool, default: False
         If true, remove all x-axis tick labels except for the bottom subplot.
         Ignored if `axis=1`.
+    cmap_name : str, default: 'Accent'
+        Name of the colormap passed to `matplotlib.cm.get_cmap()`.
 
     See Also
     --------
@@ -2428,7 +2531,8 @@ def barplot(barplot_file,
                        count=count,
                        by=by,
                        label_columns=label_columns,
-                       metadata=metadata)
+                       metadata=metadata,
+                       cmap_name=cmap_name)
 
     if axis == 0:
         if xaxis_repeated:
@@ -2498,14 +2602,15 @@ def barplot(barplot_file,
 
 def heatmap(table,
             metadata=None,
-            where=None,
+            hue=None,
+            hue_order=None,
             normalize=True,
             method='average',
             metric='euclidean',
             figsize=(10, 10),
             row_cluster=True,
             col_cluster=True,
-            cmap_name='Accent'):
+            cmap_name='tab10'):
     """
     This method creates a heatmap representation of a feature table.
 
@@ -2515,8 +2620,10 @@ def heatmap(table,
         Artifact file or object corresponding to FeatureTable[Frequency].
     metadata : str or qiime2.Metadata, optional
         Metadata file or object.
-    where : str, optional
-        SQLite WHERE clause specifying sample metadata criteria.
+    hue : str, optional
+        Grouping variable that will produce labels with different colors.
+    hue_order : list, optional
+        Specify the order of categorical levels of the 'hue' semantic.
     normalize : bool, default: True
         Normalize the feature table by adding a psuedocount of 1 and then
         taking the log10 of the table.
@@ -2532,7 +2639,7 @@ def heatmap(table,
         If True, cluster the rows.
     col_cluster : bool, default: True
         If True, cluster the columns.
-    cmap_name : str, default: 'Accent'
+    cmap_name : str, default: 'tab10'
         Name of the colormap passed to `matplotlib.cm.get_cmap()`.
 
     Returns
@@ -2552,16 +2659,20 @@ def heatmap(table,
     if normalize:
         df = df.apply(lambda x: np.log10(x + 1))
 
-    if metadata is not None and where is not None:
+    if metadata is not None and hue is not None:
         colors = plt.cm.get_cmap(cmap_name).colors
         mf = get_mf(metadata)
         df = pd.concat([df, mf], axis=1, join='inner')
-        keys = df[where].unique()
+        if hue_order is None:
+            keys = df[hue].unique()
+        else:
+            keys = hue_order
+            df = df[df[hue].isin(hue_order)]
         lut = dict(zip(keys, colors[:len(keys)]))
-        row_colors = df[where].map(lut)
+        row_colors = df[hue].map(lut)
         df.drop(mf.columns, axis=1, inplace=True)
-    elif metadata is None and where is not None:
-        raise ValueError("Argument 'where' requires 'metadata' argument")
+    elif metadata is None and hue is not None:
+        raise ValueError("Argument 'hue' requires 'metadata' argument")
     else:
         lut = None
         row_colors = None
@@ -2576,7 +2687,7 @@ def heatmap(table,
 
     if lut is not None:
         handles = [Patch(facecolor=lut[name]) for name in lut]
-        plt.legend(handles, lut, title=where,
+        plt.legend(handles, lut, title=hue,
                    bbox_to_anchor=(1, 1), bbox_transform=plt.gcf().transFigure, loc='upper right')
 
     return g

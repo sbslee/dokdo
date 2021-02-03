@@ -4,7 +4,13 @@ Dokdo is a lightweight Python package for microbiome sequencing analysis, which 
 
 Dokdo is versatile like the swiss army knife. For example, you can use its command line interface to create various input files for QIIME 2 (e.g. a manifest file or a sample-metadata file) or perform a variety of secondary analyses. You may also use Dokdo's application programming interface with [Jupyter Notebook](https://jupyter.org/) to create publication-quality figures using the output files from QIIME 2 (e.g. a taxonomic bar plot or an alpha rarefaction plot).
 
-There is no installation for Dokdo. Simply clone this repository and you are good to go. Only QIIME 2 is required.
+To install Dokdo, enter the following in your terminal:
+
+```
+$ git clone https://github.com/sbslee/dokdo
+$ cd dokdo
+$ pip install .
+```
 
 For more details, please see the [Wiki page](https://github.com/sbslee/dokdo/wiki) which serves as the official user documentation for Dokdo, including instructions, tutorials, and other important information. The page also documents select information and resources pertaining to QIIME 2 that I find particularly useful.
 
