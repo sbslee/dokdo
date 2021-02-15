@@ -2663,6 +2663,7 @@ def heatmap(table,
         colors = plt.cm.get_cmap(cmap_name).colors
         mf = get_mf(metadata)
         df = pd.concat([df, mf], axis=1, join='inner')
+        df = df.loc[:, (df != 0).any(axis=0)]
         if hue_order is None:
             keys = df[hue].unique()
         else:
