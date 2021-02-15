@@ -2611,7 +2611,8 @@ def heatmap(table,
             figsize=(10, 10),
             row_cluster=True,
             col_cluster=True,
-            cmap_name='tab10'):
+            cmap_name='tab10',
+            **kwargs):
     """
     This method creates a heatmap representation of a feature table.
 
@@ -2643,6 +2644,8 @@ def heatmap(table,
         If True, cluster the columns.
     cmap_name : str, default: 'tab10'
         Name of the colormap passed to `matplotlib.cm.get_cmap()`.
+    kwargs : other keyword arguments
+        All other keyword arguments are passed to :func:`heatmap`.
 
     Returns
     -------
@@ -2690,7 +2693,8 @@ def heatmap(table,
                        figsize=figsize,
                        row_cluster=row_cluster,
                        col_cluster=col_cluster,
-                       row_colors=row_colors)
+                       row_colors=row_colors,
+                       **kwargs)
 
     if lut is not None:
         handles = [Patch(facecolor=lut[name]) for name in lut]
