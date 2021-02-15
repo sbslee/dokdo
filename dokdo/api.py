@@ -16,6 +16,7 @@ import skbio as sb
 from skbio.stats.ordination import OrdinationResults
 from scipy import stats
 from scipy.spatial.distance import euclidean
+from skbio.stats.composition import clr
 
 # Import QIIME 2 libraries.
 import qiime2
@@ -2604,7 +2605,7 @@ def heatmap(table,
             metadata=None,
             hue=None,
             hue_order=None,
-            normalize=True,
+            normalize=None,
             method='average',
             metric='euclidean',
             figsize=(10, 10),
@@ -2624,9 +2625,10 @@ def heatmap(table,
         Grouping variable that will produce labels with different colors.
     hue_order : list, optional
         Specify the order of categorical levels of the 'hue' semantic.
-    normalize : bool, default: True
+    normalize : str, optional
         Normalize the feature table by adding a psuedocount of 1 and then
-        taking the log10 of the table.
+        taking the log10 of the table or performing centre log ratio
+        transformation. Choices: {'log10', 'clr'}.
     method : str, default: 'average'
         Linkage method to use for calculating clusters. See
         `scipy.cluster.hierarchy.linkage()` documentation for more information.
@@ -2656,9 +2658,6 @@ def heatmap(table,
 
     df = table.view(pd.DataFrame)
 
-    if normalize:
-        df = df.apply(lambda x: np.log10(x + 1))
-
     if metadata is not None and hue is not None:
         colors = plt.cm.get_cmap(cmap_name).colors
         mf = get_mf(metadata)
@@ -2677,6 +2676,13 @@ def heatmap(table,
     else:
         lut = None
         row_colors = None
+
+    if normalize == 'log10':
+        df = df.apply(lambda x: np.log10(x + 1))
+    elif normalize == 'clr':
+        df = df.apply(lambda x: clr(x + 1), axis=1, result_type='expand')
+    else:
+        pass
 
     g = sns.clustermap(df,
                        method=method,
