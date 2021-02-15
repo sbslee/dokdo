@@ -2680,7 +2680,7 @@ def heatmap(table,
     if normalize == 'log10':
         df = df.apply(lambda x: np.log10(x + 1))
     elif normalize == 'clr':
-        df = df.apply(lambda x: clr(x + 1), axis=1, result_type='expand')
+        df = df.apply(lambda x: clr(x + 1), axis=1, result_type='broadcast')
     else:
         pass
 
