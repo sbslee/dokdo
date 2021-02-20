@@ -62,8 +62,21 @@ def prepare_lefse(table_file,
     def f(x):
         for c in ['-', '[', ']', '(', ')', ' ']:
             x = x.replace(c, '_')
-        x = x.replace(';', '|')
-        return x
+
+        ranks = x.split(';')
+        base = ranks[0]
+        result = [base]
+
+        for i, rank in enumerate(ranks[1:], start=2):
+            if rank == '__':
+                result.append(f'{base}_x__L{i}')
+            elif rank.split('__')[1] == '':
+                result.append(f'{base}_{rank}L{i}')
+            else:
+                result.append(rank)
+                base = rank
+
+        return '|'.join(result)
 
     df.columns = [f(x) for x in df.columns.to_list()]
 
