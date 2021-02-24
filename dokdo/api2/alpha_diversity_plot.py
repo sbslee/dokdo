@@ -6,7 +6,7 @@ from ..api import _artist, get_mf
 
 def alpha_diversity_plot(alpha_diversity, metadata, where,
                          ax=None, figsize=None, add_swarmplot=False,
-                         order=None, artist_kwargs=None):
+                         order=None, hide_nsizes=False, artist_kwargs=None):
     """Create an alpha diversity plot.
 
     Parameters
@@ -26,6 +26,8 @@ def alpha_diversity_plot(alpha_diversity, metadata, where,
         Add a swarm plot on top of the box plot.
     order : list, optional
         Order to plot the categorical levels in.
+    hide_nsizes : bool, default: False
+        Hide sample size from x-axis labels.
     artist_kwargs : dict, optional
         Keyword arguments passed down to the _artist() method.
 
@@ -57,6 +59,12 @@ def alpha_diversity_plot(alpha_diversity, metadata, where,
 
     if add_swarmplot:
         sns.swarmplot(**d)
+
+    if hide_nsizes is False:
+        nsizes = df[where].value_counts().to_dict()
+        xtexts = [x.get_text() for x in ax.get_xticklabels()]
+        xtexts = [f'{x} ({nsizes[x]})' for x in xtexts]
+        ax.set_xticklabels(xtexts)
 
     if artist_kwargs is None:
         artist_kwargs = {}
