@@ -15,6 +15,7 @@ def summarize(input_file, verbose=False):
         FeatureTable[Frequency]
         FeatureTable[RelativeFrequency]
         FeatureData[Sequence]
+        FeatureData[AlignedSequence]
 
     Parameters
     ----------
@@ -28,7 +29,8 @@ def summarize(input_file, verbose=False):
     if str(artifact.type) in ["FeatureTable[Frequency]",
         "FeatureTable[RelativeFrequency]"]:
         _parse_feature_table(artifact, verbose)
-    elif str(artifact.type) in ["FeatureData[Sequence]"]:
+    elif str(artifact.type) in ["FeatureData[Sequence]",
+        "FeatureData[AlignedSequence]"]:
         _parse_feature_data(artifact, verbose)
     else:
         raise TypeError(f"Unsupported Artifact type: '{artifact.type}'")
@@ -53,4 +55,7 @@ def _parse_feature_data(artifact, verbose):
     s = artifact.view(pd.Series)
     print("Number of features:", s.size)
     if verbose:
-        warnings.warn(NO_VERBOSE_MESSAGE)
+        print("Displaying only the first five records...")
+        for index, value in s.apply(str).head().items():
+            print(index)
+            print(value)
