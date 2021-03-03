@@ -1,6 +1,7 @@
 from qiime2 import Artifact
 import pandas as pd
 import seaborn as sns
+import numpy as np
 import matplotlib.pyplot as plt
 from ..api import get_mf
 from skbio.stats.composition import clr
