@@ -49,20 +49,28 @@ def heatmap(table, metadata=None, hue=None, hue_order=None, normalize=None,
     seaborn.matrix.ClusterGrid
         A ClusterGrid instance.
     """
+    # Check the input type.
     if isinstance(table, Artifact):
         table = table
     elif isinstance(table, str):
         table = Artifact.load(table)
     else:
-        raise TypeError(f"Incorrect feature table type: {type(table)}")
+        raise TypeError(f'Incorrect feature table type: {type(table)}')
 
+    # Create the dataframe.
     df = table.view(pd.DataFrame)
 
-    if metadata is not None and hue is not None:
-        colors = plt.cm.get_cmap(cmap_name).colors
+    # If the metadata is provided, filter the dataframe accordingly.
+    if metadata is not None:
         mf = get_mf(metadata)
         df = pd.concat([df, mf], axis=1, join='inner')
+        df.drop(mf.columns, axis=1, inplace=True)
         df = df.loc[:, (df != 0).any(axis=0)]
+
+    # If the `hue` argument is provided, get the row colors.
+    if metadata is not None and hue is not None:
+        colors = plt.cm.get_cmap(cmap_name).colors
+        df = pd.concat([df, mf], axis=1, join='inner')
         if hue_order is None:
             keys = df[hue].unique()
         else:
@@ -77,6 +85,7 @@ def heatmap(table, metadata=None, hue=None, hue_order=None, normalize=None,
         lut = None
         row_colors = None
 
+    # Apply the appropriate normalziation.
     if normalize == 'log10':
         df = df.apply(lambda x: np.log10(x + 1))
     elif normalize == 'clr':
@@ -84,19 +93,13 @@ def heatmap(table, metadata=None, hue=None, hue_order=None, normalize=None,
     else:
         pass
 
-    g = sns.clustermap(df,
-                       method=method,
-                       metric=metric,
-                       figsize=figsize,
-                       row_cluster=row_cluster,
-                       col_cluster=col_cluster,
-                       row_colors=row_colors,
-                       **kwargs)
+    g = sns.clustermap(df, method=method, metric=metric, figsize=figsize,
+                       row_cluster=row_cluster, col_cluster=col_cluster,
+                       row_colors=row_colors, **kwargs)
 
     if lut is not None:
         handles = [Patch(facecolor=lut[name]) for name in lut]
-        plt.legend(handles, lut, title=hue,
-                   bbox_to_anchor=(1, 1),
+        plt.legend(handles, lut, title=hue, bbox_to_anchor=(1, 1),
                    bbox_transform=plt.gcf().transFigure, loc='upper right')
 
     return g
