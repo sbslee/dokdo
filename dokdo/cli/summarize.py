@@ -1,11 +1,20 @@
+import warnings
 import pandas as pd
 from qiime2 import Artifact
+
+NO_VERBOSE_MESSAGE = ("There is no verbose option available "
+                      "for the input Artifact file.")
 
 def summarize(input_file, verbose=False):
     """Extract summary or verbose data from an Artifact file.
 
     This command automatically detects the input file's semantic type and
     then extracts summary or verbose data from it.
+
+    Currently, the command supports the following semantic types:
+        FeatureTable[Frequency]
+        FeatureTable[RelativeFrequency]
+        FeatureData[Sequence]
 
     Parameters
     ----------
@@ -19,6 +28,8 @@ def summarize(input_file, verbose=False):
     if str(artifact.type) in ["FeatureTable[Frequency]",
         "FeatureTable[RelativeFrequency]"]:
         _parse_feature_table(artifact, verbose)
+    elif str(artifact.type) in ["FeatureData[Sequence]"]:
+        _parse_feature_data(artifact, verbose)
     else:
         raise TypeError(f"Unsupported Artifact type: '{artifact.type}'")
 
@@ -37,3 +48,9 @@ def _parse_feature_table(artifact, verbose):
         print(" ".join(df.index.to_list()))
         print("Features:")
         print(" ".join(df.columns))
+
+def _parse_feature_data(artifact, verbose):
+    s = artifact.view(pd.Series)
+    print("Number of features:", s.size)
+    if verbose:
+        warnings.warn(NO_VERBOSE_MESSAGE)
