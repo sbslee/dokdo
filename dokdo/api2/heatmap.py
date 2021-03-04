@@ -7,9 +7,11 @@ from ..api import get_mf
 from skbio.stats.composition import clr
 from matplotlib.patches import Patch
 
-def heatmap(table, metadata=None, hue=None, hue_order=None, normalize=None,
-            method='average', metric='euclidean', figsize=(10, 10),
-            row_cluster=True, col_cluster=True, cmap_name='tab10', **kwargs):
+def heatmap(table, metadata=None, hue1=None, hue_order1=None,
+            hue1_cmap='tab10', hue1_loc='upper right', hue2=None,
+            hue_order2=None, hue2_cmap='Pastel1', hue2_loc='upper left',
+            normalize=None, method='average', metric='euclidean',
+            figsize=(10, 10), row_cluster=True, col_cluster=True, **kwargs):
     """
     This method creates a heatmap representation of a feature table.
 
@@ -19,10 +21,24 @@ def heatmap(table, metadata=None, hue=None, hue_order=None, normalize=None,
         Artifact file or object corresponding to FeatureTable[Frequency].
     metadata : str or qiime2.Metadata, optional
         Metadata file or object.
-    hue : str, optional
-        Grouping variable that will produce labels with different colors.
-    hue_order : list, optional
-        Specify the order of categorical levels of the 'hue' semantic.
+    hue1 : str, optional
+        First grouping variable that will produce labels with different
+        colors.
+    hue_order1 : list, optional
+        Specify the order of categorical levels of the 'hue1' semantic.
+    hue1_cmap : str, default: 'tab10'
+        Name of the colormap passed to `matplotlib.cm.get_cmap()` for `hue1`.
+    hue1_loc : str, default: 'upper right'
+        Location of the legend for `hue1`.
+    hue2 : str, optional
+        Second grouping variable that will produce labels with different
+        colors.
+    hue_order2 : list, optional
+        Specify the order of categorical levels of the 'hue2' semantic.
+    hue2_cmap : str, default: 'Pastel1'
+        Name of the colormap passed to `matplotlib.cm.get_cmap()` for `hue2`.
+    hue2_loc : str, default: 'upper left'
+        Location of the legend for `hue2`.
     normalize : str, optional
         Normalize the feature table by adding a psuedocount of 1 and then
         taking the log10 of the table or performing centre log ratio
@@ -40,10 +56,8 @@ def heatmap(table, metadata=None, hue=None, hue_order=None, normalize=None,
         If True, cluster the rows.
     col_cluster : bool, default: True
         If True, cluster the columns.
-    cmap_name : str, default: 'tab10'
-        Name of the colormap passed to `matplotlib.cm.get_cmap()`.
     kwargs : other keyword arguments
-        All other keyword arguments are passed to `seaborn.clustermap`.
+        All other keyword arguments are passed to `seaborn.clustermap()`.
 
     Returns
     -------
@@ -61,30 +75,40 @@ def heatmap(table, metadata=None, hue=None, hue_order=None, normalize=None,
     # Create the dataframe.
     df = table.view(pd.DataFrame)
 
-    # If the metadata is provided, filter the dataframe accordingly.
+    # If the metadata is provided, filter the samples accordingly.
     if metadata is not None:
         mf = get_mf(metadata)
         df = pd.concat([df, mf], axis=1, join='inner')
         df.drop(mf.columns, axis=1, inplace=True)
         df = df.loc[:, (df != 0).any(axis=0)]
 
-    # If the `hue` argument is provided, get the row colors.
-    if metadata is not None and hue is not None:
-        colors = plt.cm.get_cmap(cmap_name).colors
+    # If the hue argument(s) are used, get the row colors.
+    lut1 = None
+    lut2 = None
+    row_colors = None
+    if hue1 is not None:
+        colors1 = plt.cm.get_cmap(hue1_cmap).colors
         df = pd.concat([df, mf], axis=1, join='inner')
-        if hue_order is None:
-            keys = df[hue].unique()
+        if hue_order1 is None:
+            keys1 = df[hue1].unique()
         else:
-            keys = hue_order
-            df = df[df[hue].isin(hue_order)]
-        lut = dict(zip(keys, colors[:len(keys)]))
-        row_colors = df[hue].map(lut)
+            keys1 = hue_order1
+            df = df[df[hue1].isin(hue_order1)]
+        lut1 = dict(zip(keys1, colors1[:len(keys1)]))
+        row_colors = df[hue1].map(lut1)
         df.drop(mf.columns, axis=1, inplace=True)
-    elif metadata is None and hue is not None:
-        raise ValueError("Argument 'hue' requires 'metadata' argument")
-    else:
-        lut = None
-        row_colors = None
+    if hue2 is not None:
+        colors2 = plt.cm.get_cmap(hue2_cmap).colors
+        df = pd.concat([df, mf], axis=1, join='inner')
+        if hue_order2 is None:
+            keys2 = df[hue2].unique()
+        else:
+            keys2 = hue_order2
+            df = df[df[hue2].isin(hue_order2)]
+        lut2 = dict(zip(keys2, colors2[:len(keys2)]))
+        s = df[hue2].map(lut2)
+        row_colors = pd.concat([row_colors, s], axis=1)
+        df.drop(mf.columns, axis=1, inplace=True)
 
     # Apply the appropriate normalziation.
     if normalize == 'log10':
@@ -94,13 +118,23 @@ def heatmap(table, metadata=None, hue=None, hue_order=None, normalize=None,
     else:
         pass
 
+    # Draw the heatmap.
     g = sns.clustermap(df, method=method, metric=metric, figsize=figsize,
                        row_cluster=row_cluster, col_cluster=col_cluster,
                        row_colors=row_colors, **kwargs)
 
-    if lut is not None:
-        handles = [Patch(facecolor=lut[name]) for name in lut]
-        plt.legend(handles, lut, title=hue, bbox_to_anchor=(1, 1),
-                   bbox_transform=plt.gcf().transFigure, loc='upper right')
+    # If the hue argument(s) are used, add the legend(s).
+    if hue1 is not None:
+        handles = [Patch(facecolor=lut1[name]) for name in lut1]
+        legend1 = plt.legend(handles, lut1, title=hue1, bbox_to_anchor=(1, 1),
+                   bbox_transform=plt.gcf().transFigure, loc=hue1_loc)
+    if hue2 is not None:
+        if hue1 is None:
+            raise ValueError("Argument 'hue2' was used without 'hue1'. "
+                             "Use 'hue1' instead.")
+        handles = [Patch(facecolor=lut2[name]) for name in lut2]
+        plt.legend(handles, lut2, title=hue2, bbox_to_anchor=(1, 1),
+                   bbox_transform=plt.gcf().transFigure, loc=hue2_loc)
+        plt.gca().add_artist(legend1)
 
     return g
