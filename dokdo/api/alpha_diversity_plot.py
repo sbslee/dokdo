@@ -2,7 +2,8 @@ import pandas as pd
 import seaborn as sns
 from qiime2 import Artifact
 import matplotlib.pyplot as plt
-from ..api import _artist, get_mf
+from .common import _artist
+import dokdo
 
 def alpha_diversity_plot(alpha_diversity, metadata, where,
                          ax=None, figsize=None, add_swarmplot=False,
@@ -43,7 +44,7 @@ def alpha_diversity_plot(alpha_diversity, metadata, where,
 
     df = _alpha_diversity.view(pd.Series).to_frame()
 
-    mf = get_mf(metadata)
+    mf = dokdo.get_mf(metadata)
     df = pd.concat([df, mf], axis=1, join='inner')
 
     if ax is None:

@@ -3,7 +3,7 @@ import pandas as pd
 import seaborn as sns
 import numpy as np
 import matplotlib.pyplot as plt
-from ..api import get_mf
+import dokdo
 from skbio.stats.composition import clr
 from matplotlib.patches import Patch
 
@@ -77,7 +77,7 @@ def heatmap(table, metadata=None, hue1=None, hue_order1=None,
 
     # If the metadata is provided, filter the samples accordingly.
     if metadata is not None:
-        mf = get_mf(metadata)
+        mf = dokdo.get_mf(metadata)
         df = pd.concat([df, mf], axis=1, join='inner')
         df.drop(mf.columns, axis=1, inplace=True)
         df = df.loc[:, (df != 0).any(axis=0)]

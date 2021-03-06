@@ -1,6 +1,6 @@
 import tempfile
 import seaborn as sns
-from ..api import _parse_input, _artist
+from .common import _parse_input, _artist
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt

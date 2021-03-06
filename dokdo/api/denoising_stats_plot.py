@@ -1,5 +1,6 @@
 import tempfile
-from ..api import _parse_input, get_mf, _artist
+from .common import _parse_input, _artist
+import dokdo
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
@@ -48,7 +49,7 @@ def denoising_stats_plot(stats, metadata, where, ax=None, figsize=None,
 
         df1 = pd.read_table(f'{t}/stats.tsv', skiprows=[1], index_col=0)
 
-    mf = get_mf(metadata)
+    mf = dokdo.get_mf(metadata)
 
     df2 = pd.concat([df1, mf], axis=1, join='inner')
 
