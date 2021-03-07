@@ -1,5 +1,19 @@
 # Changelog
 
+## 1.6.0
+
+* Added a new method called `pname()` which returns a prettified taxon name.
+* Added a new method called `num2sig()` which converts a p-value to significance annotation.
+* Added a new method called `wilcoxon()` which performs the Wilcoxon Signed-rank test between two paired groups for a given taxon.
+* Added a new method called `mannwhitneyu()` which performs the Mann–Whitney U test between two groups for a given taxon.
+* There have been major changes to the `heatmap()` method. First, it now supports two grouping variables instead of just one (e.g. `hue1` and `hue2`). Second, it supports the centered log-ratio (CLR) transformation as a normalization option (in addition to `log10`). Third, it now has `kwargs` that are passed to the `seaborn.clustermap()` method (e.g. `xticklabels=False`). Fourth, the bug giving the `FloatingPointError: NaN dissimilarity value.` error when sample-filtered metadata is provided and the `metric='correlation'` argument is used has been fixed. Fifth, the bug giving an error when one of the metadata columns has only zeros has been fixed.
+* In addition to `heatmap()`, the following methods have been updated:
+    * `addpairs()`
+    * `alpha_diversity_plot()`
+* Updated the `summarize` command.
+* Updated the `prepare-lefse` command to output more informative taxa name than just underscores (e.g. `__` and `g__`).
+* See [#8](https://github.com/sbslee/dokdo/issues/8) for more details.
+
 ## 1.5.0
 
 * Starting this version, Dokdo is packaged with `setuptools`.

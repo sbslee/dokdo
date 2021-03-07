@@ -12,8 +12,10 @@ def heatmap(table, metadata=None, hue1=None, hue_order1=None,
             hue_order2=None, hue2_cmap='Pastel1', hue2_loc='upper left',
             normalize=None, method='average', metric='euclidean',
             figsize=(10, 10), row_cluster=True, col_cluster=True, **kwargs):
-    """
-    This method creates a heatmap representation of a feature table.
+    """Create a hierarchically clustered heatmap of a feature table.
+
+    Internally, this method uses the `seaborn.clustermap()` method to
+    create a heatmap.
 
     Parameters
     ----------
