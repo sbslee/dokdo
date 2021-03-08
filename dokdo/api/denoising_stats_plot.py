@@ -8,9 +8,7 @@ import matplotlib.pyplot as plt
 def denoising_stats_plot(stats, metadata, where, ax=None, figsize=None,
                          pseudocount=False, order=None, hide_nsizes=False,
                          artist_kwargs=None):
-    """
-    This method creates a grouped box chart using denoising statistics from
-    the DADA 2 algorithm.
+    """Create a grouped box chart for denoising statistics from DADA 2.
 
     Parameters
     ----------

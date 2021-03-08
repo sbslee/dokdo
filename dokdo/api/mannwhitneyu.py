@@ -5,15 +5,20 @@ from .num2sig import num2sig
 def mannwhitneyu(taxon, csv_file, category, group1, group2, ann=False):
     """Compute the p-value from the Mann–Whitney U test.
 
-    This method tests the null hypothesis that two independent samples
-    come from the same distribution for a given taxon.
+    This method tests the null hypothesis that two independent
+    samples come from the same distribution for a given taxon
+    using the `scipy.stats.mannwhitneyu()` method.
+
+    Note that one of the inputs for this method is a .csv file
+    from the `dokdo.taxa_abundance_box_plot()` method which
+    contains the relvant data (e.g. relative abundance).
 
     Parameters
     ----------
     taxon : str
         Target taxon name.
     csv_file : str
-        Path to the .csv file from `dokdo.taxa_abundance_box_plot`.
+        Path to the .csv file.
     category : str
         Column name to be tested.
     group1 : str
@@ -27,8 +32,7 @@ def mannwhitneyu(taxon, csv_file, category, group1, group2, ann=False):
     Returns
     -------
     float or str
-        The p-value or signifiance annotation for the test
-        from `scipy.stats.mannwhitneyu`.
+        P-value or signifiance annotation.
     """
     df = pd.read_csv(csv_file)
     df = df[[taxon, category]]

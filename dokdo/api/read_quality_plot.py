@@ -6,8 +6,7 @@ import numpy as np
 
 def read_quality_plot(demux, strand='forward', ax=None,
                       figsize=None, artist_kwargs=None):
-    """
-    This method creates a read quality plot.
+    """Create a read quality plot.
 
     Parameters
     ----------

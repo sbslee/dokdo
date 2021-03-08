@@ -19,8 +19,7 @@ def barplot(barplot_file,
             ylabel_fontsize=None,
             xaxis_repeated=False,
             cmap_name='Accent'):
-    """
-    This method creates a grouped abundance bar plot.
+    """Create a grouped abundance bar plot.
 
     Under the hood, this method essentially wraps the
     `taxa_abundance_bar_plot` method.

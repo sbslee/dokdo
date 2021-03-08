@@ -29,8 +29,7 @@ def taxa_abundance_bar_plot(taxa,
                             show_others=True,
                             cmap_name='Accent',
                             artist_kwargs=None):
-    """
-    This method creates a taxa abundance plot.
+    """Create a taxa abundance plot.
 
     Although the input visualization file should contain medatadata already,
     you can replace it with new metadata by using the 'metadata' option.

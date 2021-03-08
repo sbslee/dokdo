@@ -15,9 +15,9 @@ def addbiplot(pcoa_results,
               level=None,
               ax=None,
               figsize=None):
-    """
-    This methods adds arrows (i.e. features) to a PCoA scatter plot (both 2D
-    and 3D).
+    """Adds arrows (i.e. features) to a PCoA scatter plot.
+
+    This method can handle both 2D and 3D plots.
 
     Parameters
     ----------

@@ -11,8 +11,7 @@ def beta_scree_plot(pcoa_results,
                     figsize=None,
                     color='blue',
                     artist_kwargs=None):
-    """
-    This method creates a scree plot from PCoA results.
+    """Create a scree plot from PCoA results.
 
     Parameters
     ----------

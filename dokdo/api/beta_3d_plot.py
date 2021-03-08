@@ -15,8 +15,7 @@ def beta_3d_plot(pcoa_results,
                  figsize=None,
                  hue_order=None,
                  artist_kwargs=None):
-    """
-    This method creates a 3D scatter plot from PCoA results.
+    """Create a 3D scatter plot from PCoA results.
 
     Parameters
     ----------

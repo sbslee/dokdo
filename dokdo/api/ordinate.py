@@ -13,7 +13,8 @@ def ordinate(table,
              phylogeny=None,
              number_of_dimensions=None,
              biplot=False):
-    """
+    """Perform ordination using principal coordinate analysis (PCoA).
+
     This method wraps multiple QIIME 2 methods to perform ordination and
     returns Artifact object containing PCoA results.
 

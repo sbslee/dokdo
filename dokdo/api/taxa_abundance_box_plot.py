@@ -33,8 +33,7 @@ def taxa_abundance_box_plot(taxa,
                             jitter=1,
                             alpha=None,
                             artist_kwargs=None):
-    """
-    This method creates a taxa abundance box plot.
+    """Create a taxa abundance box plot.
 
     Parameters
     ----------

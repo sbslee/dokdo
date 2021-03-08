@@ -1,9 +1,10 @@
 from qiime2 import Metadata
 
 def get_mf(metadata):
-    """
-    This method automatically detects the type of input metadata and converts
-    it to DataFrame object.
+    """Convert a file or object from QIIME 2 metadata to a dataframe.
+
+    This method automatically detects the type of input metadata and
+    then converts it to a pandas.DataFrame object.
 
     Parameters
     ----------

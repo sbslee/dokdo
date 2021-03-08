@@ -13,8 +13,7 @@ def beta_parallel_plot(pcoa_results,
                        ax=None,
                        figsize=None,
                        artist_kwargs=None):
-    """
-    This method creates a parallel plot from PCoA results.
+    """Create a parallel plot from PCoA results.
 
     Parameters
     ----------

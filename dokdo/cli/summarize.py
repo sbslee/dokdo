@@ -12,10 +12,8 @@ def summarize(input_file, verbose=False):
     then extracts summary or verbose data from it.
 
     Currently, the command supports the following semantic types:
-        FeatureTable[Frequency]
-        FeatureTable[RelativeFrequency]
-        FeatureData[Sequence]
-        FeatureData[AlignedSequence]
+    FeatureTable[Frequency], FeatureTable[RelativeFrequency],
+    FeatureData[Sequence], FeatureData[AlignedSequence].
 
     Parameters
     ----------

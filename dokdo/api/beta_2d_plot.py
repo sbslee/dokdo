@@ -19,8 +19,7 @@ def beta_2d_plot(pcoa_results,
                  style_order=None,
                  legend_type='brief',
                  artist_kwargs=None):
-    """
-    This method creates a 2D scatter plot from PCoA results.
+    """Create a 2D scatter plot from PCoA results.
 
     Parameters
     ----------

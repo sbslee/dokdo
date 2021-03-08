@@ -10,8 +10,7 @@ def distance_matrix_plot(distance_matrix,
                          ax=None,
                          figsize=None,
                          artist_kwargs=None):
-    """
-    This method creates a histogram from a distance matrix.
+    """Create a histogram from a distance matrix.
 
     Parameters
     ----------

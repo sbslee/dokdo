@@ -11,8 +11,7 @@ def addsig(x1,
            ax=None,
            figsize=None,
            fontsize=None):
-    """
-    This method adds signifiance annotation between two groups in a box plot.
+    """Add signifiance annotation between two groups in a box plot.
 
     Parameters
     ----------

@@ -168,7 +168,11 @@ def main():
         description=("Extract summary or verbose data from an Artifact "
                      "file. This command automatically detects the input "
                      "file's semantic type and then extracts summary or "
-                     "verbose data from it.")
+                     "verbose data from it. Currently, the command supports "
+                     "the following semantic types: "
+                     "FeatureTable[Frequency], "
+                     "FeatureTable[RelativeFrequency], "
+                     "FeatureData[Sequence], FeatureData[AlignedSequence].")
     )
 
     summarize_parser._optionals.title = "Arguments"

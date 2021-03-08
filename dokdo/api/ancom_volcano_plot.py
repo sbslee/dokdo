@@ -9,8 +9,7 @@ def ancom_volcano_plot(ancom,
                        figsize=None,
                        s=80,
                        artist_kwargs=None):
-    """
-    This method creates an ANCOM volcano plot.
+    """Create an ANCOM volcano plot.
 
     Parameters
     ----------
