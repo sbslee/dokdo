@@ -4,6 +4,7 @@ from .pname import pname
 from .num2sig import num2sig
 from .wilcoxon import wilcoxon
 from .mannwhitneyu import mannwhitneyu
+from .count_reads_one_file import count_reads_one_file
 
 from .read_quality_plot import read_quality_plot
 from .denoising_stats_plot import denoising_stats_plot
@@ -32,4 +33,4 @@ __all__ = ['alpha_diversity_plot', 'addpairs', 'wilcoxon',
            'beta_scree_plot', 'beta_parallel_plot', 'distance_matrix_plot',
            'taxa_abundance_bar_plot', 'taxa_abundance_box_plot',
            'ancom_volcano_plot', 'addsig', 'regplot', 'addbiplot',
-           'barplot', 'ordinate', 'pname', 'get_mf']
+           'barplot', 'ordinate', 'pname', 'get_mf', 'count_reads_one_file']
