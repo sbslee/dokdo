@@ -23,7 +23,7 @@ def count_reads(fastq_path, delimiter='\t'):
                 if '.fastq' not in fn:
                     continue
                 else:
-                    fastq_files.append(fn)
+                    fastq_files.append(f'{fastq_path}/{fn}')
             break
     else:
         fastq_files.append(fastq_path)
