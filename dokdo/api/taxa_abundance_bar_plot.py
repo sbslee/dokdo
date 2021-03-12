@@ -28,6 +28,7 @@ def taxa_abundance_bar_plot(taxa,
                             sort_by_mean3=True,
                             show_others=True,
                             cmap_name='Accent',
+                            legend_short=False,
                             artist_kwargs=None):
     """Create a taxa abundance plot.
 
@@ -92,6 +93,8 @@ def taxa_abundance_bar_plot(taxa,
         Include the 'Others' category.
     cmap_name : str, default: 'Accent'
         Name of the colormap passed to `matplotlib.cm.get_cmap()`.
+    legend_short : bool, default: False
+        If true, only display the smallest taxa rank in the legend.
     artist_kwargs : dict, optional
         Keyword arguments passed down to the _artist() method.
 
@@ -206,16 +209,19 @@ def taxa_abundance_bar_plot(taxa,
 
     df = df * 100
 
+    # If provided, output the dataframe as a .csv file.
+    if csv_file is not None:
+        df.to_csv(csv_file)
+
+    if legend_short:
+        df.columns = [dokdo.pname(x) for x in df.columns]
+
     df.plot.bar(stacked=True,
                 legend=False,
                 ax=ax,
                 width=width,
                 color=c,
                 linewidth=0)
-
-    # If provided, output the dataframe as a .csv file.
-    if csv_file is not None:
-        df.to_csv(csv_file)
 
     if label_columns is not None:
         f = lambda row: ' : '.join(row.values.astype(str))
