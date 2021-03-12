@@ -10,6 +10,7 @@ def distance_matrix_plot(distance_matrix,
                          pairs=None,
                          ax=None,
                          figsize=None,
+                         density=False,
                          artist_kwargs=None):
     """Create a histogram from a distance matrix.
 
@@ -26,6 +27,8 @@ def distance_matrix_plot(distance_matrix,
         Axes object to draw the plot onto, otherwise uses the current Axes.
     figsize : tuple, optional
         Width, height in inches. Format: (float, float).
+    density : bool, default: False
+        If True, draw and return a probability density.
     artist_kwargs : dict, optional
         Keyword arguments passed down to the _artist() method.
 
@@ -45,7 +48,7 @@ def distance_matrix_plot(distance_matrix,
     if ax is None:
         fig, ax = plt.subplots(figsize=figsize)
 
-    ax.hist(cdist, bins=bins)
+    ax.hist(cdist, bins=bins, density=density)
 
     # https://stackoverflow.com/a/36867493/7481899
     def square_to_condensed(i, j, n):
