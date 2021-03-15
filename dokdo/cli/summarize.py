@@ -1,6 +1,7 @@
 import warnings
 import pandas as pd
 from qiime2 import Artifact
+import skbio as sb
 
 NO_VERBOSE_MESSAGE = ("There is no verbose option available "
                       "for the input Artifact file.")
@@ -13,7 +14,7 @@ def summarize(input_file, verbose=False):
 
     Currently, the command supports the following semantic types:
     FeatureTable[Frequency], FeatureTable[RelativeFrequency],
-    FeatureData[Sequence], FeatureData[AlignedSequence].
+    FeatureData[Sequence], FeatureData[AlignedSequence], DistanceMatrix.
 
     Parameters
     ----------
@@ -30,6 +31,8 @@ def summarize(input_file, verbose=False):
     elif str(artifact.type) in ["FeatureData[Sequence]",
         "FeatureData[AlignedSequence]"]:
         _parse_feature_data(artifact, verbose)
+    elif str(artifact.type) in ["DistanceMatrix"]:
+        _parse_distance_matrix(artifact, verbose)
     else:
         raise TypeError(f"Unsupported Artifact type: '{artifact.type}'")
 
@@ -57,3 +60,10 @@ def _parse_feature_data(artifact, verbose):
         for index, value in s.apply(str).head().items():
             print(index)
             print(value)
+
+def _parse_distance_matrix(artifact, verbose):
+    dm = artifact.view(sb.DistanceMatrix)
+    print("Number of samples:", dm.shape[0])
+    if verbose:
+        print("Samples:")
+        print(" ".join(dm.ids))

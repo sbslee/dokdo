@@ -172,7 +172,8 @@ def main():
                      "the following semantic types: "
                      "FeatureTable[Frequency], "
                      "FeatureTable[RelativeFrequency], "
-                     "FeatureData[Sequence], FeatureData[AlignedSequence].")
+                     "FeatureData[Sequence], FeatureData[AlignedSequence], "
+                     "DistanceMatrix.")
     )
 
     summarize_parser._optionals.title = "Arguments"
