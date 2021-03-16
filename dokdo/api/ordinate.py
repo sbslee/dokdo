@@ -66,14 +66,12 @@ def ordinate(table, metadata=None, metric='jaccard', sampling_depth=-1,
 
     # If metadata is provided, perform sample filtration.
     if metadata is not None:
-        print('Before', table.view(pd.DataFrame).shape)
         if isinstance(metadata, Metadata):
             _metadata = metadata
         else:
             _metadata = Metadata.load(metadata)
         _table = feature_table.methods.filter_samples(
             table=table, metadata=_metadata).filtered_table
-        print('After', _table.view(pd.DataFrame).shape)
     else:
         _table = table
 
