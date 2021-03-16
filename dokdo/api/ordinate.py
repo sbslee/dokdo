@@ -78,7 +78,7 @@ def ordinate(table,
             raise ValueError(m)
         elif isinstance(metadata, str):
             _metadata = Metadata.load(metadata)
-        elif isinstance(metadata, qiime2.Metadata):
+        elif isinstance(metadata, Metadata):
             _metadata = metadata
         else:
             raise TypeError(f"Incorrect metadata type: {type(metadata)}")
