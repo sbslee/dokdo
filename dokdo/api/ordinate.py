@@ -5,14 +5,8 @@ from qiime2.plugins import feature_table
 from qiime2.plugins import diversity
 import pandas as pd
 
-def ordinate(table,
-             metadata=None,
-             where=None,
-             metric='jaccard',
-             sampling_depth=-1,
-             phylogeny=None,
-             number_of_dimensions=None,
-             biplot=False):
+def ordinate(table, metadata=None, metric='jaccard', sampling_depth=-1,
+             phylogeny=None, number_of_dimensions=None, biplot=False):
     """Perform ordination using principal coordinate analysis (PCoA).
 
     This method wraps multiple QIIME 2 methods to perform ordination and
@@ -22,17 +16,16 @@ def ordinate(table,
     rarefying of the feature table (if requested), computes distance matrix,
     and then runs PCoA.
 
-    By default, the method returns PCoAResults. For creating a biplot, make
-    sure to use `biplot=True` which returns PCoAResults % Properties('biplot').
+    By default, the method returns PCoAResults. For creating a biplot,
+    use `biplot=True` which returns PCoAResults % Properties('biplot').
 
     Parameters
     ----------
     table : str or qiime2.Artifact
         Artifact file or object corresponding to FeatureTable[Frequency].
     metadata : str or qiime2.Metadata, optional
-        Metadata file or object.
-    where : str, optional
-        SQLite WHERE clause specifying sample metadata criteria.
+        Metadata file or object. All samples in 'metadata' that are also in
+        the feature table will be retained.
     metric : str, default: 'jaccard'
         Metric used for distance matrix computation ('jaccard',
         'bray_curtis', 'unweighted_unifrac', or 'weighted_unifrac').
@@ -71,21 +64,16 @@ def ordinate(table,
     else:
         raise TypeError(f"Incorrect feature table type: {type(table)}")
 
-    # Perform sample filtration.
-    if where:
-        if metadata is None:
-            m = "To use 'where' argument, you must provide metadata"
-            raise ValueError(m)
-        elif isinstance(metadata, str):
-            _metadata = Metadata.load(metadata)
-        elif isinstance(metadata, Metadata):
+    # If metadata is provided, perform sample filtration.
+    if metadata is not None:
+        print('Before', table.view(pd.DataFrame).shape)
+        if isinstance(metadata, Metadata):
             _metadata = metadata
         else:
-            raise TypeError(f"Incorrect metadata type: {type(metadata)}")
-
-        filter_result = feature_table.methods.filter_samples(
-            table=table, metadata=_metadata, where=where)
-        _table = filter_result.filtered_table
+            _metadata = Metadata.load(metadata)
+        _table = feature_table.methods.filter_samples(
+            table=table, metadata=_metadata).filtered_table
+        print('After', _table.view(pd.DataFrame).shape)
     else:
         _table = table
 
