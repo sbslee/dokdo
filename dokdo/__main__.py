@@ -173,7 +173,7 @@ def main():
                      "FeatureTable[Frequency], "
                      "FeatureTable[RelativeFrequency], "
                      "FeatureData[Sequence], FeatureData[AlignedSequence], "
-                     "DistanceMatrix.")
+                     "FeatureData[Taxonomy], DistanceMatrix.")
     )
 
     summarize_parser._optionals.title = "Arguments"
