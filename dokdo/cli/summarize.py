@@ -67,7 +67,11 @@ def _parse_feature_data(artifact, verbose):
 def _parse_feature_data2(artifact, verbose):
     df = artifact.view(pd.DataFrame)
     print("Number of features:", df.shape[0])
-    s = df.apply(lambda x: len(x['Taxon'].split('; ')), axis=1)
+    def func(x):
+        if 'Unassigned' in x['Taxon']:
+            return 0
+        return len(x['Taxon'].split('; '))
+    s = df.apply(func, axis=1)
     s = s.value_counts()
     s = s.sort_index()
     print("Taxonomy levels:")
