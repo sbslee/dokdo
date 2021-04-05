@@ -151,9 +151,9 @@ def barplot(barplot_file,
 
     taxa_abundance_bar_plot(barplot_file,
                             ax=axbig,
+                            legend_short=True,
                             artist_kwargs={'legend_only': True,
                                            'legend_loc': 'center left',
-                                           'legend_short': True,
                                            **_artist_kwargs},
                             **plot_kwargs)
 
