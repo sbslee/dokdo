@@ -23,7 +23,7 @@ import qiime2
 from qiime2 import Artifact
 from qiime2 import Metadata
 from qiime2 import Visualization
-
+import dokdo
 
 
 
@@ -187,7 +187,6 @@ def _artist(ax,
             legend_loc='best',
             legend_ncol=1,
             legend_labels=None,
-            legend_short=False,
             remove_duplicates=False,
             legend_only=False,
             legend_fontsize=None,
@@ -391,9 +390,6 @@ def _artist(ax,
 
     # Control the figure legend.
     h, l = ax.get_legend_handles_labels()
-
-    if legend_short:
-        l = [_pretty_taxa(x) for x in l]
 
     if legend_labels:
         a = len(legend_labels)

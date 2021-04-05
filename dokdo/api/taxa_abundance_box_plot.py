@@ -1,5 +1,5 @@
 import tempfile
-from .common import (_parse_input, _artist, _pretty_taxa,
+from .common import (_parse_input, _artist,
     _get_mf_cols, _filter_samples, _sort_by_mean, _get_others_col)
 import dokdo
 import pandas as pd
@@ -229,7 +229,7 @@ def taxa_abundance_box_plot(taxa,
         df3.to_csv(csv_file)
 
     if brief_xlabels:
-        xticklabels = [_pretty_taxa(x) for x in ax.get_xticklabels()]
+        xticklabels = [dokdo.pname(x.get_text()) for x in ax.get_xticklabels()]
     else:
         xticklabels = None
 

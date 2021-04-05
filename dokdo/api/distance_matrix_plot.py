@@ -3,19 +3,22 @@ from .common import _parse_input, _artist
 import pandas as pd
 import skbio as sb
 import matplotlib.pyplot as plt
+from qiime2 import Artifact
 
 def distance_matrix_plot(distance_matrix,
                          bins=100,
                          pairs=None,
                          ax=None,
                          figsize=None,
+                         density=False,
                          artist_kwargs=None):
     """Create a histogram from a distance matrix.
 
     Parameters
     ----------
     distance_matrix : str or qiime2.Artifact
-        Artifact file or object from the q2-diversity-lib plugin.
+        Artifact file or object with the semantic type
+        `DistanceMatrix`.
     bins : int, optional
         Number of bins to be displayed.
     pairs : list, optional
@@ -24,6 +27,8 @@ def distance_matrix_plot(distance_matrix,
         Axes object to draw the plot onto, otherwise uses the current Axes.
     figsize : tuple, optional
         Width, height in inches. Format: (float, float).
+    density : bool, default: False
+        If True, draw and return a probability density.
     artist_kwargs : dict, optional
         Keyword arguments passed down to the _artist() method.
 
@@ -31,24 +36,19 @@ def distance_matrix_plot(distance_matrix,
     -------
     matplotlib.axes.Axes
         Axes object with the plot drawn onto it.
-
-    Notes
-    -----
-    Example usage of the q2-diversity-lib plugin:
-        CLI -> qiime diversity-lib jaccard [OPTIONS]
-        API -> from qiime2.plugins.diversity_lib.methods import jaccard
     """
-    with tempfile.TemporaryDirectory() as t:
-        _parse_input(distance_matrix, t)
-        df = pd.read_table(f'{t}/distance-matrix.tsv', index_col=0)
+    if isinstance(distance_matrix, str):
+        _distance_matrix = Artifact.load(distance_matrix)
+    else:
+        _distance_matrix = distance_matrix
 
-    dist = sb.stats.distance.DistanceMatrix(df, ids=df.columns)
+    dist = _distance_matrix.view(sb.DistanceMatrix)
     cdist = dist.condensed_form()
 
     if ax is None:
         fig, ax = plt.subplots(figsize=figsize)
 
-    ax.hist(cdist, bins=bins)
+    ax.hist(cdist, bins=bins, density=density)
 
     # https://stackoverflow.com/a/36867493/7481899
     def square_to_condensed(i, j, n):

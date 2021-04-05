@@ -1,6 +1,7 @@
 import warnings
 import pandas as pd
 from qiime2 import Artifact
+import skbio as sb
 
 NO_VERBOSE_MESSAGE = ("There is no verbose option available "
                       "for the input Artifact file.")
@@ -13,7 +14,8 @@ def summarize(input_file, verbose=False):
 
     Currently, the command supports the following semantic types:
     FeatureTable[Frequency], FeatureTable[RelativeFrequency],
-    FeatureData[Sequence], FeatureData[AlignedSequence].
+    FeatureData[Sequence], FeatureData[AlignedSequence],
+    FeatureData[Taxonomy], DistanceMatrix.
 
     Parameters
     ----------
@@ -30,6 +32,10 @@ def summarize(input_file, verbose=False):
     elif str(artifact.type) in ["FeatureData[Sequence]",
         "FeatureData[AlignedSequence]"]:
         _parse_feature_data(artifact, verbose)
+    elif str(artifact.type) in ["FeatureData[Taxonomy]"]:
+        _parse_feature_data2(artifact, verbose)
+    elif str(artifact.type) in ["DistanceMatrix"]:
+        _parse_distance_matrix(artifact, verbose)
     else:
         raise TypeError(f"Unsupported Artifact type: '{artifact.type}'")
 
@@ -57,3 +63,26 @@ def _parse_feature_data(artifact, verbose):
         for index, value in s.apply(str).head().items():
             print(index)
             print(value)
+
+def _parse_feature_data2(artifact, verbose):
+    df = artifact.view(pd.DataFrame)
+    print("Number of features:", df.shape[0])
+    def func(x):
+        if 'Unassigned' in x['Taxon']:
+            return 0
+        return len(x['Taxon'].split('; '))
+    s = df.apply(func, axis=1)
+    s = s.value_counts()
+    s = s.sort_index()
+    print("Taxonomy levels:")
+    print(s.to_string())
+    if verbose:
+        print("Displaying only the first five records...")
+        print(df.head())
+
+def _parse_distance_matrix(artifact, verbose):
+    dm = artifact.view(sb.DistanceMatrix)
+    print("Number of samples:", dm.shape[0])
+    if verbose:
+        print("Samples:")
+        print(" ".join(dm.ids))
