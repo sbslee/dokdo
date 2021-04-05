@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.7.0
+
+* Added a new command called `count-reads` which counts the number of sequence reads from FASTQ.
+* Updated the `summarize` command.
+* Updated the following methods:
+    * `taxa_abundance_box_plot()`
+    * `taxa_abundance_bar_plot()`
+    * `distance_matrix_plot()`
+    * `ordinate()`
+
 ## 1.6.0
 
 * Added a new method called `pname()` which returns a prettified taxon name.
