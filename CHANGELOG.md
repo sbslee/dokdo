@@ -9,6 +9,7 @@
     * `taxa_abundance_bar_plot()`
     * `distance_matrix_plot()`
     * `ordinate()`
+    * `barplot()`
 * See [#10](https://github.com/sbslee/dokdo/issues/10) for more details.
 
 ## 1.6.0
