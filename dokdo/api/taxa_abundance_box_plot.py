@@ -6,33 +6,16 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-def taxa_abundance_box_plot(taxa,
-                            metadata=None,
-                            hue=None,
-                            hue_order=None,
-                            add_datapoints=False,
-                            level=1,
-                            by=None,
-                            ax=None,
-                            figsize=None,
-                            count=0,
-                            exclude_samples=None,
-                            include_samples=None,
-                            exclude_taxa=None,
-                            sort_by_names=False,
-                            sample_names=None,
-                            csv_file=None,
-                            size=5,
-                            pseudocount=False,
-                            taxa_names=None,
-                            brief_xlabels=False,
-                            show_means=False,
-                            meanprops=None,
-                            show_others=True,
-                            sort_by_mean=True,
-                            jitter=1,
-                            alpha=None,
-                            artist_kwargs=None):
+def taxa_abundance_box_plot(
+    taxa, metadata=None, hue=None, hue_order=None,
+    add_datapoints=False, level=1, by=None, ax=None,
+    figsize=None, count=0, exclude_samples=None,
+    include_samples=None, exclude_taxa=None, sort_by_names=False,
+    sample_names=None, csv_file=None, size=5, pseudocount=False,
+    taxa_names=None, brief_xlabels=False, show_means=False,
+    meanprops=None, show_others=True, sort_by_mean=True,
+    jitter=1, alpha=None, artist_kwargs=None
+):
     """Create a taxa abundance box plot.
 
     Parameters
@@ -115,17 +98,61 @@ def taxa_abundance_box_plot(taxa,
 
     Examples
     --------
-    Plot a heatmap for a numpy array:
+    Below is a simple example showing taxonomic abundance at the phylum
+    level (i.e. ``level=2``).
 
     .. plot::
         :context: close-figs
 
-        >>> import os
-        >>> print(os. getcwd())
-        >>> import numpy as np; np.random.seed(0)
+        >>> import dokdo
         >>> import seaborn as sns
-        >>> uniform_data = np.random.rand(10, 12)
-        >>> ax = sns.heatmap(uniform_data)
+        >>> import matplotlib.pyplot as plt
+        >>> sns.set()
+        >>> qzv_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/taxa-bar-plots.qzv'
+        >>> dokdo.taxa_abundance_box_plot(qzv_file, level=2, figsize=(8, 7))
+        >>> plt.tight_layout()
+
+    We can control how many taxa to display with ``count``. Also, we can
+    make the x-axis tick labels pretty with ``brief_xlabels``. We can
+    manually set the x-axis tick labels with ``xticklabels``. Lastly, we
+    can select specific taxa to display with ``taxa_names``.
+
+    .. plot::
+        :context: close-figs
+
+        >>> fig, [[ax1, ax2], [ax3, ax4]] = plt.subplots(2, 2, figsize=(10, 10))
+        >>> kwargs = {'level' : 2}
+        >>> artist_kwargs1 = dict(title='count=4')
+        >>> artist_kwargs2 = dict(title='brief_xlabels=True')
+        >>> artist_kwargs3 = dict(xticklabels=['A', 'B', 'C', 'D'], title="xticklabels=['A', 'B', 'C', 'D']")
+        >>> artist_kwargs4 = dict(title="taxa_names=[...]")
+        >>> dokdo.taxa_abundance_box_plot(qzv_file, ax=ax1, count=4, artist_kwargs=artist_kwargs1, **kwargs)
+        >>> dokdo.taxa_abundance_box_plot(qzv_file, ax=ax2, count=4, brief_xlabels=True, artist_kwargs=artist_kwargs2, **kwargs)
+        >>> dokdo.taxa_abundance_box_plot(qzv_file, ax=ax3, count=4, artist_kwargs=artist_kwargs3, **kwargs)
+        >>> dokdo.taxa_abundance_box_plot(qzv_file, ax=ax4, taxa_names=['k__Bacteria;p__Firmicutes', 'k__Bacteria;p__Proteobacteria'], artist_kwargs=artist_kwargs4, **kwargs)
+        >>> plt.tight_layout()
+
+    We can group the boxes by a metadata column with ``hue``. For this
+    plot, we will draw the y-axis in log scale with ``ylog``. To do
+    this, we actually need to adjust the y-axis limits with ``ymin``
+    and ``ymax``, and also add a pseudocount of 1 to remove 0s with
+    ``pseudocount`` (because 0s cannot be shown in log scale). We will
+    also add data points with ``add_datapoints=True``.
+
+    .. plot::
+        :context: close-figs
+
+        >>> artist_kwargs = dict(ylog=True, ymin=0.05, ymax=200, show_legend=True)
+        >>> dokdo.taxa_abundance_box_plot(qzv_file,
+        ...                               level=2,
+        ...                               figsize=(10, 7),
+        ...                               hue='body-site',
+        ...                               size=3,
+        ...                               count=4,
+        ...                               pseudocount=True,
+        ...                               add_datapoints=True,
+        ...                               artist_kwargs=artist_kwargs)
+        >>> plt.tight_layout()
     """
     with tempfile.TemporaryDirectory() as t:
         _parse_input(taxa, t)

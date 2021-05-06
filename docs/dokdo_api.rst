@@ -12,14 +12,32 @@ General Methods
 Main Plotting Methods
 =====================
 
-dokdo.api.taxa_abundance_bar_plot
----------------------------------
+read_quality_plot
+-----------------
+
+.. automodule:: dokdo.api.read_quality_plot
+   :members:
+
+denoising_stats_plot
+--------------------
+
+.. automodule:: dokdo.api.denoising_stats_plot
+   :members:
+
+alpha_rarefaction_plot
+----------------------
+
+.. automodule:: dokdo.api.alpha_rarefaction_plot
+   :members:
+
+taxa_abundance_bar_plot
+-----------------------
 
 .. automodule:: dokdo.api.taxa_abundance_bar_plot
    :members:
 
-dokdo.api.taxa_abundance_box_plot
----------------------------------
+taxa_abundance_box_plot
+-----------------------
 
 .. automodule:: dokdo.api.taxa_abundance_box_plot
   :members:

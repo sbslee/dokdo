@@ -5,9 +5,11 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-def denoising_stats_plot(stats, metadata, where, ax=None, figsize=None,
-                         pseudocount=False, order=None, hide_nsizes=False,
-                         artist_kwargs=None):
+def denoising_stats_plot(
+    stats, metadata, where, ax=None, figsize=None,
+    pseudocount=False, order=None, hide_nsizes=False,
+    artist_kwargs=None
+):
     """Create a grouped box chart for denoising statistics from DADA 2.
 
     Parameters
@@ -41,6 +43,23 @@ def denoising_stats_plot(stats, metadata, where, ax=None, figsize=None,
     Example usage of the q2-dada2 plugin:
         CLI -> qiime dada2 denoise-paired [OPTIONS]
         API -> from qiime2.plugins.dada2.methods import denoise_paired
+
+    Examples
+    --------
+    Below is a simple example.
+
+    .. plot::
+        :context: close-figs
+
+        >>> import dokdo
+        >>> import seaborn as sns
+        >>> import matplotlib.pyplot as plt
+        >>> sns.set()
+        >>> data_dir = '/Users/sbslee/Desktop/dokdo/data/atacama-soil-microbiome-tutorial'
+        >>> qza_file = f'{data_dir}/denoising-stats.qza'
+        >>> metadata_file = f'{data_dir}/sample-metadata.tsv'
+        >>> dokdo.denoising_stats_plot(qza_file, metadata_file, 'transect-name', artist_kwargs=dict(show_legend=True))
+        >>> plt.tight_layout()
     """
     with tempfile.TemporaryDirectory() as t:
         _parse_input(stats, t)
