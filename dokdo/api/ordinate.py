@@ -56,6 +56,49 @@ def ordinate(table, metadata=None, metric='jaccard', sampling_depth=-1,
     Notes
     -----
     The resulting Artifact object can be directly used for plotting.
+
+    Examples
+    --------
+    Below is a simple example. Note that the default distance metric
+    used is ``jaccard``. The resulting object ``pcoa`` can be directly
+    used for plotting by the ``dokdo.beta_2d_plot`` method as shown below.
+
+    .. plot::
+        :context: close-figs
+
+        >>> import dokdo
+        >>> import seaborn as sns
+        >>> import matplotlib.pyplot as plt
+        >>> sns.set()
+        >>> data_dir = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial'
+        >>> table_file = f'{data_dir}/table.qza'
+        >>> metadata_file = f'{data_dir}/sample-metadata.tsv'
+        >>> pcoa_results = dokdo.ordinate(table_file)
+        >>> dokdo.beta_2d_plot(pcoa_results, metadata=metadata_file, hue='body-site', artist_kwargs=dict(show_legend=True))
+        >>> plt.tight_layout()
+
+    You can choose a subset of samples.
+
+    .. plot::
+        :context: close-figs
+
+        >>> from qiime2 import Metadata
+        >>> mf = dokdo.get_mf(metadata_file)
+        >>> mf = mf[mf['body-site'].isin(['gut', 'left palm'])]
+        >>> pcoa_results = dokdo.ordinate(table_file, metadata=Metadata(mf))
+        >>> dokdo.beta_2d_plot(pcoa_results, metadata=metadata_file, hue='body-site', artist_kwargs=dict(show_legend=True))
+        >>> plt.tight_layout()
+
+    You can also generate a biplot.
+
+    .. plot::
+        :context: close-figs
+
+        >>> pcoa_results = dokdo.ordinate(table_file, biplot=True, number_of_dimensions=10)
+        >>> fig, ax = plt.subplots(1, 1, figsize=(8, 8))
+        >>> dokdo.beta_2d_plot(pcoa_results, ax=ax, metadata=metadata_file, hue='body-site', artist_kwargs=dict(show_legend=True))
+        >>> dokdo.addbiplot(pcoa_results, ax=ax, count=7)
+        >>> plt.tight_layout()
     """
     if isinstance(table, Artifact):
         table = table
