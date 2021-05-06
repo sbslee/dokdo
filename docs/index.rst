@@ -11,7 +11,8 @@ Welcome to dokdo's documentation!
    :caption: Contents:
 
    readme
-   api
+   dokdo_cli
+   dokdo_api
 
 
 
