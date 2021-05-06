@@ -51,6 +51,34 @@ def beta_parallel_plot(pcoa_results,
     Example usage of the q2-diversity plugin:
         CLI -> qiime diversity pcoa [OPTIONS]
         API -> from qiime2.plugins.diversity.methods import pcoa
+
+    Examples
+    --------
+    Below is a simple example.
+
+    .. plot::
+        :context: close-figs
+
+        >>> import dokdo
+        >>> import seaborn as sns
+        >>> import matplotlib.pyplot as plt
+        >>> sns.set()
+        >>> data_dir = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial'
+        >>> qza_file = f'{data_dir}/unweighted_unifrac_pcoa_results.qza'
+        >>> metadata_file = f'{data_dir}/sample-metadata.tsv'
+        >>> dokdo.beta_parallel_plot(qza_file)
+        >>> plt.tight_layout()
+
+    We can group the lines by body-site.
+
+    .. plot::
+        :context: close-figs
+
+        >>> dokdo.beta_parallel_plot(qza_file,
+        ...                          metadata=metadata_file,
+        ...                          hue='body-site',
+        ...                          artist_kwargs=dict(show_legend=True))
+        >>> plt.tight_layout()
     """
     if isinstance(pcoa_results, str):
         _pcoa_results = Artifact.load(pcoa_results)

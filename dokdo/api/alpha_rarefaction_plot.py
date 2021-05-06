@@ -48,6 +48,50 @@ def alpha_rarefaction_plot(rarefaction, hue='sample-id', metric='shannon',
     Example usage of the q2-diversity plugin:
         CLI -> qiime diversity alpha-rarefaction [OPTIONS]
         API -> from qiime2.plugins.diversity.visualizers import alpha_rarefaction
+
+    Examples
+    --------
+    Below is a simple example.
+
+    .. plot::
+        :context: close-figs
+
+        >>> import dokdo
+        >>> import seaborn as sns
+        >>> import matplotlib.pyplot as plt
+        >>> sns.set()
+        >>> qzv_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/alpha-rarefaction.qzv'
+        >>> artist_kwargs = dict(show_legend=True, legend_ncol=5)
+        >>> dokdo.alpha_rarefaction_plot(qzv_file, figsize=(8, 5), artist_kwargs=artist_kwargs)
+        >>> plt.tight_layout()
+
+    We can group the samples by body-site.
+
+    .. plot::
+        :context: close-figs
+
+        >>> artist_kwargs = dict(show_legend=True)
+        >>> dokdo.alpha_rarefaction_plot(qzv_file,
+        ...                              hue='body-site',
+        ...                              metric='observed_features',
+        ...                              figsize=(8, 5),
+        ...                              units='sample-id',
+        ...                              estimator=None,
+        ...                              artist_kwargs=artist_kwargs)
+        >>> plt.tight_layout()
+
+    Alternatively, we can aggregate the samples by body-site.
+
+    .. plot::
+        :context: close-figs
+
+        >>> artist_kwargs = dict(show_legend=True)
+        >>> dokdo.alpha_rarefaction_plot(qzv_file,
+        ...                              hue='body-site',
+        ...                              metric='observed_features',
+        ...                              figsize=(8, 5),
+        ...                              artist_kwargs=artist_kwargs)
+        >>> plt.tight_layout()
     """
     l = ['observed_features', 'faith_pd', 'shannon']
 

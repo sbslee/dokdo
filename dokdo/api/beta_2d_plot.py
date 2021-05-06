@@ -69,6 +69,42 @@ def beta_2d_plot(pcoa_results,
     Example usage of the q2-diversity plugin:
         CLI -> qiime diversity pcoa [OPTIONS]
         API -> from qiime2.plugins.diversity.methods import pcoa
+
+    Examples
+    --------
+    Below is a simple example.
+
+    .. plot::
+        :context: close-figs
+
+        >>> import dokdo
+        >>> import seaborn as sns
+        >>> import matplotlib.pyplot as plt
+        >>> sns.set()
+        >>> data_dir = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial'
+        >>> qza_file = f'{data_dir}/unweighted_unifrac_pcoa_results.qza'
+        >>> metadata_file = f'{data_dir}/sample-metadata.tsv'
+        >>> dokdo.beta_2d_plot(qza_file)
+        >>> plt.tight_layout()
+
+    We can color the datapoints with ``hue``. We can also change the
+    style of datapoints with ``style``. If the variable of interest is
+    numeric, we can use ``size`` to control the size of datapoints.
+    Finally, we can combine all those groupings.
+
+    .. plot::
+        :context: close-figs
+
+        >>> fig, [[ax1, ax2], [ax3, ax4]] = plt.subplots(2, 2, figsize=(8, 8))
+        >>> artist_kwargs1 = dict(show_legend=True, title="hue='body-site'")
+        >>> artist_kwargs2 = dict(show_legend=True, title="style='subject'")
+        >>> artist_kwargs3 = dict(show_legend=True, title="size='days-since-experiment-start'")
+        >>> artist_kwargs4 = dict(title="Combined groupings")
+        >>> dokdo.beta_2d_plot(qza_file, metadata_file, ax=ax1, hue='body-site', artist_kwargs=artist_kwargs1)
+        >>> dokdo.beta_2d_plot(qza_file, metadata_file, ax=ax2, style='subject', artist_kwargs=artist_kwargs2)
+        >>> dokdo.beta_2d_plot(qza_file, metadata_file, ax=ax3, size='days-since-experiment-start', artist_kwargs=artist_kwargs3)
+        >>> dokdo.beta_2d_plot(qza_file, metadata_file, ax=ax4, hue='body-site', style='subject', size='days-since-experiment-start', artist_kwargs=artist_kwargs4)
+        >>> plt.tight_layout()
     """
     if isinstance(pcoa_results, str):
         _pcoa_results = Artifact.load(pcoa_results)

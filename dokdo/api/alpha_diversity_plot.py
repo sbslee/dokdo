@@ -36,6 +36,23 @@ def alpha_diversity_plot(alpha_diversity, metadata, where,
     -------
     matplotlib.axes.Axes
         Axes object with the plot drawn onto it.
+
+    Examples
+    --------
+    Below is a simple example.
+
+    .. plot::
+        :context: close-figs
+
+        >>> import dokdo
+        >>> import seaborn as sns
+        >>> import matplotlib.pyplot as plt
+        >>> sns.set()
+        >>> data_dir = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial'
+        >>> qzv_file = f'{data_dir}/faith_pd_vector.qza'
+        >>> metadata_file = f'{data_dir}/sample-metadata.tsv'
+        >>> dokdo.alpha_diversity_plot(qzv_file, metadata_file, 'body-site')
+        >>> plt.tight_layout()
     """
     if isinstance(alpha_diversity, str):
         _alpha_diversity = Artifact.load(alpha_diversity)

@@ -34,6 +34,22 @@ def ancom_volcano_plot(ancom,
     Example usage of the q2-composition plugin:
         CLI -> qiime composition ancom [OPTIONS]
         API -> from qiime2.plugins.composition.visualizers import ancom
+
+    Examples
+    --------
+    Below is a simple example.
+
+    .. plot::
+        :context: close-figs
+
+        >>> import dokdo
+        >>> import seaborn as sns
+        >>> import matplotlib.pyplot as plt
+        >>> sns.set()
+        >>> data_dir = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial'
+        >>> qzv_file = f'{data_dir}/ancom-subject.qzv'
+        >>> dokdo.ancom_volcano_plot(qzv_file, figsize=(8, 5))
+        >>> plt.tight_layout()
     """
     with tempfile.TemporaryDirectory() as t:
         _parse_input(ancom, t)

@@ -59,6 +59,39 @@ def beta_3d_plot(pcoa_results,
     Example usage of the q2-diversity plugin:
         CLI -> qiime diversity pcoa [OPTIONS]
         API -> from qiime2.plugins.diversity.methods import pcoa
+
+    Examples
+    --------
+    Below is a simple example.
+
+    .. plot::
+        :context: close-figs
+
+        >>> import dokdo
+        >>> import seaborn as sns
+        >>> import matplotlib.pyplot as plt
+        >>> sns.set()
+        >>> data_dir = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial'
+        >>> qza_file = f'{data_dir}/unweighted_unifrac_pcoa_results.qza'
+        >>> metadata_file = f'{data_dir}/sample-metadata.tsv'
+        >>> dokdo.beta_3d_plot(qza_file,
+        ...                    metadata_file,
+        ...                    'body-site',
+        ...                    figsize=(6, 6),
+        ...                    artist_kwargs=dict(show_legend=True))
+        >>> plt.tight_layout()
+
+    We can control the camera angle with ``elev`` and ``azim``.
+
+    .. plot::
+        :context: close-figs
+
+        >>> fig = plt.figure(figsize=(12, 6))
+        >>> ax1 = fig.add_subplot(1, 2, 1, projection='3d')
+        >>> ax2 = fig.add_subplot(1, 2, 2, projection='3d')
+        >>> dokdo.beta_3d_plot(qza_file, metadata_file, ax=ax1, hue='body-site', elev=15)
+        >>> dokdo.beta_3d_plot(qza_file, metadata_file, ax=ax2, hue='body-site', azim=70)
+        >>> plt.tight_layout()
     """
     if isinstance(pcoa_results, str):
         _pcoa_results = Artifact.load(pcoa_results)

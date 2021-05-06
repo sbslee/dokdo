@@ -36,6 +36,41 @@ def distance_matrix_plot(distance_matrix,
     -------
     matplotlib.axes.Axes
         Axes object with the plot drawn onto it.
+
+    Examples
+    --------
+    Below is a simple example.
+
+    .. plot::
+        :context: close-figs
+
+        >>> import dokdo
+        >>> import seaborn as sns
+        >>> import matplotlib.pyplot as plt
+        >>> sns.set()
+        >>> data_dir = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial'
+        >>> qza_file = f'{data_dir}/unweighted_unifrac_distance_matrix.qza'
+        >>> dokdo.distance_matrix_plot(qza_file)
+        >>> plt.tight_layout()
+
+    We can indicate the distance between any two samples on top of the
+    histogram using ``pairs``.
+
+    .. plot::
+        :context: close-figs
+
+        >>> dokdo.distance_matrix_plot(qza_file,
+        ...                            pairs=[['L1S8', 'L1S57'],
+        ...                                   ['L2S175', 'L2S204']])
+        >>> plt.tight_layout()
+
+    Finally, we can show a density histogram.
+
+    .. plot::
+        :context: close-figs
+
+        >>> dokdo.distance_matrix_plot(qza_file, density=True)
+        >>> plt.tight_layout()
     """
     if isinstance(distance_matrix, str):
         _distance_matrix = Artifact.load(distance_matrix)
