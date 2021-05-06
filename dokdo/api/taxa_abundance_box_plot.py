@@ -112,6 +112,20 @@ def taxa_abundance_box_plot(taxa,
     Example usage of the q2-taxa plugin:
         CLI -> qiime taxa barplot [OPTIONS]
         API -> from qiime2.plugins.taxa.visualizers import barplot
+
+    Examples
+    --------
+    Plot a heatmap for a numpy array:
+
+    .. plot::
+        :context: close-figs
+
+        >>> import os
+        >>> print(os. getcwd())
+        >>> import numpy as np; np.random.seed(0)
+        >>> import seaborn as sns
+        >>> uniform_data = np.random.rand(10, 12)
+        >>> ax = sns.heatmap(uniform_data)
     """
     with tempfile.TemporaryDirectory() as t:
         _parse_input(taxa, t)

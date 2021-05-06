@@ -5,31 +5,15 @@ import dokdo
 import pandas as pd
 import matplotlib.pyplot as plt
 
-def taxa_abundance_bar_plot(taxa,
-                            metadata=None,
-                            level=1,
-                            by=None,
-                            ax=None,
-                            figsize=None,
-                            width=0.8,
-                            count=0,
-                            exclude_samples=None,
-                            include_samples=None,
-                            exclude_taxa=None,
-                            sort_by_names=False,
-                            colors=None,
-                            label_columns=None,
-                            orders=None,
-                            sample_names=None,
-                            csv_file=None,
-                            taxa_names=None,
-                            sort_by_mean1=True,
-                            sort_by_mean2=True,
-                            sort_by_mean3=True,
-                            show_others=True,
-                            cmap_name='Accent',
-                            legend_short=False,
-                            artist_kwargs=None):
+def taxa_abundance_bar_plot(
+    taxa, metadata=None, level=1, by=None, ax=None, figsize=None,
+    width=0.8, count=0, exclude_samples=None, include_samples=None,
+    exclude_taxa=None, sort_by_names=False, colors=None,
+    label_columns=None, orders=None, sample_names=None,
+    csv_file=None, taxa_names=None, sort_by_mean1=True,
+    sort_by_mean2=True, sort_by_mean3=True, show_others=True,
+    cmap_name='Accent', legend_short=False, artist_kwargs=None
+):
     """Create a taxa abundance plot.
 
     Although the input visualization file should contain medatadata already,
@@ -115,15 +99,68 @@ def taxa_abundance_bar_plot(taxa,
 
     Examples
     --------
-    Plot a heatmap for a numpy array:
+    Below is a simple example showing taxonomic abundance at the kingdom
+    level (i.e. ``level=1``), which is the default taxonomic rank.
 
     .. plot::
         :context: close-figs
 
-        >>> import numpy as np; np.random.seed(0)
+        >>> import dokdo
         >>> import seaborn as sns
-        >>> uniform_data = np.random.rand(10, 12)
-        >>> ax = sns.heatmap(uniform_data)
+        >>> import matplotlib.pyplot as plt
+        >>> sns.set()
+        >>> qzv_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/taxa-bar-plots.qzv'
+        >>> dokdo.taxa_abundance_bar_plot(qzv_file,
+        ...                               figsize=(10, 7),
+        ...                               artist_kwargs=dict(show_legend=True))
+        >>> plt.tight_layout()
+
+    We can change the taxonomic rank from kingdom to genus by setting
+    ``level=6``. Note that I removed ``show_legend=True`` because
+    otherwise there will be too many taxa to display on the legend.
+    Note also that the colors are recycled in each bar.
+
+    .. plot::
+        :context: close-figs
+
+        >>> dokdo.taxa_abundance_bar_plot(qzv_file,
+        ...                               figsize=(10, 7),
+        ...                               level=6)
+        >>> plt.tight_layout()
+
+    We can only show the top seven most abundant genera plus 'Others' with
+    ``count=8``.
+
+    .. plot::
+        :context: close-figs
+
+        >>> dokdo.taxa_abundance_bar_plot(qzv_file,
+        ...                               figsize=(10, 7),
+        ...                               level=6,
+        ...                               count=8,
+        ...                               legend_short=True,
+        ...                               artist_kwargs=dict(show_legend=True,
+        ...                                                  legend_loc='upper left'))
+        >>> plt.tight_layout()
+
+    We can plot the figure and the legend separately.
+
+    .. plot::
+        :context: close-figs
+
+        >>> fig, [ax1, ax2] = plt.subplots(1, 2, figsize=(12, 7), gridspec_kw={'width_ratios': [9, 1]})
+        >>> dokdo.taxa_abundance_bar_plot(qzv_file,
+        ...                               ax=ax1,
+        ...                               level=6,
+        ...                               count=8)
+        >>> dokdo.taxa_abundance_bar_plot(qzv_file,
+        ...                               ax=ax2,
+        ...                               level=6,
+        ...                               count=8,
+        ...                               legend_short=True,
+        ...                               artist_kwargs=dict(legend_only=True,
+        ...                                                  legend_loc='upper left'))
+        >>> plt.tight_layout()
     """
     with tempfile.TemporaryDirectory() as t:
         _parse_input(taxa, t)
