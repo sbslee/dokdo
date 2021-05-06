@@ -51,9 +51,7 @@ def denoising_stats_plot(
     .. plot::
         :context: close-figs
 
-        >>> import dokdo
         >>> import seaborn as sns
-        >>> import matplotlib.pyplot as plt
         >>> sns.set()
         >>> data_dir = '/Users/sbslee/Desktop/dokdo/data/atacama-soil-microbiome-tutorial'
         >>> qza_file = f'{data_dir}/denoising-stats.qza'

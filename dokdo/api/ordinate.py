@@ -66,9 +66,7 @@ def ordinate(table, metadata=None, metric='jaccard', sampling_depth=-1,
     .. plot::
         :context: close-figs
 
-        >>> import dokdo
         >>> import seaborn as sns
-        >>> import matplotlib.pyplot as plt
         >>> sns.set()
         >>> data_dir = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial'
         >>> table_file = f'{data_dir}/table.qza'

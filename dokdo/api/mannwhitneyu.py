@@ -45,9 +45,7 @@ def mannwhitneyu(taxon, csv_file, category, group1, group2, ann=False):
     .. plot::
         :context: close-figs
 
-        >>> import dokdo
         >>> import seaborn as sns
-        >>> import matplotlib.pyplot as plt
         >>> from qiime2 import Metadata
         >>> sns.set()
         >>> taxon = 'k__Bacteria;p__Proteobacteria'

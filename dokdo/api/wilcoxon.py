@@ -47,9 +47,7 @@ def wilcoxon(taxon, csv_file, subject, category, group1, group2, ann=False):
     .. plot::
         :context: close-figs
 
-        >>> import dokdo
         >>> import seaborn as sns
-        >>> import matplotlib.pyplot as plt
         >>> from qiime2 import Metadata
         >>> sns.set()
         >>> metadata = Metadata.load('/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/sample-metadata.tsv')

@@ -44,9 +44,7 @@ def alpha_diversity_plot(alpha_diversity, metadata, where,
     .. plot::
         :context: close-figs
 
-        >>> import dokdo
         >>> import seaborn as sns
-        >>> import matplotlib.pyplot as plt
         >>> sns.set()
         >>> data_dir = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial'
         >>> qzv_file = f'{data_dir}/faith_pd_vector.qza'

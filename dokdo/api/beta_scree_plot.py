@@ -53,9 +53,7 @@ def beta_scree_plot(pcoa_results,
     .. plot::
         :context: close-figs
 
-        >>> import dokdo
         >>> import seaborn as sns
-        >>> import matplotlib.pyplot as plt
         >>> sns.set()
         >>> data_dir = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial'
         >>> qza_file = f'{data_dir}/unweighted_unifrac_pcoa_results.qza'

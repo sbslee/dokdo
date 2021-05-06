@@ -56,9 +56,7 @@ def alpha_rarefaction_plot(rarefaction, hue='sample-id', metric='shannon',
     .. plot::
         :context: close-figs
 
-        >>> import dokdo
         >>> import seaborn as sns
-        >>> import matplotlib.pyplot as plt
         >>> sns.set()
         >>> qzv_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/alpha-rarefaction.qzv'
         >>> artist_kwargs = dict(show_legend=True, legend_ncol=5)

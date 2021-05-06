@@ -42,9 +42,7 @@ def ancom_volcano_plot(ancom,
     .. plot::
         :context: close-figs
 
-        >>> import dokdo
         >>> import seaborn as sns
-        >>> import matplotlib.pyplot as plt
         >>> sns.set()
         >>> data_dir = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial'
         >>> qzv_file = f'{data_dir}/ancom-subject.qzv'

@@ -4,7 +4,7 @@ Dokdo API
 Introduction
 ============
 
-This page describes Dokdo API, which is designed to be used with Jupyter Notebook in Python. Before using Dokdo API, please make sure your notebook is open within an environment where QIIME 2 and Dokdo are already installed.
+This page describes Dokdo's application programming interface (API), which is designed to be used with Jupyter Notebook in Python. Before using Dokdo API, make sure your notebook is open within an environment where QIIME 2 and Dokdo are already installed.
 
 First, at the beginning of your notebook, enter the following to import Dokdo API.
 
@@ -13,19 +13,33 @@ First, at the beginning of your notebook, enter the following to import Dokdo AP
 
    >>> import dokdo
 
-Next, add the following to make figures. You should have the ``matplotlib`` package already installed in your environment because it is included in QIIME 2 installation. With the magic function ``%matplotlib inline``, the output of plotting methods will be displayed inline within Jupyter Notebook.
+Next, import the ``matplotlib`` package which should be installed already in your environment because it is included in QIIME 2 installation.
+
+.. plot::
+   :context:
+
+   >>> import matplotlib.pyplot as plt
+
+With the magic function ``%matplotlib inline``, the output of plotting methods will be displayed inline within Jupyter Notebook.
 
 .. code:: python3
 
-    import matplotlib.pyplot as plt
-    %matplotlib inline
+    >>> %matplotlib inline
 
-Finally, set the seed so that our results are reproducible.
+Let's set the seed so that our results are reproducible.
 
-.. code:: python3
+.. plot::
+   :context:
 
-    import numpy as np
-    np.random.seed(1)
+   >>> import numpy as np
+   >>> np.random.seed(1)
+
+Finally, we are going to use some datasets downloaded from publicly available QIIME 2 tutorials, including `Moving Pictures <https://docs.qiime2.org/2020.8/tutorials/moving-pictures/>`_ and `Atacama soil microbiome <https://docs.qiime2.org/2020.8/tutorials/atacama-soils/>`_.
+
+.. plot::
+   :context:
+
+   >>> data_dir = '/Users/sbslee/Desktop/dokdo/data'
 
 Tips
 ====
@@ -33,20 +47,168 @@ Tips
 Setting Figure Properties
 -------------------------
 
-In this section, you'll learn how to control various properties of a figure using the plotting method ``dokdo.denoising_stats_plot`` as an example. This method creates a grouped box chart using denoising statistics from the DADA 2 algorithm. For more details about the method, see the ``dokdo.denoising_stats_plot`` section.
+In this section, you'll learn how to control various properties of a figure using the plotting method ``dokdo.denoising_stats_plot`` as an example. This method creates a grouped box chart using denoising statistics from the DADA 2 algorithm.
 
 Let's start with a toy example. The figure below does not have a legend, which is bad, but let's not worry about that now.
 
 .. plot::
     :context: close-figs
 
-    >>> import matplotlib.pyplot as plt
-    >>> data_dir = '/Users/sbslee/Desktop/dokdo/data/atacama-soil-microbiome-tutorial'
-    >>> qza_file = f'{data_dir}/denoising-stats.qza'
-    >>> metadata_file = f'{data_dir}/sample-metadata.tsv'
+    >>> qza_file = f'{data_dir}/atacama-soil-microbiome-tutorial/denoising-stats.qza'
+    >>> metadata_file = f'{data_dir}/atacama-soil-microbiome-tutorial/sample-metadata.tsv'
     >>> where = 'transect-name'
     >>> args = [qza_file, metadata_file, where]
     >>> dokdo.denoising_stats_plot(*args)
+    >>> plt.tight_layout()
+
+Aesthetics
+^^^^^^^^^^
+
+The first thing we can do is changing the figure style. I personally like the ``seaborn`` package's default style.
+
+.. plot::
+    :context: close-figs
+
+    >>> import seaborn as sns
+    >>> with sns.axes_style('darkgrid'):
+    ...     dokdo.denoising_stats_plot(*args)
+    >>> plt.tight_layout()
+
+If you're coming from the world of R software, you may find the ``ggplot`` style more soothing for your eyes.
+
+.. plot::
+    :context: close-figs
+
+    >>> import matplotlib.pyplot as plt
+    >>> with plt.style.context('ggplot'):
+    ...     dokdo.denoising_stats_plot(*args)
+    >>> plt.tight_layout()
+
+Note that in both cases, the styling is set locally. If you plan to make many plots and want to set the style for all of them (i.e. globally), use the following.
+
+.. plot::
+    :context: close-figs
+
+    >>> import seaborn as sns
+    >>> sns.set()
+    >>> # import matplotlib.pyplot as plt
+    >>> # plt.style.use('ggplot')
+
+Finally, you can turn off the styling at any point after setting it globally with the following.
+
+.. code:: python3
+
+    >>> # import matplotlib
+    >>> # matplotlib.rc_file_defaults()
+
+Plot Size
+^^^^^^^^^
+
+There are various ways you can control the figure size. The easiest way is to use the ``figsize`` argument in a plotting method call, as shown below.
+
+.. plot::
+    :context: close-figs
+
+    >>> dokdo.denoising_stats_plot(*args, figsize=(9, 3))
+    >>> plt.tight_layout()
+
+If you plan to draw more than one plot in the same figure (i.e. multiple "subplots"), you can specify size for the entire figure in the following way.
+
+.. plot::
+    :context: close-figs
+
+    >>> fig, [ax1, ax2] = plt.subplots(1, 2, figsize=(9, 3))
+    >>> dokdo.denoising_stats_plot(*args, ax=ax1)
+    >>> dokdo.denoising_stats_plot(*args, ax=ax2)
+    >>> plt.tight_layout()
+
+You can also set the width and/or height of individual subplots using ``width_ratios`` and ``height_ratios`` from ``gridspec_kw``.
+
+.. plot::
+    :context: close-figs
+
+    >>> fig, [ax1, ax2] = plt.subplots(1, 2, figsize=(9, 3), gridspec_kw={'width_ratios': [8, 2]})
+    >>> dokdo.denoising_stats_plot(*args, ax=ax1)
+    >>> dokdo.denoising_stats_plot(*args, ax=ax2)
+    >>> plt.tight_layout()
+
+Alternatively, you can combine empty subplots to create a bigger subplot using ``gridspec``.
+
+.. plot::
+    :context: close-figs
+
+    >>> import matplotlib.gridspec as gridspec
+    >>> fig, axes  = plt.subplots(2, 2, figsize=(9, 5))
+    >>> dokdo.denoising_stats_plot(*args, ax=axes[0][0])
+    >>> dokdo.denoising_stats_plot(*args, ax=axes[1][0])
+    >>> gs = axes[0, 1].get_gridspec()
+    >>> for ax in axes[0:2, 1]:
+    ...     ax.remove()
+    >>> axbig = fig.add_subplot(gs[0:2, 1])
+    >>> dokdo.denoising_stats_plot(*args, ax=axbig)
+    >>> plt.tight_layout()
+
+Title, Axis, Legend, Font Size
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Each main plotting method takes a dictionary argument called ``artist_kwargs`` as input that is passed down to the private method ``_artist`` as shown below. For example, the ``show_legend`` argument defined in ``_artist`` is set as ``False`` by default, which means if you want to include the figure legend, you should include ``artist_kwargs=dict(show_legend=True)`` in your method call.
+
+Note that internally, different plotting methods use a different set of default keyword arguments for ``_artist``. For example, by default, the ``dokdo.denoising_stats_plot`` method passes ``ylabel='Read depth'`` to ``_artist`` whereas the ``dokdo.taxa_abundance_bar_plot`` method passes ``ylabel='Relative abundance (%)'``. Of course, you can always easily change the y-axis label with ``artist_kwargs=dict(ylabel='My new y-axis label')``.
+
+.. automodule:: dokdo.api.common
+   :members:
+
+   .. automethod:: dokdo.api.common._artist
+
+Below are some simple examples.
+
+.. plot::
+    :context: close-figs
+
+    >>> fig, [[ax1, ax2, ax3], [ax4, ax5, ax6]] = plt.subplots(2, 3, figsize=(15, 8))
+    >>> artist_kwargs1 = dict(title='My title')
+    >>> artist_kwargs2 = dict(title='ylog=True', ylog=True, ymin=0.5E1, ymax=1.5E5)
+    >>> artist_kwargs3 = dict(title='legend_ncol=2', show_legend=True, legend_ncol=2)
+    >>> artist_kwargs4 = dict(title='hide_yticks=True', hide_yticks=True)
+    >>> artist_kwargs5 = dict(title='title_fontsize=20', title_fontsize=20)
+    >>> artist_kwargs6 = dict(title='legend_fontsize=15', show_legend=True, legend_ncol=2, legend_fontsize=15)
+    >>> dokdo.denoising_stats_plot(*args, ax=ax1, artist_kwargs=artist_kwargs1)
+    >>> dokdo.denoising_stats_plot(*args, ax=ax2, artist_kwargs=artist_kwargs2)
+    >>> dokdo.denoising_stats_plot(*args, ax=ax3, artist_kwargs=artist_kwargs3)
+    >>> dokdo.denoising_stats_plot(*args, ax=ax4, artist_kwargs=artist_kwargs4)
+    >>> dokdo.denoising_stats_plot(*args, ax=ax5, artist_kwargs=artist_kwargs5)
+    >>> dokdo.denoising_stats_plot(*args, ax=ax6, artist_kwargs=artist_kwargs6)
+    >>> plt.tight_layout()
+
+Sample Filtering
+^^^^^^^^^^^^^^^^
+
+Sometimes, you may want to plot only a subset of the samples. This can be easily done by providing filtered metadata to the plotting method.
+
+.. plot::
+    :context: close-figs
+
+    >>> from qiime2 import Metadata
+    >>> mf = dokdo.get_mf(metadata_file)
+    >>> mf = mf[mf['transect-name'] == 'Yungay']
+    >>> metadata = Metadata(mf)
+    >>> dokdo.denoising_stats_plot(qza_file, metadata=metadata, where=where)
+    >>> plt.tight_layout()
+
+Plotting Legend Separately
+--------------------------
+
+In some situations, we may wish to plot the graph and the legend separately. For example, the ``dokdo.taxa_abundance_bar_plot`` method by default displays the whole taxa name, which can be quite long and disrupting as shown below.
+
+.. plot::
+    :context: close-figs
+
+    >>> qzv_file = f'{data_dir}/moving-pictures-tutorial/taxa-bar-plots.qzv'
+    >>> dokdo.taxa_abundance_bar_plot(qzv_file,
+    ...                               level=2,
+    ...                               count=8,
+    ...                               figsize=(9, 5),
+    ...                               artist_kwargs=dict(show_legend=True))
     >>> plt.tight_layout()
 
 General Methods

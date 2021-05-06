@@ -41,9 +41,7 @@ def read_quality_plot(
     .. plot::
         :context: close-figs
 
-        >>> import dokdo
         >>> import seaborn as sns
-        >>> import matplotlib.pyplot as plt
         >>> sns.set()
         >>> qzv_file = '/Users/sbslee/Desktop/dokdo/data/atacama-soil-microbiome-tutorial/demux-subsample.qzv'
         >>> fig, [ax1, ax2] = plt.subplots(1, 2, figsize=(8, 7))
