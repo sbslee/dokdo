@@ -14,6 +14,9 @@ Welcome to dokdo's documentation!
    dokdo_cli
    dokdo_api
    qiime2_cli
+   qiime2_api
+   useful_information
+   pipeline
 
 
 

@@ -31,6 +31,7 @@ extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.napoleon',
     'sphinx.ext.mathjax',
+    'sphinx.ext.autosectionlabel',
     'sphinx_rtd_theme',
     'matplotlib.sphinxext.plot_directive'
 ]
@@ -49,6 +50,7 @@ templates_path = ['_templates']
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
+autosectionlabel_prefix_document = True
 
 # -- Options for HTML output -------------------------------------------------
 

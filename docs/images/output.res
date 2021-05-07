@@ -1,0 +1,429 @@
+k__Bacteria.p__Firmicutes.c__Clostridia.o__Clostridiales.f__Veillonellaceae.g__Schwartzia	2.91665666661			-
+k__Bacteria.p__Fusobacteria.c__Fusobacteriia.o__Fusobacteriales.f__Leptotrichiaceae.g__Leptotrichia	3.83387415265	tongue	3.67402074136	0.00117790022532
+k__Bacteria.p__Proteobacteria.c__Alphaproteobacteria.o__Rhizobiales	3.62498894862	left_palm	3.45571261181	0.00188353245604
+k__Bacteria.p__Firmicutes.c__Clostridia.o__Clostridiales.f___Mogibacteriaceae_	3.26108897976			-
+k__Bacteria.p__Proteobacteria.c__Betaproteobacteria.o__Neisseriales.f__Neisseriaceae.g__Neisseria	5.34529619015	tongue	5.05661026211	0.000101323112199
+k__Bacteria.p__Firmicutes.c__Clostridia.o__Clostridiales.f___Acidaminobacteraceae_	2.26344415284			-
+k__Bacteria.p__Bacteroidetes.c__Bacteroidia.o__Bacteroidales.f__Porphyromonadaceae.g__Parabacteroides	4.2668042966	gut	3.97862429599	0.00813710547696
+k__Bacteria.p__Cyanobacteria.c__Chloroplast.o__Chlorophyta.f__Trebouxiophyceae	2.07064920425			-
+k__Bacteria.p__Firmicutes.c__Bacilli.o__Lactobacillales.f__Lactobacillaceae.f__Lactobacillaceae_x__L6	3.26024084846	left_palm	3.9922686753	0.0314142215885
+k__Bacteria.p__Bacteroidetes.c__Bacteroidia.o__Bacteroidales	5.78774282652	gut	5.4471040898	8.965987804e-05
+k__Bacteria.p__Bacteroidetes.c__Flavobacteriia.o__Flavobacteriales.f___Weeksellaceae_.g__Chryseobacterium	3.5552641212	left_palm	3.41175035232	0.0314142215885
+k__Bacteria.p__TM7.c__TM7_3.c__TM7_3_o__L4.c__TM7_3_f__L5	1.50461525684			-
+k__Bacteria.p__FBP.p__FBP_c__L3.p__FBP_o__L4	1.75587138133			-
+k__Bacteria.p__Proteobacteria.c__Gammaproteobacteria.o__Enterobacteriales.f__Enterobacteriaceae.f__Enterobacteriaceae_x__L6	3.9628785314	gut	3.69212623878	0.0100962800456
+k__Bacteria.p__Synergistetes.c__Synergistia.o__Synergistales.f__Dethiosulfovibrionaceae.g__TG5	3.06507649907			-
+k__Bacteria.p__Actinobacteria.c__Actinobacteria.o__Actinomycetales.f__Nocardiaceae.g__Rhodococcus	2.9218007184			-
+k__Bacteria.p__Cyanobacteria.c__Chloroplast.o__Chlorophyta.f__Trebouxiophyceae.g__Chloroidium	2.07064920425			-
+k__Bacteria.p__Firmicutes.c__Clostridia.o__Clostridiales.o__Clostridiales_f__L5.o__Clostridiales_g__L6	3.27226495215			-
+k__Bacteria.p__Firmicutes.c__Bacilli.o__Lactobacillales.f__Streptococcaceae	5.1568114286	tongue	4.83668582486	0.000379578976353
+k__Bacteria.p__Proteobacteria.c__Betaproteobacteria.o__Burkholderiales.f__Burkholderiaceae.g__Lautropia	3.89643209975			-
+k__Bacteria.p__Proteobacteria.c__Deltaproteobacteria.o__Desulfovibrionales	3.85622579151	gut	3.65171057656	3.62525802459e-05
+k__Bacteria.p__Firmicutes.c__Bacilli.o__Lactobacillales.f__Lactobacillaceae.g__Lactobacillus	3.77503713712	left_palm	3.48063700403	0.000386032482264
+k__Bacteria.p__Actinobacteria.c__Actinobacteria.o__Actinomycetales.o__Actinomycetales_f__L5	2.34739454386			-
+k__Bacteria.p__Proteobacteria.c__Alphaproteobacteria.o__Rhizobiales.f__Methylobacteriaceae.g__Methylobacterium	3.18532408668	left_palm	3.17036825359	0.00813710547696
+k__Bacteria.p__Proteobacteria.c__Gammaproteobacteria.o__Aeromonadales.f__Aeromonadaceae	2.70747130184			-
+k__Bacteria.p__Proteobacteria.c__Betaproteobacteria.o__Burkholderiales.f__Comamonadaceae.g__Methylibium	3.08841013243	gut	3.61602261653	0.0314142215885
+k__Bacteria.p__Proteobacteria.c__Gammaproteobacteria.o__Pseudomonadales.f__Moraxellaceae.f__Moraxellaceae_x__L6	2.19558794086			-
+k__Bacteria.p__Proteobacteria.c__Alphaproteobacteria.o__Sphingomonadales.f__Sphingomonadaceae.f__Sphingomonadaceae_x__L6	2.98895106881			-
+k__Bacteria.p__Proteobacteria.c__Deltaproteobacteria.o__Desulfovibrionales.f__Desulfovibrionaceae.g__Desulfovibrio	3.7267976405	gut	3.49616351519	1.08106631905e-05
+k__Bacteria.p__Proteobacteria.c__Gammaproteobacteria.o__Vibrionales.f__Vibrionaceae	2.44218355718			-
+k__Bacteria.p__Firmicutes.c__Clostridia.o__Clostridiales.f__Lachnospiraceae.f__Lachnospiraceae_x__L6	4.67377073034	gut	4.36505519265	0.000439392723135
+k__Bacteria.p__Firmicutes.c__Clostridia.o__Clostridiales.o__Clostridiales_x__L5	3.55298932775	gut	3.46587905498	0.000392628353535
+k__Bacteria.p__SR1.p__SR1_c__L3	2.59531037611			-
+k__Bacteria.p__Proteobacteria.c__Alphaproteobacteria.o__Rhizobiales.f__Hyphomicrobiaceae	2.45484138567			-
+k__Bacteria.p__Firmicutes.c__Clostridia.o__Clostridiales.f__Lachnospiraceae.g__Dorea	3.34878954003	gut	3.23565744565	0.000992981815994
+k__Bacteria.p__Firmicutes.c__Bacilli.o__Lactobacillales.f__Lactobacillaceae	3.89085906709	left_palm	3.56439888716	0.000386032482264
+k__Bacteria.p__Proteobacteria	5.62646227483	tongue	5.30274394913	0.000285862394797
+k__Bacteria.p__Proteobacteria.c__Alphaproteobacteria.o__Rhodospirillales.f__Rhodospirillaceae.g__Skermanella	1.97941775857			-
+k__Bacteria.p__Proteobacteria.c__Betaproteobacteria.o__Burkholderiales.f__Alcaligenaceae.g__Pusillimonas	2.82397687091			-
+k__Bacteria.p__Proteobacteria.p__Proteobacteria_x__L3.p__Proteobacteria_x__L4.p__Proteobacteria_x__L5.p__Proteobacteria_x__L6	2.07064920425			-
+k__Bacteria.p__Actinobacteria.c__Actinobacteria.o__Actinomycetales.f__Propionibacteriaceae	3.79574930446	left_palm	3.51157391556	6.9361384993e-05
+k__Bacteria.p__Proteobacteria.c__Betaproteobacteria.o__Burkholderiales.o__Burkholderiales_x__L5	3.78396842433	gut	3.54482085025	0.00188353245604
+k__Bacteria.p__Fusobacteria	5.02039000409	tongue	4.72509437552	0.000185643403297
+k__Bacteria.p__Bacteroidetes.c__Bacteroidia.o__Bacteroidales.f___Barnesiellaceae_	2.72657205839	gut	3.57962637271	0.0314142215885
+k__Bacteria.p__Proteobacteria.c__Gammaproteobacteria.o__Pasteurellales	5.2771957445	tongue	4.96613688114	7.0229459072e-05
+k__Bacteria.p__Firmicutes.c__Bacilli.o__Turicibacterales.f__Turicibacteraceae	1.67800135533			-
+k__Bacteria.p__Bacteroidetes.c__Bacteroidia.o__Bacteroidales.f__Porphyromonadaceae.g__Porphyromonas	3.7724724756	left_palm	3.56027038649	0.00830084593526
+k__Bacteria.p__Firmicutes.c__Clostridia.o__Clostridiales.f__Peptostreptococcaceae	3.10615691851			-
+k__Bacteria.p__Bacteroidetes.c__Flavobacteriia.o__Flavobacteriales.f___Weeksellaceae_.g__Cloacibacterium	2.34739454386			-
+k__Bacteria.p__Firmicutes.c__Bacilli.o__Bacillales.f__Bacillaceae.g__Bacillus	3.22699640511			-
+k__Bacteria.p__Firmicutes.c__Clostridia.o__Clostridiales.f__Ruminococcaceae.g__Ruminococcus	4.035821625	gut	3.76687490656	0.000585773052982
+k__Bacteria.p__Tenericutes.c__Mollicutes	2.93850868963	left_palm	3.10528112277	0.0314142215885
+k__Bacteria.p__Proteobacteria.c__Gammaproteobacteria.o__Legionellales.f__Legionellaceae	1.89811551283			-
+k__Bacteria.p__Proteobacteria.c__Alphaproteobacteria.o__Rhizobiales.f__Brucellaceae	3.18459255656			-
+k__Bacteria.p__Firmicutes.c__Clostridia.o__Clostridiales.f__Veillonellaceae.f__Veillonellaceae_x__L6	2.99044288077			-
+k__Bacteria.p__Bacteroidetes.c__Sphingobacteriia	4.05854711471	left_palm	3.86746136354	0.00188353245604
+k__Bacteria.p__Bacteroidetes.c__Bacteroidia.o__Bacteroidales.f__Prevotellaceae	5.14361649771	tongue	4.83233611188	0.000299360302953
+k__Bacteria.p__Proteobacteria.c__Deltaproteobacteria	3.85622579151	gut	3.64465789704	3.62525802459e-05
+k__Bacteria.p__Firmicutes.c__Clostridia.o__Clostridiales.f__Lachnospiraceae.g__Anaerostipes	2.51098256098			-
+k__Bacteria.p__Proteobacteria.c__Betaproteobacteria.o__Burkholderiales.f__Comamonadaceae.g__Hydrogenophaga	2.47185492175			-
+k__Bacteria.p__Proteobacteria.c__Alphaproteobacteria.o__Sphingomonadales	3.86812974474	left_palm	3.63449815889	6.9361384993e-05
+k__Bacteria.p__Bacteroidetes.c__Flavobacteriia.o__Flavobacteriales	4.2786831331	left_palm	4.05375551414	5.5704590612e-05
+k__Bacteria.p__Verrucomicrobia.c___Pedosphaerae_.o___Pedosphaerales_.o___Pedosphaerales__f__L5.o___Pedosphaerales__g__L6	2.24595761321			-
+k__Bacteria.p__Bacteroidetes.c__Sphingobacteriia.o__Sphingobacteriales.f__Sphingobacteriaceae.g__Pedobacter	4.00765253922	left_palm	3.813594849	0.00188353245604
+k__Bacteria.p__Proteobacteria.c__Epsilonproteobacteria.o__Campylobacterales.f__Campylobacteraceae.g__Campylobacter	3.94847911903	tongue	3.73023411096	0.000144077200088
+k__Bacteria.p__Bacteroidetes.c__Bacteroidia.o__Bacteroidales.f___Paraprevotellaceae_.g___Prevotella_	4.12934659437	tongue	3.93749016567	0.000592226037063
+k__Bacteria.p__Proteobacteria.c__Betaproteobacteria.o__Burkholderiales.f__Comamonadaceae.f__Comamonadaceae_x__L6	3.91528565723	left_palm	3.62452413513	0.00558117381063
+k__Bacteria.p__Proteobacteria.c__Deltaproteobacteria.o__Desulfovibrionales.f__Desulfomicrobiaceae.g__Desulfomicrobium	2.07064920425			-
+k__Bacteria.p__Bacteroidetes.c__Cytophagia.o__Cytophagales.f__Cytophagaceae.g__Flectobacillus	2.93284884742	left_palm	3.20632586015	0.0314142215885
+k__Bacteria.p___Thermi_.c__Deinococci	2.55442930101			-
+k__Bacteria.p__Bacteroidetes.c__Bacteroidia.o__Bacteroidales.o__Bacteroidales_f__L5.o__Bacteroidales_g__L6	2.26344415284			-
+k__Bacteria.p__Firmicutes.c__Clostridia.o__Clostridiales.f___Mogibacteriaceae_.g__Mogibacterium	2.875158969			-
+k__Bacteria.p__Firmicutes.c__Clostridia.o__Clostridiales.f__Veillonellaceae.g__Phascolarctobacterium	4.49163279385	gut	4.18745991906	3.62525802459e-05
+k__Bacteria.p__Firmicutes.c__Clostridia.o__Clostridiales.f__Veillonellaceae.g__Veillonella	4.83228949582	tongue	4.52884167987	0.000109982623587
+k__Bacteria.p__Firmicutes.c__Bacilli.o__Turicibacterales	1.67800135533			-
+k__Bacteria.p__Firmicutes.c__Erysipelotrichi.o__Erysipelotrichales.f__Erysipelotrichaceae.g__Catenibacterium	2.67449162216			-
+k__Bacteria.p__Proteobacteria.c__Betaproteobacteria.o__Neisseriales.f__Neisseriaceae	5.34529619015	tongue	5.0566014813	0.000123264359432
+k__Bacteria.p__Proteobacteria.c__Alphaproteobacteria.o__Rhizobiales.f__Hyphomicrobiaceae.g__Devosia	2.45484138567			-
+k__Bacteria.p__Bacteroidetes	5.78774282652	gut	5.4139992969	0.000255233094736
+k__Bacteria.p__Actinobacteria.c__Coriobacteriia.o__Coriobacteriales	2.84710764393			-
+k__Bacteria.p__Firmicutes.c__Clostridia.o__Clostridiales.f___Tissierellaceae_.g__1_68	2.84350217942	left_palm	3.2887655712	0.0314142215885
+k__Bacteria.p__Cyanobacteria.c__Chloroplast.o__Chlorophyta	2.32845468803			-
+k__Bacteria.p__Firmicutes.c__Clostridia.o__Clostridiales.f__Veillonellaceae.g__Dialister	3.00380684233			-
+k__Bacteria.p__Verrucomicrobia.c__Verrucomicrobiae.o__Verrucomicrobiales	4.15622272952	gut	3.82751886009	0.00135774325278
+k__Bacteria.p__Bacteroidetes.c__Bacteroidia.o__Bacteroidales.f__Porphyromonadaceae.g__Paludibacter	3.27441250652	left_palm	3.45094203352	0.0314142215885
+k__Bacteria.p__Firmicutes.c__Clostridia.o__Clostridiales.f__Peptostreptococcaceae.g__Filifactor	2.1991455085			-
+k__Bacteria.p__Firmicutes.c__Bacilli.o__Gemellales	3.93468040035	tongue	3.65636818452	0.000795981756318
+k__Bacteria.p__Spirochaetes.c__Spirochaetes.o__Spirochaetales.f__Spirochaetaceae.g__Treponema	3.20956877205			-
+k__Bacteria.p__Proteobacteria.c__Gammaproteobacteria.o__Alteromonadales.f__Alteromonadaceae.g__Cellvibrio	2.19558794086			-
+k__Bacteria.p__Proteobacteria.c__Betaproteobacteria.o__Burkholderiales.f__Comamonadaceae.g__Acidovorax	2.93366026801			-
+k__Bacteria.p__Firmicutes.c__Clostridia.o__Clostridiales.f__Clostridiaceae	3.329066278	left_palm	3.13743520634	0.0141181494026
+k__Bacteria.p__Firmicutes.c__Clostridia.o__OPB54	1.8945579452			-
+k__Bacteria.p__Proteobacteria.c__Gammaproteobacteria.o__Pasteurellales.f__Pasteurellaceae	5.2771957445	tongue	4.966161423	7.0229459072e-05
+k__Bacteria.p__Firmicutes.c__Bacilli.o__Lactobacillales.f__Aerococcaceae	3.63989551334	left_palm	3.39694927772	0.00813710547696
+k__Bacteria.p__Firmicutes.c__Clostridia.o__Clostridiales.f___Tissierellaceae_.g__Helcococcus	2.38819271218			-
+k__Bacteria.p__Proteobacteria.c__Deltaproteobacteria.o__Desulfovibrionales.f__Desulfomicrobiaceae.f__Desulfomicrobiaceae_g__L6	1.89811551283			-
+k__Bacteria.p__GN02	2.40764997242	left_palm	3.70750852979	0.0314142215885
+k__Bacteria.p__Firmicutes.c__Clostridia.o__Clostridiales.f__Veillonellaceae	4.83797524414	tongue	4.36377264698	0.0123214916045
+k__Bacteria.p__SR1.p__SR1_c__L3.p__SR1_o__L4	2.59531037611			-
+k__Bacteria.p__Proteobacteria.c__Betaproteobacteria.o__Burkholderiales.f__Burkholderiaceae	3.89643209975			-
+k__Bacteria.p__Firmicutes.c__Clostridia.o__Clostridiales.f___Acidaminobacteraceae_.f___Acidaminobacteraceae__g__L6	2.26344415284			-
+k__Bacteria.p__Proteobacteria.c__Gammaproteobacteria.o__Pseudomonadales	5.13551188571	left_palm	4.90186974277	1.08106631905e-05
+k__Bacteria.p__Proteobacteria.c__Betaproteobacteria.o__Burkholderiales.f__Alcaligenaceae.g__Alcaligenes	2.19558794086			-
+k__Bacteria.p__Bacteroidetes.c__Bacteroidia.o__Bacteroidales.f__Rikenellaceae.f__Rikenellaceae_g__L6	2.18181258714			-
+k__Bacteria.p__Firmicutes.c__Bacilli.o__Lactobacillales.f__Carnobacteriaceae.g__Granulicatella	2.67585478423			-
+k__Bacteria.p__Bacteroidetes.c___Saprospirae_.o___Saprospirales_.f__Chitinophagaceae	3.31278259398	left_palm	3.22546386066	0.00813710547696
+k__Bacteria.p__Bacteroidetes.c__Cytophagia	3.11636557733	left_palm	3.35908571461	0.00188353245604
+k__Bacteria.p__Spirochaetes.c__Spirochaetes.o__Spirochaetales.f__Spirochaetaceae	3.20956877205			-
+k__Bacteria.p__Verrucomicrobia.c__Verrucomicrobiae.o__Verrucomicrobiales.f__Verrucomicrobiaceae	4.15622272952	gut	3.82750905615	0.00135774325278
+k__Bacteria.p__Firmicutes.c__Clostridia.o__Clostridiales.f__Lachnospiraceae.g__Moryella	3.38138751168	tongue	3.82114306795	0.007766023587
+k__Bacteria.p__Firmicutes.c__Erysipelotrichi.o__Erysipelotrichales.f__Erysipelotrichaceae.g__Holdemania	2.48151682456	gut	3.72321831744	0.00813710547696
+k__Bacteria.p__Firmicutes.c__Erysipelotrichi	3.55625491252			-
+k__Bacteria.p__Firmicutes.c__Bacilli.o__Bacillales.f__Bacillaceae.f__Bacillaceae_x__L6	2.29249795387			-
+k__Bacteria.p__Actinobacteria.c__Thermoleophilia	2.43862598955			-
+k__Bacteria.p__Firmicutes.c__Clostridia.o__Clostridiales.f__Lachnospiraceae.g__Lachnospira	4.71732003677	gut	4.42117717551	2.28910254721e-05
+k__Bacteria.p__Actinobacteria.c__Coriobacteriia	2.84710764393			-
+k__Bacteria.p__Firmicutes.c__Clostridia.o__Clostridiales.f___Tissierellaceae_.g__Finegoldia	4.07676619556	left_palm	3.78491525569	2.28910254721e-05
+k__Bacteria.p__Proteobacteria.c__Alphaproteobacteria.o__Rhodospirillales.f__Rhodospirillaceae	2.33042322258			-
+k__Bacteria.p__Proteobacteria.c__Gammaproteobacteria.o__Aeromonadales.f__Succinivibrionaceae	2.07064920425			-
+k__Bacteria.p__TM7.c__TM7_3.c__TM7_3_o__L4.c__TM7_3_f__L5.c__TM7_3_g__L6	1.50461525684			-
+k__Bacteria.p__Bacteroidetes.c__Bacteroidia	5.78774282652	gut	5.4471040898	8.965987804e-05
+k__Bacteria.p__Firmicutes.c__Clostridia.o__Clostridiales.f__Lachnospiraceae	5.25430634003	gut	4.93768790364	0.000178138589495
+k__Bacteria.p__Proteobacteria.c__Alphaproteobacteria.o__Rhizobiales.f__Brucellaceae.f__Brucellaceae_x__L6	3.18459255656			-
+k__Bacteria.p__Proteobacteria.c__Betaproteobacteria.o__Methylophilales.f__Methylophilaceae.g__Methylotenera	2.40538649084			-
+k__Bacteria.p__Firmicutes.c__Bacilli.o__Lactobacillales.f__Aerococcaceae.g__Facklamia	2.34739454386			-
+k__Bacteria.p__Proteobacteria.c__Betaproteobacteria.o__Burkholderiales.f__Alcaligenaceae	3.10569184932	left_palm	3.15032429852	0.00813710547696
+k__Bacteria.p__Proteobacteria.c__Gammaproteobacteria.o__Vibrionales.f__Vibrionaceae.g__Vibrio	2.44218355718			-
+k__Bacteria.p__Firmicutes.c__Clostridia.o__Clostridiales.f__Ruminococcaceae.f__Ruminococcaceae_g__L6	3.43574692499	gut	3.5788707555	0.00188353245604
+k__Bacteria.p__Proteobacteria.c__Gammaproteobacteria.o__Aeromonadales.f__Aeromonadaceae.g__Oceanisphaera	2.70747130184			-
+k__Bacteria.p__Firmicutes.c__Bacilli.o__Lactobacillales.f__Leuconostocaceae	2.31439531678			-
+k__Bacteria.p__Proteobacteria.c__Gammaproteobacteria.o__Pasteurellales.f__Pasteurellaceae.f__Pasteurellaceae_g__L6	4.32996575108	left_palm	4.13013699228	0.000386032482264
+k__Bacteria.p__Fusobacteria.c__Fusobacteriia.o__Fusobacteriales.f__Fusobacteriaceae.f__Fusobacteriaceae_x__L6	2.8945579452			-
+k__Bacteria.p__Firmicutes.c__Clostridia.o__Clostridiales.f__Clostridiaceae.f__Clostridiaceae_g__L6	2.06854212931			-
+k__Bacteria.p__Firmicutes.c__Erysipelotrichi.o__Erysipelotrichales.f__Erysipelotrichaceae.g__Allobaculum	2.50017550416			-
+k__Bacteria.p__Cyanobacteria.c__Chloroplast	4.31026752329	left_palm	4.0877068571	0.000548315267536
+k__Bacteria.p__Proteobacteria.c__Alphaproteobacteria.o__Rhodobacterales.f__Rhodobacteraceae.g__Paracoccus	3.43673503795	left_palm	3.2971997732	0.00813710547696
+k__Bacteria.p__Actinobacteria	5.18133849783	left_palm	4.84017172302	5.80541497304e-05
+k__Bacteria.p__Firmicutes.c__Erysipelotrichi.o__Erysipelotrichales.f__Erysipelotrichaceae	3.55625491252			-
+k__Bacteria.p__Cyanobacteria.c__Chloroplast.o__Chlorophyta.o__Chlorophyta_f__L5.o__Chlorophyta_g__L6	1.97941775857			-
+k__Bacteria.p__Firmicutes.c__Clostridia.o__Clostridiales.f___Tissierellaceae_	4.77178526942	left_palm	4.45666901087	0.000210902861353
+k__Bacteria.p__Proteobacteria.c__Alphaproteobacteria.o__Rhodobacterales.f__Rhodobacteraceae	3.51075248037	left_palm	3.3521605093	0.00188353245604
+k__Bacteria.p__Firmicutes.c__Clostridia.o__Clostridiales.f__Christensenellaceae.f__Christensenellaceae_g__L6	1.76751213365			-
+k__Bacteria.p__Firmicutes	5.54073808955			-
+k__Bacteria.p__Actinobacteria.c__Actinobacteria.o__Actinomycetales.f__Propionibacteriaceae.g__Propionibacterium	3.79574930446	left_palm	3.51157556957	6.9361384993e-05
+k__Bacteria	6.0			-
+k__Bacteria.p___Thermi_.c__Deinococci.o__Deinococcales.f__Deinococcaceae	2.55442930101			-
+k__Bacteria.p__Bacteroidetes.c__Bacteroidia.o__Bacteroidales.o__Bacteroidales_x__L5	3.38216478591	gut	3.3801365362	0.0314142215885
+k__Bacteria.p___Thermi_	2.55442930101			-
+k__Bacteria.p__Firmicutes.c__Clostridia.o__Clostridiales.f__Veillonellaceae.f__Veillonellaceae_g__L6	2.32542876371			-
+k__Bacteria.p__Proteobacteria.c__Gammaproteobacteria.o__Pseudomonadales.f__Moraxellaceae.g__Moraxella	3.73371148392	left_palm	3.58244685788	0.0314142215885
+k__Bacteria.p__Proteobacteria.c__Gammaproteobacteria.o__Cardiobacteriales.f__Cardiobacteriaceae.f__Cardiobacteriaceae_g__L6	2.29249795387			-
+k__Bacteria.p__FBP.p__FBP_c__L3	1.75587138133			-
+k__Bacteria.p__Chloroflexi.c__Ellin6529	2.07064920425			-
+k__Bacteria.p__Verrucomicrobia.c___Pedosphaerae_.o___Pedosphaerales_	2.24595761321			-
+k__Bacteria.p__Actinobacteria.c__Actinobacteria.o__Bifidobacteriales.f__Bifidobacteriaceae.g__Scardovia	2.26344415284			-
+k__Bacteria.p__Bacteroidetes.c__Cytophagia.o__Cytophagales.f__Cytophagaceae.g__Adhaeribacter	1.93196264039			-
+k__Bacteria.p__Firmicutes.c__Erysipelotrichi.o__Erysipelotrichales.f__Erysipelotrichaceae.g___Eubacterium_	2.2960555215			-
+k__Bacteria.p__Bacteroidetes.c__Bacteroidia.o__Bacteroidales.f___Barnesiellaceae_.f___Barnesiellaceae__g__L6	2.72657205839	gut	3.35860047076	0.0314142215885
+k__Bacteria.p__Proteobacteria.c__Betaproteobacteria.c__Betaproteobacteria_x__L4.c__Betaproteobacteria_x__L5	2.74056540756			-
+k__Bacteria.p__Proteobacteria.c__Epsilonproteobacteria.o__Campylobacterales	3.94847911903	tongue	3.72885402596	0.000144077200088
+k__Bacteria.p__Firmicutes.c__Bacilli.o__Turicibacterales.f__Turicibacteraceae.g__Turicibacter	1.67800135533			-
+k__Bacteria.p__Proteobacteria.c__Gammaproteobacteria.o__Vibrionales	2.44218355718			-
+k__Bacteria.p__Firmicutes.c__Clostridia.o__Clostridiales.f__Lachnospiraceae.g__Blautia	4.11436246445	gut	3.82104812596	0.000115195356476
+k__Bacteria.p__Proteobacteria.c__Gammaproteobacteria.o__Cardiobacteriales	3.11281364284			-
+k__Bacteria.p__Chloroflexi.c__Ellin6529.c__Ellin6529_o__L4.c__Ellin6529_f__L5.c__Ellin6529_g__L6	2.07064920425			-
+k__Bacteria.p__Proteobacteria.c__Betaproteobacteria.o__Burkholderiales.f__Comamonadaceae.g__Pelomonas	3.07420677189			-
+k__Bacteria.p__Proteobacteria.c__Gammaproteobacteria.o__Pasteurellales.f__Pasteurellaceae.f__Pasteurellaceae_x__L6	3.28372402956			-
+k__Bacteria.p__Firmicutes.c__Clostridia.o__Clostridiales.o__Clostridiales_f__L5	3.27226495215			-
+k__Bacteria.p__Proteobacteria.c__Betaproteobacteria.o__Burkholderiales.o__Burkholderiales_x__L5.o__Burkholderiales_x__L6	3.78396842433	gut	3.54482094789	0.00188353245604
+k__Bacteria.p__Firmicutes.c__Clostridia.o__Clostridiales.f__Veillonellaceae.g__Megamonas	3.21579262018	left_palm	3.6317601622	0.0314142215885
+k__Bacteria.p__Actinobacteria.c__Actinobacteria.o__Actinomycetales.f__Geodermatophilaceae	2.99118629471			-
+k__Bacteria.p__Bacteroidetes.c__Bacteroidia.o__Bacteroidales.f___Paraprevotellaceae_	4.1308896177			-
+k__Bacteria.p__Proteobacteria.c__Betaproteobacteria.c__Betaproteobacteria_x__L4.c__Betaproteobacteria_x__L5.c__Betaproteobacteria_x__L6	2.74056540756			-
+k__Bacteria.k__Bacteria_x__L2.k__Bacteria_x__L3.k__Bacteria_x__L4.k__Bacteria_x__L5.k__Bacteria_x__L6	3.78131521185	left_palm	3.59469402595	0.000386032482264
+k__Bacteria.p__Proteobacteria.c__Gammaproteobacteria.o__Pseudomonadales.f__Moraxellaceae.g__Perlucidibaca	2.37167919992			-
+k__Bacteria.p__Proteobacteria.p__Proteobacteria_x__L3.p__Proteobacteria_x__L4.p__Proteobacteria_x__L5	2.07064920425			-
+k__Bacteria.p__Actinobacteria.c__Actinobacteria.o__Actinomycetales.f__Micrococcaceae	4.53261091271	tongue	4.23157711705	7.36809873371e-05
+k__Bacteria.p__Proteobacteria.c__Betaproteobacteria.o__Neisseriales	5.34529619015	tongue	5.05660006585	0.000123264359432
+k__Bacteria.p__Firmicutes.c__Clostridia.o__Clostridiales.f__Ruminococcaceae.g__Oscillospira	4.36300729759	gut	4.07647833451	3.62525802459e-05
+k__Bacteria.p__TM7.c__TM7_3.c__TM7_3_o__L4	1.50461525684			-
+k__Bacteria.p__Firmicutes.c__Clostridia.o__Clostridiales.f__Clostridiaceae.g__Clostridium	3.329066278	left_palm	3.14440868872	0.0146253347096
+k__Bacteria.p__Proteobacteria.c__Gammaproteobacteria.o__Alteromonadales	2.19558794086			-
+k__Bacteria.p__Firmicutes.c__Clostridia.o__Clostridiales.f__Veillonellaceae.g__Megasphaera	2.63142093813			-
+k__Bacteria.p__Firmicutes.c__Bacilli.o__Lactobacillales.f__Leuconostocaceae.g__Weissella	2.31439531678			-
+k__Bacteria.p__Proteobacteria.c__Betaproteobacteria.o__Burkholderiales.f__Alcaligenaceae.g__Oligella	2.65501814982	left_palm	3.60707373746	0.0314142215885
+k__Bacteria.p__Synergistetes	3.06507649907			-
+k__Bacteria.p__Firmicutes.c__Clostridia.o__Clostridiales.o__Clostridiales_x__L5.o__Clostridiales_x__L6	3.55298932775	gut	3.46718355283	0.000392628353535
+k__Bacteria.k__Bacteria_x__L2.k__Bacteria_x__L3.k__Bacteria_x__L4	3.78131521185	left_palm	3.59469436577	0.000386032482264
+k__Bacteria.p__Proteobacteria.c__Epsilonproteobacteria.o__Campylobacterales.f__Campylobacteraceae	3.94847911903	tongue	3.72885404659	0.000144077200088
+k__Bacteria.p__Actinobacteria.c__Actinobacteria.o__Actinomycetales.f__Geodermatophilaceae.g__Blastococcus	2.99118629471			-
+k__Bacteria.p__Actinobacteria.c__Actinobacteria.o__Actinomycetales.f__Corynebacteriaceae.g__Corynebacterium	5.10491231131	left_palm	4.75695658577	4.53999297625e-05
+k__Bacteria.p__Cyanobacteria.c__Chloroplast.o__Streptophyta.o__Streptophyta_f__L5	4.30571506773	left_palm	4.08309193384	0.000548315267536
+k__Bacteria.p__Proteobacteria.c__Alphaproteobacteria.o__Rhodospirillales.f__Acetobacteraceae.f__Acetobacteraceae_g__L6	1.75587138133			-
+k__Bacteria.p__Firmicutes.c__Clostridia.o__Clostridiales.f___Mogibacteriaceae_.f___Mogibacteriaceae__g__L6	3.18143516256			-
+k__Bacteria.p__Proteobacteria.c__Alphaproteobacteria.o__Rickettsiales	3.94893130006	left_palm	3.70120204459	0.00441996842606
+k__Bacteria.p__Firmicutes.c__Clostridia.o__Clostridiales	5.5348171096	gut	5.10893327325	0.000340314276162
+k__Bacteria.p__Firmicutes.c__Erysipelotrichi.o__Erysipelotrichales	3.55625491252			-
+k__Bacteria.p__Actinobacteria.c__Actinobacteria.o__Actinomycetales.f__Actinomycetaceae	3.87650048042	tongue	3.67676063832	0.00206927793639
+k__Bacteria.p___Thermi_.c__Deinococci.o__Deinococcales	2.55442930101			-
+k__Bacteria.p__Bacteroidetes.c__Bacteroidia.o__Bacteroidales.f___Odoribacteraceae_.g__Butyricimonas	2.9104487535	gut	3.4468666635	0.0314142215885
+k__Bacteria.p__Firmicutes.c__Bacilli.o__Gemellales.f__Gemellaceae.f__Gemellaceae_x__L6	3.93468040035	tongue	3.65636841819	0.000795981756318
+k__Bacteria.p__Proteobacteria.c__Gammaproteobacteria.o__Pasteurellales.f__Pasteurellaceae.g__Aggregatibacter	3.45849668115			-
+k__Bacteria.p__Actinobacteria.c__Actinobacteria.o__Actinomycetales.f__Micrococcaceae.g__Micrococcus	3.08590100733			-
+k__Bacteria.p__Bacteroidetes.c__Bacteroidia.o__Bacteroidales.f__Rikenellaceae.g__Alistipes	4.19733450517	gut	3.91586434872	6.9361384993e-05
+k__Bacteria.p__Firmicutes.c__Clostridia.o__Clostridiales.f__Lachnospiraceae.g__Oribacterium	3.9562185446	tongue	3.62787612013	0.00382922669891
+k__Bacteria.p__Actinobacteria.c__Thermoleophilia.o__Gaiellales.f__Gaiellaceae	2.43862598955			-
+k__Bacteria.p__Actinobacteria.c__Actinobacteria.o__Actinomycetales.f__Intrasporangiaceae.f__Intrasporangiaceae_x__L6	2.82397687091			-
+k__Bacteria.p__Proteobacteria.c__Betaproteobacteria.o__Burkholderiales.f__Oxalobacteraceae.f__Oxalobacteraceae_x__L6	3.51026464899	left_palm	3.31717524356	0.00188353245604
+k__Bacteria.p__Bacteroidetes.c__Flavobacteriia.o__Flavobacteriales.f__Flavobacteriaceae	4.07258191946	left_palm	3.84558381886	0.000442296798346
+k__Bacteria.p__Actinobacteria.c__Actinobacteria.o__Actinomycetales.f__Nocardioidaceae	3.04406703394			-
+k__Bacteria.p__Firmicutes.c__Bacilli.o__Gemellales.f__Gemellaceae	3.93468040035	tongue	3.65636841993	0.000795981756318
+k__Bacteria.p__Proteobacteria.c__Deltaproteobacteria.o__Myxococcales.o__Myxococcales_x__L5	2.19558794086			-
+k__Bacteria.p__Firmicutes.c__Clostridia.o__Clostridiales.f__Lachnospiraceae.g___Ruminococcus_	3.29900759752	gut	3.48376559955	0.00188353245604
+k__Bacteria.p__Fusobacteria.c__Fusobacteriia.o__Fusobacteriales.f__Leptotrichiaceae	4.22301554052	left_palm	4.00538796929	6.56856133965e-05
+k__Bacteria.p__Proteobacteria.c__Alphaproteobacteria.o__Sphingomonadales.f__Sphingomonadaceae.g__Sphingopyxis	2.37167919992			-
+k__Bacteria.k__Bacteria_x__L2	3.78131521185	left_palm	3.59469434536	0.000386032482264
+k__Bacteria.p__Proteobacteria.c__Alphaproteobacteria.o__Rhodospirillales	2.43297602189	left_palm	3.40428360698	0.0314142215885
+k__Bacteria.p__Actinobacteria.c__Thermoleophilia.o__Gaiellales	2.43862598955			-
+k__Bacteria.p__Actinobacteria.c__Actinobacteria.o__Actinomycetales.f__Dermabacteraceae	1.78632289812			-
+k__Bacteria.p__Proteobacteria.c__Deltaproteobacteria.o__Desulfovibrionales.f__Desulfomicrobiaceae	2.29392447989			-
+k__Bacteria.p__Cyanobacteria.c__Chloroplast.o__Chlorophyta.o__Chlorophyta_f__L5	1.97941775857			-
+k__Bacteria.k__Bacteria_x__L2.k__Bacteria_x__L3	3.78131521185	left_palm	3.59469386187	0.000386032482264
+k__Bacteria.p__Firmicutes.c__Clostridia.o__Clostridiales.f__Ruminococcaceae.g__Faecalibacterium	4.88625525564	gut	4.58575020359	4.29428848224e-05
+k__Bacteria.p__Bacteroidetes.c__Flavobacteriia.o__Flavobacteriales.f__Flavobacteriaceae.g__Flavobacterium	3.70303134108	left_palm	3.52500184776	0.00813710547696
+k__Bacteria.p__Proteobacteria.c__Gammaproteobacteria.o__Xanthomonadales.f__Xanthomonadaceae.f__Xanthomonadaceae_x__L6	3.04068598088			-
+k__Bacteria.p__Proteobacteria.c__Alphaproteobacteria.o__Sphingomonadales.f__Sphingomonadaceae.g__Sphingomonas	3.77725403832	left_palm	3.57116691322	0.000386032482264
+k__Bacteria.p__Chloroflexi.c__Ellin6529.c__Ellin6529_o__L4	2.07064920425			-
+k__Bacteria.p__Firmicutes.c__Bacilli.o__Lactobacillales.f__Streptococcaceae.g__Lactococcus	4.07797155407	left_palm	3.76841200793	0.00188353245604
+k__Bacteria.p__Firmicutes.c__Bacilli.c__Bacilli_x__L4.c__Bacilli_x__L5.c__Bacilli_x__L6	4.77135283266	left_palm	4.45317730241	0.000294085321072
+k__Bacteria.p__Firmicutes.c__Clostridia.o__Clostridiales.f__Ruminococcaceae.g__Gemmiger	3.53840665816	gut	3.56598811308	0.0314142215885
+k__Bacteria.p__Synergistetes.c__Synergistia.o__Synergistales	3.06507649907			-
+k__Bacteria.p__Cyanobacteria.c__Chloroplast.o__Streptophyta	4.30571506773	left_palm	4.08308750203	0.000548315267536
+k__Bacteria.p__Firmicutes.c__Erysipelotrichi.o__Erysipelotrichales.f__Erysipelotrichaceae.g__Bulleidia	2.99792579952	tongue	3.82628257281	0.0430359970333
+k__Bacteria.p__Spirochaetes	3.20956877205			-
+k__Bacteria.p__Proteobacteria.c__Betaproteobacteria.o__Neisseriales.f__Neisseriaceae.g__Conchiformibius	3.56274008551			-
+k__Bacteria.p__Bacteroidetes.c__Cytophagia.o__Cytophagales.f__Cytophagaceae.g__Hymenobacter	2.34739454386			-
+k__Bacteria.p__Firmicutes.c__Clostridia.o__OPB54.o__OPB54_f__L5	1.8945579452			-
+k__Bacteria.p__Proteobacteria.c__Gammaproteobacteria.o__Pseudomonadales.f__Moraxellaceae.g__Acinetobacter	4.51113262747	left_palm	4.2511207654	0.000386032482264
+k__Bacteria.p__Actinobacteria.c__Actinobacteria.o__Actinomycetales.f__Nocardiaceae	2.9218007184			-
+k__Bacteria.p__Cyanobacteria.c__Chloroplast.o__Streptophyta.o__Streptophyta_f__L5.o__Streptophyta_g__L6	4.30571506773	left_palm	4.08308719461	0.000548315267536
+k__Bacteria.p__Firmicutes.c__Clostridia.o__Clostridiales.f___Tissierellaceae_.f___Tissierellaceae__g__L6	1.8945579452			-
+k__Bacteria.p__Proteobacteria.c__Alphaproteobacteria.o__Caulobacterales.f__Caulobacteraceae.g__Brevundimonas	3.34514559062	left_palm	3.26454884543	0.00813710547696
+k__Bacteria.p__Firmicutes.c__Clostridia.o__Clostridiales.f__Christensenellaceae	1.76751213365			-
+k__Bacteria.p__Actinobacteria.c__Actinobacteria.o__Bifidobacteriales.f__Bifidobacteriaceae	2.26344415284			-
+k__Bacteria.p__Firmicutes.c__Bacilli.c__Bacilli_x__L4	4.77135283266	left_palm	4.45317749797	0.000294085321072
+k__Bacteria.p__GN02.c__BD1_5.c__BD1_5_o__L4	2.40764997242	left_palm	3.80035314365	0.0314142215885
+k__Bacteria.p__Firmicutes.c__Clostridia.o__Clostridiales.f__Lachnospiraceae.g__Coprococcus	4.00997107645	gut	3.72554395592	1.08106631905e-05
+k__Bacteria.p__Proteobacteria.c__Betaproteobacteria.o__Methylophilales.f__Methylophilaceae	2.40538649084			-
+k__Bacteria.p__Actinobacteria.c__Actinobacteria.o__Bifidobacteriales	2.26344415284			-
+k__Bacteria.p__Proteobacteria.c__Alphaproteobacteria.o__Rickettsiales.f__mitochondria.f__mitochondria_x__L6	3.80269409692			-
+k__Bacteria.p__Bacteroidetes.c__Bacteroidia.o__Bacteroidales.f__Prevotellaceae.g__Prevotella	5.14361649771	tongue	4.8321107626	0.000299360302953
+k__Bacteria.p__Actinobacteria.c__Coriobacteriia.o__Coriobacteriales.f__Coriobacteriaceae	2.84710764393			-
+k__Bacteria.p__Firmicutes.c__Clostridia.o__Clostridiales.f__Lachnospiraceae.g__Butyrivibrio	2.16386585053			-
+k__Bacteria.p__Actinobacteria.c__Thermoleophilia.o__Gaiellales.f__Gaiellaceae.g__Gaiella	2.43862598955			-
+k__Bacteria.p__Proteobacteria.c__Betaproteobacteria.o__Neisseriales.f__Neisseriaceae.f__Neisseriaceae_g__L6	2.15381139			-
+k__Bacteria.p__Proteobacteria.c__Alphaproteobacteria.o__Rhizobiales.f__Methylobacteriaceae	3.18532408668	left_palm	3.17036664895	0.00813710547696
+k__Bacteria.p__Firmicutes.c__Clostridia.o__Clostridiales.f__Peptococcaceae.g__Peptococcus	2.43762958254			-
+k__Bacteria.p__Proteobacteria.c__Gammaproteobacteria.o__Pasteurellales.f__Pasteurellaceae.g__Pasteurella	2.84880045464			-
+k__Bacteria.p__Proteobacteria.c__Betaproteobacteria.o__Neisseriales.f__Neisseriaceae.g__Kingella	3.30264229713	left_palm	3.18122802189	0.0314142215885
+k__Bacteria.p__Proteobacteria.c__Betaproteobacteria.o__Burkholderiales.f__Comamonadaceae	4.02402962206	left_palm	3.75143421425	0.0027354191842
+k__Bacteria.p__Firmicutes.c__Bacilli.o__Lactobacillales.f__Aerococcaceae.g__Abiotrophia	2.78632289812			-
+k__Bacteria.p__Verrucomicrobia.c___Pedosphaerae_.o___Pedosphaerales_.o___Pedosphaerales__f__L5	2.24595761321			-
+k__Bacteria.p__Bacteroidetes.c__Sphingobacteriia.o__Sphingobacteriales.f__Sphingobacteriaceae.g__Sphingobacterium	3.10223549549			-
+k__Bacteria.p__Proteobacteria.c__Alphaproteobacteria.o__Caulobacterales.f__Caulobacteraceae	3.40929008733	left_palm	3.36685204172	0.00188353245604
+k__Bacteria.p__Tenericutes	2.93850868963	left_palm	3.19029557612	0.0314142215885
+k__Bacteria.p__Proteobacteria.c__Betaproteobacteria.o__Burkholderiales.f__Oxalobacteraceae	3.82447301599	left_palm	3.60464336145	0.00105919589504
+k__Bacteria.p__Proteobacteria.c__Gammaproteobacteria.o__Alteromonadales.f__Alteromonadaceae	2.19558794086			-
+k__Bacteria.p__Bacteroidetes.c__Flavobacteriia.o__Flavobacteriales.f___Weeksellaceae_.f___Weeksellaceae__g__L6	3.40488339005	left_palm	3.46901997325	0.00468419083821
+k__Bacteria.p__Firmicutes.c__Bacilli.o__Lactobacillales.f__Enterococcaceae	3.00850129751			-
+k__Bacteria.p__FBP.p__FBP_c__L3.p__FBP_o__L4.p__FBP_f__L5	1.75587138133			-
+k__Bacteria.p__Proteobacteria.c__Alphaproteobacteria.o__Sphingomonadales.f__Sphingomonadaceae.g__Kaistobacter	2.26344415284			-
+k__Bacteria.p__Bacteroidetes.c__Cytophagia.o__Cytophagales.f__Cytophagaceae	3.11636557733	left_palm	3.35909216242	0.00188353245604
+k__Bacteria.p__Proteobacteria.c__Gammaproteobacteria.o__Xanthomonadales.f__Xanthomonadaceae	3.57125155482			-
+k__Bacteria.p__Bacteroidetes.c__Bacteroidia.o__Bacteroidales.o__Bacteroidales_f__L5	2.26344415284			-
+k__Bacteria.p__Bacteroidetes.c__Bacteroidia.o__Bacteroidales.o__Bacteroidales_x__L5.o__Bacteroidales_x__L6	3.38216478591	gut	3.5061432104	0.0314142215885
+k__Bacteria.p__FBP.p__FBP_c__L3.p__FBP_o__L4.p__FBP_f__L5.p__FBP_g__L6	1.75587138133			-
+k__Bacteria.p__Firmicutes.c__Erysipelotrichi.o__Erysipelotrichales.f__Erysipelotrichaceae.f__Erysipelotrichaceae_g__L6	3.51806016499	gut	3.40505583162	0.00105919589504
+k__Bacteria.p__Proteobacteria.c__Alphaproteobacteria.o__Rickettsiales.f__mitochondria	3.94893130006	left_palm	3.70037200144	0.00441996842606
+k__Bacteria.p__Firmicutes.c__Clostridia.o__Clostridiales.f__Lachnospiraceae.g__Shuttleworthia	2.87543501235			-
+k__Bacteria.p__Bacteroidetes.c__Bacteroidia.o__Bacteroidales.f__Bacteroidaceae	5.7505143993	gut	5.44617331139	0.000252000080631
+k__Bacteria.p__Actinobacteria.c__Actinobacteria.o__Actinomycetales.f__Micrococcaceae.g__Rothia	4.53261091271	tongue	4.23153988077	5.15028262132e-05
+k__Bacteria.p__Bacteroidetes.c__Flavobacteriia	4.2786831331	left_palm	4.05375552875	5.5704590612e-05
+k__Bacteria.p__Bacteroidetes.c__Bacteroidia.o__Bacteroidales.f__Bacteroidaceae.g__Bacteroides	5.7505143993	gut	5.44617331139	0.000252000080631
+k__Bacteria.p__Proteobacteria.c__Gammaproteobacteria.o__Enterobacteriales.f__Enterobacteriaceae	3.9628785314	gut	3.69212618775	0.0100962800456
+k__Bacteria.p__Firmicutes.c__Clostridia.o__Clostridiales.f__Ruminococcaceae.g__Subdoligranulum	2.95540242039	gut	3.54340951031	0.00188353245604
+k__Bacteria.p__Proteobacteria.c__Alphaproteobacteria.o__Caulobacterales.f__Caulobacteraceae.g__Caulobacter	2.54698760888			-
+k__Bacteria.p__Bacteroidetes.c__Flavobacteriia.o__Flavobacteriales.f___Weeksellaceae_.g__Bergeyella	2.91574724427			-
+k__Bacteria.p__GN02.c__BD1_5.c__BD1_5_o__L4.c__BD1_5_f__L5.c__BD1_5_g__L6	2.40764997242	left_palm	3.74078694692	0.0314142215885
+k__Bacteria.p__Firmicutes.c__Clostridia.o__Clostridiales.f___Tissierellaceae_.g__Parvimonas	3.57094576136	left_palm	3.5186382816	0.00124395097965
+k__Bacteria.p__Actinobacteria.c__Actinobacteria	5.17923636677	left_palm	4.8380485312	5.7415333198e-05
+k__Bacteria.p__Proteobacteria.c__Alphaproteobacteria	4.42435002644	left_palm	4.18090013971	7.38194073366e-05
+k__Bacteria.p__Actinobacteria.c__Actinobacteria.o__Actinomycetales.f__Micrococcaceae.g__Arthrobacter	2.95525578555			-
+k__Bacteria.p__Actinobacteria.c__Actinobacteria.o__Actinomycetales.f__Corynebacteriaceae	5.10491231131	left_palm	4.75695464619	4.53999297625e-05
+k__Bacteria.p__Actinobacteria.c__Coriobacteriia.o__Coriobacteriales.f__Coriobacteriaceae.g__Atopobium	2.84710764393			-
+k__Bacteria.p__Firmicutes.c__Clostridia.o__Clostridiales.f__Lachnospiraceae.f__Lachnospiraceae_g__L6	3.96993435082	gut	3.73352299521	6.9361384993e-05
+k__Bacteria.p__Verrucomicrobia.c__Verrucomicrobiae.o__Verrucomicrobiales.f__Verrucomicrobiaceae.g__Akkermansia	4.15622272952	gut	3.8292187516	0.000386032482264
+k__Bacteria.p__Firmicutes.c__Bacilli.o__Bacillales.f__Bacillaceae	3.27476918691			-
+k__Bacteria.p__Synergistetes.c__Synergistia	3.06507649907			-
+k__Bacteria.p__Proteobacteria.p__Proteobacteria_x__L3.p__Proteobacteria_x__L4	2.07064920425			-
+k__Bacteria.p__Proteobacteria.c__Gammaproteobacteria.o__Pasteurellales.f__Pasteurellaceae.g__Haemophilus	5.27535098839	tongue	4.96491239239	4.81340626714e-05
+k__Bacteria.p__Bacteroidetes.c__Bacteroidia.o__Bacteroidales.f___Paraprevotellaceae_.g__Paraprevotella	3.91470856008	gut	3.63987262654	0.00813710547696
+k__Bacteria.p__Bacteroidetes.c__Bacteroidia.o__Bacteroidales.f___Odoribacteraceae_.g__Odoribacter	3.12140751849	gut	3.72912545344	0.0314142215885
+k__Bacteria.p__Tenericutes.c__Mollicutes.o__Mycoplasmatales.f__Mycoplasmataceae.g__Mycoplasma	2.93850868963	left_palm	3.22322598564	0.0314142215885
+k__Bacteria.p__Firmicutes.c__Clostridia.o__OPB54.o__OPB54_f__L5.o__OPB54_g__L6	1.8945579452			-
+k__Bacteria.p__Actinobacteria.c__Actinobacteria.o__Actinomycetales.f__Intrasporangiaceae	2.82397687091			-
+k__Bacteria.p__Firmicutes.c__Clostridia.o__Clostridiales.f__Ruminococcaceae.f__Ruminococcaceae_x__L6	3.75675237132	gut	3.50138195478	6.9361384993e-05
+k__Bacteria.p__TM7.c__TM7_3	1.50461525684			-
+k__Bacteria.p__Proteobacteria.c__Gammaproteobacteria.o__Xanthomonadales	3.57125155482			-
+k__Bacteria.p__Spirochaetes.c__Spirochaetes	3.20956877205			-
+k__Bacteria.p__Bacteroidetes.c___Saprospirae_.o___Saprospirales_.f__Chitinophagaceae.g__Flavisolibacter	3.18587298768			-
+k__Bacteria.p__Synergistetes.c__Synergistia.o__Synergistales.f__Dethiosulfovibrionaceae	3.06507649907			-
+k__Bacteria.p__Firmicutes.c__Clostridia.o__Clostridiales.f__Ruminococcaceae	5.09230618926	gut	4.7967905569	3.33937147395e-05
+k__Bacteria.p__Actinobacteria.c__Actinobacteria.o__Actinomycetales.f__Actinomycetaceae.g__Actinomyces	3.87650048042	tongue	3.67645493994	0.00206927793639
+k__Bacteria.p__Fusobacteria.c__Fusobacteriia	5.02039000409	tongue	4.72515389232	0.000185643403297
+k__Bacteria.p__SR1.p__SR1_c__L3.p__SR1_o__L4.p__SR1_f__L5.p__SR1_g__L6	2.59531037611			-
+k__Bacteria.p__SR1.p__SR1_c__L3.p__SR1_o__L4.p__SR1_f__L5	2.59531037611			-
+k__Bacteria.p__Firmicutes.c__Clostridia.o__Clostridiales.f__Peptococcaceae	2.43762958254			-
+k__Bacteria.p__GN02.c__BD1_5.c__BD1_5_o__L4.c__BD1_5_f__L5	2.40764997242	left_palm	3.73024339204	0.0314142215885
+k__Bacteria.p__Proteobacteria.c__Betaproteobacteria.c__Betaproteobacteria_x__L4	2.74056540756			-
+k__Bacteria.p__Proteobacteria.c__Deltaproteobacteria.o__Myxococcales	2.19558794086			-
+k__Bacteria.p__Cyanobacteria	4.31026752329	left_palm	4.0876913505	0.000548315267536
+k__Bacteria.p__Firmicutes.c__Clostridia.o__Clostridiales.f__Lachnospiraceae.g__Catonella	1.90859334543			-
+k__Bacteria.p__Firmicutes.c__Clostridia.o__Clostridiales.f__Lachnospiraceae.g__Ruminococcus	3.22886371989	gut	3.55989618008	0.000386032482264
+k__Bacteria.p__Actinobacteria.c__Coriobacteriia.o__Coriobacteriales.f__Coriobacteriaceae.f__Coriobacteriaceae_g__L6	1.95025654467			-
+k__Bacteria.p__Proteobacteria.c__Deltaproteobacteria.o__Desulfovibrionales.f__Desulfovibrionaceae	3.85622579151	gut	3.65501718988	1.08106631905e-05
+k__Bacteria.p__Firmicutes.c__Bacilli.o__Lactobacillales	5.19995436944	tongue	4.88081985613	0.000376271543451
+k__Bacteria.p__Proteobacteria.c__Gammaproteobacteria.o__Pseudomonadales.f__Moraxellaceae.g__Enhydrobacter	3.66447352425	left_palm	3.45971790018	0.000386032482264
+k__Bacteria.p__Firmicutes.c__Clostridia	5.5348171096	gut	5.10893348356	0.000340314276162
+k__Bacteria.p__Bacteroidetes.c__Flavobacteriia.o__Flavobacteriales.f__Flavobacteriaceae.g__Capnocytophaga	3.59179671961	left_palm	3.41927728277	0.0197369733108
+k__Bacteria.p__Fusobacteria.c__Fusobacteriia.o__Fusobacteriales.f__Leptotrichiaceae.f__Leptotrichiaceae_x__L6	2.70747130184			-
+k__Bacteria.p__Firmicutes.c__Clostridia.o__Clostridiales.f__Peptostreptococcaceae.g__Peptostreptococcus	2.59923625476			-
+k__Bacteria.p__Bacteroidetes.c___Saprospirae_.o___Saprospirales_	3.31278259398	left_palm	3.22546866965	0.00813710547696
+k__Bacteria.p__Verrucomicrobia	4.15622272952	gut	3.82756791226	0.00417475522321
+k__Bacteria.p__Proteobacteria.c__Gammaproteobacteria.o__Pseudomonadales.f__Pseudomonadaceae.f__Pseudomonadaceae_x__L6	2.99146795821			-
+k__Bacteria.p__Proteobacteria.c__Gammaproteobacteria.o__Xanthomonadales.f__Xanthomonadaceae.g__Xanthomonas	3.41960275224			-
+k__Bacteria.p__Proteobacteria.c__Alphaproteobacteria.o__Rhodobacterales.f__Rhodobacteraceae.g__Rubellimicrobium	2.70581901608	left_palm	3.27523012311	0.0314142215885
+k__Bacteria.p__Bacteroidetes.c___Saprospirae_	3.31278259398	left_palm	3.22546743161	0.00813710547696
+k__Bacteria.p__Proteobacteria.c__Gammaproteobacteria.o__Pseudomonadales.f__Moraxellaceae.g__Psychrobacter	3.75459469495			-
+k__Bacteria.p__Firmicutes.c__Clostridia.o__Clostridiales.f___Tissierellaceae_.g__Anaerococcus	4.37246081864	left_palm	4.03343245521	1.08106631905e-05
+k__Bacteria.p__Proteobacteria.c__Alphaproteobacteria.o__Rickettsiales.f__mitochondria.g__Cucurbita	3.40513605438			-
+k__Bacteria.p__Proteobacteria.c__Alphaproteobacteria.o__Sphingomonadales.f__Sphingomonadaceae	3.86812974474	left_palm	3.63449808273	6.9361384993e-05
+k__Bacteria.p__Proteobacteria.c__Epsilonproteobacteria.o__Campylobacterales.f__Campylobacteraceae.g__Arcobacter	2.19558794086			-
+k__Bacteria.p__Proteobacteria.c__Betaproteobacteria.o__Burkholderiales	4.42157194749	left_palm	4.13269406839	0.000286529999659
+k__Bacteria.p__Bacteroidetes.c__Flavobacteriia.o__Flavobacteriales.f___Weeksellaceae_	3.85599649879	left_palm	3.66362461755	0.000631995795438
+k__Bacteria.p__Bacteroidetes.c__Sphingobacteriia.o__Sphingobacteriales.f__Sphingobacteriaceae	4.05854711471	left_palm	3.86746135575	0.00188353245604
+k__Bacteria.p__Bacteroidetes.c__Bacteroidia.o__Bacteroidales.f___Paraprevotellaceae_.f___Paraprevotellaceae__g__L6	2.19558794086			-
+k__Bacteria.p__Firmicutes.c__Clostridia.o__Clostridiales.f__Lachnospiraceae.g__Roseburia	4.50561822863	gut	4.22194040307	1.08106631905e-05
+k__Bacteria.p__Bacteroidetes.c__Bacteroidia.o__Bacteroidales.f__Rikenellaceae	4.20150488427	gut	3.92009888741	6.9361384993e-05
+k__Bacteria.p__Bacteroidetes.c__Bacteroidia.o__Bacteroidales.f___Odoribacteraceae_	3.32964331167	gut	3.42570529723	0.0314142215885
+k__Bacteria.p__SR1	2.59531037611			-
+k__Bacteria.p__Actinobacteria.c__Actinobacteria.o__Actinomycetales.f__Brevibacteriaceae	1.97941775857			-
+k__Bacteria.p__Proteobacteria.c__Betaproteobacteria.o__Burkholderiales.f__Oxalobacteraceae.g__Janthinobacterium	3.53623325186			-
+k__Bacteria.p__Proteobacteria.c__Betaproteobacteria	5.34688751966	tongue	5.04339655902	0.000392358995142
+k__Bacteria.p__Firmicutes.c__Bacilli.o__Bacillales	3.32778785895	left_palm	4.04861342427	0.0314142215885
+k__Bacteria.k__Bacteria_x__L2.k__Bacteria_x__L3.k__Bacteria_x__L4.k__Bacteria_x__L5	3.78131521185	left_palm	3.59469428367	0.000386032482264
+k__Bacteria.p__FBP	1.75587138133			-
+k__Bacteria.p__Bacteroidetes.c__Bacteroidia.o__Bacteroidales.f__Porphyromonadaceae	4.27672521208			-
+k__Bacteria.p__Fusobacteria.c__Fusobacteriia.o__Fusobacteriales	5.02039000409	tongue	4.72509660141	0.000185643403297
+k__Bacteria.p__Fusobacteria.c__Fusobacteriia.o__Fusobacteriales.f__Leptotrichiaceae.g__Streptobacillus	4.04098799706	left_palm	3.8018424876	0.000386032482264
+k__Bacteria.p__Fusobacteria.c__Fusobacteriia.o__Fusobacteriales.f__Fusobacteriaceae	4.99116190634	tongue	4.69505128606	0.000120666244763
+k__Bacteria.p__Bacteroidetes.c___Saprospirae_.o___Saprospirales_.f__Chitinophagaceae.f__Chitinophagaceae_g__L6	2.23299263605			-
+k__Bacteria.p__GN02.c__BD1_5	2.40764997242	left_palm	3.75582469539	0.0314142215885
+k__Bacteria.p__Firmicutes.c__Bacilli.c__Bacilli_x__L4.c__Bacilli_x__L5	4.77135283266	left_palm	4.45317785295	0.000294085321072
+k__Bacteria.p__Tenericutes.c__Mollicutes.o__Mycoplasmatales.f__Mycoplasmataceae	2.93850868963	left_palm	3.2044780995	0.0314142215885
+k__Bacteria.p__Firmicutes.c__Clostridia.o__Clostridiales.f__Lachnospiraceae.g__Clostridium	3.80463376823	gut	3.53494923799	6.11934385007e-05
+k__Bacteria.p__Firmicutes.c__Bacilli	5.35244509516	left_palm	5.00838567707	0.000347341234596
+k__Bacteria.p__Spirochaetes.c__Spirochaetes.o__Spirochaetales	3.20956877205			-
+k__Bacteria.p__Proteobacteria.c__Betaproteobacteria.o__Methylophilales	2.40538649084			-
+k__Bacteria.p__Proteobacteria.c__Gammaproteobacteria.o__Pseudomonadales.f__Pseudomonadaceae.g__Pseudomonas	4.93994222542	left_palm	4.71187815908	0.000386032482264
+k__Bacteria.p__Chloroflexi	2.07064920425			-
+k__Bacteria.p__Verrucomicrobia.c__Verrucomicrobiae.o__Verrucomicrobiales.f__Verrucomicrobiaceae.g__Luteolibacter	1.97941775857			-
+k__Bacteria.p__Proteobacteria.c__Alphaproteobacteria.o__Rhizobiales.f__Rhizobiaceae	2.93950819799			-
+k__Bacteria.p__Firmicutes.c__Clostridia.o__Clostridiales.f__Peptostreptococcaceae.f__Peptostreptococcaceae_g__L6	2.85812473585			-
+k__Bacteria.p__Chloroflexi.c__Ellin6529.c__Ellin6529_o__L4.c__Ellin6529_f__L5	2.07064920425			-
+k__Bacteria.p__Firmicutes.c__Bacilli.o__Bacillales.f__Alicyclobacillaceae.g__Alicyclobacillus	2.38819271218			-
+k__Bacteria.p__Verrucomicrobia.c__Verrucomicrobiae	4.15622272952	gut	3.82748021145	0.00135774325278
+k__Bacteria.p__Bacteroidetes.c__Sphingobacteriia.o__Sphingobacteriales	4.05854711471	left_palm	3.86746128576	0.00188353245604
+k__Bacteria.p__Proteobacteria.c__Gammaproteobacteria.o__Cardiobacteriales.f__Cardiobacteriaceae	3.11281364284			-
+k__Bacteria.p__Proteobacteria.c__Betaproteobacteria.o__Neisseriales.f__Neisseriaceae.g__Vogesella	2.3926736757			-
+k__Bacteria.p__Proteobacteria.c__Gammaproteobacteria.o__Pseudomonadales.f__Moraxellaceae	4.6862243634	left_palm	4.44188060716	0.000386032482264
+k__Bacteria.p__Firmicutes.c__Bacilli.o__Lactobacillales.f__Streptococcaceae.g__Streptococcus	5.1568114286	tongue	4.83672673075	0.00036652115689
+k__Bacteria.p__Fusobacteria.c__Fusobacteriia.o__Fusobacteriales.f__Fusobacteriaceae.g__Fusobacterium	4.99116190634	tongue	4.69502140268	0.000120666244763
+k__Bacteria.p__Proteobacteria.c__Gammaproteobacteria.o__Aeromonadales	2.79764793219			-
+k__Bacteria.p__Actinobacteria.c__Actinobacteria.o__Actinomycetales.f__Nocardioidaceae.g__Aeromicrobium	2.67585478423			-
+k__Bacteria.p__Bacteroidetes.c__Bacteroidia.o__Bacteroidales.f___Paraprevotellaceae_.f___Paraprevotellaceae__x__L6	2.76404650341			-
+k__Bacteria.p__Proteobacteria.c__Gammaproteobacteria.o__Cardiobacteriales.f__Cardiobacteriaceae.g__Cardiobacterium	3.04159540322			-
+k__Bacteria.p__Actinobacteria.c__Actinobacteria.o__Actinomycetales.o__Actinomycetales_f__L5.o__Actinomycetales_g__L6	2.34739454386			-
+k__Bacteria.p__Firmicutes.c__Clostridia.o__Clostridiales.f___Tissierellaceae_.g__Peptoniphilus	4.2354080588	left_palm	3.9459390541	3.07551491715e-05
+k__Bacteria.p__Actinobacteria.c__Actinobacteria.o__Actinomycetales.f__Brevibacteriaceae.g__Brevibacterium	1.97941775857			-
+k__Bacteria.p__Proteobacteria.c__Alphaproteobacteria.o__Rhodospirillales.f__Acetobacteraceae	1.75587138133			-
+k__Bacteria.p__Proteobacteria.c__Deltaproteobacteria.o__Myxococcales.o__Myxococcales_x__L5.o__Myxococcales_x__L6	2.19558794086			-
+k__Bacteria.p__Proteobacteria.c__Gammaproteobacteria.o__Legionellales.f__Legionellaceae.g__Tatlockia	1.89811551283			-
+k__Bacteria.p__Firmicutes.c__Clostridia.o__Clostridiales.f___Tissierellaceae_.g__ph2	3.04993144575			-
+k__Bacteria.p__Proteobacteria.c__Gammaproteobacteria.o__Aeromonadales.f__Succinivibrionaceae.g__Anaerobiospirillum	2.07064920425			-
+k__Bacteria.p__Proteobacteria.c__Alphaproteobacteria.o__Rhizobiales.f__Rhizobiaceae.g__Rhizobium	2.93950819799			-
+k__Bacteria.p__Proteobacteria.c__Gammaproteobacteria	5.34376283606	left_palm	5.0735359066	0.000386687354163
+k__Bacteria.p__Firmicutes.c__Bacilli.o__Lactobacillales.f__Carnobacteriaceae	4.17568689482	tongue	3.91259659899	7.48203861453e-05
+k__Bacteria.p__Bacteroidetes.c__Cytophagia.o__Cytophagales.f__Cytophagaceae.g__Dyadobacter	2.15381139			-
+k__Bacteria.p__Firmicutes.c__Clostridia.o__Clostridiales.f__Veillonellaceae.g__Selenomonas	3.45377585101			-
+k__Bacteria.p__Bacteroidetes.c__Cytophagia.o__Cytophagales	3.11636557733	left_palm	3.3591451708	0.00188353245604
+k__Bacteria.p___Thermi_.c__Deinococci.o__Deinococcales.f__Deinococcaceae.g__Deinococcus	2.55442930101			-
+k__Bacteria.p__Firmicutes.c__Bacilli.o__Bacillales.f__Alicyclobacillaceae	2.38819271218			-
+k__Bacteria.p__Actinobacteria.c__Actinobacteria.o__Actinomycetales.f__Dermabacteraceae.g__Dermabacter	1.78632289812			-
+k__Bacteria.p__Proteobacteria.c__Gammaproteobacteria.o__Pseudomonadales.f__Pseudomonadaceae	4.94480491372	left_palm	4.71725170937	0.000386032482264
+k__Bacteria.p__Tenericutes.c__Mollicutes.o__Mycoplasmatales	2.93850868963	left_palm	3.20977202718	0.0314142215885
+k__Bacteria.p__Firmicutes.c__Bacilli.o__Lactobacillales.f__Carnobacteriaceae.f__Carnobacteriaceae_x__L6	4.17568689482	tongue	3.9130018598	8.55082968288e-05
+k__Bacteria.p__Proteobacteria.c__Deltaproteobacteria.o__Desulfovibrionales.f__Desulfovibrionaceae.g__Bilophila	3.26736213428	gut	3.35219624335	0.00813710547696
+k__Bacteria.p__Actinobacteria.c__Actinobacteria.o__Actinomycetales.f__Nocardioidaceae.g__Marmoricola	2.80120549982			-
+k__Bacteria.p__Firmicutes.c__Clostridia.o__Clostridiales.f__Lachnospiraceae.g__Lachnoanaerobaculum	2.92822927419			-
+k__Bacteria.p__Firmicutes.c__Clostridia.o__Clostridiales.f___Tissierellaceae_.g__WAL_1855D	2.74594729725			-
+k__Bacteria.p__Bacteroidetes.c__Bacteroidia.o__Bacteroidales.f__Porphyromonadaceae.g__Tannerella	2.95007617978			-
+k__Bacteria.p__Proteobacteria.c__Alphaproteobacteria.o__Rhodobacterales	3.51075248037	left_palm	3.35215940747	0.00188353245604
+k__Bacteria.p__Bacteroidetes.c__Bacteroidia.o__Bacteroidales.f__S24_7.f__S24_7_g__L6	2.20126650818			-
+k__Bacteria.p__Bacteroidetes.c__Bacteroidia.o__Bacteroidales.f__S24_7	2.20126650818			-
+k__Bacteria.p__Firmicutes.c__Bacilli.o__Lactobacillales.f__Enterococcaceae.g__Enterococcus	3.00850129751			-
+k__Bacteria.p__Proteobacteria.c__Gammaproteobacteria.o__Enterobacteriales	3.9628785314	gut	3.69212629679	0.0100962800456
+k__Bacteria.p__Proteobacteria.c__Alphaproteobacteria.o__Caulobacterales	3.40929008733	left_palm	3.36685121235	0.00188353245604
+k__Bacteria.p__Verrucomicrobia.c___Pedosphaerae_	2.24595761321			-
+k__Bacteria.p__Proteobacteria.c__Epsilonproteobacteria	3.94847911903	tongue	3.72885408969	0.000144077200088
+k__Bacteria.p__Actinobacteria.c__Actinobacteria.o__Actinomycetales	5.17870882622	left_palm	4.83751619262	5.7415333198e-05
+k__Bacteria.p__Bacteroidetes.c__Flavobacteriia.o__Flavobacteriales.f__Flavobacteriaceae.f__Flavobacteriaceae_g__L6	3.15053144158			-
+k__Bacteria.p__Bacteroidetes.c__Flavobacteriia.o__Flavobacteriales.f__Flavobacteriaceae.f__Flavobacteriaceae_x__L6	3.1617296736			-
+k__Bacteria.p__Proteobacteria.p__Proteobacteria_x__L3	2.07064920425			-
+k__Bacteria.p__Proteobacteria.c__Gammaproteobacteria.o__Legionellales	1.89811551283			-
+k__Bacteria.p__Bacteroidetes.c___Saprospirae_.o___Saprospirales_.f__Chitinophagaceae.f__Chitinophagaceae_x__L6	2.54368918901			-
+k__Bacteria.p__Proteobacteria.c__Alphaproteobacteria.o__Rhodospirillales.f__Rhodospirillaceae.f__Rhodospirillaceae_x__L6	2.07420677189			-
+k__Bacteria.p__Firmicutes.c__Bacilli.o__Lactobacillales.f__Aerococcaceae.g__Alloiococcus	3.54779669591			-
+k__Bacteria.p__TM7	1.50461525684			-
+k__Bacteria.p__Proteobacteria.c__Betaproteobacteria.o__Burkholderiales.f__Oxalobacteraceae.g__Oxalobacter	1.88408342691			-
