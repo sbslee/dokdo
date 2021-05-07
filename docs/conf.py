@@ -9,11 +9,11 @@
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-#
-# import os
-# import sys
-# sys.path.insert(0, os.path.abspath('.'))
 
+import os
+import sys
+sys.path.insert(0, os.path.abspath('.'))
+sys.path.insert(0, os.path.abspath('../'))
 
 # -- Project information -----------------------------------------------------
 
@@ -67,3 +67,51 @@ html_theme = 'sphinx_rtd_theme'
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = []
+
+# -- Add external links to source code with sphinx.ext.linkcode --------------
+
+import inspect
+
+def linkcode_resolve(domain, info):
+    if domain != 'py':
+        return None
+
+    modname = info['module']
+
+    if not modname:
+        return None
+
+    submod = sys.modules.get(modname)
+
+    if submod is None:
+        return None
+
+    fullname = info['fullname']
+    obj = submod
+
+    for part in fullname.split('.'):
+        try:
+            obj = getattr(obj, part)
+        except AttributeError:
+            return None
+
+    try:
+        fn = inspect.getsourcefile(inspect.unwrap(obj))
+    except TypeError:
+        fn = None
+    if not fn:
+        return None
+
+    try:
+        source, lineno = inspect.getsourcelines(obj)
+    except OSError:
+        lineno = None
+
+    if lineno:
+        linespec = f'#L{lineno}-L{lineno + len(source) - 1}'
+    else:
+        linespec = ''
+
+    fn = fn.split('/api/')[1]
+
+    return f'https://github.com/sbslee/dokdo/tree/master/dokdo/api/{fn}/{linespec}'
