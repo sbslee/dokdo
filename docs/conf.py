@@ -30,6 +30,7 @@ author = 'Seung-been "Steven" Lee'
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.napoleon',
+    'sphinx.ext.mathjax',
     'sphinx_rtd_theme',
     'matplotlib.sphinxext.plot_directive'
 ]

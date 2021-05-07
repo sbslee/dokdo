@@ -13,6 +13,7 @@ Welcome to dokdo's documentation!
    readme
    dokdo_cli
    dokdo_api
+   qiime2_cli
 
 
 
