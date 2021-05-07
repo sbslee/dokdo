@@ -5,9 +5,54 @@ README
    :target: https://dokdo.readthedocs.io/en/latest/?badge=latest
    :alt: Documentation Status
 
+Introduction
+============
+
 Dokdo is a lightweight Python package for microbiome sequencing analysis, which can be used as a command line tool and as a Python module. Dokdo is designed to be used with `QIIME 2 <https://qiime2.org/>`_, a powerful community-developed platform for microbiome bioinformatics.
 
-Dokdo is versatile like the swiss army knife. For example, you can use its command line interface to create various input files for QIIME 2 (e.g. a manifest file or a sample-metadata file) or perform a variety of secondary analyses. You may also use Dokdo's application programming interface with `Jupyter Notebook <https://jupyter.org/>`_ to create publication-quality figures using the output files from QIIME 2 (e.g. a taxonomic bar plot or an alpha rarefaction plot).
+Dokdo is versatile like the swiss army knife. For example, you can use its command line interface (CLI) to create various input files for QIIME 2 (e.g. a manifest file or a sample-metadata file) or perform a variety of secondary analyses. You may also use Dokdo's application programming interface (API) with `Jupyter Notebook <https://jupyter.org/>`_ to create publication-quality figures using output files/objects from QIIME 2 (e.g. a taxonomic bar plot or an alpha rarefaction plot).
+
+For more details, please see the `Read the Docs <https://dokdo.readthedocs.io/en/latest/>`_ which serves as the official user documentation for Dokdo, including instructions, tutorials, and other important information. The page also documents select information and resources pertaining to QIIME 2 that I find particularly useful.
+
+Your contributions (e.g. feature ideas, pull requests) are most welcome.
+
+| Author: Seung-been "Steven" Lee
+| Email: sbstevenlee@gmail.com
+| License: MIT License
+
+CLI Examples
+============
+
+To create a manifest file from a directory containing FASTQ files:
+
+.. code-block:: console
+
+   $ dokdo make-manifest -i fastq-dir -o manifest-file.tsv
+
+To summarize a feature table:
+
+.. code-block:: console
+
+    $ dokdo summarize -i table.qza
+
+API Examples
+============
+
+.. code:: python3
+
+    >>> dokdo.taxa_abundance_bar_plot(qzv_file,
+    ...                               figsize=(10, 7),
+    ...                               level=6,
+    ...                               count=8,
+    ...                               legend_short=True,
+    ...                               artist_kwargs=dict(show_legend=True,
+    ...                                                  legend_loc='upper left'))
+
+.. image:: images/taxa_abundance_bar_plot.png
+  :width: 600
+
+Getting Started
+===============
 
 To install Dokdo, enter the following in your terminal:
 
@@ -17,10 +62,19 @@ To install Dokdo, enter the following in your terminal:
    $ cd dokdo
    $ pip install .
 
-For more details, please see the `Read the Docs <https://dokdo.readthedocs.io/en/latest/>`_ which serves as the official user documentation for Dokdo, including instructions, tutorials, and other important information. The page also documents select information and resources pertaining to QIIME 2 that I find particularly useful.
+Dokdo is built with the QIIME 2 API, so it must be run in an environment where QIIME 2 is already installed. For example, if you use the `Anaconda <https://www.anaconda.com/>`__ distribution, activate your conda environment (e.g. ``qiime2-2020.8``) with QIIME 2 before using Dokdo. This can be done in Terminal with the following:
 
-Pull requests are always welcome.
+.. code-block:: console
 
-| Author: Seung-been "Steven" Lee
-| Email: sbstevenlee@gmail.com
-| License: MIT License
+    $ conda activate qiime2-2020.8
+
+Alternatively, you can use `Anaconda Navigator <https://docs.anaconda.com/anaconda/navigator/>`__ which is the desktop graphical user interface (GUI) for Anaconda: ``Anaconda Navigator`` \> ``Environments`` \> ``qiime2-2020.8`` \> ``Open with Jupyter Notebook``.
+
+Package Purpose
+===============
+
+QIIME 2 is one of the most well-documented and easy-to-use tools I have ever worked with. There is no doubt that QIIME 2 is superb for beginners to get started with microbiome bioinformatics. I also love the QIIME 2 community which is supportive and respectful to one another. If you haven't visited QIIME 2 Forum yet, I strongly invite you to go there and explore the endless abyss of microbiome-analysis knowledge! You will also find me and my posts there. That being said, I wrote the Dokdo package to:
+
+1. Dynamically create publication-quality figures with Jupyter Notebook using output files/instances from QIIME 2 (Dokdo API). QIIME 2 already provides high-quality, interactive figures via Visualizations (e.g. .qzv files) and QIIME 2 View. Visualizations are excellent at allowing users to interactively explore the data; however, they are not optimized for presentation (e.g. PowerPoint or publication) due to the lack of options to control various aspects of a figure (size, legend, labels, etc.). Moreover, once created, those visualizations cannot be modified, for example, to make a subset of the samples (e.g. a taxonomic bar plot). Therefore, the user would have to go way back to perform sample filtration, redo the analysis, and create a new visualization again, which can be burdensome and time-consuming. Finally, some visualizations simply do not support the user to download a given figure (e.g. an alpha rarefaction plot). With the Dokdo API, the user can directly manipulate a given visualization to make necessary figures. At this point, let me be very clear: I’m not saying QIIME 2 Visualizations should be able to do all the things I mentioned above. I would say it’s actually better QIIME 2 doesn’t do those because then its code can stay simple and focused on the method’s core functionality. That's what programs like Dokdo are for!
+
+2. Create convenience or pipeline commands that combine several QIIME 2 methods (Dokdo CLI). For example, the ``make-manifest`` command in the Dokdo CLI automatically creates a manifest file that can be used by QIIME 2 from a directory containing FASTQ files. Another example is the ``summarize`` command which extracts summary statistics from a feature table so the user does not have to create a Visualization file just to get simple statistics.
