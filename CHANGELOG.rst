@@ -1,6 +1,13 @@
-# Changelog
+Changelog
+*********
 
-## 1.7.0
+1.8.0 (in development)
+----------------------
+
+* Transitioned to Read the Docs
+
+1.7.0 (2021-04-05)
+------------------
 
 * Added a new command called `count-reads` which counts the number of sequence reads from FASTQ.
 * Updated the `summarize` command.
@@ -10,9 +17,10 @@
     * `distance_matrix_plot()`
     * `ordinate()`
     * `barplot()`
-* See [#10](https://github.com/sbslee/dokdo/issues/10) for more details.
+* See :issue:`10` for more details.
 
-## 1.6.0
+1.6.0 (2021-03-08)
+------------------
 
 * Added a new method called `pname()` which returns a prettified taxon name.
 * Added a new method called `num2sig()` which converts a p-value to significance annotation.
@@ -24,9 +32,10 @@
     * `alpha_diversity_plot()`
 * Updated the `summarize` command.
 * Updated the `prepare-lefse` command to output more informative taxa name than just underscores (e.g. `__` and `g__`).
-* See [#8](https://github.com/sbslee/dokdo/issues/8) for more details.
+* See :issue:`8` for more details.
 
-## 1.5.0
+1.5.0 (2021-02-03)
+------------------
 
 * Starting this version, Dokdo is packaged with `setuptools`.
 * There have been major changes to the Dokdo CLI.
@@ -44,9 +53,10 @@
     * `taxa_abundance_box_plot()`
     * `heatmap()`
 * Updated the `make_manifest` command.
-* See [#6](https://github.com/sbslee/dokdo/issues/6) for more details.
+* See :issue:`6` for more details.
 
-## 1.4.0
+1.4.0 (2021-01-09)
+------------------
 
 * Added a new command called `summarize`.
 * Added a new plotting method called `heatmap()`.
@@ -59,9 +69,10 @@
     * `alpha_rarefaction_plot()`
     * `taxa_abundance_bar_plot()`
     * `taxa_abundance_box_plot()`
-* See [#4](https://github.com/sbslee/dokdo/issues/4) for more details.
+* See :issue:`4` for more details.
 
-## 1.3.0
+1.3.0 (2020-12-23)
+------------------
 
 * Updated the `ordinate()` method so that the user can now choose to:
     * skip rarefying,
@@ -73,17 +84,19 @@
     * `beta_parallel_plot()`
     * `addbiplot()`
     * `barplot()`
-* See [#2](https://github.com/sbslee/dokdo/issues/2) for more details.
+* See :issue:`2` for more details.
 
-## 1.2.0
+1.2.0 (2020-12-08)
+------------------
 
 * The `tax2seq` command has been deprecated.
 * Updated the `_artist()` method to set the font size of title, labels, etc.
 * Added the `s` argument to the `ancom_volcano_plot()` method for setting marker size.
 * Updated the docstring.
-* See [#1](https://github.com/sbslee/dokdo/issues/1) for more details.
+* See :issue:`1` for more details.
 
-## 1.1.0
+1.1.0 (2020-11-23)
+------------------
 
 * Introduced the `addpairs()` method.
 * The `beta_2d_plot_gallery()` method has been deprecated.
@@ -98,6 +111,7 @@
 * Updated the docstring.
 * Plotting methods now accept Artifact and Visualization objects as input.
 
-## 1.0.0
+1.0.0 (2020-11-09)
+------------------
 
 * Initial release.

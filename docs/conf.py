@@ -30,11 +30,15 @@ author = 'Seung-been "Steven" Lee'
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.napoleon',
+    'sphinx.ext.linkcode',
     'sphinx.ext.mathjax',
     'sphinx.ext.autosectionlabel',
     'sphinx_rtd_theme',
-    'matplotlib.sphinxext.plot_directive'
+    'matplotlib.sphinxext.plot_directive',
+    'sphinx_issues'
 ]
+
+issues_github_path = 'sbslee/dokdo'
 
 # Include the example source for plots in API docs.
 plot_include_source = True

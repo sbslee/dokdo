@@ -17,6 +17,7 @@ Welcome to dokdo's documentation!
    qiime2_api
    useful_information
    pipeline
+   changelog
 
 
 
