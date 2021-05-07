@@ -89,9 +89,7 @@ Note that in both cases, the styling is set locally. If you plan to make many pl
 .. plot::
     :context: close-figs
 
-    >>> import seaborn as sns
     >>> sns.set()
-    >>> # import matplotlib.pyplot as plt
     >>> # plt.style.use('ggplot')
 
 Finally, you can turn off the styling at any point after setting it globally with the following.
@@ -211,6 +209,51 @@ In some situations, we may wish to plot the graph and the legend separately. For
     ...                               artist_kwargs=dict(show_legend=True))
     >>> plt.tight_layout()
 
+We can ameliorate the issue by plotting the legend separately with ``legend_only=True``.
+
+.. plot::
+    :context: close-figs
+
+    >>> fig, [ax1, ax2] = plt.subplots(1, 2, figsize=(11, 5), gridspec_kw={'width_ratios': [9, 1]})
+    >>> dokdo.taxa_abundance_bar_plot(qzv_file, ax=ax1, level=2, count=8)
+    >>> dokdo.taxa_abundance_bar_plot(qzv_file, ax=ax2, level=2, count=8,
+    ...                               artist_kwargs=dict(legend_loc='upper left',
+    ...                                                  legend_only=True))
+    >>> plt.tight_layout()
+
+Plotting QIIME 2 Files vs. Objects
+----------------------------------
+
+Thus far, for plotting purposes, we have only used files created by the QIIME 2 CLI (i.e. ``.qza`` and ``.qzv`` files). However, we can also plot Python objects created by the QIIME 2 API.
+
+For example, we can directly plot the Artifact object from the ``qiime2.plugins.diversity.visualizers.alpha_rarefaction`` method (i.e. QIIME 2 API).
+
+.. plot::
+    :context: close-figs
+
+    >>> from qiime2 import Artifact
+    >>> from qiime2 import Metadata
+    >>> from qiime2.plugins import diversity
+    >>> table = Artifact.load(f'{data_dir}/moving-pictures-tutorial/table.qza')
+    >>> phylogeny = Artifact.load(f'{data_dir}/moving-pictures-tutorial/rooted-tree.qza')
+    >>> metadata = Metadata.load(f'{data_dir}/moving-pictures-tutorial/sample-metadata.tsv')
+    >>> rarefaction_result = diversity.visualizers.alpha_rarefaction(table=table,
+    ...                                                              metadata=metadata,
+    ...                                                              phylogeny=phylogeny,
+    ...                                                              max_depth=4000)
+    >>> rarefaction = rarefaction_result.visualization
+    >>> dokdo.alpha_rarefaction_plot(rarefaction)
+    >>> plt.tight_layout()
+
+As expected, above gives the same result as using the Visualization file created by the ``qiime diversity alpha-rarefaction`` command (i.e. QIIME 2 CLI).
+
+.. plot::
+    :context: close-figs
+
+    >>> qzv_file = f'{data_dir}/moving-pictures-tutorial/alpha-rarefaction.qzv'
+    >>> dokdo.alpha_rarefaction_plot(qzv_file)
+    >>> plt.tight_layout()
+
 General Methods
 ===============
 
@@ -327,3 +370,39 @@ ancom_volcano_plot
 
 Other Plotting Methods
 ======================
+
+addsig
+------
+
+.. automodule:: dokdo.api.addsig
+  :members:
+
+addpairs
+--------
+
+.. automodule:: dokdo.api.addpairs
+  :members:
+
+addbiplot
+---------
+
+.. automodule:: dokdo.api.addbiplot
+  :members:
+
+barplot
+-------
+
+.. automodule:: dokdo.api.barplot
+  :members:
+
+heatmap
+-------
+
+.. automodule:: dokdo.api.heatmap
+  :members:
+
+regplot
+-------
+
+.. automodule:: dokdo.api.regplot
+  :members:

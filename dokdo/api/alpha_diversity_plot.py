@@ -44,11 +44,8 @@ def alpha_diversity_plot(alpha_diversity, metadata, where,
     .. plot::
         :context: close-figs
 
-        >>> import seaborn as sns
-        >>> sns.set()
-        >>> data_dir = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial'
-        >>> qzv_file = f'{data_dir}/faith_pd_vector.qza'
-        >>> metadata_file = f'{data_dir}/sample-metadata.tsv'
+        >>> qzv_file = f'{data_dir}/moving-pictures-tutorial/faith_pd_vector.qza'
+        >>> metadata_file = f'{data_dir}/moving-pictures-tutorial/sample-metadata.tsv'
         >>> dokdo.alpha_diversity_plot(qzv_file, metadata_file, 'body-site')
         >>> plt.tight_layout()
     """

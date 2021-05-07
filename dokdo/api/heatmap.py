@@ -7,11 +7,13 @@ import dokdo
 from skbio.stats.composition import clr
 from matplotlib.patches import Patch
 
-def heatmap(table, metadata=None, hue1=None, hue_order1=None,
-            hue1_cmap='tab10', hue1_loc='upper right', hue2=None,
-            hue_order2=None, hue2_cmap='Pastel1', hue2_loc='upper left',
-            normalize=None, method='average', metric='euclidean',
-            figsize=(10, 10), row_cluster=True, col_cluster=True, **kwargs):
+def heatmap(
+    table, metadata=None, hue1=None, hue_order1=None,
+    hue1_cmap='tab10', hue1_loc='upper right', hue2=None,
+    hue_order2=None, hue2_cmap='Pastel1', hue2_loc='upper left',
+    normalize=None, method='average', metric='euclidean',
+    figsize=(10, 10), row_cluster=True, col_cluster=True, **kwargs
+):
     """Create a hierarchically clustered heatmap of a feature table.
 
     Internally, this method uses the `seaborn.clustermap()` method to
@@ -65,6 +67,43 @@ def heatmap(table, metadata=None, hue1=None, hue_order1=None,
     -------
     seaborn.matrix.ClusterGrid
         A ClusterGrid instance.
+
+    Examples
+    --------
+    Below is a simple example.
+
+    .. plot::
+        :context: close-figs
+
+        >>> table_file = f'{data_dir}/moving-pictures-tutorial/table.qza'
+        >>> dokdo.heatmap(table_file, normalize='log10')
+
+    We can color the samples by ``body-site``. For this example, we will
+    use the centered log-ratio transformation.
+
+    .. plot::
+        :context: close-figs
+
+        >>> metadata_file = f'{data_dir}/moving-pictures-tutorial/sample-metadata.tsv'
+        >>> dokdo.heatmap(table_file,
+        ...               normalize='clr',
+        ...               metadata=metadata_file,
+        ...               hue1='body-site')
+
+    We can add an additional grouping variable ``subject``. Note that
+    ``xticklabels`` and ``yticklabels`` are extra keyword arguments that
+    are passed to the ``seaborn.clustermap`` method.
+
+    .. plot::
+        :context: close-figs
+
+        >>> dokdo.heatmap(table_file,
+        ...               normalize='clr',
+        ...               metadata=metadata_file,
+        ...               hue1='body-site',
+        ...               hue2='subject',
+        ...               xticklabels=False,
+        ...               yticklabels=False)
     """
     # Check the input type.
     if isinstance(table, Artifact):

@@ -67,11 +67,8 @@ def beta_3d_plot(pcoa_results,
     .. plot::
         :context: close-figs
 
-        >>> import seaborn as sns
-        >>> sns.set()
-        >>> data_dir = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial'
-        >>> qza_file = f'{data_dir}/unweighted_unifrac_pcoa_results.qza'
-        >>> metadata_file = f'{data_dir}/sample-metadata.tsv'
+        >>> qza_file = f'{data_dir}/moving-pictures-tutorial/unweighted_unifrac_pcoa_results.qza'
+        >>> metadata_file = f'{data_dir}/moving-pictures-tutorial/sample-metadata.tsv'
         >>> dokdo.beta_3d_plot(qza_file,
         ...                    metadata_file,
         ...                    'body-site',

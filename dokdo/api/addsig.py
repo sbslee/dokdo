@@ -1,16 +1,9 @@
 import matplotlib.pyplot as plt
 
-def addsig(x1,
-           x2,
-           y,
-           t='',
-           h=1.0,
-           lw=1.0,
-           lc='black',
-           tc='black',
-           ax=None,
-           figsize=None,
-           fontsize=None):
+def addsig(
+    x1, x2, y, t='', h=1.0, lw=1.0, lc='black',
+    tc='black', ax=None, figsize=None, fontsize=None
+):
     """Add signifiance annotation between two groups in a box plot.
 
     Parameters
@@ -42,6 +35,24 @@ def addsig(x1,
     -------
     matplotlib.axes.Axes
         Axes object with the plot drawn onto it.
+
+    Examples
+    --------
+    Below is a simple example.
+
+    .. plot::
+        :context: close-figs
+
+        >>> vector_file = f'{data_dir}/moving-pictures-tutorial/faith_pd_vector.qza'
+        >>> metadata_file = f'{data_dir}/moving-pictures-tutorial/sample-metadata.tsv'
+        >>> ax = dokdo.alpha_diversity_plot(vector_file,
+        ...                                 metadata_file,
+        ...                                 'body-site',
+        ...                                 figsize=(8, 5),
+        ...                                 artist_kwargs=dict(ymin=0, ymax=30))
+        >>> dokdo.addsig(0, 1, 20, t='***', ax=ax)
+        >>> dokdo.addsig(1, 2, 26, t='ns', ax=ax)
+        >>> plt.tight_layout()
     """
     if ax is None:
         fig, ax = plt.subplots(figsize=figsize)

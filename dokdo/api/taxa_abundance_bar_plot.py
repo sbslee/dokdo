@@ -105,8 +105,6 @@ def taxa_abundance_bar_plot(
     .. plot::
         :context: close-figs
 
-        >>> import seaborn as sns
-        >>> sns.set()
         >>> qzv_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/taxa-bar-plots.qzv'
         >>> dokdo.taxa_abundance_bar_plot(qzv_file,
         ...                               figsize=(10, 7),

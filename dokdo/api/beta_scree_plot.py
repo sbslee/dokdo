@@ -53,10 +53,7 @@ def beta_scree_plot(pcoa_results,
     .. plot::
         :context: close-figs
 
-        >>> import seaborn as sns
-        >>> sns.set()
-        >>> data_dir = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial'
-        >>> qza_file = f'{data_dir}/unweighted_unifrac_pcoa_results.qza'
+        >>> qza_file = f'{data_dir}/moving-pictures-tutorial/unweighted_unifrac_pcoa_results.qza'
         >>> dokdo.beta_scree_plot(qza_file)
         >>> plt.tight_layout()
     """

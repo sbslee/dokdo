@@ -51,11 +51,8 @@ def denoising_stats_plot(
     .. plot::
         :context: close-figs
 
-        >>> import seaborn as sns
-        >>> sns.set()
-        >>> data_dir = '/Users/sbslee/Desktop/dokdo/data/atacama-soil-microbiome-tutorial'
-        >>> qza_file = f'{data_dir}/denoising-stats.qza'
-        >>> metadata_file = f'{data_dir}/sample-metadata.tsv'
+        >>> qza_file = f'{data_dir}/atacama-soil-microbiome-tutorial/denoising-stats.qza'
+        >>> metadata_file = f'{data_dir}/atacama-soil-microbiome-tutorial/sample-metadata.tsv'
         >>> dokdo.denoising_stats_plot(qza_file, metadata_file, 'transect-name', artist_kwargs=dict(show_legend=True))
         >>> plt.tight_layout()
     """

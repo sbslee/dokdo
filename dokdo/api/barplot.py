@@ -5,20 +5,12 @@ from .taxa_abundance_bar_plot import taxa_abundance_bar_plot
 from qiime2 import Visualization
 import matplotlib.pyplot as plt
 
-def barplot(barplot_file,
-            group,
-            axis=0,
-            figsize=(10, 10),
-            level=1,
-            count=0,
-            items=None,
-            by=None,
-            label_columns=None,
-            metadata=None,
-            artist_kwargs=None,
-            ylabel_fontsize=None,
-            xaxis_repeated=False,
-            cmap_name='Accent'):
+def barplot(
+    barplot_file, group, axis=0, figsize=(10, 10), level=1,
+    count=0, items=None, by=None, label_columns=None,
+    metadata=None, artist_kwargs=None, ylabel_fontsize=None,
+    xaxis_repeated=False, cmap_name='Accent'
+):
     """Create a grouped abundance bar plot.
 
     Under the hood, this method essentially wraps the
@@ -63,6 +55,34 @@ def barplot(barplot_file,
     See Also
     --------
     taxa_abundance_bar_plot
+
+    Examples
+    --------
+    Below is a simple example.
+
+    .. plot::
+        :context: close-figs
+
+        >>> barplot_file = f'{data_dir}/moving-pictures-tutorial/taxa-bar-plots.qzv'
+        >>> dokdo.barplot(barplot_file,
+        ...               'body-site',
+        ...               axis=1,
+        ...               figsize=(10, 6),
+        ...               level=6,
+        ...               count=8)
+
+    We can draw the subplots vertically, which is particularly useful when the samples are matched.
+
+    .. plot::
+        :context: close-figs
+
+        >>> dokdo.barplot(barplot_file,
+        ...               'body-site',
+        ...               axis=0,
+        ...               figsize=(8, 10),
+        ...               level=6,
+        ...               count=8,
+        ...               xaxis_repeated=True)
     """
     with tempfile.TemporaryDirectory() as t:
         vis = Visualization.load(barplot_file)

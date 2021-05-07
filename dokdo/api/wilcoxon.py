@@ -47,9 +47,7 @@ def wilcoxon(taxon, csv_file, subject, category, group1, group2, ann=False):
     .. plot::
         :context: close-figs
 
-        >>> import seaborn as sns
         >>> from qiime2 import Metadata
-        >>> sns.set()
         >>> metadata = Metadata.load('/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/sample-metadata.tsv')
         >>> sample_names = ['L2S240', 'L3S242', 'L2S155', 'L4S63', 'L2S175', 'L3S313', 'L2S204', 'L4S112', 'L2S222', 'L4S137']
         >>> metadata = metadata.filter_ids(sample_names)

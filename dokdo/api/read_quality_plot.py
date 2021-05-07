@@ -41,8 +41,6 @@ def read_quality_plot(
     .. plot::
         :context: close-figs
 
-        >>> import seaborn as sns
-        >>> sns.set()
         >>> qzv_file = '/Users/sbslee/Desktop/dokdo/data/atacama-soil-microbiome-tutorial/demux-subsample.qzv'
         >>> fig, [ax1, ax2] = plt.subplots(1, 2, figsize=(8, 7))
         >>> artist_kwargs1 = dict(title='Forward read')

@@ -66,11 +66,8 @@ def ordinate(table, metadata=None, metric='jaccard', sampling_depth=-1,
     .. plot::
         :context: close-figs
 
-        >>> import seaborn as sns
-        >>> sns.set()
-        >>> data_dir = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial'
-        >>> table_file = f'{data_dir}/table.qza'
-        >>> metadata_file = f'{data_dir}/sample-metadata.tsv'
+        >>> table_file = f'{data_dir}/moving-pictures-tutorial/table.qza'
+        >>> metadata_file = f'{data_dir}/moving-pictures-tutorial/sample-metadata.tsv'
         >>> pcoa_results = dokdo.ordinate(table_file)
         >>> dokdo.beta_2d_plot(pcoa_results, metadata=metadata_file, hue='body-site', artist_kwargs=dict(show_legend=True))
         >>> plt.tight_layout()

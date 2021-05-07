@@ -45,9 +45,7 @@ def mannwhitneyu(taxon, csv_file, category, group1, group2, ann=False):
     .. plot::
         :context: close-figs
 
-        >>> import seaborn as sns
         >>> from qiime2 import Metadata
-        >>> sns.set()
         >>> taxon = 'k__Bacteria;p__Proteobacteria'
         >>> csv_file = 'mannwhitneyu.csv'
         >>> barplot_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/taxa-bar-plots.qzv'

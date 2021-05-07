@@ -3,16 +3,10 @@ import seaborn as sns
 import pandas as pd
 from .common import _artist
 
-def regplot(taxon,
-            csv_file,
-            subject,
-            category,
-            group1,
-            group2,
-            label=None,
-            ax=None,
-            figsize=None,
-            artist_kwargs=None):
+def regplot(
+    taxon, csv_file, subject, category, group1, group2,
+    label=None, ax=None, figsize=None, artist_kwargs=None
+):
     """Plot relative abundance data and a linear regression model fit from
     paired samples for the given taxon.
 
@@ -47,6 +41,69 @@ def regplot(taxon,
     See Also
     --------
     taxa_abundance_box_plot
+
+    Examples
+    --------
+    Below is a simple example where we pretend we only have the samples
+    shown below and they are from a single subject. We are interested in
+    comparing the relative abundance of the phylum Preteobacteria between
+    the left palm and right palm. We also want to perofrm the comparison
+    in the context of ``days-since-experiment-start`` (i.e. paired
+    comparison).
+
+    .. plot::
+        :context: close-figs
+
+        >>> metadata = Metadata.load(f'{data_dir}/moving-pictures-tutorial/sample-metadata.tsv')
+        >>> sample_names = ['L2S240', 'L3S242', 'L2S155', 'L4S63', 'L2S175', 'L3S313', 'L2S204', 'L4S112', 'L2S222', 'L4S137']
+        >>> metadata = metadata.filter_ids(sample_names)
+        >>> mf = dokdo.get_mf(metadata)
+        >>> mf = mf[['body-site', 'days-since-experiment-start']]
+        >>> mf.sort_values(['days-since-experiment-start', 'body-site'])
+                    body-site  days-since-experiment-start
+        sample-id
+        L2S240      left palm                          0.0
+        L3S242     right palm                          0.0
+        L2S155      left palm                         84.0
+        L4S63      right palm                         84.0
+        L2S175      left palm                        112.0
+        L3S313     right palm                        112.0
+        L2S204      left palm                        140.0
+        L4S112     right palm                        140.0
+        L2S222      left palm                        168.0
+        L4S137     right palm                        168.0
+
+    Next, we will run the taxa_abundance_box_plot() method to create the input file for the regplot() method.
+
+    .. plot::
+        :context: close-figs
+
+        >>> qzv_file = f'{data_dir}/moving-pictures-tutorial/taxa-bar-plots.qzv'
+        >>> dokdo.taxa_abundance_box_plot(qzv_file,
+        ...                               level=2,
+        ...                               hue='body-site',
+        ...                               taxa_names=['k__Bacteria;p__Proteobacteria'],
+        ...                               show_others=False,
+        ...                               figsize=(6, 6),
+        ...                               sample_names=sample_names,
+        ...                               add_datapoints=True,
+        ...                               include_samples={'body-site': ['left palm', 'right palm']},
+        ...                               csv_file='addpairs.csv',
+        ...                               artist_kwargs=dict(show_legend=True, ymax=70))
+        plt.tight_layout()
+
+    Finally, run the ``dokdo.regplot`` method.
+
+    .. plot::
+        :context: close-figs
+
+        >>> dokdo.regplot('k__Bacteria;p__Proteobacteria',
+        ...               'addpairs.csv',
+        ...               'days-since-experiment-start',
+        ...               'body-site',
+        ...               'left palm',
+        ...               'right palm')
+        >>> plt.tight_layout()
     """
     if ax is None:
         fig, ax = plt.subplots(figsize=figsize)
