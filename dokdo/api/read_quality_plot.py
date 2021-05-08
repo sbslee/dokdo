@@ -10,6 +10,14 @@ def read_quality_plot(
 ):
     """Create a read quality plot.
 
+    +-----------------+--------------------------------------------------------+
+    | q2-demux plugin | Example                                                |
+    +=================+========================================================+
+    | QIIME 2 CLI     | qiime demux summarize [OPTIONS]                        |
+    +-----------------+--------------------------------------------------------+
+    | QIIME 2 API     | from qiime2.plugins.demux.visualizers import summarize |
+    +-----------------+--------------------------------------------------------+
+
     Parameters
     ----------
     demux : str or qiime2.Visualization
@@ -27,12 +35,6 @@ def read_quality_plot(
     -------
     matplotlib.axes.Axes
         Axes object with the plot drawn onto it.
-
-    Notes
-    -----
-    Example usage of the q2-demux plugin:
-        CLI -> $ qiime demux summarize [OPTIONS]
-        API -> from qiime2.plugins.demux.visualizers import summarize
 
     Examples
     --------

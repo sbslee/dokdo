@@ -12,6 +12,14 @@ def alpha_rarefaction_plot(
 ):
     """Create an alpha rarefaction plot.
 
+    +-----------------------+--------------------------------------------------------------------+
+    | q2-diversity plugin | Example                                                              |
+    +=======================+====================================================================+
+    | QIIME 2 CLI           | qiime diversity alpha-rarefaction [OPTIONS]                        |
+    +-----------------------+--------------------------------------------------------------------+
+    | QIIME 2 API           | from qiime2.plugins.diversity.visualizers import alpha_rarefaction |
+    +-----------------------+--------------------------------------------------------------------+
+
     Parameters
     ----------
     rarefaction : str or qiime2.Visualization
@@ -43,12 +51,6 @@ def alpha_rarefaction_plot(
     -------
     matplotlib.axes.Axes
         Axes object with the plot drawn onto it.
-
-    Notes
-    -----
-    Example usage of the q2-diversity plugin:
-        CLI -> qiime diversity alpha-rarefaction [OPTIONS]
-        API -> from qiime2.plugins.diversity.visualizers import alpha_rarefaction
 
     Examples
     --------

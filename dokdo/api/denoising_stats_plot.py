@@ -10,7 +10,15 @@ def denoising_stats_plot(
     pseudocount=False, order=None, hide_nsizes=False,
     artist_kwargs=None
 ):
-    """Create a grouped box chart for denoising statistics from DADA 2.
+    """Create a grouped box chart for denoising statistics from DADA2.
+
+    +-----------------+---------------------------------------------------------+
+    | q2-dada2 plugin | Example                                                 |
+    +=================+=========================================================+
+    | QIIME 2 CLI     | qiime dada2 denoise-paired [OPTIONS]                    |
+    +-----------------+---------------------------------------------------------+
+    | QIIME 2 API     | from qiime2.plugins.dada2.methods import denoise_paired |
+    +-----------------+---------------------------------------------------------+
 
     Parameters
     ----------
@@ -37,12 +45,6 @@ def denoising_stats_plot(
     -------
     matplotlib.axes.Axes
         Axes object with the plot drawn onto it.
-
-    Notes
-    -----
-    Example usage of the q2-dada2 plugin:
-        CLI -> qiime dada2 denoise-paired [OPTIONS]
-        API -> from qiime2.plugins.dada2.methods import denoise_paired
 
     Examples
     --------

@@ -18,6 +18,14 @@ def taxa_abundance_box_plot(
 ):
     """Create a taxa abundance box plot.
 
+    +----------------+-----------------------------------------------------+
+    | q2-taxa plugin | Example                                             |
+    +================+=====================================================+
+    | QIIME 2 CLI    | qiime taxa barplot [OPTIONS]                        |
+    +----------------+-----------------------------------------------------+
+    | QIIME 2 API    | from qiime2.plugins.taxa.visualizers import barplot |
+    +----------------+-----------------------------------------------------+
+
     Parameters
     ----------
     taxa : str or qiime2.Visualization
@@ -89,12 +97,6 @@ def taxa_abundance_box_plot(
     --------
     taxa_abundance_bar_plot
     addpairs
-
-    Notes
-    -----
-    Example usage of the q2-taxa plugin:
-        CLI -> qiime taxa barplot [OPTIONS]
-        API -> from qiime2.plugins.taxa.visualizers import barplot
 
     Examples
     --------

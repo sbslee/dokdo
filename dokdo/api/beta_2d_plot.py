@@ -14,6 +14,14 @@ def beta_2d_plot(
 ):
     """Create a 2D scatter plot from PCoA results.
 
+    +---------------------+---------------------------------------------------+
+    | q2-diversity plugin | Example                                           |
+    +=====================+===================================================+
+    | QIIME 2 CLI         | qiime diversity pcoa [OPTIONS]                    |
+    +---------------------+---------------------------------------------------+
+    | QIIME 2 API         | from qiime2.plugins.diversity.methods import pcoa |
+    +---------------------+---------------------------------------------------+
+
     Parameters
     ----------
     pcoa_results : str or qiime2.Artifact
@@ -56,12 +64,6 @@ def beta_2d_plot(
     beta_scree_plot
     beta_parallel_plot
     addbiplot
-
-    Notes
-    -----
-    Example usage of the q2-diversity plugin:
-        CLI -> qiime diversity pcoa [OPTIONS]
-        API -> from qiime2.plugins.diversity.methods import pcoa
 
     Examples
     --------

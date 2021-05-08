@@ -10,6 +10,14 @@ def ancom_volcano_plot(
 ):
     """Create an ANCOM volcano plot.
 
+    +-----------------------+----------------------------------------------------------+
+    | q2-composition plugin | Example                                                  |
+    +=======================+==========================================================+
+    | QIIME 2 CLI           | qiime composition ancom [OPTIONS]                        |
+    +-----------------------+----------------------------------------------------------+
+    | QIIME 2 API           | from qiime2.plugins.composition.visualizers import ancom |
+    +-----------------------+----------------------------------------------------------+
+
     Parameters
     ----------
     ancom : str
@@ -27,12 +35,6 @@ def ancom_volcano_plot(
     -------
     matplotlib.axes.Axes
         Axes object with the plot drawn onto it.
-
-    Notes
-    -----
-    Example usage of the q2-composition plugin:
-        CLI -> qiime composition ancom [OPTIONS]
-        API -> from qiime2.plugins.composition.visualizers import ancom
 
     Examples
     --------

@@ -19,6 +19,14 @@ def taxa_abundance_bar_plot(
     Although the input visualization file should contain medatadata already,
     you can replace it with new metadata by using the 'metadata' option.
 
+    +----------------+-----------------------------------------------------+
+    | q2-taxa plugin | Example                                             |
+    +================+=====================================================+
+    | QIIME 2 CLI    | qiime taxa barplot [OPTIONS]                        |
+    +----------------+-----------------------------------------------------+
+    | QIIME 2 API    | from qiime2.plugins.taxa.visualizers import barplot |
+    +----------------+-----------------------------------------------------+
+
     Parameters
     ----------
     taxa : str or qiime2.Visualization
@@ -90,12 +98,6 @@ def taxa_abundance_bar_plot(
     See Also
     --------
     taxa_abundance_box_plot
-
-    Notes
-    -----
-    Example usage of the q2-taxa plugin:
-        CLI -> qiime taxa barplot [OPTIONS]
-        API -> from qiime2.plugins.taxa.visualizers import barplot
 
     Examples
     --------
