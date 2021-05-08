@@ -224,7 +224,7 @@ We can ameliorate the issue by plotting the legend separately with ``legend_only
 Plotting QIIME 2 Files vs. Objects
 ----------------------------------
 
-Thus far, for plotting purposes, we have only used files created by the QIIME 2 CLI (i.e. ``.qza`` and ``.qzv`` files). However, we can also plot Python objects created by the QIIME 2 API.
+Thus far, for plotting purposes, we have only used files created by QIIME 2 CLI (i.e. ``.qza`` and ``.qzv`` files). However, we can also plot Python objects created by QIIME 2 API.
 
 For example, we can directly plot the Artifact object from the ``qiime2.plugins.diversity.visualizers.alpha_rarefaction`` method (i.e. QIIME 2 API).
 

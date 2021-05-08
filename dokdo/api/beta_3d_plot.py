@@ -5,16 +5,11 @@ import dokdo
 import matplotlib.pyplot as plt
 from skbio.stats.ordination import OrdinationResults
 
-def beta_3d_plot(pcoa_results,
-                 metadata=None,
-                 hue=None,
-                 azim=-60,
-                 elev=30,
-                 s=80,
-                 ax=None,
-                 figsize=None,
-                 hue_order=None,
-                 artist_kwargs=None):
+def beta_3d_plot(
+    pcoa_results, metadata=None, hue=None, azim=-60,
+    elev=30, s=80, ax=None, figsize=None,
+    hue_order=None, artist_kwargs=None
+):
     """Create a 3D scatter plot from PCoA results.
 
     Parameters

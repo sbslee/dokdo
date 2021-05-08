@@ -1,10 +1,11 @@
 Changelog
 *********
 
-1.8.0 (in development)
-----------------------
+1.8.0 (2021-05-08)
+------------------
 
-* Moved the documentation from Wiki page to Read the Docs.
+* Updated docstring.
+* Moved the official documentation from Wiki page to Read the Docs.
 
 1.7.0 (2021-04-05)
 ------------------
@@ -42,7 +43,7 @@ Changelog
 ------------------
 
 - Starting this version, Dokdo is packaged with ``setuptools``.
-- There have been major changes to the Dokdo CLI.
+- There have been major changes to Dokdo CLI.
 - Added a new plotting method called ``regplot()``.
 - Added a new command called ``prepare-lefse``.
 - The ``merge_metadata`` command has been deprecated.

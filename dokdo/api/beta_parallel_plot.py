@@ -5,14 +5,11 @@ from skbio.stats.ordination import OrdinationResults
 import pandas as pd
 import dokdo
 
-def beta_parallel_plot(pcoa_results,
-                       hue=None,
-                       hue_order=None,
-                       metadata=None,
-                       count=5,
-                       ax=None,
-                       figsize=None,
-                       artist_kwargs=None):
+def beta_parallel_plot(
+    pcoa_results, hue=None, hue_order=None,
+    metadata=None, count=5, ax=None,
+    figsize=None, artist_kwargs=None
+):
     """Create a parallel plot from PCoA results.
 
     Parameters

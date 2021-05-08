@@ -5,12 +5,10 @@ import pandas as pd
 from .common import _artist
 import matplotlib.pyplot as plt
 
-def beta_scree_plot(pcoa_results,
-                    count=5,
-                    ax=None,
-                    figsize=None,
-                    color='blue',
-                    artist_kwargs=None):
+def beta_scree_plot(
+    pcoa_results, count=5, ax=None,
+    figsize=None, color='blue', artist_kwargs=None
+):
     """Create a scree plot from PCoA results.
 
     Parameters

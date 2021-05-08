@@ -6,19 +6,12 @@ import matplotlib.pyplot as plt
 from skbio.stats.ordination import OrdinationResults
 import dokdo
 
-def beta_2d_plot(pcoa_results,
-                 metadata=None,
-                 hue=None,
-                 size=None,
-                 style=None,
-                 s=80,
-                 alpha=None,
-                 ax=None,
-                 figsize=None,
-                 hue_order=None,
-                 style_order=None,
-                 legend_type='brief',
-                 artist_kwargs=None):
+def beta_2d_plot(
+    pcoa_results, metadata=None, hue=None, size=None,
+    style=None, s=80, alpha=None, ax=None,
+    figsize=None, hue_order=None, style_order=None,
+    legend_type='brief', artist_kwargs=None
+):
     """Create a 2D scatter plot from PCoA results.
 
     Parameters

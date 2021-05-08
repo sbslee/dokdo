@@ -4,11 +4,10 @@ from .common import _parse_input, _artist
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-def ancom_volcano_plot(ancom,
-                       ax=None,
-                       figsize=None,
-                       s=80,
-                       artist_kwargs=None):
+def ancom_volcano_plot(
+    ancom, ax=None, figsize=None,
+    s=80, artist_kwargs=None
+):
     """Create an ANCOM volcano plot.
 
     Parameters

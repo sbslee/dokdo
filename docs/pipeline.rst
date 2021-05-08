@@ -23,34 +23,77 @@ Below figure displays my typical directory structure after the pipeline is run. 
     ├── QIIME2
     │   └── Classifiers
     │       └── silva-138-99-nb-classifier.qza
+    │
     ├── Project1
     │   ├── FASTQ
     │   │   ├── Run1
     │   │   │   ├── sample_S1_R1_001.fastq.gz
     │   │   │   ├── sample_S1_R2_001.fastq.gz
     │   │   │   ...
+    │   │   │
     │   │   └── Run2
+    │   │       ├── sample_S1_R1_001.fastq.gz
+    │   │       ├── sample_S1_R2_001.fastq.gz
+    │   │       ...
+    │   │
     │   ├── Demux_Data
     │   │   ├── manifest-file-run1.tsv
+    │   │   ├── manifest-file-run2.tsv
     │   │   ├── paired-end-demux-run1.qza
-    │   │   ...
+    │   │   └── paired-end-demux-run2.qza
+    │   │
     │   ├── Pipeline
     │   │   ├── table-run1.qza
+    │   │   ├── table-run2.qza
     │   │   ├── rep-seqs-run1.qza
+    │   │   ├── rep-seqs-run2.qza
     │   │   ├── denoising-stats-run1.qza
+    │   │   ├── denoising-stats-run2.qza
     │   │   ├── demux-run1.qzv
-    │   │   ...
+    │   │   ├── demux-run2.qzv
     │   │   ├── table-merged.qza
     │   │   ├── rep-seqs-merged.qza
     │   │   ├── sample-metadata.tsv
+    │   │   ├── alpha-rarefaction-max.qzv
+    │   │   ├── alpha-rarefaction-min.qzv
+    │   │   ├── aligned-rep-seqs.qza
+    │   │   ├── masked-aligned-rep-seqs.qza
+    │   │   ├── unrooted-tree.qza
+    │   │   ├── rooted-tree.qza
+    │   │   ├── taxonomy.qza
+    │   │   ├── taxa-bar-plots.qzv
     │   │   └── core-metrics-results
+    │   │       ├── jaccard_distance_matrix.qza
+    │   │       ├── jaccard_pcoa_results.qza
+    │   │       ├── jaccard_emperor.qzv
+    │   │       ├── bray_curtis_distance_matrix.qza
+    │   │       ├── bray_curtis_pcoa_results.qza
+    │   │       ├── bray_curtis_emperor.qzv
+    │   │       ├── unweighted_unifrac_distance_matrix.qza
+    │   │       ├── unweighted_unifrac_pcoa_results.qza
+    │   │       ├── unweighted_unifrac_emperor.qzv
+    │   │       ├── weighted_unifrac_distance_matrix.qza
+    │   │       ├── weighted_unifrac_pcoa_results.qza
+    │   │       ├── weighted_unifrac_emperor.qzv
+    │   │       ├── evenness_vector.qza
+    │   │       ├── evenness_group-significance.qzv
+    │   │       ├── shannon_vector.qza
+    │   │       ├── shannon_group-significance.qzv
+    │   │       ├── faith_pd_vector.qza
+    │   │       ├── faith_pd_group-significance.qzv
+    │   │       ├── observed_features_vector.qza
+    │   │       └── observed_features_group-significance.qzv
+    │   │
     │   └── Analysis
     │       ├── Read_Quality
     │       ├── Rarefaction_Curve
     │       ├── Alpha_Diversity
     │       ├── Beta_Diversity
+    │       ├── Taxa_Barplots
     │       ...
-    └── Project2
+    │
+    ├── Project2
+    ...
 
 1. Demultiplexing
 =================
@@ -72,7 +115,7 @@ I use Illumina's ``bcl2fastq`` software to demultiplex sequence reads. For examp
         --barcode-mismatches 0 \
         --processing-threads 10
 
-After demultiplexing is finished, the end product should be a directory containing two FASTQ files per sample (i.e. 0
+After demultiplexing is finished, the end product should be a directory containing two FASTQ files per sample (i.e. forward and reverse reads). Do not store FASTQ files from different sequencing runs in the same directory. Skip this step if you already have demultiplexed FASTQ files.
 
 2. Import Sequences to QIIME 2
 ==============================
@@ -101,28 +144,35 @@ See also:
 3. Identify ASVs
 ================
 
+We can identify ASVs by denoising the sequence reads with DADA2.
+
+.. code-block:: console
+
+    $ qsub -S /bin/sh -cwd -l h=$NODE_NAME -V -pe pePAC 45 qsubme-denoise-paired.sh
+
+The ``qsubme-denoise-paired.sh`` file looks like:
+
 ::
 
-    #File: qsubme-denoise-paired.sh
     #!/bin/bash
 
     export LC_ALL=en_US.utf-8
     export LANG=en_US.utf-8
 
     qiime dada2 denoise-paired \
-    --i-demultiplexed-seqs paired-end-demux.qza \
-    --p-trunc-len-f 245 \
-    --p-trunc-len-r 240 \
-    --p-trim-left-f 17 \
-    --p-trim-left-r 21 \
-    --p-n-threads 40 \
-    --o-table table.qza \
-    --o-representative-sequences rep-seqs.qza \
-    --o-denoising-stats denoising-stats.qza
+      --i-demultiplexed-seqs paired-end-demux.qza \
+      --p-trunc-len-f 245 \
+      --p-trunc-len-r 240 \
+      --p-trim-left-f 17 \
+      --p-trim-left-r 21 \
+      --p-n-threads 40 \
+      --o-table table.qza \
+      --o-representative-sequences rep-seqs.qza \
+      --o-denoising-stats denoising-stats.qza
 
-.. code-block:: console
+See also:
 
-    $ qsub -S /bin/sh -cwd -l h=$NODE_NAME -V -pe pePAC 45 qsubme-denoise-paired.sh
+- :ref:`qiime2_cli:Identify ASVs`
 
 4. Merge Multiple Sequencing Runs
 =================================
@@ -149,6 +199,10 @@ We can also merge multiple representative sequences with the following:
         --i-data rep-seqs-run3.qza \
         --o-merged-data rep-seqs-merged.qza
 
+See also:
+
+- :ref:`qiime2_cli:Merge Multiple Sequencing Runs`
+
 5. Classify Taxonomy
 ====================
 
@@ -158,19 +212,24 @@ We assign taxonomy to the representative sequences.
 
     $ qsub -S /bin/sh -cwd -l h=$NODE_NAME -V -pe pePAC 45 qsubme-classify-sklearn.sh
 
+The ``qsubme-classify-sklearn.sh`` file looks like:
+
 ::
 
-    #File: qsubme-classify-sklearn.sh
     #!/bin/bash
 
     export LC_ALL=en_US.utf-8
     export LANG=en_US.utf-8
 
     qiime feature-classifier classify-sklearn \
-    --i-classifier $TAXONOMY_CLASSIFIER \
-    --i-reads rep-seqs.qza \
-    --p-n-jobs 40 \
-    --o-classification taxonomy.qza
+      --i-classifier $TAXONOMY_CLASSIFIER \
+      --i-reads rep-seqs.qza \
+      --p-n-jobs 40 \
+      --o-classification taxonomy.qza
+
+See also:
+
+- :ref:`qiime2_cli:Classify Taxonomy`
 
 6. Summarize and Filter ASV Table
 =================================
@@ -291,31 +350,36 @@ We build a rooted phylogenetic tree from the representative sequences.
 
     $ qsub -S /bin/sh -cwd -l h=$NODE_NAME -V -pe pePAC 45 qsubme-build-tree.sh
 
+The ``qsubme-build-tree.sh`` file looks like:
+
 ::
 
-    #File: qsubme-build-tree.sh
     #!/bin/bash
 
     export LC_ALL=en_US.utf-8
     export LANG=en_US.utf-8
 
     qiime alignment mafft \
-    --i-sequences rep-seqs.qza \
-    --p-n-threads 40 \
-    --o-alignment aligned-rep-seqs.qza
+      --i-sequences rep-seqs.qza \
+      --p-n-threads 40 \
+      --o-alignment aligned-rep-seqs.qza
 
     qiime alignment mask \
-    --i-alignment aligned-rep-seqs.qza \
-    --o-masked-alignment masked-aligned-rep-seqs.qza
+      --i-alignment aligned-rep-seqs.qza \
+      --o-masked-alignment masked-aligned-rep-seqs.qza
 
     qiime phylogeny fasttree \
-    --i-alignment masked-aligned-rep-seqs.qza \
-    --p-n-threads 40 \
-    --o-tree unrooted-tree.qza
+      --i-alignment masked-aligned-rep-seqs.qza \
+      --p-n-threads 40 \
+      --o-tree unrooted-tree.qza
 
     qiime phylogeny midpoint-root \
-    --i-tree unrooted-tree.qza \
-    --o-rooted-tree rooted-tree.qza
+      --i-tree unrooted-tree.qza \
+      --o-rooted-tree rooted-tree.qza
+
+See also:
+
+- :ref:`qiime2_cli:Build Phylogenetic Tree`
 
 8. Create Rarefaction Curves
 ============================
@@ -343,6 +407,10 @@ I usually perform two separate rarefactions, one with the minimum sample frequen
         --m-metadata-file sample-metadata.tsv \
         --o-visualization alpha-rarefaction-max.qzv
 
+See also:
+
+- :ref:`qiime2_cli:Alpha Rarefaction`
+
 9. Compute Core Metrics
 =======================
 
@@ -355,6 +423,10 @@ I usually perform two separate rarefactions, one with the minimum sample frequen
         --m-metadata-file sample-metadata.tsv \
         --output-dir core-metrics-results
 
+See also:
+
+- :ref:`qiime2_cli:Compute Core Metrics`
+
 10. Create Taxonomy Barplot
 ===========================
 
@@ -365,3 +437,7 @@ I usually perform two separate rarefactions, one with the minimum sample frequen
         --i-taxonomy taxonomy.qza \
         --m-metadata-file sample-metadata.tsv \
         --o-visualization taxa-bar-plots.qzv
+
+See also:
+
+- :ref:`qiime2_cli:Create Taxonomy Barplot`

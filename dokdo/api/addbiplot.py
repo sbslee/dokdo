@@ -5,16 +5,11 @@ import matplotlib.pyplot as plt
 from scipy.spatial.distance import euclidean
 from qiime2 import Artifact
 
-def addbiplot(pcoa_results,
-              taxonomy=None,
-              dim=2,
-              scale=1.0,
-              count=5,
-              fontsize=None,
-              name_type='feature',
-              level=None,
-              ax=None,
-              figsize=None):
+def addbiplot(
+    pcoa_results, taxonomy=None, dim=2, scale=1.0,
+    count=5, fontsize=None, name_type='feature',
+    level=None, ax=None, figsize=None
+):
     """Adds arrows (i.e. features) to a PCoA scatter plot.
 
     This method can handle both 2D and 3D plots.

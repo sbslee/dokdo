@@ -4,7 +4,7 @@ QIIME 2 API
 Introduction
 ============
 
-This page describes the QIIME 2 API, which is the main building block of Dokdo, and how I use it to perform various tasks in Python. If you are planning to use the QIIME 2 API with Jupyter Notebook, make sure your notebook is open within an environment with QIIME 2.
+This page describes QIIME 2 API, which is the main building block of Dokdo, and how I use it to perform various tasks in Python. If you are planning to use QIIME 2 API with Jupyter Notebook, make sure your notebook is open within an environment with QIIME 2.
 
 Get Sample IDs from Metadata
 ============================

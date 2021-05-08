@@ -73,7 +73,7 @@ def regplot(
         L2S222      left palm                        168.0
         L4S137     right palm                        168.0
 
-    Next, we will run the taxa_abundance_box_plot() method to create the input file for the regplot() method.
+    Next, we will run the ``dokdo.taxa_abundance_box_plot`` method to create the input file for the ``dokdo.regplot`` method.
 
     .. plot::
         :context: close-figs
@@ -90,7 +90,7 @@ def regplot(
         ...                               include_samples={'body-site': ['left palm', 'right palm']},
         ...                               csv_file='addpairs.csv',
         ...                               artist_kwargs=dict(show_legend=True, ymax=70))
-        plt.tight_layout()
+        >>> plt.tight_layout()
 
     Finally, run the ``dokdo.regplot`` method.
 

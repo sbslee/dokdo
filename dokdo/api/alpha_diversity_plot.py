@@ -5,9 +5,11 @@ import matplotlib.pyplot as plt
 from .common import _artist
 import dokdo
 
-def alpha_diversity_plot(alpha_diversity, metadata, where,
-                         ax=None, figsize=None, add_swarmplot=False,
-                         order=None, hide_nsizes=False, artist_kwargs=None):
+def alpha_diversity_plot(
+    alpha_diversity, metadata, where,
+    ax=None, figsize=None, add_swarmplot=False,
+    order=None, hide_nsizes=False, artist_kwargs=None
+):
     """Create an alpha diversity plot.
 
     Parameters

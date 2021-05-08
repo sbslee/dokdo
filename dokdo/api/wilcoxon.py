@@ -2,7 +2,10 @@ import pandas as pd
 from scipy import stats
 from .num2sig import num2sig
 
-def wilcoxon(taxon, csv_file, subject, category, group1, group2, ann=False):
+def wilcoxon(
+    taxon, csv_file, subject, category,
+    group1, group2, ann=False
+):
     """Compute the p-value from the Wilcoxon Signed-rank test.
 
     This method tests the null hypothesis that two related paired

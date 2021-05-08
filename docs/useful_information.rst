@@ -122,7 +122,7 @@ According to the DADA 2 tutorial:
 
     Your reads must still overlap after truncation in order to merge them later! The tutorial is using 2x250 V4 sequence data, so the forward and reverse reads almost completely overlap and our trimming can be completely guided by the quality scores. If you are using a less-overlapping primer set, like V1-V2 or V3-V4, your truncLen must be large enough to maintain 20 + biological.length.variation nucleotides of overlap between them.
 
-This 'issue <https://github.com/benjjneb/dada2/issues/817>'__ also provides a good summary of the topic.
+This `issue <https://github.com/benjjneb/dada2/issues/817>`__ also provides a good summary of the topic.
 
     If your amplicon is ~450 nts, you will want over 450+20+biological_length_variation nts of total sequence after truncation. The last 80 nts of your reverse reads looks bad. I think I would try truncLen=c(280,210) as my starting point. That should give you enough overlap between the reads (490nts).
 

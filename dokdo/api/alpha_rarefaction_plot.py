@@ -5,10 +5,11 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-def alpha_rarefaction_plot(rarefaction, hue='sample-id', metric='shannon',
-                           ax=None, figsize=None, hue_order=None,
-                           units=None, estimator='mean', seed=1,
-                           artist_kwargs=None):
+def alpha_rarefaction_plot(
+    rarefaction, hue='sample-id', metric='shannon', ax=None,
+    figsize=None, hue_order=None, units=None, estimator='mean',
+    seed=1, artist_kwargs=None
+):
     """Create an alpha rarefaction plot.
 
     Parameters

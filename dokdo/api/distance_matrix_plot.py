@@ -5,13 +5,10 @@ import skbio as sb
 import matplotlib.pyplot as plt
 from qiime2 import Artifact
 
-def distance_matrix_plot(distance_matrix,
-                         bins=100,
-                         pairs=None,
-                         ax=None,
-                         figsize=None,
-                         density=False,
-                         artist_kwargs=None):
+def distance_matrix_plot(
+    distance_matrix, bins=100, pairs=None, ax=None,
+    figsize=None, density=False, artist_kwargs=None
+):
     """Create a histogram from a distance matrix.
 
     Parameters
