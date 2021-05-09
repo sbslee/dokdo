@@ -5,15 +5,20 @@ from skbio.stats.ordination import OrdinationResults
 import pandas as pd
 import dokdo
 
-def beta_parallel_plot(pcoa_results,
-                       hue=None,
-                       hue_order=None,
-                       metadata=None,
-                       count=5,
-                       ax=None,
-                       figsize=None,
-                       artist_kwargs=None):
+def beta_parallel_plot(
+    pcoa_results, hue=None, hue_order=None,
+    metadata=None, count=5, ax=None,
+    figsize=None, artist_kwargs=None
+):
     """Create a parallel plot from PCoA results.
+
+    +---------------------+---------------------------------------------------+
+    | q2-diversity plugin | Example                                           |
+    +=====================+===================================================+
+    | QIIME 2 CLI         | qiime diversity pcoa [OPTIONS]                    |
+    +---------------------+---------------------------------------------------+
+    | QIIME 2 API         | from qiime2.plugins.diversity.methods import pcoa |
+    +---------------------+---------------------------------------------------+
 
     Parameters
     ----------
@@ -46,11 +51,26 @@ def beta_parallel_plot(pcoa_results,
     beta_3d_plot
     beta_scree_plot
 
-    Notes
-    -----
-    Example usage of the q2-diversity plugin:
-        CLI -> qiime diversity pcoa [OPTIONS]
-        API -> from qiime2.plugins.diversity.methods import pcoa
+    Examples
+    --------
+    Below is a simple example.
+
+    >>> qza_file = f'{data_dir}/moving-pictures-tutorial/unweighted_unifrac_pcoa_results.qza'
+    >>> metadata_file = f'{data_dir}/moving-pictures-tutorial/sample-metadata.tsv'
+    >>> dokdo.beta_parallel_plot(qza_file)
+    >>> plt.tight_layout()
+
+    .. image:: images/beta_parallel_plot-1.png
+
+    We can group the lines by body-site.
+
+    >>> dokdo.beta_parallel_plot(qza_file,
+    ...                          metadata=metadata_file,
+    ...                          hue='body-site',
+    ...                          artist_kwargs=dict(show_legend=True))
+    >>> plt.tight_layout()
+
+    .. image:: images/beta_parallel_plot-2.png
     """
     if isinstance(pcoa_results, str):
         _pcoa_results = Artifact.load(pcoa_results)

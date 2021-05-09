@@ -2,7 +2,10 @@ import pandas as pd
 from scipy import stats
 from .num2sig import num2sig
 
-def mannwhitneyu(taxon, csv_file, category, group1, group2, ann=False):
+def mannwhitneyu(
+    taxon, csv_file, category,
+    group1, group2, ann=False
+):
     """Compute the p-value from the Mann–Whitney U test.
 
     This method tests the null hypothesis that two independent
@@ -33,6 +36,30 @@ def mannwhitneyu(taxon, csv_file, category, group1, group2, ann=False):
     -------
     float or str
         P-value or signifiance annotation.
+
+    Examples
+    --------
+    Below is a sample example where we compare the relative abundance of
+    the phylum Proteobacteria between the left palm and right palm.
+    Before we can calculate the p-value for this comparison, we first
+    need to create a .csv file containing the relevant data using the
+    ``dokdo.taxa_abundance_box_plot`` method.
+
+    >>> from qiime2 import Metadata
+    >>> taxon = 'k__Bacteria;p__Proteobacteria'
+    >>> csv_file = 'mannwhitneyu.csv'
+    >>> barplot_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/taxa-bar-plots.qzv'
+    >>> ax = dokdo.taxa_abundance_box_plot(barplot_file, level=2, hue='body-site', taxa_names=[taxon],
+    ...                                    show_others=False, figsize=(6, 6), add_datapoints=True,
+    ...                                    include_samples={'body-site': ['left palm', 'right palm']},
+    ...                                    csv_file=csv_file, artist_kwargs=dict(show_legend=True, ymax=70))
+    >>> plt.tight_layout()
+
+    .. image:: images/mannwhitneyu-1.png
+
+    >>> p_value = dokdo.mannwhitneyu(taxon, csv_file, 'body-site', 'left palm', 'right palm')
+    >>> print(f'The p-value is {p_value:.6f}')
+    The p-value is 0.235243
     """
     df = pd.read_csv(csv_file)
     df = df[[taxon, category]]

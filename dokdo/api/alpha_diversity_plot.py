@@ -5,9 +5,11 @@ import matplotlib.pyplot as plt
 from .common import _artist
 import dokdo
 
-def alpha_diversity_plot(alpha_diversity, metadata, where,
-                         ax=None, figsize=None, add_swarmplot=False,
-                         order=None, hide_nsizes=False, artist_kwargs=None):
+def alpha_diversity_plot(
+    alpha_diversity, metadata, where,
+    ax=None, figsize=None, add_swarmplot=False,
+    order=None, hide_nsizes=False, artist_kwargs=None
+):
     """Create an alpha diversity plot.
 
     Parameters
@@ -36,6 +38,17 @@ def alpha_diversity_plot(alpha_diversity, metadata, where,
     -------
     matplotlib.axes.Axes
         Axes object with the plot drawn onto it.
+
+    Examples
+    --------
+    Below is a simple example.
+
+    >>> qzv_file = f'{data_dir}/moving-pictures-tutorial/faith_pd_vector.qza'
+    >>> metadata_file = f'{data_dir}/moving-pictures-tutorial/sample-metadata.tsv'
+    >>> dokdo.alpha_diversity_plot(qzv_file, metadata_file, 'body-site')
+    >>> plt.tight_layout()
+
+    .. image:: images/alpha_diversity_plot.png
     """
     if isinstance(alpha_diversity, str):
         _alpha_diversity = Artifact.load(alpha_diversity)
