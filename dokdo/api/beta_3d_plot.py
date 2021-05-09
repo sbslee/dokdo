@@ -5,17 +5,20 @@ import dokdo
 import matplotlib.pyplot as plt
 from skbio.stats.ordination import OrdinationResults
 
-def beta_3d_plot(pcoa_results,
-                 metadata=None,
-                 hue=None,
-                 azim=-60,
-                 elev=30,
-                 s=80,
-                 ax=None,
-                 figsize=None,
-                 hue_order=None,
-                 artist_kwargs=None):
+def beta_3d_plot(
+    pcoa_results, metadata=None, hue=None, azim=-60,
+    elev=30, s=80, ax=None, figsize=None,
+    hue_order=None, artist_kwargs=None
+):
     """Create a 3D scatter plot from PCoA results.
+
+    +---------------------+---------------------------------------------------+
+    | q2-diversity plugin | Example                                           |
+    +=====================+===================================================+
+    | QIIME 2 CLI         | qiime diversity pcoa [OPTIONS]                    |
+    +---------------------+---------------------------------------------------+
+    | QIIME 2 API         | from qiime2.plugins.diversity.methods import pcoa |
+    +---------------------+---------------------------------------------------+
 
     Parameters
     ----------
@@ -54,11 +57,31 @@ def beta_3d_plot(pcoa_results,
     beta_parallel_plot
     addbiplot
 
-    Notes
-    -----
-    Example usage of the q2-diversity plugin:
-        CLI -> qiime diversity pcoa [OPTIONS]
-        API -> from qiime2.plugins.diversity.methods import pcoa
+    Examples
+    --------
+    Below is a simple example.
+
+    >>> qza_file = f'{data_dir}/moving-pictures-tutorial/unweighted_unifrac_pcoa_results.qza'
+    >>> metadata_file = f'{data_dir}/moving-pictures-tutorial/sample-metadata.tsv'
+    >>> dokdo.beta_3d_plot(qza_file,
+    ...                    metadata_file,
+    ...                    'body-site',
+    ...                    figsize=(6, 6),
+    ...                    artist_kwargs=dict(show_legend=True))
+    >>> plt.tight_layout()
+
+    .. image:: images/beta_3d_plot-1.png
+
+    We can control the camera angle with ``elev`` and ``azim``.
+
+    >>> fig = plt.figure(figsize=(12, 6))
+    >>> ax1 = fig.add_subplot(1, 2, 1, projection='3d')
+    >>> ax2 = fig.add_subplot(1, 2, 2, projection='3d')
+    >>> dokdo.beta_3d_plot(qza_file, metadata_file, ax=ax1, hue='body-site', elev=15)
+    >>> dokdo.beta_3d_plot(qza_file, metadata_file, ax=ax2, hue='body-site', azim=70)
+    >>> plt.tight_layout()
+
+    .. image:: images/beta_3d_plot-2.png
     """
     if isinstance(pcoa_results, str):
         _pcoa_results = Artifact.load(pcoa_results)

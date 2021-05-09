@@ -2,7 +2,7 @@ import gzip
 
 def count_reads_one_file(fastq_file):
     """Count the number of sequence reads from a single FASTQ file.
-
+ 
     Parameters
     ----------
     fastq_file : str

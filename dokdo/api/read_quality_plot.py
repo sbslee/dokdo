@@ -4,9 +4,19 @@ import pandas as pd
 import seaborn as sns
 import numpy as np
 
-def read_quality_plot(demux, strand='forward', ax=None,
-                      figsize=None, artist_kwargs=None):
+def read_quality_plot(
+    demux, strand='forward', ax=None,
+    figsize=None, artist_kwargs=None
+):
     """Create a read quality plot.
+
+    +-----------------+--------------------------------------------------------+
+    | q2-demux plugin | Example                                                |
+    +=================+========================================================+
+    | QIIME 2 CLI     | qiime demux summarize [OPTIONS]                        |
+    +-----------------+--------------------------------------------------------+
+    | QIIME 2 API     | from qiime2.plugins.demux.visualizers import summarize |
+    +-----------------+--------------------------------------------------------+
 
     Parameters
     ----------
@@ -26,11 +36,19 @@ def read_quality_plot(demux, strand='forward', ax=None,
     matplotlib.axes.Axes
         Axes object with the plot drawn onto it.
 
-    Notes
-    -----
-    Example usage of the q2-demux plugin:
-        CLI -> $ qiime demux summarize [OPTIONS]
-        API -> from qiime2.plugins.demux.visualizers import summarize
+    Examples
+    --------
+    Below is a simple example.
+
+    >>> qzv_file = '/Users/sbslee/Desktop/dokdo/data/atacama-soil-microbiome-tutorial/demux-subsample.qzv'
+    >>> fig, [ax1, ax2] = plt.subplots(1, 2, figsize=(8, 7))
+    >>> artist_kwargs1 = dict(title='Forward read')
+    >>> artist_kwargs2 = dict(title='Reverse read', hide_ylabel=True, hide_yticklabels=True)
+    >>> dokdo.read_quality_plot(qzv_file, strand='forward', ax=ax1, artist_kwargs=artist_kwargs1)
+    >>> dokdo.read_quality_plot(qzv_file, strand='reverse', ax=ax2, artist_kwargs=artist_kwargs2)
+    >>> plt.tight_layout()
+
+    .. image:: images/read_quality_plot.png
     """
     l = ['forward', 'reverse']
 

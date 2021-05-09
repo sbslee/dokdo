@@ -5,10 +5,20 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-def denoising_stats_plot(stats, metadata, where, ax=None, figsize=None,
-                         pseudocount=False, order=None, hide_nsizes=False,
-                         artist_kwargs=None):
-    """Create a grouped box chart for denoising statistics from DADA 2.
+def denoising_stats_plot(
+    stats, metadata, where, ax=None, figsize=None,
+    pseudocount=False, order=None, hide_nsizes=False,
+    artist_kwargs=None
+):
+    """Create a grouped box chart for denoising statistics from DADA2.
+
+    +-----------------+---------------------------------------------------------+
+    | q2-dada2 plugin | Example                                                 |
+    +=================+=========================================================+
+    | QIIME 2 CLI     | qiime dada2 denoise-paired [OPTIONS]                    |
+    +-----------------+---------------------------------------------------------+
+    | QIIME 2 API     | from qiime2.plugins.dada2.methods import denoise_paired |
+    +-----------------+---------------------------------------------------------+
 
     Parameters
     ----------
@@ -36,11 +46,16 @@ def denoising_stats_plot(stats, metadata, where, ax=None, figsize=None,
     matplotlib.axes.Axes
         Axes object with the plot drawn onto it.
 
-    Notes
-    -----
-    Example usage of the q2-dada2 plugin:
-        CLI -> qiime dada2 denoise-paired [OPTIONS]
-        API -> from qiime2.plugins.dada2.methods import denoise_paired
+    Examples
+    --------
+    Below is a simple example.
+
+    >>> qza_file = f'{data_dir}/atacama-soil-microbiome-tutorial/denoising-stats.qza'
+    >>> metadata_file = f'{data_dir}/atacama-soil-microbiome-tutorial/sample-metadata.tsv'
+    >>> dokdo.denoising_stats_plot(qza_file, metadata_file, 'transect-name', artist_kwargs=dict(show_legend=True))
+    >>> plt.tight_layout()
+
+    .. image:: images/denoising_stats_plot.png
     """
     with tempfile.TemporaryDirectory() as t:
         _parse_input(stats, t)

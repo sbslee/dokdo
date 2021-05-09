@@ -4,12 +4,19 @@ from .common import _parse_input, _artist
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-def ancom_volcano_plot(ancom,
-                       ax=None,
-                       figsize=None,
-                       s=80,
-                       artist_kwargs=None):
+def ancom_volcano_plot(
+    ancom, ax=None, figsize=None,
+    s=80, artist_kwargs=None
+):
     """Create an ANCOM volcano plot.
+
+    +-----------------------+----------------------------------------------------------+
+    | q2-composition plugin | Example                                                  |
+    +=======================+==========================================================+
+    | QIIME 2 CLI           | qiime composition ancom [OPTIONS]                        |
+    +-----------------------+----------------------------------------------------------+
+    | QIIME 2 API           | from qiime2.plugins.composition.visualizers import ancom |
+    +-----------------------+----------------------------------------------------------+
 
     Parameters
     ----------
@@ -29,11 +36,15 @@ def ancom_volcano_plot(ancom,
     matplotlib.axes.Axes
         Axes object with the plot drawn onto it.
 
-    Notes
-    -----
-    Example usage of the q2-composition plugin:
-        CLI -> qiime composition ancom [OPTIONS]
-        API -> from qiime2.plugins.composition.visualizers import ancom
+    Examples
+    --------
+    Below is a simple example.
+
+    >>> qzv_file = f'{data_dir}/moving-pictures-tutorial/ancom-subject.qzv'
+    >>> dokdo.ancom_volcano_plot(qzv_file, figsize=(8, 5))
+    >>> plt.tight_layout()
+
+    .. image:: images/ancom_volcano_plot.png
     """
     with tempfile.TemporaryDirectory() as t:
         _parse_input(ancom, t)

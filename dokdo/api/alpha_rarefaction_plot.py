@@ -5,11 +5,20 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-def alpha_rarefaction_plot(rarefaction, hue='sample-id', metric='shannon',
-                           ax=None, figsize=None, hue_order=None,
-                           units=None, estimator='mean', seed=1,
-                           artist_kwargs=None):
+def alpha_rarefaction_plot(
+    rarefaction, hue='sample-id', metric='shannon', ax=None,
+    figsize=None, hue_order=None, units=None, estimator='mean',
+    seed=1, artist_kwargs=None
+):
     """Create an alpha rarefaction plot.
+
+    +-----------------------+--------------------------------------------------------------------+
+    | q2-diversity plugin | Example                                                              |
+    +=======================+====================================================================+
+    | QIIME 2 CLI           | qiime diversity alpha-rarefaction [OPTIONS]                        |
+    +-----------------------+--------------------------------------------------------------------+
+    | QIIME 2 API           | from qiime2.plugins.diversity.visualizers import alpha_rarefaction |
+    +-----------------------+--------------------------------------------------------------------+
 
     Parameters
     ----------
@@ -43,11 +52,42 @@ def alpha_rarefaction_plot(rarefaction, hue='sample-id', metric='shannon',
     matplotlib.axes.Axes
         Axes object with the plot drawn onto it.
 
-    Notes
-    -----
-    Example usage of the q2-diversity plugin:
-        CLI -> qiime diversity alpha-rarefaction [OPTIONS]
-        API -> from qiime2.plugins.diversity.visualizers import alpha_rarefaction
+    Examples
+    --------
+    Below is a simple example.
+
+    >>> qzv_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/alpha-rarefaction.qzv'
+    >>> artist_kwargs = dict(show_legend=True, legend_ncol=5)
+    >>> dokdo.alpha_rarefaction_plot(qzv_file, figsize=(8, 5), artist_kwargs=artist_kwargs)
+    >>> plt.tight_layout()
+
+    .. image:: images/alpha_rarefaction_plot-1.png
+
+    We can group the samples by body-site.
+
+    >>> artist_kwargs = dict(show_legend=True)
+    >>> dokdo.alpha_rarefaction_plot(qzv_file,
+    ...                              hue='body-site',
+    ...                              metric='observed_features',
+    ...                              figsize=(8, 5),
+    ...                              units='sample-id',
+    ...                              estimator=None,
+    ...                              artist_kwargs=artist_kwargs)
+    >>> plt.tight_layout()
+
+    .. image:: images/alpha_rarefaction_plot-2.png
+
+    Alternatively, we can aggregate the samples by body-site.
+
+    >>> artist_kwargs = dict(show_legend=True)
+    >>> dokdo.alpha_rarefaction_plot(qzv_file,
+    ...                              hue='body-site',
+    ...                              metric='observed_features',
+    ...                              figsize=(8, 5),
+    ...                              artist_kwargs=artist_kwargs)
+    >>> plt.tight_layout()
+
+    .. image:: images/alpha_rarefaction_plot-3.png
     """
     l = ['observed_features', 'faith_pd', 'shannon']
 

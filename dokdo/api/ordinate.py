@@ -5,8 +5,10 @@ from qiime2.plugins import feature_table
 from qiime2.plugins import diversity
 import pandas as pd
 
-def ordinate(table, metadata=None, metric='jaccard', sampling_depth=-1,
-             phylogeny=None, number_of_dimensions=None, biplot=False):
+def ordinate(
+    table, metadata=None, metric='jaccard', sampling_depth=-1,
+    phylogeny=None, number_of_dimensions=None, biplot=False
+):
     """Perform ordination using principal coordinate analysis (PCoA).
 
     This method wraps multiple QIIME 2 methods to perform ordination and
@@ -56,6 +58,41 @@ def ordinate(table, metadata=None, metric='jaccard', sampling_depth=-1,
     Notes
     -----
     The resulting Artifact object can be directly used for plotting.
+
+    Examples
+    --------
+    Below is a simple example. Note that the default distance metric
+    used is ``jaccard``. The resulting object ``pcoa`` can be directly
+    used for plotting by the ``dokdo.beta_2d_plot`` method as shown below.
+
+    >>> table_file = f'{data_dir}/moving-pictures-tutorial/table.qza'
+    >>> metadata_file = f'{data_dir}/moving-pictures-tutorial/sample-metadata.tsv'
+    >>> pcoa_results = dokdo.ordinate(table_file)
+    >>> dokdo.beta_2d_plot(pcoa_results, metadata=metadata_file, hue='body-site', artist_kwargs=dict(show_legend=True))
+    >>> plt.tight_layout()
+
+    .. image:: images/ordinate-1.png
+
+    You can choose a subset of samples.
+
+    >>> from qiime2 import Metadata
+    >>> mf = dokdo.get_mf(metadata_file)
+    >>> mf = mf[mf['body-site'].isin(['gut', 'left palm'])]
+    >>> pcoa_results = dokdo.ordinate(table_file, metadata=Metadata(mf))
+    >>> dokdo.beta_2d_plot(pcoa_results, metadata=metadata_file, hue='body-site', artist_kwargs=dict(show_legend=True))
+    >>> plt.tight_layout()
+
+    .. image:: images/ordinate-2.png
+
+    You can also generate a biplot.
+
+    >>> pcoa_results = dokdo.ordinate(table_file, biplot=True, number_of_dimensions=10)
+    >>> fig, ax = plt.subplots(1, 1, figsize=(8, 8))
+    >>> dokdo.beta_2d_plot(pcoa_results, ax=ax, metadata=metadata_file, hue='body-site', artist_kwargs=dict(show_legend=True))
+    >>> dokdo.addbiplot(pcoa_results, ax=ax, count=7)
+    >>> plt.tight_layout()
+
+    .. image:: images/ordinate-3.png
     """
     if isinstance(table, Artifact):
         table = table

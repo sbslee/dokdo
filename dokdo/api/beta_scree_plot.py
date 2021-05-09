@@ -5,13 +5,19 @@ import pandas as pd
 from .common import _artist
 import matplotlib.pyplot as plt
 
-def beta_scree_plot(pcoa_results,
-                    count=5,
-                    ax=None,
-                    figsize=None,
-                    color='blue',
-                    artist_kwargs=None):
+def beta_scree_plot(
+    pcoa_results, count=5, ax=None,
+    figsize=None, color='blue', artist_kwargs=None
+):
     """Create a scree plot from PCoA results.
+
+    +---------------------+---------------------------------------------------+
+    | q2-diversity plugin | Example                                           |
+    +=====================+===================================================+
+    | QIIME 2 CLI         | qiime diversity pcoa [OPTIONS]                    |
+    +---------------------+---------------------------------------------------+
+    | QIIME 2 API         | from qiime2.plugins.diversity.methods import pcoa |
+    +---------------------+---------------------------------------------------+
 
     Parameters
     ----------
@@ -40,11 +46,15 @@ def beta_scree_plot(pcoa_results,
     beta_3d_plot
     beta_parallel_plot
 
-    Notes
-    -----
-    Example usage of the q2-diversity plugin:
-        CLI -> qiime diversity pcoa [OPTIONS]
-        API -> from qiime2.plugins.diversity.methods import pcoa
+    Examples
+    --------
+    Below is a simple example.
+
+    >>> qza_file = f'{data_dir}/moving-pictures-tutorial/unweighted_unifrac_pcoa_results.qza'
+    >>> dokdo.beta_scree_plot(qza_file)
+    >>> plt.tight_layout()
+
+    .. image:: images/beta_scree_plot.png
     """
     if isinstance(pcoa_results, str):
         _pcoa_results = Artifact.load(pcoa_results)

@@ -3,7 +3,7 @@ import math
 import tempfile
 import warnings
 import numbers
-
+ 
 # Import external libraries.
 import numpy as np
 import pandas as pd
@@ -25,16 +25,6 @@ from qiime2 import Metadata
 from qiime2 import Visualization
 import dokdo
 
-
-
-
-
-
-
-
-
-# -- Private methods ---------------------------------------------------------
-
 def _get_mf_cols(df):
     "Returns metadata columns from DataFrame object."
     cols = []
@@ -46,15 +36,6 @@ def _get_mf_cols(df):
         else:
             cols.append(column)
     return cols
-
-
-
-
-
-
-
-
-
 
 def _filter_samples(df, mf, exclude_samples, include_samples):
     "Returns DataFrame objects after sample filtering."
@@ -77,29 +58,11 @@ def _filter_samples(df, mf, exclude_samples, include_samples):
         pass
     return (df, mf)
 
-
-
-
-
-
-
-
-
-
 def _sort_by_mean(df):
     "Returns DataFrame object after sorting taxa by mean relative abundance."
     a = df.div(df.sum(axis=1), axis=0)
     a = a.loc[:, a.mean().sort_values(ascending=False).index]
     return df[a.columns]
-
-
-
-
-
-
-
-
-
 
 def _pretty_taxa(s):
     "Returns pretty taxa name."
@@ -139,61 +102,21 @@ def _pretty_taxa(s):
 
         return rank
 
-
-
-
-
-
-
-
-
-
-def _artist(ax,
-            title=None,
-            title_fontsize=None,
-            xlabel=None,
-            xlabel_fontsize=None,
-            ylabel=None,
-            ylabel_fontsize=None,
-            zlabel=None,
-            zlabel_fontsize=None,
-            xticks=None,
-            yticks=None,
-            xticklabels=None,
-            xticklabels_fontsize=None,
-            yticklabels=None,
-            yticklabels_fontsize=None,
-            xrot=None,
-            xha=None,
-            xmin=None,
-            xmax=None,
-            ymin=None,
-            ymax=None,
-            xlog=False,
-            ylog=False,
-            hide_xtexts=False,
-            hide_ytexts=False,
-            hide_ztexts=False,
-            hide_xlabel=False,
-            hide_ylabel=False,
-            hide_zlabel=False,
-            hide_xticks=False,
-            hide_yticks=False,
-            hide_zticks=False,
-            hide_xticklabels=False,
-            hide_yticklabels=False,
-            hide_zticklabels=False,
-            show_legend=False,
-            legend_loc='best',
-            legend_ncol=1,
-            legend_labels=None,
-            remove_duplicates=False,
-            legend_only=False,
-            legend_fontsize=None,
-            legend_markerscale=None,
-            legend_lw=None,
-            legend_title=None,
-            plot_method=None):
+def _artist(
+    ax, title=None, title_fontsize=None, xlabel=None, xlabel_fontsize=None,
+    ylabel=None, ylabel_fontsize=None, zlabel=None, zlabel_fontsize=None,
+    xticks=None, yticks=None, xticklabels=None, xticklabels_fontsize=None,
+    yticklabels=None, yticklabels_fontsize=None, xrot=None, xha=None,
+    xmin=None, xmax=None, ymin=None, ymax=None, xlog=False, ylog=False,
+    hide_xtexts=False, hide_ytexts=False, hide_ztexts=False,
+    hide_xlabel=False, hide_ylabel=False, hide_zlabel=False,
+    hide_xticks=False, hide_yticks=False, hide_zticks=False,
+    hide_xticklabels=False, hide_yticklabels=False, hide_zticklabels=False,
+    show_legend=False, legend_loc='best', legend_ncol=1,
+    legend_labels=None, remove_duplicates=False, legend_only=False,
+    legend_fontsize=None, legend_markerscale=None, legend_lw=None,
+    legend_title=None, plot_method=None
+):
     """
     This method controls various properties of a figure.
 
@@ -436,15 +359,6 @@ def _artist(ax,
 
     return ax
 
-
-
-
-
-
-
-
-
-
 def _get_others_col(df, count, taxa_names, show_others):
     "Returns DataFrame object after selecting taxa."
     if count is not 0 and taxa_names is not None:
@@ -467,15 +381,6 @@ def _get_others_col(df, count, taxa_names, show_others):
         pass
 
     return df
-
-
-
-
-
-
-
-
-
 
 def _parse_input(input, temp_dir):
     """Parse the input QIIME 2 object and export the files."""
