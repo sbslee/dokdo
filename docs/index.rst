@@ -10,6 +10,7 @@ Welcome to dokdo's documentation!
    :maxdepth: 2
    :caption: Contents:
 
+   readme
    dokdo_cli
    dokdo_api
    qiime2_cli
