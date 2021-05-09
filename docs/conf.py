@@ -40,7 +40,8 @@ extensions = [
 autodoc_mock_imports = [
     'numpy',
     'pandas',
-    'qiime2'
+    'qiime2',
+    'scipy'
 ]
 
 issues_github_path = 'sbslee/dokdo'
