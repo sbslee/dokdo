@@ -41,7 +41,8 @@ autodoc_mock_imports = [
     'numpy',
     'pandas',
     'qiime2',
-    'scipy'
+    'scipy',
+    'matplotlib'
 ]
 
 issues_github_path = 'sbslee/dokdo'
