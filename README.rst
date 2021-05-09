@@ -80,7 +80,7 @@ To create a taxonomic bar plot from QIIME 2's .qzv file:
     ...                               artist_kwargs=dict(show_legend=True,
     ...                                                  legend_loc='upper left'))
 
-.. image:: images/taxa_abundance_bar_plot-3.png
+.. image:: https://drive.google.com/uc?export=view&id=1U0enK4vcq0ZQCTVq7X5k7k3hIim9w8ZF
 
 To create an alpha rarefaction plot from QIIME 2's .qzv file:
 
@@ -92,7 +92,7 @@ To create an alpha rarefaction plot from QIIME 2's .qzv file:
   ...                              figsize=(8, 5),
   ...                              artist_kwargs=dict(show_legend=True))
 
-.. image:: images/alpha_rarefaction_plot-3.png
+.. image:: https://drive.google.com/uc?export=view&id=1QS38eYQGDxpjjebh69t_xWZ10SrPmNSV
 
 Getting Started
 ===============
