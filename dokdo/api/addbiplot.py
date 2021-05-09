@@ -66,6 +66,9 @@ def addbiplot(
     >>> dokdo.addbiplot(pcoa_results, ax=ax, count=3)
     >>> plt.tight_layout()
 
+    .. image:: images/addbiplot-1.png
+      :width: 600
+
     We can also draw a 3D biplot.
 
     >>> ax = dokdo.beta_3d_plot(pcoa_results,
@@ -75,6 +78,9 @@ def addbiplot(
     ...                         artist_kwargs=dict(show_legend=True))
     >>> dokdo.addbiplot(pcoa_results, ax=ax, count=3, dim=3)
     >>> plt.tight_layout()
+
+    .. image:: images/addbiplot-2.png
+      :width: 600
 
     Finally, we can display taxonomic classification instead of feature ID.
 
@@ -93,7 +99,7 @@ def addbiplot(
     ...                 level=6)
     >>> plt.tight_layout()
 
-    .. image:: images/ancom_volcano_plot.png
+    .. image:: images/addbiplot-3.png
       :width: 600
     """
     if isinstance(pcoa_results, str):
