@@ -6,34 +6,25 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-def taxa_abundance_box_plot(taxa,
-                            metadata=None,
-                            hue=None,
-                            hue_order=None,
-                            add_datapoints=False,
-                            level=1,
-                            by=None,
-                            ax=None,
-                            figsize=None,
-                            count=0,
-                            exclude_samples=None,
-                            include_samples=None,
-                            exclude_taxa=None,
-                            sort_by_names=False,
-                            sample_names=None,
-                            csv_file=None,
-                            size=5,
-                            pseudocount=False,
-                            taxa_names=None,
-                            brief_xlabels=False,
-                            show_means=False,
-                            meanprops=None,
-                            show_others=True,
-                            sort_by_mean=True,
-                            jitter=1,
-                            alpha=None,
-                            artist_kwargs=None):
+def taxa_abundance_box_plot(
+    taxa, metadata=None, hue=None, hue_order=None,
+    add_datapoints=False, level=1, by=None, ax=None,
+    figsize=None, count=0, exclude_samples=None,
+    include_samples=None, exclude_taxa=None, sort_by_names=False,
+    sample_names=None, csv_file=None, size=5, pseudocount=False,
+    taxa_names=None, brief_xlabels=False, show_means=False,
+    meanprops=None, show_others=True, sort_by_mean=True,
+    jitter=1, alpha=None, artist_kwargs=None
+):
     """Create a taxa abundance box plot.
+
+    +----------------+-----------------------------------------------------+
+    | q2-taxa plugin | Example                                             |
+    +================+=====================================================+
+    | QIIME 2 CLI    | qiime taxa barplot [OPTIONS]                        |
+    +----------------+-----------------------------------------------------+
+    | QIIME 2 API    | from qiime2.plugins.taxa.visualizers import barplot |
+    +----------------+-----------------------------------------------------+
 
     Parameters
     ----------
@@ -107,11 +98,59 @@ def taxa_abundance_box_plot(taxa,
     taxa_abundance_bar_plot
     addpairs
 
-    Notes
-    -----
-    Example usage of the q2-taxa plugin:
-        CLI -> qiime taxa barplot [OPTIONS]
-        API -> from qiime2.plugins.taxa.visualizers import barplot
+    Examples
+    --------
+    Below is a simple example showing taxonomic abundance at the phylum
+    level (i.e. ``level=2``).
+
+    >>> qzv_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/taxa-bar-plots.qzv'
+    >>> dokdo.taxa_abundance_box_plot(qzv_file, level=2, figsize=(8, 7))
+    >>> plt.tight_layout()
+
+    .. image:: images/taxa_abundance_box_plot-1.png
+      :width: 600
+
+    We can control how many taxa to display with ``count``. Also, we can
+    make the x-axis tick labels pretty with ``brief_xlabels``. We can
+    manually set the x-axis tick labels with ``xticklabels``. Lastly, we
+    can select specific taxa to display with ``taxa_names``.
+
+    >>> fig, [[ax1, ax2], [ax3, ax4]] = plt.subplots(2, 2, figsize=(10, 10))
+    >>> kwargs = {'level' : 2}
+    >>> artist_kwargs1 = dict(title='count=4')
+    >>> artist_kwargs2 = dict(title='brief_xlabels=True')
+    >>> artist_kwargs3 = dict(xticklabels=['A', 'B', 'C', 'D'], title="xticklabels=['A', 'B', 'C', 'D']")
+    >>> artist_kwargs4 = dict(title="taxa_names=[...]")
+    >>> dokdo.taxa_abundance_box_plot(qzv_file, ax=ax1, count=4, artist_kwargs=artist_kwargs1, **kwargs)
+    >>> dokdo.taxa_abundance_box_plot(qzv_file, ax=ax2, count=4, brief_xlabels=True, artist_kwargs=artist_kwargs2, **kwargs)
+    >>> dokdo.taxa_abundance_box_plot(qzv_file, ax=ax3, count=4, artist_kwargs=artist_kwargs3, **kwargs)
+    >>> dokdo.taxa_abundance_box_plot(qzv_file, ax=ax4, taxa_names=['k__Bacteria;p__Firmicutes', 'k__Bacteria;p__Proteobacteria'], artist_kwargs=artist_kwargs4, **kwargs)
+    >>> plt.tight_layout()
+
+    .. image:: images/taxa_abundance_box_plot-2.png
+      :width: 600
+
+    We can group the boxes by a metadata column with ``hue``. For this
+    plot, we will draw the y-axis in log scale with ``ylog``. To do
+    this, we actually need to adjust the y-axis limits with ``ymin``
+    and ``ymax``, and also add a pseudocount of 1 to remove 0s with
+    ``pseudocount`` (because 0s cannot be shown in log scale). We will
+    also add data points with ``add_datapoints=True``.
+
+    >>> artist_kwargs = dict(ylog=True, ymin=0.05, ymax=200, show_legend=True)
+    >>> dokdo.taxa_abundance_box_plot(qzv_file,
+    ...                               level=2,
+    ...                               figsize=(10, 7),
+    ...                               hue='body-site',
+    ...                               size=3,
+    ...                               count=4,
+    ...                               pseudocount=True,
+    ...                               add_datapoints=True,
+    ...                               artist_kwargs=artist_kwargs)
+    >>> plt.tight_layout()
+
+    .. image:: images/taxa_abundance_box_plot-3.png
+      :width: 600
     """
     with tempfile.TemporaryDirectory() as t:
         _parse_input(taxa, t)
