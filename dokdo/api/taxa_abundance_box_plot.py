@@ -108,7 +108,6 @@ def taxa_abundance_box_plot(
     >>> plt.tight_layout()
 
     .. image:: images/taxa_abundance_box_plot-1.png
-      :width: 600
 
     We can control how many taxa to display with ``count``. Also, we can
     make the x-axis tick labels pretty with ``brief_xlabels``. We can
@@ -128,7 +127,6 @@ def taxa_abundance_box_plot(
     >>> plt.tight_layout()
 
     .. image:: images/taxa_abundance_box_plot-2.png
-      :width: 600
 
     We can group the boxes by a metadata column with ``hue``. For this
     plot, we will draw the y-axis in log scale with ``ylog``. To do
@@ -150,7 +148,6 @@ def taxa_abundance_box_plot(
     >>> plt.tight_layout()
 
     .. image:: images/taxa_abundance_box_plot-3.png
-      :width: 600
     """
     with tempfile.TemporaryDirectory() as t:
         _parse_input(taxa, t)

@@ -91,7 +91,6 @@ ASV Identification by DADA2
 ===========================
 
 .. image:: images/dada2-asv-otu.png
-  :width: 600
 
 Above figure was taken from Callahan et al. 2016 (PMID: 27214047).
 
@@ -100,7 +99,6 @@ There largely four steps involved.
 Step 1: Error Model Parameterization
 
 .. image:: images/dada2-error-rates.png
-  :width: 600
 
 Step 2: Learning Error Rate
 

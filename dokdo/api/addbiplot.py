@@ -67,7 +67,6 @@ def addbiplot(
     >>> plt.tight_layout()
 
     .. image:: images/addbiplot-1.png
-      :width: 600
 
     We can also draw a 3D biplot.
 
@@ -80,7 +79,6 @@ def addbiplot(
     >>> plt.tight_layout()
 
     .. image:: images/addbiplot-2.png
-      :width: 600
 
     Finally, we can display taxonomic classification instead of feature ID.
 
@@ -100,7 +98,6 @@ def addbiplot(
     >>> plt.tight_layout()
 
     .. image:: images/addbiplot-3.png
-      :width: 600
     """
     if isinstance(pcoa_results, str):
         _pcoa_results = Artifact.load(pcoa_results)

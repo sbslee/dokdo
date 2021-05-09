@@ -56,7 +56,6 @@ def denoising_stats_plot(
     >>> plt.tight_layout()
 
     .. image:: images/denoising_stats_plot.png
-      :width: 600
     """
     with tempfile.TemporaryDirectory() as t:
         _parse_input(stats, t)

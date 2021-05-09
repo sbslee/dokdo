@@ -111,7 +111,6 @@ def taxa_abundance_bar_plot(
     >>> plt.tight_layout()
 
     .. image:: images/taxa_abundance_bar_plot-1.png
-      :width: 600
 
     We can change the taxonomic rank from kingdom to genus by setting
     ``level=6``. Note that I removed ``show_legend=True`` because
@@ -124,7 +123,6 @@ def taxa_abundance_bar_plot(
     >>> plt.tight_layout()
 
     .. image:: images/taxa_abundance_bar_plot-2.png
-      :width: 600
 
     We can only show the top seven most abundant genera plus 'Others' with
     ``count=8``.
@@ -139,7 +137,6 @@ def taxa_abundance_bar_plot(
     >>> plt.tight_layout()
 
     .. image:: images/taxa_abundance_bar_plot-3.png
-      :width: 600
 
     We can plot the figure and the legend separately.
 
@@ -158,7 +155,6 @@ def taxa_abundance_bar_plot(
     >>> plt.tight_layout()
 
     .. image:: images/taxa_abundance_bar_plot-4.png
-      :width: 600
 
     We can use a different color map to display more unique genera (e.g. 20).
 
@@ -179,7 +175,6 @@ def taxa_abundance_bar_plot(
     >>> plt.tight_layout()
 
     .. image:: images/taxa_abundance_bar_plot-5.png
-      :width: 600
 
     We can sort the samples by the body-site column in metadata with
     ``by=['body-site']``. To check whether the sorting worked properly,
@@ -198,7 +193,6 @@ def taxa_abundance_bar_plot(
     >>> plt.tight_layout()
 
     .. image:: images/taxa_abundance_bar_plot-6.png
-      :width: 600
 
     If you want to sort the samples in a certain order instead of ordering
     numerically or alphabetically, use the ``orders`` option.
@@ -216,7 +210,6 @@ def taxa_abundance_bar_plot(
     >>> plt.tight_layout()
 
     .. image:: images/taxa_abundance_bar_plot-7.png
-      :width: 600
 
     We can only display the 'gut' and 'tongue' samples with
     ``include_samples``.
@@ -239,7 +232,6 @@ def taxa_abundance_bar_plot(
     >>> plt.tight_layout()
 
     .. image:: images/taxa_abundance_bar_plot-8.png
-      :width: 600
 
     We can make multiple bar charts grouped by body-site. When making a
     grouped bar chart, it's important to include ``sort_by_mean2=False``
@@ -283,7 +275,6 @@ def taxa_abundance_bar_plot(
     >>> plt.tight_layout()
 
     .. image:: images/taxa_abundance_bar_plot-9.png
-      :width: 800
 
     We can select specific samples with ``sample_names``. We can also
     manually set the x-axis tick labels with ``xticklabels``. Finally, you
@@ -314,7 +305,6 @@ def taxa_abundance_bar_plot(
     >>> plt.tight_layout()
 
     .. image:: images/taxa_abundance_bar_plot-10.png
-      :width: 600
     """
     with tempfile.TemporaryDirectory() as t:
         _parse_input(taxa, t)

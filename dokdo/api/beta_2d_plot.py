@@ -75,7 +75,6 @@ def beta_2d_plot(
     >>> plt.tight_layout()
 
     .. image:: images/beta_2d_plot-1.png
-      :width: 600
 
     We can color the datapoints with ``hue``. We can also change the
     style of datapoints with ``style``. If the variable of interest is
@@ -94,7 +93,6 @@ def beta_2d_plot(
     >>> plt.tight_layout()
 
     .. image:: images/beta_2d_plot-2.png
-      :width: 600
     """
     if isinstance(pcoa_results, str):
         _pcoa_results = Artifact.load(pcoa_results)
