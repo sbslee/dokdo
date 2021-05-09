@@ -5,35 +5,27 @@ import dokdo
 import pandas as pd
 import matplotlib.pyplot as plt
 
-def taxa_abundance_bar_plot(taxa,
-                            metadata=None,
-                            level=1,
-                            by=None,
-                            ax=None,
-                            figsize=None,
-                            width=0.8,
-                            count=0,
-                            exclude_samples=None,
-                            include_samples=None,
-                            exclude_taxa=None,
-                            sort_by_names=False,
-                            colors=None,
-                            label_columns=None,
-                            orders=None,
-                            sample_names=None,
-                            csv_file=None,
-                            taxa_names=None,
-                            sort_by_mean1=True,
-                            sort_by_mean2=True,
-                            sort_by_mean3=True,
-                            show_others=True,
-                            cmap_name='Accent',
-                            legend_short=False,
-                            artist_kwargs=None):
+def taxa_abundance_bar_plot(
+    taxa, metadata=None, level=1, by=None, ax=None, figsize=None,
+    width=0.8, count=0, exclude_samples=None, include_samples=None,
+    exclude_taxa=None, sort_by_names=False, colors=None,
+    label_columns=None, orders=None, sample_names=None,
+    csv_file=None, taxa_names=None, sort_by_mean1=True,
+    sort_by_mean2=True, sort_by_mean3=True, show_others=True,
+    cmap_name='Accent', legend_short=False, artist_kwargs=None
+):
     """Create a taxa abundance plot.
 
     Although the input visualization file should contain medatadata already,
     you can replace it with new metadata by using the 'metadata' option.
+
+    +----------------+-----------------------------------------------------+
+    | q2-taxa plugin | Example                                             |
+    +================+=====================================================+
+    | QIIME 2 CLI    | qiime taxa barplot [OPTIONS]                        |
+    +----------------+-----------------------------------------------------+
+    | QIIME 2 API    | from qiime2.plugins.taxa.visualizers import barplot |
+    +----------------+-----------------------------------------------------+
 
     Parameters
     ----------
@@ -107,11 +99,222 @@ def taxa_abundance_bar_plot(taxa,
     --------
     taxa_abundance_box_plot
 
-    Notes
-    -----
-    Example usage of the q2-taxa plugin:
-        CLI -> qiime taxa barplot [OPTIONS]
-        API -> from qiime2.plugins.taxa.visualizers import barplot
+    Examples
+    --------
+    Below is a simple example showing taxonomic abundance at the kingdom
+    level (i.e. ``level=1``), which is the default taxonomic rank.
+
+    >>> qzv_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/taxa-bar-plots.qzv'
+    >>> dokdo.taxa_abundance_bar_plot(qzv_file,
+    ...                               figsize=(10, 7),
+    ...                               artist_kwargs=dict(show_legend=True))
+    >>> plt.tight_layout()
+
+    .. image:: images/taxa_abundance_bar_plot-1.png
+      :width: 600
+
+    We can change the taxonomic rank from kingdom to genus by setting
+    ``level=6``. Note that I removed ``show_legend=True`` because
+    otherwise there will be too many taxa to display on the legend.
+    Note also that the colors are recycled in each bar.
+
+    >>> dokdo.taxa_abundance_bar_plot(qzv_file,
+    ...                               figsize=(10, 7),
+    ...                               level=6)
+    >>> plt.tight_layout()
+
+    .. image:: images/taxa_abundance_bar_plot-2.png
+      :width: 600
+
+    We can only show the top seven most abundant genera plus 'Others' with
+    ``count=8``.
+
+    >>> dokdo.taxa_abundance_bar_plot(qzv_file,
+    ...                               figsize=(10, 7),
+    ...                               level=6,
+    ...                               count=8,
+    ...                               legend_short=True,
+    ...                               artist_kwargs=dict(show_legend=True,
+    ...                                                  legend_loc='upper left'))
+    >>> plt.tight_layout()
+
+    .. image:: images/taxa_abundance_bar_plot-3.png
+      :width: 600
+
+    We can plot the figure and the legend separately.
+
+    >>> fig, [ax1, ax2] = plt.subplots(1, 2, figsize=(12, 7), gridspec_kw={'width_ratios': [9, 1]})
+    >>> dokdo.taxa_abundance_bar_plot(qzv_file,
+    ...                               ax=ax1,
+    ...                               level=6,
+    ...                               count=8)
+    >>> dokdo.taxa_abundance_bar_plot(qzv_file,
+    ...                               ax=ax2,
+    ...                               level=6,
+    ...                               count=8,
+    ...                               legend_short=True,
+    ...                               artist_kwargs=dict(legend_only=True,
+    ...                                                  legend_loc='upper left'))
+    >>> plt.tight_layout()
+
+    .. image:: images/taxa_abundance_bar_plot-4.png
+      :width: 600
+
+    We can use a different color map to display more unique genera (e.g. 20).
+
+    >>> fig, [ax1, ax2] = plt.subplots(1, 2, figsize=(12, 7), gridspec_kw={'width_ratios': [9, 1]})
+    >>> dokdo.taxa_abundance_bar_plot(qzv_file,
+    ...                               ax=ax1,
+    ...                               level=6,
+    ...                               count=20,
+    ...                               cmap_name='tab20')
+    >>> dokdo.taxa_abundance_bar_plot(qzv_file,
+    ...                               ax=ax2,
+    ...                               level=6,
+    ...                               count=20,
+    ...                               cmap_name='tab20',
+    ...                               legend_short=True,
+    ...                               artist_kwargs=dict(legend_only=True,
+    ...                                                  legend_loc='upper left'))
+    >>> plt.tight_layout()
+
+    .. image:: images/taxa_abundance_bar_plot-5.png
+      :width: 600
+
+    We can sort the samples by the body-site column in metadata with
+    ``by=['body-site']``. To check whether the sorting worked properly,
+    we can change the x-axis tick labels to include each sample's
+    body-site with ``label_columns``.
+
+    >>> dokdo.taxa_abundance_bar_plot(qzv_file,
+    ...                               by=['body-site'],
+    ...                               label_columns=['body-site', 'sample-id'],
+    ...                               figsize=(10, 7),
+    ...                               level=6,
+    ...                               count=8,
+    ...                               legend_short=True,
+    ...                               artist_kwargs=dict(show_legend=True,
+    ...                                                  legend_loc='upper left'))
+    >>> plt.tight_layout()
+
+    .. image:: images/taxa_abundance_bar_plot-6.png
+      :width: 600
+
+    If you want to sort the samples in a certain order instead of ordering
+    numerically or alphabetically, use the ``orders`` option.
+
+    >>> dokdo.taxa_abundance_bar_plot(qzv_file,
+    ...                               by=['body-site'],
+    ...                               label_columns=['body-site', 'sample-id'],
+    ...                               figsize=(10, 7),
+    ...                               level=6,
+    ...                               count=8,
+    ...                               orders={'body-site': ['left palm', 'tongue', 'gut', 'right palm']},
+    ...                               legend_short=True,
+    ...                               artist_kwargs=dict(show_legend=True,
+    ...                                                  legend_loc='upper left'))
+    >>> plt.tight_layout()
+
+    .. image:: images/taxa_abundance_bar_plot-7.png
+      :width: 600
+
+    We can only display the 'gut' and 'tongue' samples with
+    ``include_samples``.
+
+    >>> fig, [ax1, ax2] = plt.subplots(1, 2, figsize=(9, 7), gridspec_kw={'width_ratios': [9, 1]})
+    >>> kwargs = dict(include_samples={'body-site': ['gut', 'tongue']},
+    ...                 by=['body-site'],
+    ...                 label_columns=['body-site', 'sample-id'],
+    ...                 level=6,
+    ...                 count=8)
+    >>> dokdo.taxa_abundance_bar_plot(qzv_file,
+    ...                               ax=ax1,
+    ...                               **kwargs)
+    >>> dokdo.taxa_abundance_bar_plot(qzv_file,
+    ...                               ax=ax2,
+    ...                               **kwargs,
+    ...                               legend_short=True,
+    ...                               artist_kwargs=dict(legend_only=True,
+    ...                                                  legend_loc='upper left'))
+    >>> plt.tight_layout()
+
+    .. image:: images/taxa_abundance_bar_plot-8.png
+      :width: 600
+
+    We can make multiple bar charts grouped by body-site. When making a
+    grouped bar chart, it's important to include ``sort_by_mean2=False``
+    in order to have the same bar colors for the same taxa across different
+    groups.
+
+    >>> fig, [ax1, ax2, ax3, ax4, ax5] = plt.subplots(1, 5, figsize=(16, 7), gridspec_kw={'width_ratios': [2, 2, 2, 2, 1]})
+    >>> kwargs = dict(level=6, count=8, sort_by_mean2=False)
+    >>> dokdo.taxa_abundance_bar_plot(qzv_file,
+    ...                               ax=ax1,
+    ...                               include_samples={'body-site': ['gut']},
+    ...                               **kwargs,
+    ...                               artist_kwargs=dict(title='gut'))
+    >>> dokdo.taxa_abundance_bar_plot(qzv_file,
+    ...                               ax=ax2,
+    ...                               include_samples={'body-site': ['left palm']},
+    ...                               **kwargs,
+    ...                               artist_kwargs=dict(title='left palm',
+    ...                                                  hide_ylabel=True,
+    ...                                                  hide_yticks=True))
+    >>> dokdo.taxa_abundance_bar_plot(qzv_file,
+    ...                               ax=ax3,
+    ...                               include_samples={'body-site': ['right palm']},
+    ...                               **kwargs,
+    ...                               artist_kwargs=dict(title='right palm',
+    ...                                                  hide_ylabel=True,
+    ...                                                  hide_yticks=True))
+    >>> dokdo.taxa_abundance_bar_plot(qzv_file,
+    ...                               ax=ax4,
+    ...                               include_samples={'body-site': ['tongue']},
+    ...                               **kwargs,
+    ...                               artist_kwargs=dict(title='tongue',
+    ...                                                  hide_ylabel=True,
+    ...                                                  hide_yticks=True))
+    >>> dokdo.taxa_abundance_bar_plot(qzv_file,
+    ...                               ax=ax5,
+    ...                               **kwargs,
+    ...                               legend_short=True,
+    ...                               artist_kwargs=dict(legend_only=True,
+    ...                                                  legend_loc='upper left'))
+    >>> plt.tight_layout()
+
+    .. image:: images/taxa_abundance_bar_plot-9.png
+      :width: 800
+
+    We can select specific samples with ``sample_names``. We can also
+    manually set the x-axis tick labels with ``xticklabels``. Finally, you
+    can pick specific colors for the bars.
+
+    >>> fig, [ax1, ax2, ax3] = plt.subplots(1, 3, figsize=(10, 5))
+    >>> kwargs = dict(level=6, count=3, legend_short=True, sample_names=['L2S382', 'L4S112'])
+    >>> dokdo.taxa_abundance_bar_plot(qzv_file,
+    ...                               ax=ax1,
+    ...                               **kwargs,
+    ...                               artist_kwargs=dict(show_legend=True,
+    ...                                                  legend_loc='upper right',
+    ...                                                  title="sample_names=['L2S382', 'L4S112']"))
+    >>> dokdo.taxa_abundance_bar_plot(qzv_file,
+    ...                               ax=ax2,
+    ...                               **kwargs,
+    ...                               artist_kwargs=dict(show_legend=True,
+    ...                                                  legend_loc='upper right',
+    ...                                                  title="xticklabels=['A', 'B']",
+    ...                                                  xticklabels=['A', 'B']))
+    >>> dokdo.taxa_abundance_bar_plot(qzv_file,
+    ...                               ax=ax3,
+    ...                               colors=['tab:blue', 'tab:orange', 'tab:gray'],
+    ...                               **kwargs,
+    ...                               artist_kwargs=dict(show_legend=True,
+    ...                                                  legend_loc='upper right',
+    ...                                                  title="colors=['tab:blue', 'tab:orange', 'tab:gray']"))
+    >>> plt.tight_layout()
+
+    .. image:: images/taxa_abundance_bar_plot-10.png
+      :width: 600
     """
     with tempfile.TemporaryDirectory() as t:
         _parse_input(taxa, t)
