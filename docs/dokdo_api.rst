@@ -56,6 +56,8 @@ Let's start with a toy example. The figure below does not have a legend, which i
     >>> dokdo.denoising_stats_plot(*args)
     >>> plt.tight_layout()
 
+.. image:: images/Setting-Figure-Properties-1.png
+
 Aesthetics
 ^^^^^^^^^^
 
@@ -68,6 +70,8 @@ The first thing we can do is changing the figure style. I personally like the ``
     ...     dokdo.denoising_stats_plot(*args)
     >>> plt.tight_layout()
 
+.. image:: images/Setting-Figure-Properties-2.png
+
 If you're coming from the world of R software, you may find the ``ggplot`` style more soothing for your eyes.
 
 .. code:: python3
@@ -76,6 +80,8 @@ If you're coming from the world of R software, you may find the ``ggplot`` style
     >>> with plt.style.context('ggplot'):
     ...     dokdo.denoising_stats_plot(*args)
     >>> plt.tight_layout()
+
+.. image:: images/Setting-Figure-Properties-3.png
 
 Note that in both cases, the styling is set locally. If you plan to make many plots and want to set the style for all of them (i.e. globally), use the following.
 
@@ -101,6 +107,8 @@ There are various ways you can control the figure size. The easiest way is to us
     >>> dokdo.denoising_stats_plot(*args, figsize=(9, 3))
     >>> plt.tight_layout()
 
+.. image:: images/Setting-Figure-Properties-4.png
+
 If you plan to draw more than one plot in the same figure (i.e. multiple "subplots"), you can specify size for the entire figure in the following way.
 
 .. code:: python3
@@ -110,6 +118,8 @@ If you plan to draw more than one plot in the same figure (i.e. multiple "subplo
     >>> dokdo.denoising_stats_plot(*args, ax=ax2)
     >>> plt.tight_layout()
 
+.. image:: images/Setting-Figure-Properties-5.png
+
 You can also set the width and/or height of individual subplots using ``width_ratios`` and ``height_ratios`` from ``gridspec_kw``.
 
 .. code:: python3
@@ -118,6 +128,8 @@ You can also set the width and/or height of individual subplots using ``width_ra
     >>> dokdo.denoising_stats_plot(*args, ax=ax1)
     >>> dokdo.denoising_stats_plot(*args, ax=ax2)
     >>> plt.tight_layout()
+
+.. image:: images/Setting-Figure-Properties-6.png
 
 Alternatively, you can combine empty subplots to create a bigger subplot using ``gridspec``.
 
@@ -133,6 +145,8 @@ Alternatively, you can combine empty subplots to create a bigger subplot using `
     >>> axbig = fig.add_subplot(gs[0:2, 1])
     >>> dokdo.denoising_stats_plot(*args, ax=axbig)
     >>> plt.tight_layout()
+
+.. image:: images/Setting-Figure-Properties-7.png
 
 Title, Axis, Legend, Font Size
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -165,6 +179,8 @@ Below are some simple examples.
     >>> dokdo.denoising_stats_plot(*args, ax=ax6, artist_kwargs=artist_kwargs6)
     >>> plt.tight_layout()
 
+.. image:: images/Setting-Figure-Properties-8.png
+
 Sample Filtering
 ^^^^^^^^^^^^^^^^
 
@@ -178,6 +194,8 @@ Sometimes, you may want to plot only a subset of the samples. This can be easily
     >>> metadata = Metadata(mf)
     >>> dokdo.denoising_stats_plot(qza_file, metadata=metadata, where=where)
     >>> plt.tight_layout()
+
+.. image:: images/Setting-Figure-Properties-9.png
 
 Plotting Legend Separately
 --------------------------
@@ -194,6 +212,8 @@ In some situations, we may wish to plot the graph and the legend separately. For
     ...                               artist_kwargs=dict(show_legend=True))
     >>> plt.tight_layout()
 
+.. image:: images/Plotting-Legend-Separately-1.png
+
 We can ameliorate the issue by plotting the legend separately with ``legend_only=True``.
 
 .. code:: python3
@@ -204,6 +224,8 @@ We can ameliorate the issue by plotting the legend separately with ``legend_only
     ...                               artist_kwargs=dict(legend_loc='upper left',
     ...                                                  legend_only=True))
     >>> plt.tight_layout()
+
+.. image:: images/Plotting-Legend-Separately-2.png
 
 Plotting QIIME 2 Files vs. Objects
 ----------------------------------
@@ -228,6 +250,8 @@ For example, we can directly plot the Artifact object from the ``qiime2.plugins.
     >>> dokdo.alpha_rarefaction_plot(rarefaction)
     >>> plt.tight_layout()
 
+.. image:: images/Plotting-QIIME-2-Objects-1.png
+
 As expected, above gives the same result as using the Visualization file created by the ``qiime diversity alpha-rarefaction`` command (i.e. QIIME 2 CLI).
 
 .. code:: python3
@@ -235,6 +259,8 @@ As expected, above gives the same result as using the Visualization file created
     >>> qzv_file = f'{data_dir}/moving-pictures-tutorial/alpha-rarefaction.qzv'
     >>> dokdo.alpha_rarefaction_plot(qzv_file)
     >>> plt.tight_layout()
+
+.. image:: images/Plotting-QIIME-2-Objects-2.png
 
 General Methods
 ===============
