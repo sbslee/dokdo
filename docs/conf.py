@@ -43,7 +43,8 @@ autodoc_mock_imports = [
     'qiime2',
     'scipy',
     'matplotlib',
-    'seaborn'
+    'seaborn',
+    'skbio'
 ]
 
 issues_github_path = 'sbslee/dokdo'
