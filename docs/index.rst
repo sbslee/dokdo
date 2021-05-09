@@ -11,6 +11,7 @@ Welcome to dokdo's documentation!
    :caption: Contents:
 
    dokdo_cli
+   dokdo_api
    qiime2_cli
    pipeline
    changelog

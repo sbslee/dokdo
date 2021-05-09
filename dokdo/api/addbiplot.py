@@ -5,16 +5,11 @@ import matplotlib.pyplot as plt
 from scipy.spatial.distance import euclidean
 from qiime2 import Artifact
 
-def addbiplot(pcoa_results,
-              taxonomy=None,
-              dim=2,
-              scale=1.0,
-              count=5,
-              fontsize=None,
-              name_type='feature',
-              level=None,
-              ax=None,
-              figsize=None):
+def addbiplot(
+    pcoa_results, taxonomy=None, dim=2, scale=1.0,
+    count=5, fontsize=None, name_type='feature',
+    level=None, ax=None, figsize=None
+):
     """Adds arrows (i.e. features) to a PCoA scatter plot.
 
     This method can handle both 2D and 3D plots.
@@ -26,7 +21,7 @@ def addbiplot(pcoa_results,
         PCoAResults % Properties('biplot').
     taxonomy : str or qiime2.Artifact
         Artifact file or object corresponding to FeatureData[Taxonomy].
-        Required if `name_type='taxon'` or `name_type='confidence'.
+        Required if ``name_type='taxon'`` or ```name_type='confidence'``.
     dim : [2, 3], default: 2
         Dimension of the input scatter plot.
     scale : float, default: 1.0
@@ -39,7 +34,7 @@ def addbiplot(pcoa_results,
         Determines the type of names displayed. Using 'taxon' and 'confidence'
         requires taxonomy.
     level : int, optional
-        Taxonomic rank to be displayed. Only use with `name_type='taxon'`.
+        Taxonomic rank to be displayed. Only use with ``name_type='taxon'```.
     ax : matplotlib.axes.Axes, optional
         Axes object to draw the plot onto, otherwise uses the current Axes.
     figsize : tuple, optional
@@ -55,6 +50,51 @@ def addbiplot(pcoa_results,
     ordinate
     beta_2d_plot
     beta_3d_plot
+
+    Examples
+    --------
+    Below is a simple example.
+
+    >>> table_file = f'{data_dir}/moving-pictures-tutorial/table.qza'
+    >>> metadata_file = f'{data_dir}/moving-pictures-tutorial/sample-metadata.tsv'
+    >>> pcoa_results = dokdo.ordinate(table_file, sampling_depth=0, biplot=True, number_of_dimensions=10)
+    >>> ax = dokdo.beta_2d_plot(pcoa_results,
+    ...                         hue='body-site',
+    ...                         metadata=metadata_file,
+    ...                         figsize=(8, 8),
+    ...                         artist_kwargs=dict(show_legend=True))
+    >>> dokdo.addbiplot(pcoa_results, ax=ax, count=3)
+    >>> plt.tight_layout()
+
+    We can also draw a 3D biplot.
+
+    >>> ax = dokdo.beta_3d_plot(pcoa_results,
+    ...                         hue='body-site',
+    ...                         metadata=metadata_file,
+    ...                         figsize=(8, 8),
+    ...                         artist_kwargs=dict(show_legend=True))
+    >>> dokdo.addbiplot(pcoa_results, ax=ax, count=3, dim=3)
+    >>> plt.tight_layout()
+
+    Finally, we can display taxonomic classification instead of feature ID.
+
+    >>> taxonomy_file = f'{data_dir}/moving-pictures-tutorial/taxonomy.qza'
+    >>> ax = dokdo.beta_3d_plot(pcoa_results,
+    ...                         hue='body-site',
+    ...                         metadata=metadata_file,
+    ...                         figsize=(8, 8),
+    ...                         artist_kwargs=dict(show_legend=True))
+    >>> dokdo.addbiplot(pcoa_results,
+    ...                 ax=ax,
+    ...                 count=3,
+    ...                 dim=3,
+    ...                 taxonomy=taxonomy_file,
+    ...                 name_type='taxon',
+    ...                 level=6)
+    >>> plt.tight_layout()
+
+    .. image:: images/ancom_volcano_plot.png
+      :width: 600
     """
     if isinstance(pcoa_results, str):
         _pcoa_results = Artifact.load(pcoa_results)
