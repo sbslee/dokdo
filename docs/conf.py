@@ -37,6 +37,12 @@ extensions = [
     'sphinx_issues'
 ]
 
+autodoc_mock_imports = [
+    'numpy',
+    'pandas',
+    'qiime2'
+]
+
 issues_github_path = 'sbslee/dokdo'
 
 # Include the example source for plots in API docs.
