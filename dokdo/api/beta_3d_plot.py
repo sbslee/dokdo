@@ -30,9 +30,9 @@ def beta_3d_plot(
     hue : str, optional
         Grouping variable that will produce points with different colors.
     azim : int, default: -60
-        Elevation viewing angle.
-    elev : int, default: 30
         Azimuthal viewing angle.
+    elev : int, default: 30
+        Elevation viewing angle.
     s : float, default: 80.0
         Marker size.
     ax : matplotlib.axes.Axes, optional
