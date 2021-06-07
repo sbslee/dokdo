@@ -6,10 +6,10 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 def taxa_abundance_bar_plot(
-    taxa, metadata=None, level=1, group=None, by=None, ax=None, figsize=None,
-    width=0.8, count=0, exclude_samples=None, include_samples=None,
-    exclude_taxa=None, sort_by_names=False, colors=None,
-    label_columns=None, orders=None, sample_names=None,
+    taxa, metadata=None, level=1, group=None, group_order=None, by=None,
+    ax=None, figsize=None, width=0.8, count=0, exclude_samples=None,
+    include_samples=None, exclude_taxa=None, sort_by_names=False,
+    colors=None, label_columns=None, orders=None, sample_names=None,
     csv_file=None, taxa_names=None, sort_by_mean1=True,
     sort_by_mean2=True, sort_by_mean3=True, show_others=True,
     cmap_name='Accent', legend_short=False, artist_kwargs=None
@@ -40,6 +40,8 @@ def taxa_abundance_bar_plot(
         Taxonomic level at which the features should be collapsed.
     group : str, optional
         Metadata column to be used for grouping the samples.
+    group_order : list, optional
+        Order to plot the groups in.
     by : list, optional
         Column name(s) to be used for sorting the samples. Using 'sample-id'
         will sort the samples by their name, in addition to other column
@@ -384,6 +386,9 @@ def taxa_abundance_bar_plot(
     if group is not None:
         df = df.groupby(group)[taxa_cols(df)].agg('sum')
 
+        if group_order is not None:
+            df = df.loc[group_order]
+
     # Remove the metadata columns.
     cols = _get_mf_cols(df)
     mf = df[cols]
@@ -404,7 +409,6 @@ def taxa_abundance_bar_plot(
 
         if sort_by_mean3:
             df = _sort_by_mean(df)
-
 
     # Convert counts to proportions.
     df = df.div(df.sum(axis=1), axis=0)
