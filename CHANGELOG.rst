@@ -4,7 +4,7 @@ Changelog
 1.9.0 (in development)
 ----------------------
 
-
+* Add publicly available datasets from QIIME 2 for tutorials.
 
 1.8.0 (2021-05-09)
 ------------------
