@@ -3,7 +3,7 @@ import math
 import tempfile
 import warnings
 import numbers
- 
+
 # Import external libraries.
 import numpy as np
 import pandas as pd
@@ -25,8 +25,20 @@ from qiime2 import Metadata
 from qiime2 import Visualization
 import dokdo
 
+def taxa_cols(df):
+    """Returns metadata columns from DataFrame object."""
+    cols = []
+    for col in df.columns:
+        if 'Unassigned' in col:
+            cols.append(col)
+        elif '__' in col:
+            cols.append(col)
+        else:
+            continue
+    return cols
+
 def _get_mf_cols(df):
-    "Returns metadata columns from DataFrame object."
+    """Returns metadata columns from DataFrame object."""
     cols = []
     for column in df.columns:
         if 'Unassigned' in column:
@@ -38,7 +50,7 @@ def _get_mf_cols(df):
     return cols
 
 def _filter_samples(df, mf, exclude_samples, include_samples):
-    "Returns DataFrame objects after sample filtering."
+    """Returns DataFrame objects after sample filtering."""
     if exclude_samples and include_samples:
         m = ("Cannot use 'exclude_samples' and "
              "'include_samples' arguments together")
@@ -59,13 +71,13 @@ def _filter_samples(df, mf, exclude_samples, include_samples):
     return (df, mf)
 
 def _sort_by_mean(df):
-    "Returns DataFrame object after sorting taxa by mean relative abundance."
+    """Returns DataFrame object after sorting taxa by mean relative abundance."""
     a = df.div(df.sum(axis=1), axis=0)
     a = a.loc[:, a.mean().sort_values(ascending=False).index]
     return df[a.columns]
 
 def _pretty_taxa(s):
-    "Returns pretty taxa name."
+    """Returns pretty taxa name."""
     if isinstance(s, matplotlib.text.Text):
         s = s.get_text()
     ranks = list(reversed(s.split(';')))
@@ -360,7 +372,7 @@ def _artist(
     return ax
 
 def _get_others_col(df, count, taxa_names, show_others):
-    "Returns DataFrame object after selecting taxa."
+    """Returns DataFrame object after selecting taxa."""
     if count is not 0 and taxa_names is not None:
         m = "Cannot use 'count' and 'taxa_names' arguments together"
         raise ValueError(m)

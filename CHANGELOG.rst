@@ -1,6 +1,12 @@
 Changelog
 *********
 
+1.9.0 (2021-06-07)
+----------------------
+
+* Add publicly available datasets from QIIME 2 for tutorials.
+* :issue:`14`: Add the ``group`` option to the :meth:`taxa_abundance_bar_plot` method. Using this option will create a bar for each group instead of each sample.
+
 1.8.0 (2021-05-09)
 ------------------
 

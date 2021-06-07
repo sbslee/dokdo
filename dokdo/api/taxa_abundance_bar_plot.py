@@ -1,12 +1,12 @@
 import tempfile
-from .common import (_parse_input, _artist,
+from .common import (_parse_input, _artist, taxa_cols,
     _get_mf_cols, _filter_samples, _sort_by_mean, _get_others_col)
 import dokdo
 import pandas as pd
 import matplotlib.pyplot as plt
 
 def taxa_abundance_bar_plot(
-    taxa, metadata=None, level=1, by=None, ax=None, figsize=None,
+    taxa, metadata=None, level=1, group=None, by=None, ax=None, figsize=None,
     width=0.8, count=0, exclude_samples=None, include_samples=None,
     exclude_taxa=None, sort_by_names=False, colors=None,
     label_columns=None, orders=None, sample_names=None,
@@ -14,10 +14,13 @@ def taxa_abundance_bar_plot(
     sort_by_mean2=True, sort_by_mean3=True, show_others=True,
     cmap_name='Accent', legend_short=False, artist_kwargs=None
 ):
-    """Create a taxa abundance plot.
+    """Create a bar plot showing relative taxa abundance.
 
-    Although the input visualization file should contain medatadata already,
-    you can replace it with new metadata by using the 'metadata' option.
+    The input visualization may already contain metadata, but you can
+    update it with the ``metadata`` option.
+
+    By default, the method will create a bar for each sample. Use the
+    ``group`` option to create a bar for each sample group.
 
     +----------------+-----------------------------------------------------+
     | q2-taxa plugin | Example                                             |
@@ -35,6 +38,8 @@ def taxa_abundance_bar_plot(
         Metadata file or object.
     level : int, default: 1
         Taxonomic level at which the features should be collapsed.
+    group : str, optional
+        Metadata column to be used for grouping the samples.
     by : list, optional
         Column name(s) to be used for sorting the samples. Using 'sample-id'
         will sort the samples by their name, in addition to other column
@@ -305,6 +310,19 @@ def taxa_abundance_bar_plot(
     >>> plt.tight_layout()
 
     .. image:: images/taxa_abundance_bar_plot-10.png
+
+    Finally, we can create a bar for each sample type.
+
+    >>> dokdo.taxa_abundance_bar_plot(qzv_file,
+    ...                               level=6,
+    ...                               count=8,
+    ...                               group='body-site',
+    ...                               figsize=(10, 7),
+    ...                               legend_short=True,
+    ...                               artist_kwargs=dict(show_legend=True))
+    >>> plt.tight_layout()
+
+    .. image:: images/taxa_abundance_bar_plot-11.png
     """
     with tempfile.TemporaryDirectory() as t:
         _parse_input(taxa, t)
@@ -361,6 +379,10 @@ def taxa_abundance_bar_plot(
                     dropped.append(col)
         dropped = list(set(dropped))
         df = df.drop(columns=dropped)
+
+    # If provided, group the samples by the given metadata column.
+    if group is not None:
+        df = df.groupby(group)[taxa_cols(df)].agg('sum')
 
     # Remove the metadata columns.
     cols = _get_mf_cols(df)
