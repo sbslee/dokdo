@@ -1,6 +1,11 @@
 Changelog
 *********
 
+1.10.0 (in development)
+-----------------------
+
+* :issue:`14`: Add the ``group_order`` option to the :meth:`taxa_abundance_bar_plot` method.
+
 1.9.0 (2021-06-07)
 ----------------------
 
