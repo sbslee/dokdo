@@ -160,23 +160,3 @@ prepare-lefse
                             SQLite 'WHERE' clause specifying sample metadata
                             criteria.
       -h, --help            Show this help message and exit.
-
-count-reads
------------
-
-.. code-block:: console
-
-    $ dokdo count-reads -h
-    usage: dokdo count-reads -i PATH [-d TEXT] [-h]
-
-    Count the number of sequence reads from FASTQ. This command outputs two
-    columns corresponding to the file name and read count, respectively.
-
-    Arguments:
-      -i PATH, --fastq-path PATH
-                            Path to the input FASTQ file or to the input directory
-                            containing FASTQ files. [required]
-      -d TEXT, --delimiter TEXT
-                            Delimiter used to separate the file name and read
-                            count. [default: '\t']
-      -h, --help            Show this help message and exit.
