@@ -7,7 +7,8 @@ NO_VERBOSE_MESSAGE = ("There is no verbose option available "
                       "for the input Artifact file.")
 
 def summarize(input_file, verbose=False):
-    """Extract summary or verbose data from an Artifact file.
+    """
+    Extract summary or verbose data from an Artifact file.
 
     This command automatically detects the input file's semantic type and
     then extracts summary or verbose data from it.
@@ -44,11 +45,11 @@ def _parse_feature_table(artifact, verbose):
     quantiles = [0, 0.25, 0.5, 0.75, 1]
     print("Number of samples:", df.shape[0])
     print("Number of features:", df.shape[1])
-    print("Total frequency:", df.values.sum())
+    print("Total frequency:", df.values.sum().astype('int32'))
     print("Frequency per sample:")
-    print(df.sum(axis=1).quantile(quantiles).to_string())
+    print(df.sum(axis=1).quantile(quantiles).astype('int32').to_string())
     print("Frequency per feature:")
-    print(df.sum(axis=0).quantile(quantiles).to_string())
+    print(df.sum(axis=0).quantile(quantiles).astype('int32').to_string())
     if verbose:
         print("Samples:")
         print(" ".join(df.index.to_list()))
