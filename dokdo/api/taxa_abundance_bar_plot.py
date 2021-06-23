@@ -386,9 +386,6 @@ def taxa_abundance_bar_plot(
     if group is not None:
         df = df.groupby(group)[taxa_cols(df)].agg('sum')
 
-        if group_order is not None:
-            df = df.loc[group_order]
-
     # Remove the metadata columns.
     cols = _get_mf_cols(df)
     mf = df[cols]
@@ -396,6 +393,9 @@ def taxa_abundance_bar_plot(
 
     if sort_by_mean1:
         df = _sort_by_mean(df)
+
+    if group is not None and group_order is not None:
+        df = df.loc[group_order]
 
     df, mf = _filter_samples(df, mf, exclude_samples, include_samples)
 
