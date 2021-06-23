@@ -4,7 +4,7 @@ Changelog
 1.10.0 (in development)
 -----------------------
 
-* :issue:`14`: Add the ``group_order`` option to the :meth:`taxa_abundance_bar_plot` method.
+* :issue:`14`, :issue:`17`: Add the ``group_order`` option to the :meth:`taxa_abundance_bar_plot` method.
 * Fix a minor bug in the :meth:`addbiplot` method when feature is 'Unassigned'.
 * Deprecate the :command:`count-reads` command.
 
