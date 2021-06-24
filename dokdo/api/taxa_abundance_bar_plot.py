@@ -330,6 +330,13 @@ def taxa_abundance_bar_plot(
         _parse_input(taxa, t)
         df = pd.read_csv(f'{t}/level-{level}.csv', index_col=0)
 
+    if sort_by_mean1:
+        cols = _get_mf_cols(df)
+        mf = df[cols]
+        df = df.drop(columns=cols)
+        df = _sort_by_mean(df)
+        df = pd.concat([df, mf], axis=1, join='inner')
+
     # If provided, update the metadata.
     if metadata is None:
         pass
@@ -390,9 +397,6 @@ def taxa_abundance_bar_plot(
     cols = _get_mf_cols(df)
     mf = df[cols]
     df = df.drop(columns=cols)
-
-    if sort_by_mean1:
-        df = _sort_by_mean(df)
 
     if group is not None and group_order is not None:
         df = df.loc[group_order]
