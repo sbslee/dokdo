@@ -44,9 +44,13 @@ def ancom_volcano_plot(
     .. code:: python3
 
         import dokdo
+        import matplotlib.pyplot as plt
         %matplotlib inline
+        import seaborn as sns
+        sns.set()
         qzv_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/ancom-subject.qzv'
         dokdo.ancom_volcano_plot(qzv_file)
+        plt.tight_layout()
 
     .. image:: images/ancom_volcano_plot_1.png
 
@@ -56,6 +60,7 @@ def ancom_volcano_plot(
     .. code:: python3
 
         dokdo.ancom_volcano_plot(qzv_file, s=80, color='black', alpha=0.5)
+        plt.tight_layout()
 
     .. image:: images/ancom_volcano_plot_2.png
     """
