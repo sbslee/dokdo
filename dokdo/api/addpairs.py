@@ -36,7 +36,7 @@ def addpairs(
 
     See Also
     --------
-    taxa_abundance_box_plot
+    dokdo.api.taxa_abundance_box_plot
 
     Examples
     --------

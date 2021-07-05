@@ -6,7 +6,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 def taxa_abundance_bar_plot(
-    taxa, metadata=None, level=1, group=None, group_order=None, by=None,
+    visualization, metadata=None, level=1, group=None, group_order=None, by=None,
     ax=None, figsize=None, width=0.8, count=0, exclude_samples=None,
     include_samples=None, exclude_taxa=None, sort_by_names=False,
     colors=None, label_columns=None, orders=None, sample_names=None,
@@ -14,13 +14,15 @@ def taxa_abundance_bar_plot(
     sort_by_mean2=True, sort_by_mean3=True, show_others=True,
     cmap_name='Accent', legend_short=False, artist_kwargs=None
 ):
-    """Create a bar plot showing relative taxa abundance.
+    """
+    Create a bar plot showing relative taxa abundance for individual samples.
 
-    The input visualization may already contain metadata, but you can
-    update it with the ``metadata`` option.
+    The input visualization may already contain sample metadata. To provide
+    new sample metadata, and ignore the existing one, use the ``metadata``
+    option.
 
-    By default, the method will create a bar for each sample. Use the
-    ``group`` option to create a bar for each sample group.
+    By default, the method will draw a bar for each sample. To plot the
+    average taxa abundance of each sample group, use the ``group`` option.
 
     +----------------+-----------------------------------------------------+
     | q2-taxa plugin | Example                                             |
@@ -32,7 +34,7 @@ def taxa_abundance_bar_plot(
 
     Parameters
     ----------
-    taxa : str or qiime2.Visualization
+    visualization : str or qiime2.Visualization
         Visualization file or object from the q2-taxa plugin.
     metadata : str or qiime2.Metadata, optional
         Metadata file or object.
@@ -104,7 +106,7 @@ def taxa_abundance_bar_plot(
 
     See Also
     --------
-    taxa_abundance_box_plot
+    dokdo.api.taxa_abundance_box_plot
 
     Examples
     --------
@@ -327,7 +329,7 @@ def taxa_abundance_bar_plot(
     .. image:: images/taxa_abundance_bar_plot-11.png
     """
     with tempfile.TemporaryDirectory() as t:
-        _parse_input(taxa, t)
+        _parse_input(visualization, t)
         df = pd.read_csv(f'{t}/level-{level}.csv', index_col=0)
 
     if sort_by_mean1:

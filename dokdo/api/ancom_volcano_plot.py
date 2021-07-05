@@ -1,12 +1,13 @@
 import tempfile
-import pandas as pd
-from .common import _parse_input, _artist
+
+from .common import _parse_input
+
 import seaborn as sns
 import matplotlib.pyplot as plt
+import pandas as pd
 
 def ancom_volcano_plot(
-    ancom, ax=None, figsize=None,
-    s=80, artist_kwargs=None
+    visualization, ax=None, figsize=None, s=80, **kwargs
 ):
     """Create an ANCOM volcano plot.
 
@@ -20,16 +21,15 @@ def ancom_volcano_plot(
 
     Parameters
     ----------
-    ancom : str
+    visualization : str
         Visualization file or object from the q2-composition plugin.
     ax : matplotlib.axes.Axes, optional
         Axes object to draw the plot onto, otherwise uses the current Axes.
     figsize : tuple, optional
         Width, height in inches. Format: (float, float).
-    s : float, default: 80.0
-        Marker size.
-    artist_kwargs : dict, optional
-        Keyword arguments passed down to the _artist() method.
+    kwargs
+        Other keyword arguments will be passed down to
+        :meth:`seaborn.scatterplot`.
 
     Returns
     -------
@@ -47,21 +47,15 @@ def ancom_volcano_plot(
     .. image:: images/ancom_volcano_plot.png
     """
     with tempfile.TemporaryDirectory() as t:
-        _parse_input(ancom, t)
+        _parse_input(visualization, t)
         df = pd.read_table(f'{t}/data.tsv')
 
     if ax is None:
         fig, ax = plt.subplots(figsize=figsize)
-    sns.scatterplot(data=df, x='clr', y='W', ax=ax, s=s, alpha=0.5,
-                    color='black')
 
-    if artist_kwargs is None:
-        artist_kwargs = {}
+    sns.scatterplot(x='clr', y='W', data=df, ax=ax, **kwargs)
 
-    artist_kwargs = {'xlabel': 'clr',
-                     'ylabel': 'W',
-                     **artist_kwargs}
-
-    ax = _artist(ax, **artist_kwargs)
+    ax.set_xlabel('clr')
+    ax.set_ylabel('W')
 
     return ax

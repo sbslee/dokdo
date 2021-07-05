@@ -54,7 +54,7 @@ def barplot(
 
     See Also
     --------
-    taxa_abundance_bar_plot
+    dokdo.api.taxa_abundance_bar_plot
 
     Examples
     --------

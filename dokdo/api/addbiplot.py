@@ -48,9 +48,9 @@ def addbiplot(
 
     See Also
     --------
-    ordinate
-    beta_2d_plot
-    beta_3d_plot
+    dokdo.api.ordinate
+    dokdo.api.beta_2d_plot
+    dokdo.api.beta_3d_plot
 
     Examples
     --------
