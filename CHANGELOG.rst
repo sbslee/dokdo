@@ -7,9 +7,10 @@ Changelog
 * :issue:`14`, :issue:`17`: Add the ``group_order`` option to the :meth:`taxa_abundance_bar_plot` method.
 * Fix a minor bug in the :meth:`addbiplot` method when feature is 'Unassigned'.
 * Deprecate the :command:`count-reads` command.
-* Remove the ``artist_kwargs`` argument from the following methods:
+* :issue:`19`: Remove the ``artist_kwargs`` argument from the following methods:
 
   - :meth:`ancom_volcano_plot`
+  - :meth:`read_quality_plot`
 
 1.9.0 (2021-06-07)
 ----------------------

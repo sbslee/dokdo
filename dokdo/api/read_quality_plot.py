@@ -1,14 +1,15 @@
 import tempfile
-from .common import _parse_input, _artist
-import pandas as pd
-import seaborn as sns
-import numpy as np
 
-def read_quality_plot(
-    demux, strand='forward', ax=None,
-    figsize=None, artist_kwargs=None
-):
-    """Create a read quality plot.
+from . import common
+
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+def read_quality_plot(visualization, strand='forward', ax=None, figsize=None):
+    """
+    Create a read quality plot.
 
     +-----------------+--------------------------------------------------------+
     | q2-demux plugin | Example                                                |
@@ -20,16 +21,14 @@ def read_quality_plot(
 
     Parameters
     ----------
-    demux : str or qiime2.Visualization
+    visualization : str or qiime2.Visualization
         Visualization file or object from the q2-demux plugin.
-    strand : str, default: 'forward'
-        Read strand to be displayed (either 'forward' or 'reverse').
+    strand : {'forward', 'reverse'}, default: 'forward'
+        Read strand to be displayed.
     ax : matplotlib.axes.Axes, optional
         Axes object to draw the plot onto, otherwise uses the current Axes.
     figsize : tuple, optional
         Width, height in inches. Format: (float, float).
-    artist_kwargs : dict, optional
-        Keyword arguments passed down to the _artist() method.
 
     Returns
     -------
@@ -50,25 +49,37 @@ def read_quality_plot(
 
     .. image:: images/read_quality_plot.png
     """
-    l = ['forward', 'reverse']
 
-    if strand not in l:
-        raise ValueError(f"Strand should be one of the following: {l}")
+# import dokdo
+# import matplotlib.pyplot as plt
+# import seaborn as sns
+# sns.set()
+# %matplotlib inline
+# fig, [ax1, ax2] = plt.subplots(1, 2, figsize=(15, 5))
+# qzv_file = '/Users/sbslee/Desktop/dokdo/data/atacama-soil-microbiome-tutorial/demux-subsample.qzv'
+# dokdo.read_quality_plot(qzv_file, strand='forward', ax=ax1)
+# dokdo.read_quality_plot(qzv_file, strand='reverse', ax=ax2)
+# ax2.set_ylabel('')
+# ax2.set_yticks([])
+# plt.tight_layout()
 
     with tempfile.TemporaryDirectory() as t:
-        _parse_input(demux, t)
-
+        common.export(visualization, t)
         df = pd.read_table(f'{t}/{strand}-seven-number-summaries.tsv',
                            index_col=0,
                            skiprows=[1])
 
-    df = pd.melt(df.reset_index(), id_vars=['index'])
-    df['variable'] = df['variable'].astype('int64')
+    df = pd.melt(df.reset_index(),
+                 id_vars=['index'],
+                 var_name='Base',
+                 value_name='Score')
+    df['Base'] = df['Base'].astype('int')
+
     if ax is None:
         fig, ax = plt.subplots(figsize=figsize)
 
-    sns.boxplot(x='variable',
-                y='value',
+    sns.boxplot(x='Base',
+                y='Score',
                 data=df,
                 ax=ax,
                 fliersize=0,
@@ -76,19 +87,14 @@ def read_quality_plot(
                 medianprops=dict(color='red'),
                 whiskerprops=dict(linestyle=':'))
 
-    xticks = np.arange(df['variable'].min(), df['variable'].max(), 20).tolist()
+    xticks = np.arange(df['Base'].min(), df['Base'].max(), 20).tolist()
 
-    if artist_kwargs is None:
-        artist_kwargs = {}
+    print(df['Base'].min(), df['Base'].max())
 
-    artist_kwargs = {'xlabel': 'Sequence base',
-                     'ylabel': 'Quality score',
-                     'xticks': xticks,
-                     'xticklabels': xticks,
-                     'ymin': 0,
-                     'ymax': 45,
-                     **artist_kwargs}
-
-    ax = _artist(ax, **artist_kwargs)
+    ax.set_xlabel('Sequence base')
+    ax.set_ylabel('Quality score')
+    ax.set_xticks(xticks)
+    ax.set_xticklabels(xticks)
+    ax.set_ylim([0, 45])
 
     return ax

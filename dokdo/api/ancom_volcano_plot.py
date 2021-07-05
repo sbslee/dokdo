@@ -1,15 +1,16 @@
 import tempfile
 
-from .common import _parse_input
+from . import common
 
-import seaborn as sns
-import matplotlib.pyplot as plt
 import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 def ancom_volcano_plot(
-    visualization, ax=None, figsize=None, s=80, **kwargs
+    visualization, ax=None, figsize=None, **kwargs
 ):
-    """Create an ANCOM volcano plot.
+    """
+    Create an ANCOM volcano plot.
 
     +-----------------------+----------------------------------------------------------+
     | q2-composition plugin | Example                                                  |
@@ -21,7 +22,7 @@ def ancom_volcano_plot(
 
     Parameters
     ----------
-    visualization : str
+    visualization : str or qiime2.Visualization
         Visualization file or object from the q2-composition plugin.
     ax : matplotlib.axes.Axes, optional
         Axes object to draw the plot onto, otherwise uses the current Axes.
@@ -38,16 +39,28 @@ def ancom_volcano_plot(
 
     Examples
     --------
-    Below is a simple example.
+    Below is a simple example:
 
-    >>> qzv_file = f'{data_dir}/moving-pictures-tutorial/ancom-subject.qzv'
-    >>> dokdo.ancom_volcano_plot(qzv_file, figsize=(8, 5))
-    >>> plt.tight_layout()
+    .. code:: python3
 
-    .. image:: images/ancom_volcano_plot.png
+        import dokdo
+        %matplotlib inline
+        qzv_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/ancom-subject.qzv'
+        dokdo.ancom_volcano_plot(qzv_file)
+
+    .. image:: images/ancom_volcano_plot_1.png
+
+    We can control the size, color, and transparency of data points with the
+    ``s``, ``color``, and ``alpha`` options, respectively:
+
+    .. code:: python3
+
+        dokdo.ancom_volcano_plot(qzv_file, s=80, color='black', alpha=0.5)
+
+    .. image:: images/ancom_volcano_plot_2.png
     """
     with tempfile.TemporaryDirectory() as t:
-        _parse_input(visualization, t)
+        common.export(visualization, t)
         df = pd.read_table(f'{t}/data.tsv')
 
     if ax is None:

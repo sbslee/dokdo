@@ -489,7 +489,7 @@ Differential Abundance
 
 In QIIME 2, differential abundance of bacteria can be tested using the analysis of composition of microbiomes (ANCOM). After each ANCOM, we can make a volcano plot as shown below:
 
-.. image:: images/ancom_volcano_plot.png
+.. image:: images/ancom_volcano_plot_1.png
 
 where the x-axis is centered log-ratio (CLR) of relative abundance and the y-axis is the W value which represents the number of rejected null hypotheses. The W value will be explained in more detail below. If you are not familiar with the CLR transformation, it is defined as:
 

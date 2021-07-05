@@ -415,11 +415,11 @@ def _parse_input(input, temp_dir):
 
 def export(input, temp_dir):
     """
-    Export QIIME 2 data as files to the temporary directory.
+    Export QIIME 2 data as files to a temporary directory.
 
     This method will automatically detect the type of the input file or
     object from QIIME 2 and then export the underlying data as files to the
-    temporary directory.
+    specified temporary directory.
 
     Parameters
     ----------
@@ -443,4 +443,4 @@ def export(input, temp_dir):
     elif isinstance(input, str) and input.endswith('.qzv'):
         Visualization.load(input).export_data(temp_dir)
     else:
-        raise TypeError()
+        raise TypeError(f'Incorrect input type detected: {type(input)}.')
