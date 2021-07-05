@@ -6,24 +6,21 @@ from scipy.spatial.distance import euclidean
 from qiime2 import Artifact
 
 def addbiplot(
-    pcoa_results, taxonomy=None, dim=2, scale=1.0,
-    count=5, fontsize=None, name_type='feature',
-    level=None, ax=None, figsize=None
+    pcoa_results, dim=2, scale=1.0, count=5, fontsize=None,
+    name_type='feature', taxonomy=None, level=None, ax=None, figsize=None
 ):
-    """Adds arrows (i.e. features) to a PCoA scatter plot.
+    """
+    Draw arrows (features) to an existing PCoA plot.
 
-    This method can handle both 2D and 3D plots.
+    This method supports both 2D and 3D plots.
 
     Parameters
     ----------
     pcoa_results : str or qiime2.Artifact
         Artifact file or object corresponding to
         PCoAResults % Properties('biplot').
-    taxonomy : str or qiime2.Artifact
-        Artifact file or object corresponding to FeatureData[Taxonomy].
-        Required if ``name_type='taxon'`` or ```name_type='confidence'``.
     dim : [2, 3], default: 2
-        Dimension of the input scatter plot.
+        Dimension of the plot.
     scale : float, default: 1.0
         Scale for arrow length.
     count : int, default: 5
@@ -33,8 +30,12 @@ def addbiplot(
     name_type : ['feature', 'taxon', 'confidence'], default: 'feature'
         Determines the type of names displayed. Using 'taxon' and 'confidence'
         requires taxonomy.
+    taxonomy : str or qiime2.Artifact
+        Artifact file or object corresponding to FeatureData[Taxonomy].
+        Required if ``name_type`` is 'taxon' or 'confidence'.
     level : int, optional
-        Taxonomic rank to be displayed. Only use with ``name_type='taxon'```.
+        Level of taxonomic rank to be displayed. This argument has an effect
+        only when ``name_type`` is 'taxon'.
     ax : matplotlib.axes.Axes, optional
         Axes object to draw the plot onto, otherwise uses the current Axes.
     figsize : tuple, optional
@@ -47,9 +48,9 @@ def addbiplot(
 
     See Also
     --------
-    ordinate
-    beta_2d_plot
-    beta_3d_plot
+    dokdo.api.ordinate
+    dokdo.api.beta_2d_plot
+    dokdo.api.beta_3d_plot
 
     Examples
     --------
@@ -122,6 +123,8 @@ def addbiplot(
         feats = pd.concat([feats, tax_df], axis=1, join='inner')
 
     def f(s):
+        if s == 'Unassigned':
+            return s
         ranks = list(s.split(';'))
         if level is None:
             return s

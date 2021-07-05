@@ -59,11 +59,11 @@ def beta_2d_plot(
 
     See Also
     --------
-    ordinate
-    beta_3d_plot
-    beta_scree_plot
-    beta_parallel_plot
-    addbiplot
+    dokdo.api.ordinate
+    dokdo.api.beta_3d_plot
+    dokdo.api.beta_scree_plot
+    dokdo.api.beta_parallel_plot
+    dokdo.api.addbiplot
 
     Examples
     --------

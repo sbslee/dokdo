@@ -7,7 +7,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 def taxa_abundance_box_plot(
-    taxa, metadata=None, hue=None, hue_order=None,
+    visualization, metadata=None, hue=None, hue_order=None,
     add_datapoints=False, level=1, by=None, ax=None,
     figsize=None, count=0, exclude_samples=None,
     include_samples=None, exclude_taxa=None, sort_by_names=False,
@@ -16,7 +16,16 @@ def taxa_abundance_box_plot(
     meanprops=None, show_others=True, sort_by_mean=True,
     jitter=1, alpha=None, artist_kwargs=None
 ):
-    """Create a taxa abundance box plot.
+    """
+    Create a box plot showing the distribution of relative abundance for
+    individual taxa.
+
+    The input visualization may already contain sample metadata. To provide
+    new sample metadata, and ignore the existing one, use the ``metadata``
+    option.
+
+    By default, the method will draw a box for each taxon. To plot grouped
+    box plots, use the ``hue`` option.
 
     +----------------+-----------------------------------------------------+
     | q2-taxa plugin | Example                                             |
@@ -28,7 +37,7 @@ def taxa_abundance_box_plot(
 
     Parameters
     ----------
-    taxa : str or qiime2.Visualization
+    visualization : str or qiime2.Visualization
         Visualization file or object from the q2-taxa plugin.
     metadata : str or qiime2.Metadata, optional
         Metadata file or object.
@@ -95,8 +104,8 @@ def taxa_abundance_box_plot(
 
     See Also
     --------
-    taxa_abundance_bar_plot
-    addpairs
+    dokdo.api.taxa_abundance_bar_plot
+    dokdo.api.addpairs
 
     Examples
     --------
@@ -150,7 +159,7 @@ def taxa_abundance_box_plot(
     .. image:: images/taxa_abundance_box_plot-3.png
     """
     with tempfile.TemporaryDirectory() as t:
-        _parse_input(taxa, t)
+        _parse_input(visualization, t)
         df = pd.read_csv(f'{t}/level-{level}.csv', index_col=0)
 
     # If provided, update the metadata.

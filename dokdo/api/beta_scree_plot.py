@@ -41,10 +41,10 @@ def beta_scree_plot(
 
     See Also
     --------
-    ordinate
-    beta_2d_plot
-    beta_3d_plot
-    beta_parallel_plot
+    dokdo.api.ordinate
+    dokdo.api.beta_2d_plot
+    dokdo.api.beta_3d_plot
+    dokdo.api.beta_parallel_plot
 
     Examples
     --------

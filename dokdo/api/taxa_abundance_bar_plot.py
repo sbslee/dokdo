@@ -6,21 +6,23 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 def taxa_abundance_bar_plot(
-    taxa, metadata=None, level=1, group=None, by=None, ax=None, figsize=None,
-    width=0.8, count=0, exclude_samples=None, include_samples=None,
-    exclude_taxa=None, sort_by_names=False, colors=None,
-    label_columns=None, orders=None, sample_names=None,
+    visualization, metadata=None, level=1, group=None, group_order=None, by=None,
+    ax=None, figsize=None, width=0.8, count=0, exclude_samples=None,
+    include_samples=None, exclude_taxa=None, sort_by_names=False,
+    colors=None, label_columns=None, orders=None, sample_names=None,
     csv_file=None, taxa_names=None, sort_by_mean1=True,
     sort_by_mean2=True, sort_by_mean3=True, show_others=True,
     cmap_name='Accent', legend_short=False, artist_kwargs=None
 ):
-    """Create a bar plot showing relative taxa abundance.
+    """
+    Create a bar plot showing relative taxa abundance for individual samples.
 
-    The input visualization may already contain metadata, but you can
-    update it with the ``metadata`` option.
+    The input visualization may already contain sample metadata. To provide
+    new sample metadata, and ignore the existing one, use the ``metadata``
+    option.
 
-    By default, the method will create a bar for each sample. Use the
-    ``group`` option to create a bar for each sample group.
+    By default, the method will draw a bar for each sample. To plot the
+    average taxa abundance of each sample group, use the ``group`` option.
 
     +----------------+-----------------------------------------------------+
     | q2-taxa plugin | Example                                             |
@@ -32,7 +34,7 @@ def taxa_abundance_bar_plot(
 
     Parameters
     ----------
-    taxa : str or qiime2.Visualization
+    visualization : str or qiime2.Visualization
         Visualization file or object from the q2-taxa plugin.
     metadata : str or qiime2.Metadata, optional
         Metadata file or object.
@@ -40,6 +42,8 @@ def taxa_abundance_bar_plot(
         Taxonomic level at which the features should be collapsed.
     group : str, optional
         Metadata column to be used for grouping the samples.
+    group_order : list, optional
+        Order to plot the groups in.
     by : list, optional
         Column name(s) to be used for sorting the samples. Using 'sample-id'
         will sort the samples by their name, in addition to other column
@@ -102,7 +106,7 @@ def taxa_abundance_bar_plot(
 
     See Also
     --------
-    taxa_abundance_box_plot
+    dokdo.api.taxa_abundance_box_plot
 
     Examples
     --------
@@ -325,8 +329,15 @@ def taxa_abundance_bar_plot(
     .. image:: images/taxa_abundance_bar_plot-11.png
     """
     with tempfile.TemporaryDirectory() as t:
-        _parse_input(taxa, t)
+        _parse_input(visualization, t)
         df = pd.read_csv(f'{t}/level-{level}.csv', index_col=0)
+
+    if sort_by_mean1:
+        cols = _get_mf_cols(df)
+        mf = df[cols]
+        df = df.drop(columns=cols)
+        df = _sort_by_mean(df)
+        df = pd.concat([df, mf], axis=1, join='inner')
 
     # If provided, update the metadata.
     if metadata is None:
@@ -389,8 +400,8 @@ def taxa_abundance_bar_plot(
     mf = df[cols]
     df = df.drop(columns=cols)
 
-    if sort_by_mean1:
-        df = _sort_by_mean(df)
+    if group is not None and group_order is not None:
+        df = df.loc[group_order]
 
     df, mf = _filter_samples(df, mf, exclude_samples, include_samples)
 
@@ -404,7 +415,6 @@ def taxa_abundance_bar_plot(
 
         if sort_by_mean3:
             df = _sort_by_mean(df)
-
 
     # Convert counts to proportions.
     df = df.div(df.sum(axis=1), axis=0)

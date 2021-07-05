@@ -1,14 +1,16 @@
 import tempfile
+
+from . import common
+
 import pandas as pd
-from .common import _parse_input, _artist
-import seaborn as sns
 import matplotlib.pyplot as plt
+import seaborn as sns
 
 def ancom_volcano_plot(
-    ancom, ax=None, figsize=None,
-    s=80, artist_kwargs=None
+    visualization, ax=None, figsize=None, **kwargs
 ):
-    """Create an ANCOM volcano plot.
+    """
+    Create an ANCOM volcano plot.
 
     +-----------------------+----------------------------------------------------------+
     | q2-composition plugin | Example                                                  |
@@ -20,16 +22,15 @@ def ancom_volcano_plot(
 
     Parameters
     ----------
-    ancom : str
+    visualization : str or qiime2.Visualization
         Visualization file or object from the q2-composition plugin.
     ax : matplotlib.axes.Axes, optional
         Axes object to draw the plot onto, otherwise uses the current Axes.
     figsize : tuple, optional
         Width, height in inches. Format: (float, float).
-    s : float, default: 80.0
-        Marker size.
-    artist_kwargs : dict, optional
-        Keyword arguments passed down to the _artist() method.
+    kwargs
+        Other keyword arguments will be passed down to
+        :meth:`seaborn.scatterplot`.
 
     Returns
     -------
@@ -38,30 +39,41 @@ def ancom_volcano_plot(
 
     Examples
     --------
-    Below is a simple example.
+    Below is a simple example:
 
-    >>> qzv_file = f'{data_dir}/moving-pictures-tutorial/ancom-subject.qzv'
-    >>> dokdo.ancom_volcano_plot(qzv_file, figsize=(8, 5))
-    >>> plt.tight_layout()
+    .. code:: python3
 
-    .. image:: images/ancom_volcano_plot.png
+        import dokdo
+        import matplotlib.pyplot as plt
+        %matplotlib inline
+        import seaborn as sns
+        sns.set()
+        qzv_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/ancom-subject.qzv'
+        dokdo.ancom_volcano_plot(qzv_file)
+        plt.tight_layout()
+
+    .. image:: images/ancom_volcano_plot_1.png
+
+    We can control the size, color, and transparency of data points with the
+    ``s``, ``color``, and ``alpha`` options, respectively:
+
+    .. code:: python3
+
+        dokdo.ancom_volcano_plot(qzv_file, s=80, color='black', alpha=0.5)
+        plt.tight_layout()
+
+    .. image:: images/ancom_volcano_plot_2.png
     """
     with tempfile.TemporaryDirectory() as t:
-        _parse_input(ancom, t)
+        common.export(visualization, t)
         df = pd.read_table(f'{t}/data.tsv')
 
     if ax is None:
         fig, ax = plt.subplots(figsize=figsize)
-    sns.scatterplot(data=df, x='clr', y='W', ax=ax, s=s, alpha=0.5,
-                    color='black')
 
-    if artist_kwargs is None:
-        artist_kwargs = {}
+    sns.scatterplot(x='clr', y='W', data=df, ax=ax, **kwargs)
 
-    artist_kwargs = {'xlabel': 'clr',
-                     'ylabel': 'W',
-                     **artist_kwargs}
-
-    ax = _artist(ax, **artist_kwargs)
+    ax.set_xlabel('clr')
+    ax.set_ylabel('W')
 
     return ax

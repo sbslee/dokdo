@@ -289,43 +289,6 @@ def main():
         help=help_msg
     )
 
-    count_reads_parser = subparsers.add_parser(
-        "count-reads",
-        add_help=False,
-        help="Count the number of sequence reads from FASTQ.",
-        description=("Count the number of sequence reads from FASTQ. "
-                     "This command outputs two columns corresponding "
-                     "to the file name and read count, respectively.")
-    )
-
-    count_reads_parser._optionals.title = "Arguments"
-
-    count_reads_parser.add_argument(
-        "-i",
-        "--fastq-path",
-        metavar="PATH",
-        required=True,
-        help=("Path to the input FASTQ file or to the input "
-              "directory containing FASTQ files. [required]")
-    )
-
-    count_reads_parser.add_argument(
-        "-d",
-        "--delimiter",
-        metavar="TEXT",
-        default="\t",
-        help=("Delimiter used to separate the file name and read "
-              "count. [default: '\\t']")
-    )
-
-    count_reads_parser.add_argument(
-        "-h",
-        "--help",
-        action="help",
-        default=argparse.SUPPRESS,
-        help=help_msg
-    )
-
     args = parser.parse_args()
     command = args.command
     delattr(args, "command")
