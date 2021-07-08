@@ -1,7 +1,7 @@
 import tempfile
 from .common import (_parse_input, _artist, taxa_cols,
     _get_mf_cols, _filter_samples, _sort_by_mean, _get_others_col)
-import dokdo
+from . import get_mf, common
 import pandas as pd
 import matplotlib.pyplot as plt
 
@@ -329,7 +329,7 @@ def taxa_abundance_bar_plot(
     .. image:: images/taxa_abundance_bar_plot-11.png
     """
     with tempfile.TemporaryDirectory() as t:
-        _parse_input(visualization, t)
+        common.export(visualization, t)
         df = pd.read_csv(f'{t}/level-{level}.csv', index_col=0)
 
     if sort_by_mean1:
@@ -343,7 +343,7 @@ def taxa_abundance_bar_plot(
     if metadata is None:
         pass
     else:
-        mf = dokdo.get_mf(metadata)
+        mf = get_mf(metadata)
         cols = _get_mf_cols(df)
         df.drop(columns=cols, inplace=True)
         df = pd.concat([df, mf], axis=1, join='inner')

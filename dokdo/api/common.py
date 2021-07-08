@@ -424,9 +424,9 @@ def export(input, temp_dir):
     Parameters
     ----------
     input : str, qiime2.Artifact, or qiime2.Visualization
-        Path to the input file. Or QIIME 2 object.
+        QIIME 2 file or object.
     temp_dir : str
-        Path to the temporary directory.
+        Temporary directory.
     """
     if isinstance(input, qiime2.Artifact):
         fn = f'{temp_dir}/temp.qza'
