@@ -1,4 +1,4 @@
-from .get_mf import get_mf
+from .common import get_mf
 from .ordinate import ordinate
 from .pname import pname
 from .num2sig import num2sig

@@ -1,6 +1,5 @@
 import tempfile
 from .common import _artist
-import dokdo
 
 from . import common
 
@@ -13,7 +12,8 @@ def denoising_stats_plot(
     pseudocount=False, order=None, hide_nsizes=False,
     artist_kwargs=None
 ):
-    """Create a grouped box chart for denoising statistics from DADA2.
+    """
+    Create a grouped box plot for denoising statistics from DADA2.
 
     +-----------------+---------------------------------------------------------+
     | q2-dada2 plugin | Example                                                 |
@@ -64,7 +64,7 @@ def denoising_stats_plot(
         common.export(stats, t)
         df1 = pd.read_table(f'{t}/stats.tsv', skiprows=[1], index_col=0)
 
-    mf = dokdo.get_mf(metadata)
+    mf = common.get_mf(metadata)
 
     df2 = pd.concat([df1, mf], axis=1, join='inner')
 

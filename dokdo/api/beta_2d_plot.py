@@ -2,6 +2,7 @@ from qiime2 import Artifact
 import pandas as pd
 import seaborn as sns
 from .common import _artist
+from . import common
 import matplotlib.pyplot as plt
 from skbio.stats.ordination import OrdinationResults
 import dokdo
@@ -107,7 +108,7 @@ def beta_2d_plot(
     if metadata is None:
         df2 = df1
     else:
-        mf = dokdo.get_mf(metadata)
+        mf = common.get_mf(metadata)
         df2 = pd.concat([df1, mf], axis=1, join='inner')
 
     props = ordination_results.proportion_explained

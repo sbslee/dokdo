@@ -1,7 +1,7 @@
 import tempfile
 from .common import (_artist, taxa_cols,
     _get_mf_cols, _filter_samples, _sort_by_mean, _get_others_col)
-from . import get_mf, common
+from . import common
 import pandas as pd
 import matplotlib.pyplot as plt
 
@@ -343,7 +343,7 @@ def taxa_abundance_bar_plot(
     if metadata is None:
         pass
     else:
-        mf = get_mf(metadata)
+        mf = common.get_mf(metadata)
         cols = _get_mf_cols(df)
         df.drop(columns=cols, inplace=True)
         df = pd.concat([df, mf], axis=1, join='inner')
