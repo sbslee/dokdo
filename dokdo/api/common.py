@@ -394,25 +394,6 @@ def _get_others_col(df, count, taxa_names, show_others):
 
     return df
 
-def _parse_input(input, temp_dir):
-    """Parse the input QIIME 2 object and export the files."""
-    if isinstance(input, qiime2.Artifact):
-        fn = f'{temp_dir}/dokdo-temporary.qza'
-        input.save(fn)
-        input = fn
-        Artifact.load(input).export_data(temp_dir)
-    elif isinstance(input, qiime2.Visualization):
-        fn = f'{temp_dir}/dokdo-temporary.qzv'
-        input.save(fn)
-        input = fn
-        Visualization.load(input).export_data(temp_dir)
-    elif isinstance(input, str) and input.endswith('.qza'):
-        Artifact.load(input).export_data(temp_dir)
-    elif isinstance(input, str) and input.endswith('.qzv'):
-        Visualization.load(input).export_data(temp_dir)
-    else:
-        pass
-
 def export(input, temp_dir):
     """
     Export QIIME 2 data as files to a temporary directory.

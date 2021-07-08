@@ -1,6 +1,9 @@
 import tempfile
 import seaborn as sns
-from .common import _parse_input, _artist
+from .common import _artist
+
+from . import common
+
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
@@ -95,8 +98,7 @@ def alpha_rarefaction_plot(
         raise ValueError(f"Metric should be one of the following: {l}")
 
     with tempfile.TemporaryDirectory() as t:
-        _parse_input(rarefaction, t)
-
+        common.export(rarefaction, t)
         df = pd.read_csv(f'{t}/{metric}.csv', index_col=0)
 
     metadata_columns = [x for x in df.columns if 'iter' not in x]

@@ -1,5 +1,5 @@
 import tempfile
-from .common import (_parse_input, _artist, taxa_cols,
+from .common import (_artist, taxa_cols,
     _get_mf_cols, _filter_samples, _sort_by_mean, _get_others_col)
 from . import get_mf, common
 import pandas as pd

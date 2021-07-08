@@ -1,5 +1,5 @@
 import tempfile
-from .common import _parse_input, _artist
+from .common import _artist
 import pandas as pd
 import skbio as sb
 import matplotlib.pyplot as plt

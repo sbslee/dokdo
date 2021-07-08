@@ -1,6 +1,9 @@
 import tempfile
-from .common import _parse_input, _artist
+from .common import _artist
 import dokdo
+
+from . import common
+
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
@@ -58,8 +61,7 @@ def denoising_stats_plot(
     .. image:: images/denoising_stats_plot.png
     """
     with tempfile.TemporaryDirectory() as t:
-        _parse_input(stats, t)
-
+        common.export(stats, t)
         df1 = pd.read_table(f'{t}/stats.tsv', skiprows=[1], index_col=0)
 
     mf = dokdo.get_mf(metadata)

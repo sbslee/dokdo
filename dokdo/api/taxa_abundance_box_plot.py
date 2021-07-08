@@ -1,7 +1,10 @@
 import tempfile
-from .common import (_parse_input, _artist,
+from .common import (_artist,
     _get_mf_cols, _filter_samples, _sort_by_mean, _get_others_col)
 import dokdo
+
+from . import common
+
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
@@ -159,7 +162,7 @@ def taxa_abundance_box_plot(
     .. image:: images/taxa_abundance_box_plot-3.png
     """
     with tempfile.TemporaryDirectory() as t:
-        _parse_input(visualization, t)
+        common.export(visualization, t)
         df = pd.read_csv(f'{t}/level-{level}.csv', index_col=0)
 
     # If provided, update the metadata.
