@@ -2,6 +2,7 @@ import tempfile
 from .common import (_artist, taxa_cols,
     _get_mf_cols, _filter_samples, _sort_by_mean, _get_others_col)
 from . import common
+
 import pandas as pd
 import matplotlib.pyplot as plt
 
@@ -34,8 +35,9 @@ def taxa_abundance_bar_plot(
 
     Parameters
     ----------
-    visualization : str or qiime2.Visualization
-        Visualization file or object from the q2-taxa plugin.
+    visualization : str, qiime2.Visualization, pandas.DataFrame
+        Visualization file or object from the q2-taxa plugin. Alternatively,
+        a :class:`pandas.DataFrame` object.
     metadata : str or qiime2.Metadata, optional
         Metadata file or object.
     level : int, default: 1
@@ -328,9 +330,12 @@ def taxa_abundance_bar_plot(
 
     .. image:: images/taxa_abundance_bar_plot-11.png
     """
-    with tempfile.TemporaryDirectory() as t:
-        common.export(visualization, t)
-        df = pd.read_csv(f'{t}/level-{level}.csv', index_col=0)
+    if isinstance(visualization, pd.DataFrame):
+        df = visualization
+    else:
+        with tempfile.TemporaryDirectory() as t:
+            common.export(visualization, t)
+            df = pd.read_csv(f'{t}/level-{level}.csv', index_col=0)
 
     if sort_by_mean1:
         cols = _get_mf_cols(df)
@@ -439,7 +444,7 @@ def taxa_abundance_bar_plot(
         df.to_csv(csv_file)
 
     if legend_short:
-        df.columns = [dokdo.pname(x) for x in df.columns]
+        df.columns = [common.pname(x) for x in df.columns]
 
     df.plot.bar(stacked=True,
                 legend=False,
