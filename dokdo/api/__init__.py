@@ -20,7 +20,6 @@ from .ancom_volcano_plot import ancom_volcano_plot
 from .addsig import addsig
 from .addpairs import addpairs
 from .addbiplot import addbiplot
-from .barplot import barplot
 from .heatmap import heatmap
 from .regplot import regplot
 
@@ -31,4 +30,4 @@ __all__ = ['alpha_diversity_plot', 'addpairs', 'wilcoxon',
            'beta_scree_plot', 'beta_parallel_plot', 'distance_matrix_plot',
            'taxa_abundance_bar_plot', 'taxa_abundance_box_plot',
            'ancom_volcano_plot', 'addsig', 'regplot', 'addbiplot',
-           'barplot', 'ordinate', 'pname', 'get_mf']
+           'ordinate', 'pname', 'get_mf']

@@ -16,6 +16,8 @@ Changelog
   - :meth:`beta_parallel_plot`
   - :meth:`distance_matrix_plot`
 
+* Deprecate the :meth:`barplot` method.
+
 1.10.0 (2021-07-06)
 -------------------
 

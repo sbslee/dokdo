@@ -397,12 +397,6 @@ addbiplot
 .. automodule:: dokdo.api.addbiplot
   :members:
 
-barplot
--------
-
-.. automodule:: dokdo.api.barplot
-  :members:
-
 heatmap
 -------
 
