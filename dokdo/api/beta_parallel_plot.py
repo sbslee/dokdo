@@ -1,16 +1,17 @@
+from . import common
+
 from qiime2 import Artifact
+
 import matplotlib.pyplot as plt
-from .common import _artist
-from skbio.stats.ordination import OrdinationResults
 import pandas as pd
-import dokdo
+from skbio.stats.ordination import OrdinationResults
 
 def beta_parallel_plot(
-    pcoa_results, hue=None, hue_order=None,
-    metadata=None, count=5, ax=None,
-    figsize=None, artist_kwargs=None
+    artifact, hue=None, hue_order=None, metadata=None, count=5,
+    ax=None, figsize=None
 ):
-    """Create a parallel plot from PCoA results.
+    """
+    Create a parallel plot from PCoA results.
 
     +---------------------+---------------------------------------------------+
     | q2-diversity plugin | Example                                           |
@@ -22,8 +23,10 @@ def beta_parallel_plot(
 
     Parameters
     ----------
-    pcoa_results : str or qiime2.Artifact
-        Artifact file or object corresponding to PCoAResults.
+    artifact : str or qiime2.Artifact
+        Artifact file or object from the q2-diversity plugin with the
+        semantic type ``PCoAResults`` or
+        ``PCoAResults % Properties('biplot')``.
     hue : str, optional
         Grouping variable that will produce lines with different colors.
     hue_order : list, optional
@@ -36,8 +39,6 @@ def beta_parallel_plot(
         Axes object to draw the plot onto, otherwise uses the current Axes.
     figsize : tuple, optional
         Width, height in inches. Format: (float, float).
-    artist_kwargs : dict, optional
-        Keyword arguments passed down to the _artist() method.
 
     Returns
     -------
@@ -53,29 +54,39 @@ def beta_parallel_plot(
 
     Examples
     --------
-    Below is a simple example.
+    Below is a simple example:
 
-    >>> qza_file = f'{data_dir}/moving-pictures-tutorial/unweighted_unifrac_pcoa_results.qza'
-    >>> metadata_file = f'{data_dir}/moving-pictures-tutorial/sample-metadata.tsv'
-    >>> dokdo.beta_parallel_plot(qza_file)
-    >>> plt.tight_layout()
+    .. code:: python3
+
+        import dokdo
+        import matplotlib.pyplot as plt
+        %matplotlib inline
+        import seaborn as sns
+        sns.set()
+        qza_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/unweighted_unifrac_pcoa_results.qza'
+        metadata_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/sample-metadata.tsv'
+        dokdo.beta_parallel_plot(qza_file,
+                                 figsize=(8, 6))
+        plt.tight_layout()
 
     .. image:: images/beta_parallel_plot-1.png
 
-    We can group the lines by body-site.
+    We can group the lines by body-site:
 
-    >>> dokdo.beta_parallel_plot(qza_file,
-    ...                          metadata=metadata_file,
-    ...                          hue='body-site',
-    ...                          artist_kwargs=dict(show_legend=True))
-    >>> plt.tight_layout()
+    .. code:: python3
+
+        dokdo.beta_parallel_plot(qza_file,
+                                 metadata=metadata_file,
+                                 hue='body-site',
+                                 figsize=(8, 6))
+        plt.tight_layout()
 
     .. image:: images/beta_parallel_plot-2.png
     """
-    if isinstance(pcoa_results, str):
-        _pcoa_results = Artifact.load(pcoa_results)
+    if isinstance(artifact, str):
+        _pcoa_results = Artifact.load(artifact)
     else:
-        _pcoa_results = pcoa_results
+        _pcoa_results = artifact
 
     ordination_results = _pcoa_results.view(OrdinationResults)
 
@@ -87,7 +98,7 @@ def beta_parallel_plot(
     if hue is None:
         col = df.index
     else:
-        mf = dokdo.get_mf(metadata)
+        mf = common.get_mf(metadata)
         col = mf[hue]
 
     df = df.assign(Target=col)
@@ -102,15 +113,11 @@ def beta_parallel_plot(
     pd.plotting.parallel_coordinates(df, 'Target',
         color=plt.cm.get_cmap('tab10').colors)
 
-    if artist_kwargs is None:
-        artist_kwargs = {}
+    if hue is None:
+        ax.get_legend().remove()
 
-    artist_kwargs = {'xlabel': '',
-                     'ylabel': '',
-                     'xticklabels': props,
-                     'legend_title': hue,
-                     **artist_kwargs}
-
-    ax = _artist(ax, **artist_kwargs)
+    ax.set_xlabel('')
+    ax.set_ylabel('')
+    ax.set_xticklabels(props)
 
     return ax

@@ -1,11 +1,10 @@
 from . import common
 
-from skbio.stats.ordination import OrdinationResults
-from qiime2 import Artifact
-
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
+from skbio.stats.ordination import OrdinationResults
+from qiime2 import Artifact
 
 def beta_2d_plot(
     artifact, metadata=None, hue=None, size=None,

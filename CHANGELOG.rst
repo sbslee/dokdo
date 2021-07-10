@@ -12,6 +12,8 @@ Changelog
   - :meth:`alpha_diversity_plot`
   - :meth:`beta_2d_plot`
   - :meth:`beta_3d_plot`
+  - :meth:`beta_scree_plot`
+  - :meth:`beta_parallel_plot`
 
 1.10.0 (2021-07-06)
 -------------------

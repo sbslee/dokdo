@@ -1,10 +1,9 @@
 from . import common
 
-from qiime2 import Artifact
-
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
+from qiime2 import Artifact
 
 def alpha_diversity_plot(
     artifact, metadata, where, add_swarmplot=False, order=None,

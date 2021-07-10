@@ -1,15 +1,12 @@
-from qiime2 import Artifact
-from skbio.stats.ordination import OrdinationResults
 import seaborn as sns
 import pandas as pd
-from .common import _artist
 import matplotlib.pyplot as plt
+from skbio.stats.ordination import OrdinationResults
+from qiime2 import Artifact
 
-def beta_scree_plot(
-    pcoa_results, count=5, ax=None,
-    figsize=None, color='blue', artist_kwargs=None
-):
-    """Create a scree plot from PCoA results.
+def beta_scree_plot(artifact, count=5, color='blue', ax=None, figsize=None):
+    """
+    Create a scree plot from PCoA results.
 
     +---------------------+---------------------------------------------------+
     | q2-diversity plugin | Example                                           |
@@ -21,18 +18,18 @@ def beta_scree_plot(
 
     Parameters
     ----------
-    pcoa_results : str or qiime2.Artifact
-        Artifact file or object corresponding to PCoAResults.
+    artifact : str or qiime2.Artifact
+        Artifact file or object from the q2-diversity plugin with the
+        semantic type ``PCoAResults`` or
+        ``PCoAResults % Properties('biplot')``.
     count : int, default: 5
         Number of principal components to be displayed.
+    color : str, default: 'blue'
+        Bar color.
     ax : matplotlib.axes.Axes, optional
         Axes object to draw the plot onto, otherwise uses the current Axes.
     figsize : tuple, optional
         Width, height in inches. Format: (float, float).
-    color : str, default: 'blue'
-        Bar color.
-    artist_kwargs : dict, optional
-        Keyword arguments passed down to the _artist() method.
 
     Returns
     -------
@@ -48,18 +45,26 @@ def beta_scree_plot(
 
     Examples
     --------
-    Below is a simple example.
+    Below is a simple example:
 
-    >>> qza_file = f'{data_dir}/moving-pictures-tutorial/unweighted_unifrac_pcoa_results.qza'
-    >>> dokdo.beta_scree_plot(qza_file)
-    >>> plt.tight_layout()
+    .. code:: python3
+
+        import dokdo
+        import matplotlib.pyplot as plt
+        %matplotlib inline
+        import seaborn as sns
+        sns.set()
+        qza_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/unweighted_unifrac_pcoa_results.qza'
+        dokdo.beta_scree_plot(qza_file)
+        plt.tight_layout()
+        plt.savefig('docs/images/beta_scree_plot.png')
 
     .. image:: images/beta_scree_plot.png
     """
-    if isinstance(pcoa_results, str):
-        _pcoa_results = Artifact.load(pcoa_results)
+    if isinstance(artifact, str):
+        _pcoa_results = Artifact.load(artifact)
     else:
-        _pcoa_results = pcoa_results
+        _pcoa_results = artifact
 
     ordination_results = _pcoa_results.view(OrdinationResults)
     props = ordination_results.proportion_explained
@@ -72,13 +77,6 @@ def beta_scree_plot(
 
     sns.barplot(x='PC', y='Proportion', data=sliced_df, color=color, ax=ax)
 
-    if artist_kwargs is None:
-        artist_kwargs = {}
-
-    artist_kwargs = {'xlabel': '',
-                     'ylabel': 'Variation explained (%)',
-                     **artist_kwargs}
-
-    ax = _artist(ax, **artist_kwargs)
+    ax.set_ylabel('Variation explained (%)')
 
     return ax

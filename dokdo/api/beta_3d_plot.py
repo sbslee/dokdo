@@ -1,10 +1,9 @@
 from . import common
 
-from qiime2 import Artifact
-from skbio.stats.ordination import OrdinationResults
-
 import pandas as pd
 import matplotlib.pyplot as plt
+from skbio.stats.ordination import OrdinationResults
+from qiime2 import Artifact
 
 def beta_3d_plot(
     artifact, metadata=None, hue=None, azim=-60,
@@ -25,8 +24,9 @@ def beta_3d_plot(
     Parameters
     ----------
     artifact : str or qiime2.Artifact
-        Artifact file or object corresponding to PCoAResults or
-        PCoAResults % Properties('biplot').
+        Artifact file or object from the q2-diversity plugin with the
+        semantic type ``PCoAResults`` or
+        ``PCoAResults % Properties('biplot')``.
     metadata : str or qiime2.Metadata, optional
         Metadata file or object.
     hue : str, optional
