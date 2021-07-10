@@ -49,10 +49,20 @@ def alpha_diversity_plot(
     --------
     Below is a simple example.
 
-    >>> qzv_file = f'{data_dir}/moving-pictures-tutorial/faith_pd_vector.qza'
-    >>> metadata_file = f'{data_dir}/moving-pictures-tutorial/sample-metadata.tsv'
-    >>> dokdo.alpha_diversity_plot(qzv_file, metadata_file, 'body-site')
-    >>> plt.tight_layout()
+    .. code:: python3
+
+        import dokdo
+        import matplotlib.pyplot as plt
+        %matplotlib inline
+        import seaborn as sns
+        sns.set()
+        qzv_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/faith_pd_vector.qza'
+        metadata_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/sample-metadata.tsv'
+        dokdo.alpha_diversity_plot(qzv_file,
+                                   metadata_file,
+                                   'body-site')
+        plt.tight_layout()
+        plt.savefig('docs/images/alpha_diversity_plot.png')
 
     .. image:: images/alpha_diversity_plot.png
     """
