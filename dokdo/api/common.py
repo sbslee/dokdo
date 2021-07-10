@@ -431,7 +431,7 @@ def get_mf(metadata):
     Convert a Metadata file or object to a dataframe.
 
     This method automatically detects the type of input metadata and
-    then converts it to a :clss:`pandas.DataFrame` object.
+    then converts it to a :class:`pandas.DataFrame` object.
 
     Parameters
     ----------

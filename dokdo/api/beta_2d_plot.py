@@ -1,17 +1,16 @@
+from . import common
+
+from skbio.stats.ordination import OrdinationResults
 from qiime2 import Artifact
+
 import pandas as pd
 import seaborn as sns
-from .common import _artist
-from . import common
 import matplotlib.pyplot as plt
-from skbio.stats.ordination import OrdinationResults
-import dokdo
 
 def beta_2d_plot(
-    pcoa_results, metadata=None, hue=None, size=None,
-    style=None, s=80, alpha=None, ax=None,
-    figsize=None, hue_order=None, style_order=None,
-    legend_type='brief', artist_kwargs=None
+    artifact, metadata=None, hue=None, size=None,
+    style=None, s=80, alpha=None, hue_order=None, style_order=None,
+    legend='brief', ax=None, figsize=None
 ):
     """Create a 2D scatter plot from PCoA results.
 
@@ -25,9 +24,10 @@ def beta_2d_plot(
 
     Parameters
     ----------
-    pcoa_results : str or qiime2.Artifact
-        Artifact file or object corresponding to PCoAResults or
-        PCoAResults % Properties('biplot').
+    artifact : str or qiime2.Artifact
+        Artifact file or object from the q2-diversity plugin with the
+        semantic type ``PCoAResults`` or
+        ``PCoAResults % Properties('biplot')``.
     metadata : str or qiime2.Metadata, optional
         Metadata file or object.
     hue : str, optional
@@ -40,18 +40,16 @@ def beta_2d_plot(
         Marker size.
     alpha : float, optional
         Proportional opacity of the points.
-    ax : matplotlib.axes.Axes, optional
-        Axes object to draw the plot onto, otherwise uses the current Axes.
-    figsize : tuple, optional
-        Width, height in inches. Format: (float, float).
     hue_order : list, optional
         Specify the order of categorical levels of the 'hue' semantic.
     style_order : list, optional
         Specify the order of categorical levels of the 'style' semantic.
-    legend_type : str, default: 'brief'
-        Legend type as in seaborn.scatterplot ('brief' or 'full').
-    artist_kwargs : dict, optional
-        Keyword arguments passed down to the _artist() method.
+    legend : str, default: 'brief'
+        Legend type as in :meth:`seaborn.scatterplot`.
+    ax : matplotlib.axes.Axes, optional
+        Axes object to draw the plot onto, otherwise uses the current Axes.
+    figsize : tuple, optional
+        Width, height in inches. Format: (float, float).
 
     Returns
     -------
@@ -70,10 +68,18 @@ def beta_2d_plot(
     --------
     Below is a simple example.
 
-    >>> qza_file = f'{data_dir}/moving-pictures-tutorial/unweighted_unifrac_pcoa_results.qza'
-    >>> metadata_file = f'{data_dir}/moving-pictures-tutorial/sample-metadata.tsv'
-    >>> dokdo.beta_2d_plot(qza_file)
-    >>> plt.tight_layout()
+    .. code:: python3
+
+        import dokdo
+        import matplotlib.pyplot as plt
+        %matplotlib inline
+        import seaborn as sns
+        sns.set()
+        qza_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/unweighted_unifrac_pcoa_results.qza'
+        metadata_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/sample-metadata.tsv'
+        dokdo.beta_2d_plot(qza_file,
+                           figsize=(5, 5))
+        plt.tight_layout()
 
     .. image:: images/beta_2d_plot-1.png
 
@@ -82,23 +88,44 @@ def beta_2d_plot(
     numeric, we can use ``size`` to control the size of datapoints.
     Finally, we can combine all those groupings.
 
-    >>> fig, [[ax1, ax2], [ax3, ax4]] = plt.subplots(2, 2, figsize=(8, 8))
-    >>> artist_kwargs1 = dict(show_legend=True, title="hue='body-site'")
-    >>> artist_kwargs2 = dict(show_legend=True, title="style='subject'")
-    >>> artist_kwargs3 = dict(show_legend=True, title="size='days-since-experiment-start'")
-    >>> artist_kwargs4 = dict(title="Combined groupings")
-    >>> dokdo.beta_2d_plot(qza_file, metadata_file, ax=ax1, hue='body-site', artist_kwargs=artist_kwargs1)
-    >>> dokdo.beta_2d_plot(qza_file, metadata_file, ax=ax2, style='subject', artist_kwargs=artist_kwargs2)
-    >>> dokdo.beta_2d_plot(qza_file, metadata_file, ax=ax3, size='days-since-experiment-start', artist_kwargs=artist_kwargs3)
-    >>> dokdo.beta_2d_plot(qza_file, metadata_file, ax=ax4, hue='body-site', style='subject', size='days-since-experiment-start', artist_kwargs=artist_kwargs4)
-    >>> plt.tight_layout()
+    .. code:: python3
+
+        fig, [[ax1, ax2], [ax3, ax4]] = plt.subplots(2, 2, figsize=(15, 15))
+        dokdo.beta_2d_plot(qza_file,
+                           metadata_file,
+                           ax=ax1,
+                           hue='body-site')
+        dokdo.beta_2d_plot(qza_file,
+                           metadata_file,
+                           ax=ax2,
+                           style='subject')
+        dokdo.beta_2d_plot(qza_file,
+                           metadata_file,
+                           ax=ax3,
+                           size='days-since-experiment-start')
+        dokdo.beta_2d_plot(qza_file,
+                           metadata_file,
+                           ax=ax4,
+                           hue='body-site',
+                           style='subject',
+                           size='days-since-experiment-start')
+        ax1.set_title("hue='body-site'", fontsize=20)
+        ax2.set_title("style='subject'", fontsize=20)
+        ax3.set_title("size='days-since-experiment-start'", fontsize=20)
+        ax4.set_title('Multiple groupings', fontsize=20)
+        for ax in [ax1, ax2, ax3, ax4]:
+            ax.xaxis.label.set_size(20)
+            ax.yaxis.label.set_size(20)
+            ax.tick_params(axis='both', which='major', labelsize=15)
+            ax.legend(loc='upper left')
+        plt.tight_layout()
 
     .. image:: images/beta_2d_plot-2.png
     """
-    if isinstance(pcoa_results, str):
-        _pcoa_results = Artifact.load(pcoa_results)
+    if isinstance(artifact, str):
+        _pcoa_results = Artifact.load(artifact)
     else:
-        _pcoa_results = pcoa_results
+        _pcoa_results = artifact
 
     ordination_results = _pcoa_results.view(OrdinationResults)
 
@@ -127,17 +154,9 @@ def beta_2d_plot(
                     ax=ax,
                     s=s,
                     alpha=alpha,
-                    legend=legend_type)
+                    legend=legend)
 
-    if artist_kwargs is None:
-        artist_kwargs = {}
-
-    artist_kwargs = {'xlabel': f'Axis 1 ({props[0]*100:.2f} %)',
-                     'ylabel': f'Axis 2 ({props[1]*100:.2f} %)',
-                     'hide_xticks': True,
-                     'hide_yticks': True,
-                     **artist_kwargs}
-
-    ax = _artist(ax, **artist_kwargs)
+    ax.set_xlabel(f'Axis 1 ({props[0]*100:.2f} %)')
+    ax.set_ylabel(f'Axis 2 ({props[1]*100:.2f} %)')
 
     return ax

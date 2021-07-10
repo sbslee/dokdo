@@ -4,6 +4,15 @@ Changelog
 1.11.0 (in development)
 -----------------------
 
+* :issue:`21`: Update the :meth:`taxa_abundance_bar_plot` method to accept :class:`pandas.DataFrame` in case the input data was not generated from QIIME 2 (e.g. shotgun sequencing).
+* :issue:`19`: Remove the ``artist_kwargs`` argument from the following methods:
+
+  - :meth:`denoising_stats_plot`
+  - :meth:`alpha_rarefaction_plot`
+  - :meth:`alpha_diversity_plot`
+  - :meth:`beta_2d_plot`
+  - :meth:`beta_3d_plot`
+
 1.10.0 (2021-07-06)
 -------------------
 

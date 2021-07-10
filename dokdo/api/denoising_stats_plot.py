@@ -1,5 +1,4 @@
 import tempfile
-from .common import _artist
 
 from . import common
 
@@ -8,9 +7,8 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 def denoising_stats_plot(
-    stats, metadata, where, ax=None, figsize=None,
-    pseudocount=False, order=None, hide_nsizes=False,
-    artist_kwargs=None
+    artifact, metadata, where, pseudocount=False, order=None,
+    hide_nsizes=False, ax=None, figsize=None,
 ):
     """
     Create a grouped box plot for denoising statistics from DADA2.
@@ -25,24 +23,22 @@ def denoising_stats_plot(
 
     Parameters
     ----------
-    stats : str or qiime2.Artifact
+    artifact : str or qiime2.Artifact
         Artifact file or object from the q2-dada2 plugin.
     metadata : str or qiime2.Metadata
         Metadata file or object.
     where : str
         Column name of the sample metadata.
-    ax : matplotlib.axes.Axes, optional
-        Axes object to draw the plot onto, otherwise uses the current Axes.
-    figsize : tuple, optional
-        Width, height in inches. Format: (float, float).
     pseudocount : bool, default: False
         Add pseudocount to remove zeros.
     order : list, optional
         Order to plot the categorical levels in.
     hide_nsizes : bool, default: False
         Hide sample size from x-axis labels.
-    artist_kwargs : dict, optional
-        Keyword arguments passed down to the _artist() method.
+    ax : matplotlib.axes.Axes, optional
+        Axes object to draw the plot onto, otherwise uses the current Axes.
+    figsize : tuple, optional
+        Width, height in inches. Format: (float, float).
 
     Returns
     -------
@@ -53,15 +49,25 @@ def denoising_stats_plot(
     --------
     Below is a simple example.
 
-    >>> qza_file = f'{data_dir}/atacama-soil-microbiome-tutorial/denoising-stats.qza'
-    >>> metadata_file = f'{data_dir}/atacama-soil-microbiome-tutorial/sample-metadata.tsv'
-    >>> dokdo.denoising_stats_plot(qza_file, metadata_file, 'transect-name', artist_kwargs=dict(show_legend=True))
-    >>> plt.tight_layout()
+    .. code:: python3
+
+        import dokdo
+        import matplotlib.pyplot as plt
+        %matplotlib inline
+        import seaborn as sns
+        sns.set()
+        qza_file = '/Users/sbslee/Desktop/dokdo/data/atacama-soil-microbiome-tutorial/denoising-stats.qza'
+        metadata_file = '/Users/sbslee/Desktop/dokdo/data/atacama-soil-microbiome-tutorial/sample-metadata.tsv'
+        dokdo.denoising_stats_plot(qza_file,
+                                   metadata_file,
+                                   'transect-name',
+                                   figsize=(8, 6))
+        plt.tight_layout()
 
     .. image:: images/denoising_stats_plot.png
     """
     with tempfile.TemporaryDirectory() as t:
-        common.export(stats, t)
+        common.export(artifact, t)
         df1 = pd.read_table(f'{t}/stats.tsv', skiprows=[1], index_col=0)
 
     mf = common.get_mf(metadata)
@@ -90,13 +96,7 @@ def denoising_stats_plot(
         xtexts = [f'{x} ({nsizes[x]})' for x in xtexts]
         ax.set_xticklabels(xtexts)
 
-    if artist_kwargs is None:
-        artist_kwargs = {}
-
-    artist_kwargs = {'xlabel': where,
-                     'ylabel': 'Read depth',
-                     **artist_kwargs}
-
-    ax = _artist(ax, **artist_kwargs)
+    ax.set_xlabel(where)
+    ax.set_ylabel('Read depth')
 
     return ax

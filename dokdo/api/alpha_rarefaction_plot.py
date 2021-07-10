@@ -1,6 +1,4 @@
 import tempfile
-import seaborn as sns
-from .common import _artist
 
 from . import common
 
@@ -9,9 +7,8 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 def alpha_rarefaction_plot(
-    rarefaction, hue='sample-id', metric='shannon', ax=None,
-    figsize=None, hue_order=None, units=None, estimator='mean',
-    seed=1, artist_kwargs=None
+    visualization, hue='sample-id', metric='shannon', hue_order=None,
+    units=None, estimator='mean', ax=None, figsize=None
 ):
     """Create an alpha rarefaction plot.
 
@@ -25,17 +22,13 @@ def alpha_rarefaction_plot(
 
     Parameters
     ----------
-    rarefaction : str or qiime2.Visualization
+    visualization : str or qiime2.Visualization
         Visualization file or object from the q2-diversity plugin.
     hue : str, default: 'sample-id'
         Grouping variable that will produce lines with different colors. If not
         provided, sample IDs will be used.
     metric : str, default: 'shannon'
         Diversity metric ('shannon', 'observed_features', or 'faith_pd').
-    ax : matplotlib.axes.Axes, optional
-        Axes object to draw the plot onto, otherwise uses the current Axes.
-    figsize : tuple, optional
-        Width, height in inches. Format: (float, float).
     hue_order : list, optional
         Specify the order of categorical levels of the 'hue' semantic.
     units : str, optional
@@ -45,10 +38,10 @@ def alpha_rarefaction_plot(
     estimator : str, default: 'mean', optional
         Method for aggregating across multiple observations of the y variable
         at the same x level. If None, all observations will be drawn.
-    seed : int, default: 1
-        Seed for reproducible bootstrapping.
-    artist_kwargs : dict, optional
-        Keyword arguments passed down to the _artist() method.
+    ax : matplotlib.axes.Axes, optional
+        Axes object to draw the plot onto, otherwise uses the current Axes.
+    figsize : tuple, optional
+        Width, height in inches. Format: (float, float).
 
     Returns
     -------
@@ -57,38 +50,46 @@ def alpha_rarefaction_plot(
 
     Examples
     --------
-    Below is a simple example.
+    Below is a simple example:
 
-    >>> qzv_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/alpha-rarefaction.qzv'
-    >>> artist_kwargs = dict(show_legend=True, legend_ncol=5)
-    >>> dokdo.alpha_rarefaction_plot(qzv_file, figsize=(8, 5), artist_kwargs=artist_kwargs)
-    >>> plt.tight_layout()
+    .. code:: python3
+
+        import dokdo
+        import matplotlib.pyplot as plt
+        %matplotlib inline
+        import seaborn as sns
+        sns.set()
+        qzv_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/alpha-rarefaction.qzv'
+        ax = dokdo.alpha_rarefaction_plot(qzv_file,
+                                          figsize=(9, 6))
+        ax.legend(ncol=5)
+        plt.tight_layout()
 
     .. image:: images/alpha_rarefaction_plot-1.png
 
-    We can group the samples by body-site.
+    We can group the samples by body-site:
 
-    >>> artist_kwargs = dict(show_legend=True)
-    >>> dokdo.alpha_rarefaction_plot(qzv_file,
-    ...                              hue='body-site',
-    ...                              metric='observed_features',
-    ...                              figsize=(8, 5),
-    ...                              units='sample-id',
-    ...                              estimator=None,
-    ...                              artist_kwargs=artist_kwargs)
-    >>> plt.tight_layout()
+    .. code:: python3
+
+        dokdo.alpha_rarefaction_plot(qzv_file,
+                                     hue='body-site',
+                                     metric='observed_features',
+                                     figsize=(9, 6),
+                                     units='sample-id',
+                                     estimator=None)
+        plt.tight_layout()
 
     .. image:: images/alpha_rarefaction_plot-2.png
 
-    Alternatively, we can aggregate the samples by body-site.
+    Alternatively, we can aggregate the samples by body-site:
 
-    >>> artist_kwargs = dict(show_legend=True)
-    >>> dokdo.alpha_rarefaction_plot(qzv_file,
-    ...                              hue='body-site',
-    ...                              metric='observed_features',
-    ...                              figsize=(8, 5),
-    ...                              artist_kwargs=artist_kwargs)
-    >>> plt.tight_layout()
+    .. code:: python3
+
+        dokdo.alpha_rarefaction_plot(qzv_file,
+                                     hue='body-site',
+                                     metric='observed_features',
+                                     figsize=(9, 6))
+        plt.tight_layout()
 
     .. image:: images/alpha_rarefaction_plot-3.png
     """
@@ -98,7 +99,7 @@ def alpha_rarefaction_plot(
         raise ValueError(f"Metric should be one of the following: {l}")
 
     with tempfile.TemporaryDirectory() as t:
-        common.export(rarefaction, t)
+        common.export(visualization, t)
         df = pd.read_csv(f'{t}/{metric}.csv', index_col=0)
 
     metadata_columns = [x for x in df.columns if 'iter' not in x]
@@ -120,17 +121,9 @@ def alpha_rarefaction_plot(
                  sort=False,
                  units=units,
                  estimator=estimator,
-                 hue_order=hue_order,
-                 seed=seed)
+                 hue_order=hue_order)
 
-    if artist_kwargs is None:
-        artist_kwargs = {}
-
-    artist_kwargs = {'xlabel': 'Sequencing depth',
-                     'ylabel': metric,
-                     'plot_method': 'alpha_rarefaction_plot',
-                     **artist_kwargs}
-
-    ax = _artist(ax, **artist_kwargs)
+    ax.set_xlabel('Sequencing depth')
+    ax.set_ylabel(metric)
 
     return ax
