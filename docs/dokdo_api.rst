@@ -361,14 +361,14 @@ distance_matrix_plot
 taxa_abundance_bar_plot
 -----------------------
 
-.. automodule:: dokdo.api.taxa_abundance_bar_plot
-   :members:
+.. automodule:: dokdo.api.taxa_abundance
+   :members: taxa_abundance_bar_plot
 
 taxa_abundance_box_plot
 -----------------------
 
-.. automodule:: dokdo.api.taxa_abundance_box_plot
-  :members:
+.. automodule:: dokdo.api.taxa_abundance
+  :members: taxa_abundance_box_plot
 
 ancom_volcano_plot
 ------------------

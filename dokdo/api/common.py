@@ -25,57 +25,6 @@ from qiime2 import Metadata
 from qiime2 import Visualization
 import dokdo
 
-def taxa_cols(df):
-    """Returns metadata columns from DataFrame object."""
-    cols = []
-    for col in df.columns:
-        if 'Unassigned' in col:
-            cols.append(col)
-        elif '__' in col:
-            cols.append(col)
-        else:
-            continue
-    return cols
-
-def _get_mf_cols(df):
-    """Returns metadata columns from DataFrame object."""
-    cols = []
-    for column in df.columns:
-        if 'Unassigned' in column:
-            continue
-        elif '__' in column:
-            continue
-        else:
-            cols.append(column)
-    return cols
-
-def _filter_samples(df, mf, exclude_samples, include_samples):
-    """Returns DataFrame objects after sample filtering."""
-    if exclude_samples and include_samples:
-        m = ("Cannot use 'exclude_samples' and "
-             "'include_samples' arguments together")
-        raise ValueError(m)
-    elif exclude_samples:
-        for x in exclude_samples:
-            for y in exclude_samples[x]:
-                i = mf[x] != y
-                df = df.loc[i]
-                mf = mf.loc[i]
-    elif include_samples:
-        for x in include_samples:
-            i = mf[x].isin(include_samples[x])
-            df = df.loc[i]
-            mf = mf.loc[i]
-    else:
-        pass
-    return (df, mf)
-
-def _sort_by_mean(df):
-    """Returns DataFrame object after sorting taxa by mean relative abundance."""
-    a = df.div(df.sum(axis=1), axis=0)
-    a = a.loc[:, a.mean().sort_values(ascending=False).index]
-    return df[a.columns]
-
 def _pretty_taxa(s):
     """Returns pretty taxa name."""
     if isinstance(s, matplotlib.text.Text):
@@ -370,29 +319,6 @@ def _artist(
             pass
 
     return ax
-
-def _get_others_col(df, count, taxa_names, show_others):
-    """Returns DataFrame object after selecting taxa."""
-    if count is not 0 and taxa_names is not None:
-        m = "Cannot use 'count' and 'taxa_names' arguments together"
-        raise ValueError(m)
-    elif count is not 0:
-        if count < df.shape[1]:
-            others = df.iloc[:, count-1:].sum(axis=1)
-            df = df.iloc[:, :count-1]
-            if show_others:
-                df = df.assign(Others=others)
-        else:
-            pass
-    elif taxa_names is not None:
-        others = df.drop(columns=taxa_names).sum(axis=1)
-        df = df[taxa_names]
-        if show_others:
-            df = df.assign(Others=others)
-    else:
-        pass
-
-    return df
 
 def export(input, temp_dir):
     """

@@ -13,8 +13,7 @@ from .beta_3d_plot import beta_3d_plot
 from. beta_scree_plot import beta_scree_plot
 from .beta_parallel_plot import beta_parallel_plot
 from .distance_matrix_plot import distance_matrix_plot
-from .taxa_abundance_bar_plot import taxa_abundance_bar_plot
-from .taxa_abundance_box_plot import taxa_abundance_box_plot
+from .taxa_abundance import taxa_abundance_bar_plot, taxa_abundance_box_plot
 from .ancom_volcano_plot import ancom_volcano_plot
 
 from .addsig import addsig
