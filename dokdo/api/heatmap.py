@@ -20,8 +20,10 @@ def heatmap(
 
     Parameters
     ----------
-    artifact : str or qiime2.Artifact
-        Artifact file or object corresponding to ``FeatureTable[Frequency]``.
+    artifact : str, qiime2.Artifact, pandas.DataFrame
+        Artifact file or object with the semantic type
+        ``FeatureTable[Frequency]``. Alternatively, a
+        :class:`pandas.DataFrame` object.
     metadata : str or qiime2.Metadata, optional
         Metadata file or object.
     hue1 : str, optional
@@ -30,7 +32,8 @@ def heatmap(
     hue_order1 : list, optional
         Specify the order of categorical levels of the 'hue1' semantic.
     hue1_cmap : str, default: 'tab10'
-        Name of the colormap passed to `matplotlib.cm.get_cmap()` for `hue1`.
+        Name of the colormap passed to :meth:`matplotlib.cm.get_cmap()` for
+        `hue1`.
     hue1_loc : str, default: 'upper right'
         Location of the legend for `hue1`.
     hue2 : str, optional
@@ -39,7 +42,8 @@ def heatmap(
     hue_order2 : list, optional
         Specify the order of categorical levels of the 'hue2' semantic.
     hue2_cmap : str, default: 'Pastel1'
-        Name of the colormap passed to `matplotlib.cm.get_cmap()` for `hue2`.
+        Name of the colormap passed to :meth:`matplotlib.cm.get_cmap()` for
+        `hue2`.
     hue2_loc : str, default: 'upper left'
         Location of the legend for `hue2`.
     normalize : {None, 'log10', 'clr'}, default: None
@@ -124,17 +128,30 @@ def heatmap(
                       yticklabels=False)
 
     .. image:: images/heatmap-4.png
+
+    Finally, we can provide :class:`pandas.DataFrame` as input:
+
+    .. code:: python3
+
+        import pandas as pd
+        csv_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/table.csv'
+        df = pd.read_csv(csv_file, index_col=0)
+        dokdo.heatmap(df,
+                      metadata=metadata_file,
+                      normalize='clr',
+                      hue1='body-site')
+
+    .. image:: images/heatmap-5.png
     """
     # Check the input type.
     if isinstance(artifact, Artifact):
-        table = artifact
+        df = artifact.view(pd.DataFrame)
     elif isinstance(artifact, str):
-        table = Artifact.load(artifact)
+        df = Artifact.load(artifact).view(pd.DataFrame)
+    elif isinstance(artifact, pd.DataFrame):
+        df = artifact
     else:
         raise TypeError(f'Incorrect feature table type: {type(artifact)}')
-
-    # Create the dataframe.
-    df = table.view(pd.DataFrame)
 
     # If the metadata is provided, filter the samples accordingly.
     if metadata is not None:
