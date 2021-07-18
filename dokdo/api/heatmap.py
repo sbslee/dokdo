@@ -1,28 +1,27 @@
-from qiime2 import Artifact
+from . import common
+
+import numpy as np
 import pandas as pd
 import seaborn as sns
-import numpy as np
 import matplotlib.pyplot as plt
-import dokdo
-from skbio.stats.composition import clr
 from matplotlib.patches import Patch
+from skbio.stats.composition import clr
+from qiime2 import Artifact
 
 def heatmap(
-    table, metadata=None, hue1=None, hue_order1=None,
+    artifact, metadata=None, hue1=None, hue_order1=None,
     hue1_cmap='tab10', hue1_loc='upper right', hue2=None,
     hue_order2=None, hue2_cmap='Pastel1', hue2_loc='upper left',
     normalize=None, method='average', metric='euclidean',
     figsize=(10, 10), row_cluster=True, col_cluster=True, **kwargs
 ):
-    """Create a hierarchically clustered heatmap of a feature table.
-
-    Internally, this method uses the `seaborn.clustermap()` method to
-    create a heatmap.
+    """
+    Create a hierarchically clustered heatmap of a feature table.
 
     Parameters
     ----------
-    table : str or qiime2.Artifact
-        Artifact file or object corresponding to FeatureTable[Frequency].
+    artifact : str or qiime2.Artifact
+        Artifact file or object corresponding to ``FeatureTable[Frequency]``.
     metadata : str or qiime2.Metadata, optional
         Metadata file or object.
     hue1 : str, optional
@@ -43,14 +42,13 @@ def heatmap(
         Name of the colormap passed to `matplotlib.cm.get_cmap()` for `hue2`.
     hue2_loc : str, default: 'upper left'
         Location of the legend for `hue2`.
-    normalize : str, optional
+    normalize : {None, 'log10', 'clr'}, default: None
         Normalize the feature table by adding a psuedocount of 1 and then
         taking the log10 of the table or performing centre log ratio
-        transformation. Choices: {'log10', 'clr'}.
+        transformation.
     method : str, default: 'average'
         Linkage method to use for calculating clusters. See
-        `scipy.cluster.hierarchy.linkage()` documentation for more
-        information.
+        :meth:`scipy.cluster.hierarchy.linkage()` for more details.
     metric : str, default: 'euclidean'
         Distance metric to use for the data. See
         `scipy.spatial.distance.pdist()` documentation for more options.
@@ -61,7 +59,8 @@ def heatmap(
     col_cluster : bool, default: True
         If True, cluster the columns.
     kwargs : other keyword arguments
-        All other keyword arguments are passed to `seaborn.clustermap()`.
+        Other keyword arguments will be passed down to
+        :meth:`seaborn.clustermap()`.
 
     Returns
     -------
@@ -70,52 +69,76 @@ def heatmap(
 
     Examples
     --------
-    Below is a simple example.
-    
-    >>> table_file = f'{data_dir}/moving-pictures-tutorial/table.qza'
-    >>> dokdo.heatmap(table_file, normalize='log10')
+    Below is a simple example:
+
+    .. code:: python3
+
+        import dokdo
+        import matplotlib.pyplot as plt
+        %matplotlib inline
+        import seaborn as sns
+        sns.set()
+        qza_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/table.qza'
+        dokdo.heatmap(qza_file,
+                      normalize='log10')
 
     .. image:: images/heatmap-1.png
 
-    We can color the samples by ``body-site``. For this example, we will
-    use the centered log-ratio transformation.
+    We can color the samples by ``body-site`` and use the centered log-ratio
+    transformation (CLR) for normalziation:
 
-    >>> metadata_file = f'{data_dir}/moving-pictures-tutorial/sample-metadata.tsv'
-    >>> dokdo.heatmap(table_file,
-    ...               normalize='clr',
-    ...               metadata=metadata_file,
-    ...               hue1='body-site')
+    .. code:: python3
+
+        metadata_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/sample-metadata.tsv'
+        dokdo.heatmap(qza_file,
+                      metadata=metadata_file,
+                      normalize='clr',
+                      hue1='body-site')
 
     .. image:: images/heatmap-2.png
 
-    We can add an additional grouping variable ``subject``. Note that
-    ``xticklabels`` and ``yticklabels`` are extra keyword arguments that
-    are passed to the ``seaborn.clustermap`` method.
+    We can omit the clustering of samples:
 
-    >>> dokdo.heatmap(table_file,
-    ...               normalize='clr',
-    ...               metadata=metadata_file,
-    ...               hue1='body-site',
-    ...               hue2='subject',
-    ...               xticklabels=False,
-    ...               yticklabels=False)
+    .. code:: python3
+
+        dokdo.heatmap(qza_file,
+                      metadata=metadata_file,
+                      normalize='clr',
+                      hue1='body-site',
+                      row_cluster=False)
 
     .. image:: images/heatmap-3.png
+
+    We can add an additional grouping variable ``subject``. Note that
+    ``xticklabels`` and ``yticklabels`` are extra keyword arguments that
+    are passed to :meth:`seaborn.clustermap`.
+
+    .. code:: python3
+
+        dokdo.heatmap(qza_file,
+                      metadata=metadata_file,
+                      normalize='clr',
+                      hue1='body-site',
+                      hue2='subject',
+                      xticklabels=False,
+                      yticklabels=False)
+
+    .. image:: images/heatmap-4.png
     """
     # Check the input type.
-    if isinstance(table, Artifact):
-        table = table
-    elif isinstance(table, str):
-        table = Artifact.load(table)
+    if isinstance(artifact, Artifact):
+        table = artifact
+    elif isinstance(artifact, str):
+        table = Artifact.load(artifact)
     else:
-        raise TypeError(f'Incorrect feature table type: {type(table)}')
+        raise TypeError(f'Incorrect feature table type: {type(artifact)}')
 
     # Create the dataframe.
     df = table.view(pd.DataFrame)
 
     # If the metadata is provided, filter the samples accordingly.
     if metadata is not None:
-        mf = dokdo.get_mf(metadata)
+        mf = common.get_mf(metadata)
         df = pd.concat([df, mf], axis=1, join='inner')
         df.drop(mf.columns, axis=1, inplace=True)
         df = df.loc[:, (df != 0).any(axis=0)]
