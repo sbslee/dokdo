@@ -9,7 +9,7 @@ from skbio.stats.composition import clr
 from qiime2 import Artifact
 
 def heatmap(
-    artifact, metadata=None, hue1=None, hue_order1=None,
+    artifact, metadata=None, flip=False, hue1=None, hue_order1=None,
     hue1_cmap='tab10', hue1_loc='upper right', hue2=None,
     hue_order2=None, hue2_cmap='Pastel1', hue2_loc='upper left',
     normalize=None, method='average', metric='euclidean',
@@ -26,6 +26,8 @@ def heatmap(
         :class:`pandas.DataFrame` object.
     metadata : str or qiime2.Metadata, optional
         Metadata file or object.
+    flip : bool, default: False
+        If True, flip the x and y axes.
     hue1 : str, optional
         First grouping variable that will produce labels with different
         colors.
@@ -195,6 +197,10 @@ def heatmap(
         df = df.apply(lambda x: clr(x + 1), axis=1, result_type='broadcast')
     else:
         pass
+
+    # Flip the axes.
+    if flip:
+        df = df.T
 
     # Draw the heatmap.
     g = sns.clustermap(df, method=method, metric=metric, figsize=figsize,
