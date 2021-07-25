@@ -8,7 +8,7 @@ from matplotlib.patches import Patch
 from skbio.stats.composition import clr
 from qiime2 import Artifact
 
-def heatmap(
+def clustermap(
     artifact, metadata=None, flip=False, hue1=None, hue_order1=None,
     hue1_cmap='tab10', hue1_loc='upper right', hue2=None,
     hue_order2=None, hue2_cmap='Pastel1', hue2_loc='upper left',
@@ -85,10 +85,10 @@ def heatmap(
         import seaborn as sns
         sns.set()
         qza_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/table.qza'
-        dokdo.heatmap(qza_file,
-                      normalize='log10')
+        dokdo.clustermap(qza_file,
+                         normalize='log10')
 
-    .. image:: images/heatmap-1.png
+    .. image:: images/clustermap-1.png
 
     We can color the samples by ``body-site`` and use the centered log-ratio
     transformation (CLR) for normalziation:
@@ -96,24 +96,24 @@ def heatmap(
     .. code:: python3
 
         metadata_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/sample-metadata.tsv'
-        dokdo.heatmap(qza_file,
-                      metadata=metadata_file,
-                      normalize='clr',
-                      hue1='body-site')
+        dokdo.clustermap(qza_file,
+                         metadata=metadata_file,
+                         normalize='clr',
+                         hue1='body-site')
 
-    .. image:: images/heatmap-2.png
+    .. image:: images/clustermap-2.png
 
     We can omit the clustering of samples:
 
     .. code:: python3
 
-        dokdo.heatmap(qza_file,
-                      metadata=metadata_file,
-                      normalize='clr',
-                      hue1='body-site',
-                      row_cluster=False)
+        dokdo.clustermap(qza_file,
+                         metadata=metadata_file,
+                         normalize='clr',
+                         hue1='body-site',
+                         row_cluster=False)
 
-    .. image:: images/heatmap-3.png
+    .. image:: images/clustermap-3.png
 
     We can add an additional grouping variable ``subject``. Note that
     ``xticklabels`` and ``yticklabels`` are extra keyword arguments that
@@ -121,15 +121,15 @@ def heatmap(
 
     .. code:: python3
 
-        dokdo.heatmap(qza_file,
-                      metadata=metadata_file,
-                      normalize='clr',
-                      hue1='body-site',
-                      hue2='subject',
-                      xticklabels=False,
-                      yticklabels=False)
+        dokdo.clustermap(qza_file,
+                         metadata=metadata_file,
+                         normalize='clr',
+                         hue1='body-site',
+                         hue2='subject',
+                         xticklabels=False,
+                         yticklabels=False)
 
-    .. image:: images/heatmap-4.png
+    .. image:: images/clustermap-4.png
 
     Finally, we can provide :class:`pandas.DataFrame` as input:
 
@@ -138,12 +138,12 @@ def heatmap(
         import pandas as pd
         csv_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/table.csv'
         df = pd.read_csv(csv_file, index_col=0)
-        dokdo.heatmap(df,
-                      metadata=metadata_file,
-                      normalize='clr',
-                      hue1='body-site')
+        dokdo.clustermap(df,
+                         metadata=metadata_file,
+                         normalize='clr',
+                         hue1='body-site')
 
-    .. image:: images/heatmap-5.png
+    .. image:: images/clustermap-5.png
     """
     # Check the input type.
     if isinstance(artifact, Artifact):

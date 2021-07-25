@@ -399,10 +399,10 @@ addbiplot
 .. automodule:: dokdo.api.addbiplot
   :members:
 
-heatmap
--------
+clustermap
+----------
 
-.. automodule:: dokdo.api.heatmap
+.. automodule:: dokdo.api.clustermap
   :members:
 
 regplot

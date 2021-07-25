@@ -19,11 +19,11 @@ from .ancom_volcano_plot import ancom_volcano_plot
 from .addsig import addsig
 from .addpairs import addpairs
 from .addbiplot import addbiplot
-from .heatmap import heatmap
+from .clustermap import clustermap
 from .regplot import regplot
 
 __all__ = ['alpha_diversity_plot', 'addpairs', 'wilcoxon',
-           'mannwhitneyu', 'num2sig', 'heatmap',
+           'mannwhitneyu', 'num2sig', 'clustermap',
            'read_quality_plot', 'denoising_stats_plot',
            'alpha_rarefaction_plot', 'beta_2d_plot', 'beta_3d_plot',
            'beta_scree_plot', 'beta_parallel_plot', 'distance_matrix_plot',
