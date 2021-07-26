@@ -378,6 +378,13 @@ ancom_volcano_plot
 .. automodule:: dokdo.api.ancom_volcano_plot
   :members:
 
+heatmap
+-------
+
+.. currentmodule:: dokdo.api.clustermap
+
+.. autofunction:: heatmap
+
 Other Plotting Methods
 ======================
 
@@ -402,8 +409,9 @@ addbiplot
 clustermap
 ----------
 
-.. automodule:: dokdo.api.clustermap
-  :members:
+.. currentmodule:: dokdo.api.clustermap
+
+.. autofunction:: clustermap
 
 regplot
 -------

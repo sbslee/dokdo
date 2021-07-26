@@ -49,6 +49,8 @@ autodoc_mock_imports = [
 
 issues_github_path = 'sbslee/dokdo'
 
+napoleon_use_param = False
+
 # Include the example source for plots in API docs.
 plot_include_source = True
 plot_formats = [('png', 90)]

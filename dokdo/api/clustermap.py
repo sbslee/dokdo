@@ -8,6 +8,157 @@ from matplotlib.patches import Patch
 from skbio.stats.composition import clr
 from qiime2 import Artifact
 
+def _get_df(artifact):
+    if isinstance(artifact, Artifact):
+        df = artifact.view(pd.DataFrame)
+    elif isinstance(artifact, str):
+        df = Artifact.load(artifact).view(pd.DataFrame)
+    elif isinstance(artifact, pd.DataFrame):
+        df = artifact
+    else:
+        raise TypeError(f'Incorrect input type: {type(artifact)}.')
+    return df
+
+def _normalize_df(df, normalize):
+    if normalize == 'log10':
+        df = df.apply(lambda x: np.log10(x + 1))
+    elif normalize == 'clr':
+        df = df.apply(lambda x: clr(x + 1), axis=1, result_type='broadcast')
+    else:
+        pass
+    return df
+
+def heatmap(
+    artifact, normalize=None, samples=None, taxa=None, flip=False, cbar=True,
+    cbar_kws=None, cbar_ax=None, square=False, xticklabels='auto',
+    yticklabels='auto', ax=None, figsize=None, **kwargs
+):
+    """
+    Create a heatmap of a feature table.
+
+    Parameters
+    ----------
+    artifact : str, qiime2.Artifact, pandas.DataFrame
+        Artifact file or object with the semantic type
+        ``FeatureTable[Frequency]``. Alternatively, a
+        :class:`pandas.DataFrame` object.
+    normalize : {None, 'log10', 'clr'}, default: None
+        Normalize the feature table by adding a psuedocount of 1 and then
+        taking the log10 of the table or performing centre log ratio
+        transformation.
+    samples, taxa : list, optional
+        Specify samples and taxa to be displayed.
+    flip : bool, default: False
+        If True, flip the x and y axes.
+    cbar : bool, default: True
+        Whether to draw a colorbar.
+    cbar_kws : dict, optional
+        Keyword arguments for matplotlib.figure.Figure.colorbar().
+    cbar_ax : matplotlib.axes.Axes, optional
+        Axes in which to draw the colorbar, otherwise take space from the
+        main Axes.
+    square : bool, default: False
+        If True, set the Axes aspect to 'equal' so each cell will be
+        square-shaped.
+    xticklabels, yticklabels: 'auto', bool, list-like, or int, default: 'auto'
+        If True, plot the column names of the dataframe. If False, don’t plot
+        the column names. If list-like, plot these alternate labels as the
+        xticklabels. If an integer, use the column names but plot only every
+        n label. If “auto”, try to densely plot non-overlapping labels.
+    ax : matplotlib.axes.Axes, optional
+        Axes object to draw the plot onto, otherwise uses the current Axes.
+    figsize : tuple, optional
+        Width, height in inches. Format: (float, float).
+
+    Returns
+    -------
+    matplotlib.axes.Axes
+        Axes object with the plot drawn onto it.
+
+    See Also
+    --------
+    dokdo.api.clustermap.clustermap
+
+    Examples
+    --------
+    Below is a simple example:
+
+    .. code:: python3
+
+        import dokdo
+        import matplotlib.pyplot as plt
+        %matplotlib inline
+        import seaborn as sns
+        sns.set()
+        qza_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/table-l3.qza'
+        dokdo.heatmap(qza_file,
+                      normalize='log10',
+                      flip=True,
+                      figsize=(10, 7))
+        plt.tight_layout()
+
+    .. image:: images/heatmap-1.png
+
+    We can display a heatmap for each sample group:
+
+    .. code:: python3
+
+        fig, [ax1, ax2, ax3, ax4, ax5] = plt.subplots(1, 5,
+                                                      figsize=(20, 8),
+                                                      gridspec_kw={'width_ratios': [1, 1, 1, 1, 0.1]})
+
+        qza_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/table-l3.qza'
+
+        gut_samples = ['L1S8', 'L1S57', 'L1S76', 'L1S105', 'L1S140', 'L1S208', 'L1S257', 'L1S281']
+        left_palm_samples = ['L2S155', 'L2S175', 'L2S204', 'L2S222', 'L2S240', 'L2S309', 'L2S357', 'L2S382']
+        right_palm_samples = ['L3S242', 'L3S294', 'L3S313', 'L3S341', 'L3S360', 'L3S378', 'L4S63', 'L4S112', 'L4S137']
+        tongue_sampels = ['L5S104', 'L5S155', 'L5S174', 'L5S203', 'L5S222', 'L5S240', 'L6S20', 'L6S68', 'L6S93']
+
+        kwargs = dict(normalize='log10',
+                      flip=True,
+                      linewidths=0.5,
+                      xticklabels=True)
+
+        dokdo.heatmap(qza_file, ax=ax1, samples=gut_samples, cbar=False, **kwargs)
+        dokdo.heatmap(qza_file, ax=ax2, samples=left_palm_samples, yticklabels=False, cbar=False, **kwargs)
+        dokdo.heatmap(qza_file, ax=ax3, samples=right_palm_samples, yticklabels=False, cbar=False, **kwargs)
+        dokdo.heatmap(qza_file, ax=ax4, samples=tongue_sampels, yticklabels=False, cbar_ax=ax5, **kwargs)
+
+        ax1.set_title('Gut')
+        ax2.set_title('Left palm')
+        ax3.set_title('Right palm')
+        ax4.set_title('Toungue')
+
+        plt.tight_layout()
+        plt.savefig('heatmap-2.png')
+
+    .. image:: images/heatmap-2.png
+    """
+    df = _get_df(artifact)
+
+    df = _normalize_df(df, normalize)
+
+    if samples is not None:
+        df = df.loc[samples]
+
+    if taxa is not None:
+        df = df[taxa]
+
+    # Flip the axes.
+    if flip:
+        df = df.T
+
+    if ax is None:
+        fig, ax = plt.subplots(figsize=figsize)
+
+    sns.heatmap(
+        df, ax=ax, cbar=cbar, cbar_kws=cbar_kws, cbar_ax=cbar_ax,
+        square=square, xticklabels=xticklabels, yticklabels=yticklabels,
+        **kwargs
+    )
+
+    return ax
+
 def clustermap(
     artifact, metadata=None, flip=False, hue1=None, hue_order1=None,
     hue1_cmap='tab10', hue1_loc='upper right', hue2=None,
@@ -72,6 +223,10 @@ def clustermap(
     -------
     seaborn.matrix.ClusterGrid
         A ClusterGrid instance.
+
+    See Also
+    --------
+    dokdo.api.clustermap.heatmap
 
     Examples
     --------
@@ -145,15 +300,7 @@ def clustermap(
 
     .. image:: images/clustermap-5.png
     """
-    # Check the input type.
-    if isinstance(artifact, Artifact):
-        df = artifact.view(pd.DataFrame)
-    elif isinstance(artifact, str):
-        df = Artifact.load(artifact).view(pd.DataFrame)
-    elif isinstance(artifact, pd.DataFrame):
-        df = artifact
-    else:
-        raise TypeError(f'Incorrect feature table type: {type(artifact)}')
+    df = _get_df(artifact)
 
     # If the metadata is provided, filter the samples accordingly.
     if metadata is not None:
@@ -190,13 +337,7 @@ def clustermap(
         row_colors = pd.concat([row_colors, s], axis=1)
         df.drop(mf.columns, axis=1, inplace=True)
 
-    # Apply the appropriate normalziation.
-    if normalize == 'log10':
-        df = df.apply(lambda x: np.log10(x + 1))
-    elif normalize == 'clr':
-        df = df.apply(lambda x: clr(x + 1), axis=1, result_type='broadcast')
-    else:
-        pass
+    df = _normalize_df(df, normalize)
 
     # Flip the axes.
     if flip:
