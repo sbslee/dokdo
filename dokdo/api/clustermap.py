@@ -51,7 +51,7 @@ def heatmap(
         * None: Do not normalize.
         * 'log10': Apply the log10 transformation adding a psuedocount of 1.
         * 'clr': Apply the centre log ratio (CLR) transformation adding a psuedocount of 1.
-        * 'zscore': Apply the zscore transformation.
+        * 'zscore': Apply the Z score transformation.
 
     samples, taxa : list, optional
         Specify samples and taxa to be displayed.
@@ -212,8 +212,8 @@ def clustermap(
         * None: Do not normalize.
         * 'log10': Apply the log10 transformation adding a psuedocount of 1.
         * 'clr': Apply the centre log ratio (CLR) transformation adding a psuedocount of 1.
-        * 'zscore': Apply the zscore transformation.
-        
+        * 'zscore': Apply the Z score transformation.
+
     method : str, default: 'average'
         Linkage method to use for calculating clusters. See
         :meth:`scipy.cluster.hierarchy.linkage()` for more details.
