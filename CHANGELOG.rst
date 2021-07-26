@@ -17,9 +17,9 @@ Changelog
   - :meth:`distance_matrix_plot`
 
 * Deprecate the :meth:`barplot` method.
-* :issue:`22`: Update the :meth:`heatmap` method to accept :class:`pandas.DataFrame` in case the input data was not generated from QIIME 2 (e.g. shotgun sequencing). You can now also flip the x and y axes with the ``flip`` option.
-* Rename the :meth:`heatmap` method to :meth:`clustermap`.
-* Add a new main plotting method :meth:`heatmap`.
+* :issue:`22`: Rename the :meth:`heatmap` method to :meth:`clustermap`.
+* :issue:`22`: Update the :meth:`clustermap` method to accept :class:`pandas.DataFrame` in case the input data was not generated from QIIME 2 (e.g. shotgun sequencing). You can now also flip the x and y axes with the ``flip`` option.
+* :issue:`22`: Add a new main plotting method :meth:`heatmap`.
 
 1.10.0 (2021-07-06)
 -------------------
