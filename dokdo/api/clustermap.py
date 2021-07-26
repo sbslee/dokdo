@@ -116,26 +116,24 @@ def heatmap(
 
     .. code:: python3
 
+        metadata_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/sample-metadata.tsv'
+
         fig, [ax1, ax2, ax3, ax4, ax5] = plt.subplots(1, 5,
                                                       figsize=(20, 8),
                                                       gridspec_kw={'width_ratios': [1, 1, 1, 1, 0.1]})
 
-        qza_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/table-l3.qza'
-
-        gut_samples = ['L1S8', 'L1S57', 'L1S76', 'L1S105', 'L1S140', 'L1S208', 'L1S257', 'L1S281']
-        left_palm_samples = ['L2S155', 'L2S175', 'L2S204', 'L2S222', 'L2S240', 'L2S309', 'L2S357', 'L2S382']
-        right_palm_samples = ['L3S242', 'L3S294', 'L3S313', 'L3S341', 'L3S360', 'L3S378', 'L4S63', 'L4S112', 'L4S137']
-        tongue_sampels = ['L5S104', 'L5S155', 'L5S174', 'L5S203', 'L5S222', 'L5S240', 'L6S20', 'L6S68', 'L6S93']
-
         kwargs = dict(normalize='log10',
                       flip=True,
                       linewidths=0.5,
+                      metadata=metadata_file,
                       xticklabels=True)
 
-        dokdo.heatmap(qza_file, ax=ax1, samples=gut_samples, cbar=False, **kwargs)
-        dokdo.heatmap(qza_file, ax=ax2, samples=left_palm_samples, yticklabels=False, cbar=False, **kwargs)
-        dokdo.heatmap(qza_file, ax=ax3, samples=right_palm_samples, yticklabels=False, cbar=False, **kwargs)
-        dokdo.heatmap(qza_file, ax=ax4, samples=tongue_sampels, yticklabels=False, cbar_ax=ax5, **kwargs)
+        qza_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/table-l3.qza'
+
+        dokdo.heatmap(qza_file, ax=ax1, where="[body-site] IN ('gut')", cbar=False, yticklabels=True, **kwargs)
+        dokdo.heatmap(qza_file, ax=ax2, where="[body-site] IN ('left palm')", yticklabels=False, cbar=False, **kwargs)
+        dokdo.heatmap(qza_file, ax=ax3, where="[body-site] IN ('right palm')", yticklabels=False, cbar=False, **kwargs)
+        dokdo.heatmap(qza_file, ax=ax4, where="[body-site] IN ('tongue')", yticklabels=False, cbar_ax=ax5, **kwargs)
 
         ax1.set_title('Gut')
         ax2.set_title('Left palm')
@@ -143,7 +141,6 @@ def heatmap(
         ax4.set_title('Toungue')
 
         plt.tight_layout()
-        plt.savefig('heatmap-2.png')
 
     .. image:: images/heatmap-2.png
     """
