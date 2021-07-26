@@ -31,11 +31,7 @@ Let's set the seed so that our results are reproducible.
    >>> import numpy as np
    >>> np.random.seed(1)
 
-Finally, we are going to use some datasets downloaded from publicly available QIIME 2 tutorials, including `Moving Pictures <https://docs.qiime2.org/2020.8/tutorials/moving-pictures/>`_ and `Atacama soil microbiome <https://docs.qiime2.org/2020.8/tutorials/atacama-soils/>`_.
-
-.. code:: python3
-
-   >>> data_dir = '/Users/sbslee/Desktop/dokdo/data'
+Below, we are going to use some datasets downloaded from publicly available QIIME 2 tutorials, including `Moving Pictures <https://docs.qiime2.org/2020.8/tutorials/moving-pictures/>`_ and `Atacama soil microbiome <https://docs.qiime2.org/2020.8/tutorials/atacama-soils/>`_.
 
 Tips
 ====
@@ -49,8 +45,8 @@ Let's start with a toy example. The figure below does not have a legend, which i
 
 .. code:: python3
 
-    >>> qza_file = f'{data_dir}/atacama-soil-microbiome-tutorial/denoising-stats.qza'
-    >>> metadata_file = f'{data_dir}/atacama-soil-microbiome-tutorial/sample-metadata.tsv'
+    >>> qza_file = '/Users/sbslee/Desktop/dokdo/data/atacama-soil-microbiome-tutorial/denoising-stats.qza'
+    >>> metadata_file = '/Users/sbslee/Desktop/dokdo/data/atacama-soil-microbiome-tutorial/sample-metadata.tsv'
     >>> where = 'transect-name'
     >>> args = [qza_file, metadata_file, where]
     >>> dokdo.denoising_stats_plot(*args)
@@ -204,7 +200,7 @@ In some situations, we may wish to plot the graph and the legend separately. For
 
 .. code:: python3
 
-    >>> qzv_file = f'{data_dir}/moving-pictures-tutorial/taxa-bar-plots.qzv'
+    >>> qzv_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/taxa-bar-plots.qzv'
     >>> dokdo.taxa_abundance_bar_plot(qzv_file,
     ...                               level=2,
     ...                               count=8,
@@ -239,9 +235,9 @@ For example, we can directly plot the Artifact object from the ``qiime2.plugins.
     >>> from qiime2 import Artifact
     >>> from qiime2 import Metadata
     >>> from qiime2.plugins import diversity
-    >>> table = Artifact.load(f'{data_dir}/moving-pictures-tutorial/table.qza')
-    >>> phylogeny = Artifact.load(f'{data_dir}/moving-pictures-tutorial/rooted-tree.qza')
-    >>> metadata = Metadata.load(f'{data_dir}/moving-pictures-tutorial/sample-metadata.tsv')
+    >>> table = Artifact.load('/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/table.qza')
+    >>> phylogeny = Artifact.load('/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/rooted-tree.qza')
+    >>> metadata = Metadata.load('/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/sample-metadata.tsv')
     >>> rarefaction_result = diversity.visualizers.alpha_rarefaction(table=table,
     ...                                                              metadata=metadata,
     ...                                                              phylogeny=phylogeny,
@@ -256,7 +252,7 @@ As expected, above gives the same result as using the Visualization file created
 
 .. code:: python3
 
-    >>> qzv_file = f'{data_dir}/moving-pictures-tutorial/alpha-rarefaction.qzv'
+    >>> qzv_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/alpha-rarefaction.qzv'
     >>> dokdo.alpha_rarefaction_plot(qzv_file)
     >>> plt.tight_layout()
 

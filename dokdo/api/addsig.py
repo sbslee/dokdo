@@ -40,8 +40,8 @@ def addsig(
     --------
     Below is a simple example.
 
-    >>> vector_file = f'{data_dir}/moving-pictures-tutorial/faith_pd_vector.qza'
-    >>> metadata_file = f'{data_dir}/moving-pictures-tutorial/sample-metadata.tsv'
+    >>> vector_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/faith_pd_vector.qza'
+    >>> metadata_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/sample-metadata.tsv'
     >>> ax = dokdo.alpha_diversity_plot(vector_file,
     ...                                 metadata_file,
     ...                                 'body-site',

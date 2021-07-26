@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import Patch
 from skbio.stats.composition import clr
 from qiime2 import Artifact
+from scipy.stats import zscore
 
 def _get_df(artifact):
     if isinstance(artifact, Artifact):
@@ -21,9 +22,11 @@ def _get_df(artifact):
 
 def _normalize_df(df, normalize):
     if normalize == 'log10':
-        df = df.apply(lambda x: np.log10(x + 1))
+        df = df.applymap(lambda x: np.log10(x + 1))
     elif normalize == 'clr':
         df = df.apply(lambda x: clr(x + 1), axis=1, result_type='broadcast')
+    elif normalize == 'zscore':
+        df = df.apply(zscore, axis=1, result_type='broadcast')
     else:
         pass
     return df
@@ -42,10 +45,14 @@ def heatmap(
         Artifact file or object with the semantic type
         ``FeatureTable[Frequency]``. Alternatively, a
         :class:`pandas.DataFrame` object.
-    normalize : {None, 'log10', 'clr'}, default: None
-        Normalize the feature table by adding a psuedocount of 1 and then
-        taking the log10 of the table or performing centre log ratio
-        transformation.
+    normalize : {None, 'log10', 'clr', 'zscore'}, default: None
+        Whether to normalize the the input feature table:
+
+        * None: Do not normalize.
+        * 'log10': Apply the log10 transformation adding a psuedocount of 1.
+        * 'clr': Apply the centre log ratio (CLR) transformation adding a psuedocount of 1.
+        * 'zscore': Apply the zscore transformation.
+
     samples, taxa : list, optional
         Specify samples and taxa to be displayed.
     flip : bool, default: False
@@ -199,10 +206,14 @@ def clustermap(
         `hue2`.
     hue2_loc : str, default: 'upper left'
         Location of the legend for `hue2`.
-    normalize : {None, 'log10', 'clr'}, default: None
-        Normalize the feature table by adding a psuedocount of 1 and then
-        taking the log10 of the table or performing centre log ratio
-        transformation.
+    normalize : {None, 'log10', 'clr', 'zscore'}, default: None
+        Whether to normalize the the input feature table:
+
+        * None: Do not normalize.
+        * 'log10': Apply the log10 transformation adding a psuedocount of 1.
+        * 'clr': Apply the centre log ratio (CLR) transformation adding a psuedocount of 1.
+        * 'zscore': Apply the zscore transformation.
+        
     method : str, default: 'average'
         Linkage method to use for calculating clusters. See
         :meth:`scipy.cluster.hierarchy.linkage()` for more details.

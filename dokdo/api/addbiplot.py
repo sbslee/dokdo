@@ -56,8 +56,8 @@ def addbiplot(
     --------
     Below is a simple example.
 
-    >>> table_file = f'{data_dir}/moving-pictures-tutorial/table.qza'
-    >>> metadata_file = f'{data_dir}/moving-pictures-tutorial/sample-metadata.tsv'
+    >>> table_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/table.qza'
+    >>> metadata_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/sample-metadata.tsv'
     >>> pcoa_results = dokdo.ordinate(table_file, sampling_depth=0, biplot=True, number_of_dimensions=10)
     >>> ax = dokdo.beta_2d_plot(pcoa_results,
     ...                         hue='body-site',
@@ -83,7 +83,7 @@ def addbiplot(
 
     Finally, we can display taxonomic classification instead of feature ID.
 
-    >>> taxonomy_file = f'{data_dir}/moving-pictures-tutorial/taxonomy.qza'
+    >>> taxonomy_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/taxonomy.qza'
     >>> ax = dokdo.beta_3d_plot(pcoa_results,
     ...                         hue='body-site',
     ...                         metadata=metadata_file,

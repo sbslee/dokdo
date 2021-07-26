@@ -51,7 +51,7 @@ def regplot(
     in the context of ``days-since-experiment-start`` (i.e. paired
     comparison).
 
-    >>> metadata = Metadata.load(f'{data_dir}/moving-pictures-tutorial/sample-metadata.tsv')
+    >>> metadata = Metadata.load('/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/sample-metadata.tsv')
     >>> sample_names = ['L2S240', 'L3S242', 'L2S155', 'L4S63', 'L2S175', 'L3S313', 'L2S204', 'L4S112', 'L2S222', 'L4S137']
     >>> metadata = metadata.filter_ids(sample_names)
     >>> mf = dokdo.get_mf(metadata)
@@ -72,7 +72,7 @@ def regplot(
 
     Next, we will run the ``dokdo.taxa_abundance_box_plot`` method to create the input file for the ``dokdo.regplot`` method.
 
-    >>> qzv_file = f'{data_dir}/moving-pictures-tutorial/taxa-bar-plots.qzv'
+    >>> qzv_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/taxa-bar-plots.qzv'
     >>> dokdo.taxa_abundance_box_plot(qzv_file,
     ...                               level=2,
     ...                               hue='body-site',

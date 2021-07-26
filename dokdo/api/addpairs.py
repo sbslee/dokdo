@@ -48,7 +48,7 @@ def addpairs(
     comparison).
 
     >>> from qiime2 import Metadata
-    >>> metadata = Metadata.load(f'{data_dir}/moving-pictures-tutorial/sample-metadata.tsv')
+    >>> metadata = Metadata.load('/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/sample-metadata.tsv')
     >>> sample_names = ['L2S240', 'L3S242', 'L2S155', 'L4S63', 'L2S175', 'L3S313', 'L2S204', 'L4S112', 'L2S222', 'L4S137']
     >>> metadata = metadata.filter_ids(sample_names)
     >>> mf = dokdo.get_mf(metadata)
@@ -66,7 +66,7 @@ def addpairs(
     L4S112     right palm                        140.0
     L2S222      left palm                        168.0
     L4S137     right palm                        168.0
-    >>> qzv_file = f'{data_dir}/moving-pictures-tutorial/taxa-bar-plots.qzv'
+    >>> qzv_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/taxa-bar-plots.qzv'
     >>> ax = dokdo.taxa_abundance_box_plot(qzv_file,
     ...                                    level=2,
     ...                                    hue='body-site',
@@ -87,12 +87,12 @@ def addpairs(
     Note that the method suppors more than two groups.
 
     >>> from qiime2 import Metadata
-    >>> metadata = Metadata.load(f'{data_dir}/moving-pictures-tutorial/sample-metadata.tsv')
+    >>> metadata = Metadata.load('/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/sample-metadata.tsv')
     >>> mf = dokdo.get_mf(metadata)
     >>> mf = mf[mf['subject'] == 'subject-1']
     >>> mf = mf[['body-site', 'days-since-experiment-start']]
     >>> mf = mf.drop_duplicates()
-    >>> qzv_file = f'{data_dir}/moving-pictures-tutorial/taxa-bar-plots.qzv'
+    >>> qzv_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/taxa-bar-plots.qzv'
     >>> ax = dokdo.taxa_abundance_box_plot(qzv_file,
     ...                                    metadata=Metadata(mf),
     ...                                    level=2,

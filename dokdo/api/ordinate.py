@@ -65,8 +65,8 @@ def ordinate(
     used is ``jaccard``. The resulting object ``pcoa`` can be directly
     used for plotting by the ``dokdo.beta_2d_plot`` method as shown below.
 
-    >>> table_file = f'{data_dir}/moving-pictures-tutorial/table.qza'
-    >>> metadata_file = f'{data_dir}/moving-pictures-tutorial/sample-metadata.tsv'
+    >>> table_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/table.qza'
+    >>> metadata_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/sample-metadata.tsv'
     >>> pcoa_results = dokdo.ordinate(table_file)
     >>> dokdo.beta_2d_plot(pcoa_results, metadata=metadata_file, hue='body-site', artist_kwargs=dict(show_legend=True))
     >>> plt.tight_layout()
