@@ -32,10 +32,10 @@ def _normalize_df(df, normalize):
     return df
 
 def heatmap(
-    artifact, metadata=None, where=None, normalize=None, samples=None,
-    taxa=None, flip=False, cbar=True, cbar_kws=None, cbar_ax=None,
-    square=False, xticklabels='auto', yticklabels='auto', ax=None,
-    figsize=None, **kwargs
+    artifact, metadata=None, where=None, sort_samples=None, normalize=None,
+    samples=None, taxa=None, flip=False, cbar=True, cbar_kws=None,
+    cbar_ax=None, square=False, xticklabels='auto', yticklabels='auto',
+    ax=None, figsize=None, **kwargs
 ):
     """
     Create a heatmap of a feature table.
@@ -51,6 +51,8 @@ def heatmap(
     where : str, optional
         SQLite WHERE clause specifying sample metadata criteria that must
         be met to be included in the filtered feature table.
+    sort_samples : bool, default: False
+        If True, sort the samples by name.
     normalize : {None, 'log10', 'clr', 'zscore'}, default: None
         Whether to normalize the the input feature table:
 
@@ -157,6 +159,9 @@ def heatmap(
         df = df.loc[samples]
     else:
         pass
+
+    if sort_samples:
+        df = df.sort_index()
 
     if taxa is not None:
         df = df[taxa]
