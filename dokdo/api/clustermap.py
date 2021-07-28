@@ -34,8 +34,9 @@ def _normalize_df(df, normalize):
 def heatmap(
     artifact, metadata=None, where=None, sort_samples=None,
     pretty_taxa=False, normalize=None, samples=None, taxa=None, flip=False,
-    cbar=True, cbar_kws=None, cbar_ax=None, square=False, xticklabels='auto',
-    yticklabels='auto', ax=None, figsize=None, **kwargs
+    vmin=None, vmax=None, cbar=True, cbar_kws=None, cbar_ax=None,
+    square=False, xticklabels='auto', yticklabels='auto', ax=None,
+    figsize=None, **kwargs
 ):
     """
     Create a heatmap of a feature table.
@@ -67,6 +68,9 @@ def heatmap(
         Specify samples and taxa to be displayed.
     flip : bool, default: False
         If True, flip the x and y axes.
+    vmin, vmax : floats, optional
+        Values to anchor the colormap, otherwise they are inferred from the
+        data and other keyword arguments.
     cbar : bool, default: True
         Whether to draw a colorbar.
     cbar_kws : dict, optional
@@ -179,9 +183,9 @@ def heatmap(
         fig, ax = plt.subplots(figsize=figsize)
 
     sns.heatmap(
-        df, ax=ax, cbar=cbar, cbar_kws=cbar_kws, cbar_ax=cbar_ax,
-        square=square, xticklabels=xticklabels, yticklabels=yticklabels,
-        **kwargs
+        df, ax=ax, vmin=vmin, vmax=vmax, cbar=cbar, cbar_kws=cbar_kws,
+        cbar_ax=cbar_ax, square=square, xticklabels=xticklabels,
+        yticklabels=yticklabels, **kwargs
     )
 
     return ax
