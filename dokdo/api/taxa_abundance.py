@@ -87,7 +87,7 @@ def taxa_abundance_bar_plot(
     colors=None, label_columns=None, orders=None, sample_names=None,
     csv_file=None, taxa_names=None, sort_by_mean1=True,
     sort_by_mean2=True, sort_by_mean3=True, show_others=True,
-    cmap_name='Accent', legend_short=False, artist_kwargs=None
+    cmap_name='Accent', legend_short=False, pname_kws=None, artist_kwargs=None
 ):
     """
     Create a bar plot showing relative taxa abundance for individual samples.
@@ -173,6 +173,9 @@ def taxa_abundance_bar_plot(
         Name of the colormap passed to `matplotlib.cm.get_cmap()`.
     legend_short : bool, default: False
         If true, only display the smallest taxa rank in the legend.
+    pname_kws : dict, optional
+        Keyword arguments for :meth:`dokdo.api.pname` when ``legend_short``
+        is True.
     artist_kwargs : dict, optional
         Keyword arguments passed down to the _artist() method.
 
@@ -519,7 +522,9 @@ def taxa_abundance_bar_plot(
         df.to_csv(csv_file)
 
     if legend_short:
-        df.columns = [common.pname(x) for x in df.columns]
+        if pname_kws is None:
+            pname_kws = {}
+        df.columns = [common.pname(x, **pname_kws) for x in df.columns]
 
     df.plot.bar(stacked=True,
                 legend=False,

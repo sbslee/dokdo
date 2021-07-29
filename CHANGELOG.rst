@@ -20,6 +20,7 @@ Changelog
 * :issue:`22`: Rename the :meth:`heatmap` method to :meth:`clustermap`.
 * :issue:`22`: Update the :meth:`clustermap` method to accept :class:`pandas.DataFrame` in case the input data was not generated from QIIME 2 (e.g. shotgun sequencing). You can now also flip the x and y axes with the ``flip`` option.
 * :issue:`22`: Add a new main plotting method :meth:`heatmap`.
+* :issue:`24`: Update the :meth:`pname` method to allow returning of more than one tax level.
 
 1.10.0 (2021-07-06)
 -------------------

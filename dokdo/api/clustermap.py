@@ -43,9 +43,10 @@ def _normalize_df(df, normalize):
 
 def heatmap(
     artifact, metadata=None, where=None, sort_samples=None,
-    pretty_taxa=False, normalize=None, samples=None, taxa=None, flip=False,
-    vmin=None, vmax=None, cbar=True, cbar_kws=None, cbar_ax=None,
-    square=False, label_columns=None, ax=None, figsize=None, **kwargs
+    pretty_taxa=False, pname_kws=None, normalize=None, samples=None,
+    taxa=None, flip=False, vmin=None, vmax=None, cbar=True, cbar_kws=None,
+    cbar_ax=None, square=False, label_columns=None, ax=None, figsize=None,
+    **kwargs
 ):
     """
     Create a heatmap representation of a feature table.
@@ -65,6 +66,9 @@ def heatmap(
         If True, sort the samples by name.
     pretty_taxa : bool, default: False
         If True, display only the smallest taxa rank.
+    pname_kws : dict, optional
+        Keyword arguments for :meth:`dokdo.api.pname` when ``pretty_taxa``
+        is True.
     normalize : {None, 'log10', 'clr', 'zscore'}, default: None
         Whether to normalize the the input feature table:
 
@@ -194,10 +198,12 @@ def heatmap(
 
     # Update taxa labels, if necessary.
     if pretty_taxa:
+        if pname_kws is None:
+            pname_kws = {}
         if flip:
-            ax.set_yticklabels([common.pname(x) for x in df.index])
+            ax.set_yticklabels([common.pname(x, **pname_kws) for x in df.index])
         else:
-            ax.set_xticklabels([common.pname(x) for x in df.columns])
+            ax.set_xticklabels([common.pname(x, **pname_kws) for x in df.columns])
 
     # Update sample labels, if necessary.
     if label_columns is not None:

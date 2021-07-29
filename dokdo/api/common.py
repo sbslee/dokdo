@@ -391,7 +391,7 @@ def get_mf(metadata):
         raise TypeError(f"Incorrect metadata type: {type(metadata)}")
     return mf
 
-def pname(name):
+def pname(name, levels=None):
     """
     Return a prettified taxon name.
 
@@ -403,32 +403,37 @@ def pname(name):
     Returns
     -------
     str
-        Prettified name.
+        Prettified taxon name.
 
     Examples
     --------
-    Below are some examples.
 
-    >>> a = 'd__Bacteria;p__Actinobacteriota;c__Actinobacteria;o__Actinomycetales;f__Actinomycetaceae;g__Actinomyces;s__Schaalia_radingae'
-    >>> b = 'Unassigned;__;__;__;__;__;__'
-    >>> c = 'd__Bacteria;__;__;__;__;__;__'
-    >>> d = 'd__Bacteria;p__Acidobacteriota;c__Acidobacteriae;o__Bryobacterales;f__Bryobacteraceae;g__Bryobacter;__'
-    >>>
-    >>> print(dokdo.pname(a))
-    s__Schaalia_radingae
-    >>> print(dokdo.pname(b))
-    Unassigned
-    >>> print(dokdo.pname(c))
-    d__Bacteria
-    >>> print(dokdo.pname(d))
-    g__Bryobacter
+    >>> import dokdo
+    >>> dokdo.pname('d__Bacteria;p__Actinobacteriota;c__Actinobacteria;o__Actinomycetales;f__Actinomycetaceae;g__Actinomyces;s__Schaalia_radingae')
+    's__Schaalia_radingae'
+    >>> dokdo.pname('Unassigned;__;__;__;__;__;__')
+    'Unassigned'
+    >>> dokdo.pname('d__Bacteria;__;__;__;__;__;__')
+    'd__Bacteria'
+    >>> dokdo.pname('d__Bacteria;p__Acidobacteriota;c__Acidobacteriae;o__Bryobacterales;f__Bryobacteraceae;g__Bryobacter;__')
+    'g__Bryobacter'
+    >>> dokdo.pname('d__Bacteria;p__Actinobacteriota;c__Actinobacteria;o__Actinomycetales;f__Actinomycetaceae;g__Actinomyces;s__Schaalia_radingae', levels=[6,7])
+    'g__Actinomyces;s__Schaalia_radingae'
     """
-    ranks = list(reversed(name.split(';')))
-    for i, rank in enumerate(ranks):
-        if rank in ['Others', 'Unassigned']:
+    if levels is None:
+        ranks = list(reversed(name.split(';')))
+        for i, rank in enumerate(ranks):
+            if rank in ['Others', 'Unassigned']:
+                return rank
+            if rank == '__':
+                continue
+            if rank.split('__')[1] is '':
+                return ranks[i+1] + ';' + rank
             return rank
-        if rank == '__':
-            continue
-        if rank.split('__')[1] is '':
-            return ranks[i+1] + ';' + rank
-        return rank
+    else:
+        ranks = name.split(';')
+        if 'Others' in ranks:
+            return 'Others'
+        if 'Unassigned' in ranks:
+            return 'Unassigned'
+        return ';'.join([ranks[x-1] for x in levels])
