@@ -45,7 +45,7 @@ def heatmap(
     artifact, metadata=None, where=None, sort_samples=None,
     pretty_taxa=False, normalize=None, samples=None, taxa=None, flip=False,
     vmin=None, vmax=None, cbar=True, cbar_kws=None, cbar_ax=None,
-    square=False, ax=None, figsize=None, **kwargs
+    square=False, label_columns=None, ax=None, figsize=None, **kwargs
 ):
     """
     Create a heatmap representation of a feature table.
@@ -189,12 +189,26 @@ def heatmap(
         yticklabels=True, **kwargs
     )
 
-    # Update taxa labels.
+    # Update taxa labels, if necessary.
     if pretty_taxa:
         if flip:
             ax.set_yticklabels([common.pname(x) for x in df.index])
         else:
             ax.set_xticklabels([common.pname(x) for x in df.columns])
+
+    # Update sample labels, if necessary.
+    if label_columns is not None:
+        if flip:
+            mf = mf.loc[df.columns]
+        else:
+            mf = mf.loc[df.index]
+        mf['sample-id'] = mf.index
+        f = lambda r: ' : '.join(r.values.astype(str))
+        sample_labels = mf[label_columns].apply(f, axis=1)
+        if flip:
+            ax.set_xticklabels(sample_labels)
+        else:
+            ax.set_yticklabels(sample_labels)
 
     return ax
 
