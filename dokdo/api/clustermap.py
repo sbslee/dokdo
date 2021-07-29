@@ -38,7 +38,7 @@ def heatmap(
     square=False, ax=None, figsize=None, **kwargs
 ):
     """
-    Create a heatmap of a feature table.
+    Create a heatmap representation of a feature table.
 
     Parameters
     ----------
@@ -147,7 +147,6 @@ def heatmap(
     .. image:: images/heatmap-2.png
     """
     df = _get_df(artifact)
-
     df = _normalize_df(df, normalize)
 
     if where is None and samples is not None:
@@ -166,9 +165,6 @@ def heatmap(
     if taxa is not None:
         df = df[taxa]
 
-    if pretty_taxa:
-        df.columns = [common.pname(x) for x in df.columns]
-
     # Flip the axes.
     if flip:
         df = df.T
@@ -181,6 +177,13 @@ def heatmap(
         cbar_ax=cbar_ax, square=square, xticklabels=True,
         yticklabels=True, **kwargs
     )
+
+    # Update taxa labels.
+    if pretty_taxa:
+        if flip:
+            ax.set_yticklabels([common.pname(x) for x in df.index])
+        else:
+            ax.set_xticklabels([common.pname(x) for x in df.columns])
 
     return ax
 
