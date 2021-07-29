@@ -45,8 +45,8 @@ def heatmap(
     artifact, metadata=None, where=None, sort_samples=None,
     pretty_taxa=False, pname_kws=None, normalize=None, samples=None,
     taxa=None, flip=False, vmin=None, vmax=None, cbar=True, cbar_kws=None,
-    cbar_ax=None, square=False, label_columns=None, ax=None, figsize=None,
-    **kwargs
+    cbar_ax=None, square=False, label_columns=None, count=0, ax=None,
+    figsize=None, **kwargs
 ):
     """
     Create a heatmap representation of a feature table.
@@ -102,6 +102,8 @@ def heatmap(
     label_columns : list, optional
         List of metadata columns to be concatenated to form new sample
         labels. Use the string 'sample-id' to indicate the sample ID column.
+    count : int, default: 0
+        Number of top taxa to display. When 0, display all.
     ax : matplotlib.axes.Axes, optional
         Axes object to draw the plot onto, otherwise uses the current Axes.
     figsize : tuple, optional
@@ -172,6 +174,7 @@ def heatmap(
     df, mf = _intersect_samples(df, metadata)
     df = _normalize_df(df, normalize)
 
+    # Determine which samples to display.
     if where is None and samples is not None:
         df = df.loc[samples]
     elif where is not None and samples is None:
@@ -182,9 +185,11 @@ def heatmap(
     else:
         pass
 
+    # Sort the samples by name, if necessary.
     if sort_samples:
         df = df.sort_index()
 
+    # Determine which taxa to display.
     if taxa is not None:
         df = df[taxa]
 
@@ -192,9 +197,11 @@ def heatmap(
     if flip:
         df = df.T
 
+    # Determine which matplotlib axes to plot on.
     if ax is None:
         fig, ax = plt.subplots(figsize=figsize)
 
+    # Draw the heatmap.
     sns.heatmap(
         df, ax=ax, vmin=vmin, vmax=vmax, cbar=cbar, cbar_kws=cbar_kws,
         cbar_ax=cbar_ax, square=square, xticklabels=True,
