@@ -90,6 +90,8 @@ def heatmap(
     square : bool, default: False
         If True, set the Axes aspect to 'equal' so each cell will be
         square-shaped.
+    label_columns : list, optional
+        List of metadata columns to be concatenated to form new sample labels.
     ax : matplotlib.axes.Axes, optional
         Axes object to draw the plot onto, otherwise uses the current Axes.
     figsize : tuple, optional
