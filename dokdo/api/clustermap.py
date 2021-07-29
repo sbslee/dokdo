@@ -35,8 +35,7 @@ def heatmap(
     artifact, metadata=None, where=None, sort_samples=None,
     pretty_taxa=False, normalize=None, samples=None, taxa=None, flip=False,
     vmin=None, vmax=None, cbar=True, cbar_kws=None, cbar_ax=None,
-    square=False, xticklabels='auto', yticklabels='auto', ax=None,
-    figsize=None, **kwargs
+    square=False, ax=None, figsize=None, **kwargs
 ):
     """
     Create a heatmap of a feature table.
@@ -81,11 +80,6 @@ def heatmap(
     square : bool, default: False
         If True, set the Axes aspect to 'equal' so each cell will be
         square-shaped.
-    xticklabels, yticklabels: 'auto', bool, list-like, or int, default: 'auto'
-        If True, plot the column names of the dataframe. If False, don’t plot
-        the column names. If list-like, plot these alternate labels as the
-        xticklabels. If an integer, use the column names but plot only every
-        n label. If “auto”, try to densely plot non-overlapping labels.
     ax : matplotlib.axes.Axes, optional
         Axes object to draw the plot onto, otherwise uses the current Axes.
     figsize : tuple, optional
@@ -184,8 +178,8 @@ def heatmap(
 
     sns.heatmap(
         df, ax=ax, vmin=vmin, vmax=vmax, cbar=cbar, cbar_kws=cbar_kws,
-        cbar_ax=cbar_ax, square=square, xticklabels=xticklabels,
-        yticklabels=yticklabels, **kwargs
+        cbar_ax=cbar_ax, square=square, xticklabels=True,
+        yticklabels=True, **kwargs
     )
 
     return ax
