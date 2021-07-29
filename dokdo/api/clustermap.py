@@ -51,6 +51,9 @@ def heatmap(
     """
     Create a heatmap representation of a feature table.
 
+    It is strongly recommended to normalize the feature table before
+    generating a heatmap with the ``normalize`` option.
+
     Parameters
     ----------
     artifact : str, qiime2.Artifact, pandas.DataFrame
@@ -70,12 +73,14 @@ def heatmap(
         Keyword arguments for :meth:`dokdo.api.pname` when ``pretty_taxa``
         is True.
     normalize : {None, 'log10', 'clr', 'zscore'}, default: None
-        Whether to normalize the the input feature table:
+        Whether to normalize the feature table:
 
-        * None: Do not normalize.
-        * 'log10': Apply the log10 transformation adding a psuedocount of 1.
-        * 'clr': Apply the centre log ratio (CLR) transformation adding a psuedocount of 1.
-        * 'zscore': Apply the Z score transformation.
+        - None: Do not normalize.
+        - 'log10': Apply the log10 transformation after adding a psuedocount
+          of 1.
+        - 'clr': Apply the centre log ratio (CLR) transformation adding a
+          psuedocount of 1.
+        - 'zscore': Apply the Z score transformation.
 
     samples, taxa : list, optional
         Specify samples and taxa to be displayed.
