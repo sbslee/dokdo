@@ -20,6 +20,16 @@ def _get_df(artifact):
         raise TypeError(f'Incorrect input type: {type(artifact)}.')
     return df
 
+def _intersect_samples(df, metadata):
+    if metadata is None:
+        mf = None
+    else:
+        mf = common.get_mf(metadata)
+        df = pd.concat([df, mf], axis=1, join='inner')
+        df = df.drop(mf.columns, axis=1)
+        df = df.loc[:, (df != 0).any(axis=0)]
+    return df, mf
+
 def _normalize_df(df, normalize):
     if normalize == 'log10':
         df = df.applymap(lambda x: np.log10(x + 1))
@@ -147,6 +157,7 @@ def heatmap(
     .. image:: images/heatmap-2.png
     """
     df = _get_df(artifact)
+    df, mf = _intersect_samples(df, metadata)
     df = _normalize_df(df, normalize)
 
     if where is None and samples is not None:
