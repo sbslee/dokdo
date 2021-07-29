@@ -146,7 +146,8 @@ def taxa_abundance_bar_plot(
     colors : list, optional
         The bar colors.
     label_columns : list, optional
-        List of metadata columns to be concatenated to form new sample labels.
+        List of metadata columns to be concatenated to form new sample
+        labels. Use the string 'sample-id' to indicate the sample ID column.
     orders : dict, optional
         Dictionary of {column1: [element1, element2, ...], column2:
         [element1, element2...], ...} to indicate the order of items. Used to
