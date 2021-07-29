@@ -1,4 +1,5 @@
 import tempfile
+
 from .common import _artist
 from . import common
 
@@ -526,12 +527,9 @@ def taxa_abundance_bar_plot(
             pname_kws = {}
         df.columns = [common.pname(x, **pname_kws) for x in df.columns]
 
-    df.plot.bar(stacked=True,
-                legend=False,
-                ax=ax,
-                width=width,
-                color=c,
-                linewidth=0)
+    df.plot.bar(
+        stacked=True, legend=False, ax=ax, width=width, color=c, linewidth=0
+    )
 
     if label_columns is not None:
         f = lambda row: ' : '.join(row.values.astype(str))
@@ -788,28 +786,19 @@ def taxa_abundance_box_plot(
         d['showmeans'] = True
         d['meanprops'] = _meanprops
 
-    sns.boxplot(x='variable',
-                y='value',
-                hue=hue,
-                hue_order=hue_order,
-                data=df2,
-                ax=ax,
-                **d)
+    sns.boxplot(
+        x='variable', y='value', hue=hue, hue_order=hue_order, data=df2,
+        ax=ax, **d
+    )
 
     if add_datapoints:
         remove_duplicates = True
         # Alternative method: sns.swarmplot()
-        sns.stripplot(x='variable',
-                      y='value',
-                      hue=hue,
-                      hue_order=hue_order,
-                      data=df2,
-                      ax=ax,
-                      color='black',
-                      size=size,
-                      dodge=True,
-                      jitter=jitter,
-                      alpha=alpha)
+        sns.stripplot(
+            x='variable', y='value', hue=hue, hue_order=hue_order, data=df2,
+            ax=ax, color='black', size=size, dodge=True, jitter=jitter,
+            alpha=alpha
+        )
     else:
         remove_duplicates = False
 
