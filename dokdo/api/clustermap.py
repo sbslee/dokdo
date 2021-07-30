@@ -190,8 +190,15 @@ def heatmap(
         df = df.sort_index()
 
     # Determine which taxa to display.
-    if taxa is not None:
+    if taxa is not None and count:
+        raise ValueError("Cannot use 'taxa' and 'count' together.")
+    elif taxa is not None and not count:
         df = df[taxa]
+    elif taxa is None and count:
+        cols = df.mean().sort_values(ascending=False).index[:count]
+        df = df[cols]
+    else:
+        pass
 
     # Flip the axes.
     if flip:
