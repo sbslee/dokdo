@@ -57,7 +57,6 @@ def beta_scree_plot(artifact, count=5, color='blue', ax=None, figsize=None):
         qza_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/unweighted_unifrac_pcoa_results.qza'
         dokdo.beta_scree_plot(qza_file)
         plt.tight_layout()
-        plt.savefig('docs/images/beta_scree_plot.png')
 
     .. image:: images/beta_scree_plot.png
     """

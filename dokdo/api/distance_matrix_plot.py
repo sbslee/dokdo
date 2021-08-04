@@ -68,7 +68,6 @@ def distance_matrix_plot(
 
         dokdo.distance_matrix_plot(qza_file, density=True)
         plt.tight_layout()
-        plt.savefig('docs/images/distance_matrix_plot-3.png')
 
     .. image:: images/distance_matrix_plot-3.png
     """

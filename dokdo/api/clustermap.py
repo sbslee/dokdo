@@ -45,8 +45,8 @@ def heatmap(
     artifact, metadata=None, where=None, sort_samples=None,
     pretty_taxa=False, pname_kws=None, normalize=None, samples=None,
     taxa=None, flip=False, vmin=None, vmax=None, cbar=True, cbar_kws=None,
-    cbar_ax=None, square=False, label_columns=None, count=0, ax=None,
-    figsize=None, **kwargs
+    cbar_ax=None, square=False, label_columns=None, count=0,
+    xticklabels=True, yticklabels=True, ax=None, figsize=None, **kwargs
 ):
     """
     Create a heatmap representation of a feature table.
@@ -104,6 +104,10 @@ def heatmap(
         labels. Use the string 'sample-id' to indicate the sample ID column.
     count : int, default: 0
         Number of top taxa to display. When 0, display all.
+    xticklabels : bool, default: True
+        Whether to plot tick labels for the x-axis.
+    yticklabels : bool, default: True
+        Whether to plot tick labels for the y-axis.
     ax : matplotlib.axes.Axes, optional
         Axes object to draw the plot onto, otherwise uses the current Axes.
     figsize : tuple, optional
@@ -211,8 +215,8 @@ def heatmap(
     # Draw the heatmap.
     sns.heatmap(
         df, ax=ax, vmin=vmin, vmax=vmax, cbar=cbar, cbar_kws=cbar_kws,
-        cbar_ax=cbar_ax, square=square, xticklabels=True,
-        yticklabels=True, **kwargs
+        cbar_ax=cbar_ax, square=square, xticklabels=xticklabels,
+        yticklabels=yticklabels, **kwargs
     )
 
     # Update taxa labels, if necessary.

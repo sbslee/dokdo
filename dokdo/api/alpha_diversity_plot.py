@@ -62,7 +62,6 @@ def alpha_diversity_plot(
                                    metadata_file,
                                    'body-site')
         plt.tight_layout()
-        plt.savefig('docs/images/alpha_diversity_plot.png')
 
     .. image:: images/alpha_diversity_plot.png
     """
