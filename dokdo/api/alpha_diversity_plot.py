@@ -1,38 +1,44 @@
+from . import common
+
 import pandas as pd
 import seaborn as sns
-from qiime2 import Artifact
 import matplotlib.pyplot as plt
-from .common import _artist
-import dokdo
+from qiime2 import Artifact
 
 def alpha_diversity_plot(
-    alpha_diversity, metadata, where,
-    ax=None, figsize=None, add_swarmplot=False,
-    order=None, hide_nsizes=False, artist_kwargs=None
+    artifact, metadata, where, add_swarmplot=False, order=None,
+    hide_nsizes=False, ax=None, figsize=None
 ):
-    """Create an alpha diversity plot.
+    """
+    Create an alpha diversity plot.
+
+    +-----------------------+--------------------------------------------------------------------------+
+    | q2-diversity plugin   | Example                                                                  |
+    +=======================+==========================================================================+
+    | QIIME 2 CLI           | qiime diversity core-metrics-phylogenetic [OPTIONS]                      |
+    +-----------------------+--------------------------------------------------------------------------+
+    | QIIME 2 API           | from qiime2.plugins.diversity.pipelines import core_metrics_phylogenetic |
+    +-----------------------+--------------------------------------------------------------------------+
 
     Parameters
     ----------
-    alpha_diversity : str or qiime2.Artifact
-        Artifact file or object with the semantic type
-        `SampleData[AlphaDiversity]`.
+    artifact : str or qiime2.Artifact
+        Artifact file or object from the q2-diversity plugin with the
+        semantic type ``SampleData[AlphaDiversity]``.
     metadata : str or qiime2.Metadata
         Metadata file or object.
     where : str
         Column name to be used for the x-axis.
-    ax : matplotlib.axes.Axes, optional
-        Axes object to draw the plot onto, otherwise uses the current Axes.
-    figsize : tuple, optional
-        Width, height in inches. Format: (float, float).
     add_swarmplot : bool, default: False
         Add a swarm plot on top of the box plot.
     order : list, optional
         Order to plot the categorical levels in.
     hide_nsizes : bool, default: False
         Hide sample size from x-axis labels.
-    artist_kwargs : dict, optional
-        Keyword arguments passed down to the _artist() method.
+    ax : matplotlib.axes.Axes, optional
+        Axes object to draw the plot onto, otherwise uses the current Axes.
+    figsize : tuple, optional
+        Width, height in inches. Format: (float, float).
 
     Returns
     -------
@@ -43,21 +49,30 @@ def alpha_diversity_plot(
     --------
     Below is a simple example.
 
-    >>> qzv_file = f'{data_dir}/moving-pictures-tutorial/faith_pd_vector.qza'
-    >>> metadata_file = f'{data_dir}/moving-pictures-tutorial/sample-metadata.tsv'
-    >>> dokdo.alpha_diversity_plot(qzv_file, metadata_file, 'body-site')
-    >>> plt.tight_layout()
+    .. code:: python3
+
+        import dokdo
+        import matplotlib.pyplot as plt
+        %matplotlib inline
+        import seaborn as sns
+        sns.set()
+        qzv_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/faith_pd_vector.qza'
+        metadata_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/sample-metadata.tsv'
+        dokdo.alpha_diversity_plot(qzv_file,
+                                   metadata_file,
+                                   'body-site')
+        plt.tight_layout()
 
     .. image:: images/alpha_diversity_plot.png
     """
-    if isinstance(alpha_diversity, str):
-        _alpha_diversity = Artifact.load(alpha_diversity)
+    if isinstance(artifact, str):
+        _alpha_diversity = Artifact.load(artifact)
     else:
-        _alpha_diversity = alpha_diversity
+        _alpha_diversity = artifact
 
     df = _alpha_diversity.view(pd.Series).to_frame()
 
-    mf = dokdo.get_mf(metadata)
+    mf = common.get_mf(metadata)
     df = pd.concat([df, mf], axis=1, join='inner')
 
     if ax is None:
@@ -80,13 +95,7 @@ def alpha_diversity_plot(
         xtexts = [f'{x} ({nsizes[x]})' for x in xtexts]
         ax.set_xticklabels(xtexts)
 
-    if artist_kwargs is None:
-        artist_kwargs = {}
-
-    artist_kwargs = {'xlabel': where,
-                     'ylabel': metric,
-                     **artist_kwargs}
-
-    ax = _artist(ax, **artist_kwargs)
+    ax.set_xlabel(where)
+    ax.set_ylabel(metric)
 
     return ax

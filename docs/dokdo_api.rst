@@ -4,228 +4,280 @@ Dokdo API
 Introduction
 ============
 
-This page describes Dokdo's application programming interface (API), which is designed to be used with Jupyter Notebook in Python. Before using Dokdo API, make sure your notebook is open within an environment where QIIME 2 and Dokdo are already installed.
+This page describes Dokdo's application programming interface (API), which is designed to be used with Jupyter Notebook in Python. Before using Dokdo API, make sure your notebook is open within an environment where both QIIME 2 and Dokdo are already installed.
+
+Below, we will go through some examples using publicly available datasets from QIIME 2 tutorials, including `Moving Pictures <https://docs.qiime2.org/2020.8/tutorials/moving-pictures/>`_ and `Atacama soil microbiome <https://docs.qiime2.org/2020.8/tutorials/atacama-soils/>`_. Note that you do not need to download those datasets as they are already included in Dokdo (e.g. ``/path/to/dokdo/data``); however, you will need to change the path to Dokdo.
 
 First, at the beginning of your notebook, enter the following to import Dokdo API.
 
 .. code:: python3
 
-   >>> import dokdo
+   import dokdo
 
-Next, import the ``matplotlib`` package which should be installed already in your environment because it is included in QIIME 2 installation.
-
-.. code:: python3
-
-   >>> import matplotlib.pyplot as plt
-
-With the magic function ``%matplotlib inline``, the output of plotting methods will be displayed inline within Jupyter Notebook.
+Next, import the ``matplotlib`` package which should be installed already in your environment because it is included in QIIME 2 installation. With the magic function ``%matplotlib inline``, the output of plotting methods will be displayed inline within Jupyter Notebook.
 
 .. code:: python3
 
-    >>> %matplotlib inline
+   import matplotlib.pyplot as plt
+   %matplotlib inline
 
-Let's set the seed so that our results are reproducible.
-
-.. code:: python3
-
-   >>> import numpy as np
-   >>> np.random.seed(1)
-
-Finally, we are going to use some datasets downloaded from publicly available QIIME 2 tutorials, including `Moving Pictures <https://docs.qiime2.org/2020.8/tutorials/moving-pictures/>`_ and `Atacama soil microbiome <https://docs.qiime2.org/2020.8/tutorials/atacama-soils/>`_.
+Set the seed so that our results are reproducible.
 
 .. code:: python3
 
-   >>> data_dir = '/Users/sbslee/Desktop/dokdo/data'
+   import numpy as np
+   np.random.seed(1)
 
-Tips
-====
-
-Setting Figure Properties
--------------------------
-
-In this section, you'll learn how to control various properties of a figure using the plotting method ``dokdo.denoising_stats_plot`` as an example. This method creates a grouped box chart using denoising statistics from the DADA 2 algorithm.
-
-Let's start with a toy example. The figure below does not have a legend, which is bad, but let's not worry about that now.
+Here, we will see how to control various properties of a figure using the plotting method :meth:`dokdo.denoising_stats_plot` as an example. This method creates a grouped box chart using denoising statistics from the DADA 2 algorithm.
 
 .. code:: python3
 
-    >>> qza_file = f'{data_dir}/atacama-soil-microbiome-tutorial/denoising-stats.qza'
-    >>> metadata_file = f'{data_dir}/atacama-soil-microbiome-tutorial/sample-metadata.tsv'
-    >>> where = 'transect-name'
-    >>> args = [qza_file, metadata_file, where]
-    >>> dokdo.denoising_stats_plot(*args)
-    >>> plt.tight_layout()
+    qza_file = '/Users/sbslee/Desktop/dokdo/data/atacama-soil-microbiome-tutorial/denoising-stats.qza'
+    metadata_file = '/Users/sbslee/Desktop/dokdo/data/atacama-soil-microbiome-tutorial/sample-metadata.tsv'
 
-.. image:: images/Setting-Figure-Properties-1.png
+    dokdo.denoising_stats_plot(
+        qza_file,
+        metadata_file,
+        'transect-name',
+        figsize=(8, 6)
+    )
+
+    plt.tight_layout()
+
+.. image:: images/Introduction-1.png
 
 Aesthetics
-^^^^^^^^^^
+----------
 
 The first thing we can do is changing the figure style. I personally like the ``seaborn`` package's default style.
 
 .. code:: python3
 
-    >>> import seaborn as sns
-    >>> with sns.axes_style('darkgrid'):
-    ...     dokdo.denoising_stats_plot(*args)
-    >>> plt.tight_layout()
+    import seaborn as sns
 
-.. image:: images/Setting-Figure-Properties-2.png
+    with sns.axes_style('darkgrid'):
+        dokdo.denoising_stats_plot(
+            qza_file,
+            metadata_file,
+            'transect-name',
+            figsize=(8, 6)
+        )
+
+    plt.tight_layout()
+
+.. image:: images/Introduction-2.png
 
 If you're coming from the world of R software, you may find the ``ggplot`` style more soothing for your eyes.
 
 .. code:: python3
 
-    >>> import matplotlib.pyplot as plt
-    >>> with plt.style.context('ggplot'):
-    ...     dokdo.denoising_stats_plot(*args)
-    >>> plt.tight_layout()
+    with plt.style.context('ggplot'):
+        dokdo.denoising_stats_plot(
+            qza_file,
+            metadata_file,
+            'transect-name',
+            figsize=(8, 6)
+        )
 
-.. image:: images/Setting-Figure-Properties-3.png
+    plt.tight_layout()
+
+.. image:: images/Introduction-3.png
 
 Note that in both cases, the styling is set locally. If you plan to make many plots and want to set the style for all of them (i.e. globally), use the following.
 
 .. code:: python3
 
-    >>> sns.set()
-    >>> # plt.style.use('ggplot')
+    sns.set()
+    # plt.style.use('ggplot')
 
 Finally, you can turn off the styling at any point after setting it globally with the following.
 
 .. code:: python3
 
-    >>> # import matplotlib
-    >>> # matplotlib.rc_file_defaults()
+    # import matplotlib
+    # matplotlib.rc_file_defaults()
+
+For the remaining examples, we will use the seaborn style.
 
 Plot Size
-^^^^^^^^^
+---------
 
 There are various ways you can control the figure size. The easiest way is to use the ``figsize`` argument in a plotting method call, as shown below.
 
 .. code:: python3
 
-    >>> dokdo.denoising_stats_plot(*args, figsize=(9, 3))
-    >>> plt.tight_layout()
+    dokdo.denoising_stats_plot(
+        qza_file,
+        metadata_file,
+        'transect-name',
+        figsize=(9, 3)
+    )
 
-.. image:: images/Setting-Figure-Properties-4.png
+    plt.tight_layout()
+
+.. image:: images/Introduction-4.png
 
 If you plan to draw more than one plot in the same figure (i.e. multiple "subplots"), you can specify size for the entire figure in the following way.
 
 .. code:: python3
 
-    >>> fig, [ax1, ax2] = plt.subplots(1, 2, figsize=(9, 3))
-    >>> dokdo.denoising_stats_plot(*args, ax=ax1)
-    >>> dokdo.denoising_stats_plot(*args, ax=ax2)
-    >>> plt.tight_layout()
+    fig, [ax1, ax2] = plt.subplots(1, 2, figsize=(9, 3))
 
-.. image:: images/Setting-Figure-Properties-5.png
+    dokdo.denoising_stats_plot(
+        qza_file,
+        metadata_file,
+        'transect-name',
+        ax=ax1
+    )
+
+    dokdo.denoising_stats_plot(
+        qza_file,
+        metadata_file,
+        'transect-name',
+        ax=ax2
+    )
+
+    plt.tight_layout()
+
+.. image:: images/Introduction-5.png
 
 You can also set the width and/or height of individual subplots using ``width_ratios`` and ``height_ratios`` from ``gridspec_kw``.
 
 .. code:: python3
 
-    >>> fig, [ax1, ax2] = plt.subplots(1, 2, figsize=(9, 3), gridspec_kw={'width_ratios': [8, 2]})
-    >>> dokdo.denoising_stats_plot(*args, ax=ax1)
-    >>> dokdo.denoising_stats_plot(*args, ax=ax2)
-    >>> plt.tight_layout()
+    fig, [ax1, ax2] = plt.subplots(1, 2, figsize=(9, 3), gridspec_kw={'width_ratios': [8, 2]})
 
-.. image:: images/Setting-Figure-Properties-6.png
+    dokdo.denoising_stats_plot(
+        qza_file,
+        metadata_file,
+        'transect-name',
+        ax=ax1
+    )
+
+    dokdo.denoising_stats_plot(
+        qza_file,
+        metadata_file,
+        'transect-name',
+        ax=ax2
+    )
+
+    plt.tight_layout()
+
+.. image:: images/Introduction-6.png
 
 Alternatively, you can combine empty subplots to create a bigger subplot using ``gridspec``.
 
 .. code:: python3
 
-    >>> import matplotlib.gridspec as gridspec
-    >>> fig, axes  = plt.subplots(2, 2, figsize=(9, 5))
-    >>> dokdo.denoising_stats_plot(*args, ax=axes[0][0])
-    >>> dokdo.denoising_stats_plot(*args, ax=axes[1][0])
-    >>> gs = axes[0, 1].get_gridspec()
-    >>> for ax in axes[0:2, 1]:
-    ...     ax.remove()
-    >>> axbig = fig.add_subplot(gs[0:2, 1])
-    >>> dokdo.denoising_stats_plot(*args, ax=axbig)
-    >>> plt.tight_layout()
+    import matplotlib.gridspec as gridspec
 
-.. image:: images/Setting-Figure-Properties-7.png
+    fig, axes  = plt.subplots(2, 2, figsize=(9, 5))
 
-Title, Axis, Legend, Font Size
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    dokdo.denoising_stats_plot(
+        qza_file,
+        metadata_file,
+        'transect-name',
+        ax=axes[0][0]
+    )
 
-Each main plotting method takes a dictionary argument called ``artist_kwargs`` as input that is passed down to the private method ``_artist`` as shown below. For example, the ``show_legend`` argument defined in ``_artist`` is set as ``False`` by default, which means if you want to include the figure legend, you should include ``artist_kwargs=dict(show_legend=True)`` in your method call.
+    dokdo.denoising_stats_plot(
+        qza_file,
+        metadata_file,
+        'transect-name',
+        ax=axes[1][0]
+    )
 
-Note that internally, different plotting methods use a different set of default keyword arguments for ``_artist``. For example, by default, the ``dokdo.denoising_stats_plot`` method passes ``ylabel='Read depth'`` to ``_artist`` whereas the ``dokdo.taxa_abundance_bar_plot`` method passes ``ylabel='Relative abundance (%)'``. Of course, you can always easily change the y-axis label with ``artist_kwargs=dict(ylabel='My new y-axis label')``.
+    gs = axes[0, 1].get_gridspec()
 
-.. automodule:: dokdo.api.common
-   :members:
+    for ax in axes[0:2, 1]:
+        ax.remove()
 
-   .. automethod:: dokdo.api.common._artist
+    axbig = fig.add_subplot(gs[0:2, 1])
 
-Below are some simple examples.
+    dokdo.denoising_stats_plot(
+        qza_file,
+        metadata_file,
+        'transect-name',
+        ax=axbig
+    )
 
-.. code:: python3
+    plt.tight_layout()
 
-    >>> fig, [[ax1, ax2, ax3], [ax4, ax5, ax6]] = plt.subplots(2, 3, figsize=(15, 8))
-    >>> artist_kwargs1 = dict(title='My title')
-    >>> artist_kwargs2 = dict(title='ylog=True', ylog=True, ymin=0.5E1, ymax=1.5E5)
-    >>> artist_kwargs3 = dict(title='legend_ncol=2', show_legend=True, legend_ncol=2)
-    >>> artist_kwargs4 = dict(title='hide_yticks=True', hide_yticks=True)
-    >>> artist_kwargs5 = dict(title='title_fontsize=20', title_fontsize=20)
-    >>> artist_kwargs6 = dict(title='legend_fontsize=15', show_legend=True, legend_ncol=2, legend_fontsize=15)
-    >>> dokdo.denoising_stats_plot(*args, ax=ax1, artist_kwargs=artist_kwargs1)
-    >>> dokdo.denoising_stats_plot(*args, ax=ax2, artist_kwargs=artist_kwargs2)
-    >>> dokdo.denoising_stats_plot(*args, ax=ax3, artist_kwargs=artist_kwargs3)
-    >>> dokdo.denoising_stats_plot(*args, ax=ax4, artist_kwargs=artist_kwargs4)
-    >>> dokdo.denoising_stats_plot(*args, ax=ax5, artist_kwargs=artist_kwargs5)
-    >>> dokdo.denoising_stats_plot(*args, ax=ax6, artist_kwargs=artist_kwargs6)
-    >>> plt.tight_layout()
-
-.. image:: images/Setting-Figure-Properties-8.png
+.. image:: images/Introduction-7.png
 
 Sample Filtering
-^^^^^^^^^^^^^^^^
+----------------
 
 Sometimes, you may want to plot only a subset of the samples. This can be easily done by providing filtered metadata to the plotting method.
 
 .. code:: python3
 
-    >>> from qiime2 import Metadata
-    >>> mf = dokdo.get_mf(metadata_file)
-    >>> mf = mf[mf['transect-name'] == 'Yungay']
-    >>> metadata = Metadata(mf)
-    >>> dokdo.denoising_stats_plot(qza_file, metadata=metadata, where=where)
-    >>> plt.tight_layout()
+    from qiime2 import Metadata
 
-.. image:: images/Setting-Figure-Properties-9.png
+    mf = dokdo.get_mf(metadata_file)
+    mf = mf[mf['transect-name'] == 'Yungay']
+
+    dokdo.denoising_stats_plot(
+        qza_file,
+        metadata=Metadata(mf),
+        where='transect-name',
+        figsize=(8, 6)
+    )
+
+    plt.tight_layout()
+
+.. image:: images/Introduction-8.png
 
 Plotting Legend Separately
 --------------------------
 
-In some situations, we may wish to plot the graph and the legend separately. For example, the ``dokdo.taxa_abundance_bar_plot`` method by default displays the whole taxa name, which can be quite long and disrupting as shown below.
+In some situations, we may wish to plot the graph and the legend separately. For example, the :meth:`dokdo.taxa_abundance_bar_plot` method by default displays the whole taxa name, which can be quite long and disrupting as shown below.
 
 .. code:: python3
 
-    >>> qzv_file = f'{data_dir}/moving-pictures-tutorial/taxa-bar-plots.qzv'
-    >>> dokdo.taxa_abundance_bar_plot(qzv_file,
-    ...                               level=2,
-    ...                               count=8,
-    ...                               figsize=(9, 5),
-    ...                               artist_kwargs=dict(show_legend=True))
-    >>> plt.tight_layout()
+    qzv_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/taxa-bar-plots.qzv'
 
-.. image:: images/Plotting-Legend-Separately-1.png
+    dokdo.taxa_abundance_bar_plot(
+        qzv_file,
+        level=2,
+        count=8,
+        figsize=(9, 7)
+    )
+
+    plt.tight_layout()
+
+.. image:: images/Introduction-9.png
 
 We can ameliorate the issue by plotting the legend separately with ``legend_only=True``.
 
 .. code:: python3
 
-    >>> fig, [ax1, ax2] = plt.subplots(1, 2, figsize=(11, 5), gridspec_kw={'width_ratios': [9, 1]})
-    >>> dokdo.taxa_abundance_bar_plot(qzv_file, ax=ax1, level=2, count=8)
-    >>> dokdo.taxa_abundance_bar_plot(qzv_file, ax=ax2, level=2, count=8,
-    ...                               artist_kwargs=dict(legend_loc='upper left',
-    ...                                                  legend_only=True))
-    >>> plt.tight_layout()
+    fig, [ax1, ax2] = plt.subplots(1, 2, figsize=(11, 5), gridspec_kw={'width_ratios': [9, 1]})
 
-.. image:: images/Plotting-Legend-Separately-2.png
+    dokdo.taxa_abundance_bar_plot(
+        qzv_file,
+        level=2,
+        count=8,
+        ax=ax1,
+        legend=False
+    )
+
+    dokdo.taxa_abundance_bar_plot(
+        qzv_file,
+        level=2,
+        count=8,
+        ax=ax2
+    )
+
+    handles, labels = ax2.get_legend_handles_labels()
+
+    ax2.clear()
+    ax2.legend(handles, labels)
+    ax2.axis('off')
+
+    plt.tight_layout()
+
+.. image:: images/Introduction-10.png
 
 Plotting QIIME 2 Files vs. Objects
 ----------------------------------
@@ -236,31 +288,43 @@ For example, we can directly plot the Artifact object from the ``qiime2.plugins.
 
 .. code:: python3
 
-    >>> from qiime2 import Artifact
-    >>> from qiime2 import Metadata
-    >>> from qiime2.plugins import diversity
-    >>> table = Artifact.load(f'{data_dir}/moving-pictures-tutorial/table.qza')
-    >>> phylogeny = Artifact.load(f'{data_dir}/moving-pictures-tutorial/rooted-tree.qza')
-    >>> metadata = Metadata.load(f'{data_dir}/moving-pictures-tutorial/sample-metadata.tsv')
-    >>> rarefaction_result = diversity.visualizers.alpha_rarefaction(table=table,
-    ...                                                              metadata=metadata,
-    ...                                                              phylogeny=phylogeny,
-    ...                                                              max_depth=4000)
-    >>> rarefaction = rarefaction_result.visualization
-    >>> dokdo.alpha_rarefaction_plot(rarefaction)
-    >>> plt.tight_layout()
+    from qiime2 import Artifact, Metadata
+    from qiime2.plugins import diversity
 
-.. image:: images/Plotting-QIIME-2-Objects-1.png
+    table_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/table.qza'
+    phylogeny_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/rooted-tree.qza'
+    metadata_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/sample-metadata.tsv'
+
+    table = Artifact.load(table_file)
+    phylogeny = Artifact.load(phylogeny_file)
+    metadata = Metadata.load(metadata_file)
+
+    rarefaction_result = diversity.visualizers.alpha_rarefaction(
+        table=table,
+        metadata=metadata,
+        phylogeny=phylogeny,
+        max_depth=4000
+    )
+
+    rarefaction = rarefaction_result.visualization
+
+    dokdo.alpha_rarefaction_plot(rarefaction, legend=False, figsize=(8, 7))
+
+    plt.tight_layout()
+
+.. image:: images/Introduction-11.png
 
 As expected, above gives the same result as using the Visualization file created by the ``qiime diversity alpha-rarefaction`` command (i.e. QIIME 2 CLI).
 
 .. code:: python3
 
-    >>> qzv_file = f'{data_dir}/moving-pictures-tutorial/alpha-rarefaction.qzv'
-    >>> dokdo.alpha_rarefaction_plot(qzv_file)
-    >>> plt.tight_layout()
+    qzv_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/alpha-rarefaction.qzv'
 
-.. image:: images/Plotting-QIIME-2-Objects-2.png
+    dokdo.alpha_rarefaction_plot(qzv_file, legend=False, figsize=(8, 7))
+
+    plt.tight_layout()
+
+.. image:: images/Introduction-12.png
 
 General Methods
 ===============
@@ -268,8 +332,9 @@ General Methods
 get_mf
 ------
 
-.. automodule:: dokdo.api.get_mf
-   :members:
+.. currentmodule:: dokdo.api.common
+
+.. autofunction:: get_mf
 
 ordinate
 --------
@@ -280,8 +345,9 @@ ordinate
 pname
 -----
 
-.. automodule:: dokdo.api.pname
-   :members:
+.. currentmodule:: dokdo.api.common
+
+.. autofunction:: pname
 
 num2sig
 -------
@@ -361,20 +427,29 @@ distance_matrix_plot
 taxa_abundance_bar_plot
 -----------------------
 
-.. automodule:: dokdo.api.taxa_abundance_bar_plot
-   :members:
+.. currentmodule:: dokdo.api.taxa_abundance
+
+.. autofunction:: taxa_abundance_bar_plot
 
 taxa_abundance_box_plot
 -----------------------
 
-.. automodule:: dokdo.api.taxa_abundance_box_plot
-  :members:
+.. currentmodule:: dokdo.api.taxa_abundance
+
+.. autofunction:: taxa_abundance_box_plot
 
 ancom_volcano_plot
 ------------------
 
 .. automodule:: dokdo.api.ancom_volcano_plot
   :members:
+
+heatmap
+-------
+
+.. currentmodule:: dokdo.api.clustermap
+
+.. autofunction:: heatmap
 
 Other Plotting Methods
 ======================
@@ -397,17 +472,12 @@ addbiplot
 .. automodule:: dokdo.api.addbiplot
   :members:
 
-barplot
--------
+clustermap
+----------
 
-.. automodule:: dokdo.api.barplot
-  :members:
+.. currentmodule:: dokdo.api.clustermap
 
-heatmap
--------
-
-.. automodule:: dokdo.api.heatmap
-  :members:
+.. autofunction:: clustermap
 
 regplot
 -------

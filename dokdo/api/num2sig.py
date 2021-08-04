@@ -1,7 +1,8 @@
 def num2sig(num):
-    """Convert a p-avalue to a signifiacne annotation.
+    """
+    Convert a p-avalue to a signifiacne annotation.
 
-    Significance annotations are defined as follows: 
+    Significance annotations are defined as follows:
 
     +----------------------+-------------+
     | P-value              | Signifiacne |
@@ -29,18 +30,25 @@ def num2sig(num):
 
     Examples
     --------
-    Below are some examples.
 
-    >>> print(dokdo.num2sig(0.06))
-    ns
-    >>> print(dokdo.num2sig(0.03))
-    *
-    >>> print(dokdo.num2sig(0.009))
-    **
-    >>> print(dokdo.num2sig(0.0005))
-    ***
-    >>> print(dokdo.num2sig(1E-9))
-    ****
+    .. code:: python3
+
+        import dokdo
+
+        dokdo.num2sig(0.06)
+        # Will print: ns
+
+        dokdo.num2sig(0.03)
+        # Will print: *
+
+        dokdo.num2sig(0.009)
+        # Will print: **
+
+        dokdo.num2sig(0.0005)
+        # Will print: ***
+
+        dokdo.num2sig(1E-9)
+        # Will print: ****
     """
     if 0.05 < num:
         sig = 'ns'

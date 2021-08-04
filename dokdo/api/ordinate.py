@@ -9,7 +9,8 @@ def ordinate(
     table, metadata=None, metric='jaccard', sampling_depth=-1,
     phylogeny=None, number_of_dimensions=None, biplot=False
 ):
-    """Perform ordination using principal coordinate analysis (PCoA).
+    """
+    Perform ordination using principal coordinate analysis (PCoA).
 
     This method wraps multiple QIIME 2 methods to perform ordination and
     returns Artifact object containing PCoA results.
@@ -65,32 +66,69 @@ def ordinate(
     used is ``jaccard``. The resulting object ``pcoa`` can be directly
     used for plotting by the ``dokdo.beta_2d_plot`` method as shown below.
 
-    >>> table_file = f'{data_dir}/moving-pictures-tutorial/table.qza'
-    >>> metadata_file = f'{data_dir}/moving-pictures-tutorial/sample-metadata.tsv'
-    >>> pcoa_results = dokdo.ordinate(table_file)
-    >>> dokdo.beta_2d_plot(pcoa_results, metadata=metadata_file, hue='body-site', artist_kwargs=dict(show_legend=True))
-    >>> plt.tight_layout()
+    .. code:: python3
+
+        import dokdo
+        import matplotlib.pyplot as plt
+        %matplotlib inline
+        import seaborn as sns
+        sns.set()
+
+        qza_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/table.qza'
+        metadata_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/sample-metadata.tsv'
+
+        pcoa_results = dokdo.ordinate(qza_file)
+
+        dokdo.beta_2d_plot(
+            pcoa_results,
+            metadata=metadata_file,
+            hue='body-site',
+            figsize=(8, 8)
+        )
+
+        plt.tight_layout()
 
     .. image:: images/ordinate-1.png
 
     You can choose a subset of samples.
 
-    >>> from qiime2 import Metadata
-    >>> mf = dokdo.get_mf(metadata_file)
-    >>> mf = mf[mf['body-site'].isin(['gut', 'left palm'])]
-    >>> pcoa_results = dokdo.ordinate(table_file, metadata=Metadata(mf))
-    >>> dokdo.beta_2d_plot(pcoa_results, metadata=metadata_file, hue='body-site', artist_kwargs=dict(show_legend=True))
-    >>> plt.tight_layout()
+    .. code:: python3
+
+        from qiime2 import Metadata
+
+        mf = dokdo.get_mf(metadata_file)
+        mf = mf[mf['body-site'].isin(['gut', 'left palm'])]
+
+        pcoa_results = dokdo.ordinate(qza_file, metadata=Metadata(mf))
+
+        dokdo.beta_2d_plot(
+            pcoa_results,
+            metadata=metadata_file,
+            hue='body-site',
+            figsize=(8, 8)
+        )
+
+        plt.tight_layout()
 
     .. image:: images/ordinate-2.png
 
     You can also generate a biplot.
 
-    >>> pcoa_results = dokdo.ordinate(table_file, biplot=True, number_of_dimensions=10)
-    >>> fig, ax = plt.subplots(1, 1, figsize=(8, 8))
-    >>> dokdo.beta_2d_plot(pcoa_results, ax=ax, metadata=metadata_file, hue='body-site', artist_kwargs=dict(show_legend=True))
-    >>> dokdo.addbiplot(pcoa_results, ax=ax, count=7)
-    >>> plt.tight_layout()
+    .. code:: python3
+
+        pcoa_results = dokdo.ordinate(qza_file, biplot=True, number_of_dimensions=10)
+
+        ax = dokdo.beta_2d_plot(
+            pcoa_results,
+            metadata=metadata_file,
+            hue='body-site',
+            figsize=(8, 8)
+        )
+
+
+        dokdo.addbiplot(pcoa_results, ax=ax, count=7)
+
+        plt.tight_layout()
 
     .. image:: images/ordinate-3.png
     """

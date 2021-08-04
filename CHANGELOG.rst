@@ -1,6 +1,31 @@
 Changelog
 *********
 
+1.11.0 (2021-08-04)
+-------------------
+
+* :issue:`21`: Update the :meth:`taxa_abundance_bar_plot` method to accept :class:`pandas.DataFrame` in case the input data was not generated from QIIME 2 (e.g. shotgun sequencing).
+* :issue:`19`: Remove the ``artist_kwargs`` argument from all the remaining methods:
+
+  - :meth:`denoising_stats_plot`
+  - :meth:`alpha_rarefaction_plot`
+  - :meth:`alpha_diversity_plot`
+  - :meth:`beta_2d_plot`
+  - :meth:`beta_3d_plot`
+  - :meth:`beta_scree_plot`
+  - :meth:`beta_parallel_plot`
+  - :meth:`distance_matrix_plot`
+  - :meth:`regplot`
+  - :meth:`taxa_abundance_box_plot`
+  - :meth:`taxa_abundance_bar_plot`
+
+* Deprecate the :meth:`barplot` method.
+* :issue:`22`: Rename the :meth:`heatmap` method to :meth:`clustermap`.
+* :issue:`22`: Update the :meth:`clustermap` method to accept :class:`pandas.DataFrame` in case the input data was not generated from QIIME 2 (e.g. shotgun sequencing). You can now also flip the x and y axes with the ``flip`` option.
+* :issue:`22`: Add a new main plotting method :meth:`heatmap`.
+* :issue:`24`: Update the :meth:`pname` method to allow returning of more than one tax level.
+* Deprecate the ``add_datapoints`` argument in the :meth:`taxa_abundance_box_plot` method.
+
 1.10.0 (2021-07-06)
 -------------------
 

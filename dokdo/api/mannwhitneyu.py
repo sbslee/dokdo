@@ -6,7 +6,8 @@ def mannwhitneyu(
     taxon, csv_file, category,
     group1, group2, ann=False
 ):
-    """Compute the p-value from the Mann–Whitney U test.
+    """
+    Compute the p-value from the Mann–Whitney U test.
 
     This method tests the null hypothesis that two independent
     samples come from the same distribution for a given taxon
@@ -45,21 +46,47 @@ def mannwhitneyu(
     need to create a .csv file containing the relevant data using the
     ``dokdo.taxa_abundance_box_plot`` method.
 
-    >>> from qiime2 import Metadata
-    >>> taxon = 'k__Bacteria;p__Proteobacteria'
-    >>> csv_file = 'mannwhitneyu.csv'
-    >>> barplot_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/taxa-bar-plots.qzv'
-    >>> ax = dokdo.taxa_abundance_box_plot(barplot_file, level=2, hue='body-site', taxa_names=[taxon],
-    ...                                    show_others=False, figsize=(6, 6), add_datapoints=True,
-    ...                                    include_samples={'body-site': ['left palm', 'right palm']},
-    ...                                    csv_file=csv_file, artist_kwargs=dict(show_legend=True, ymax=70))
-    >>> plt.tight_layout()
+    .. code:: python3
 
-    .. image:: images/mannwhitneyu-1.png
+        import dokdo
+        from qiime2 import Metadata
+        import matplotlib.pyplot as plt
+        %matplotlib inline
+        import seaborn as sns
+        sns.set()
 
-    >>> p_value = dokdo.mannwhitneyu(taxon, csv_file, 'body-site', 'left palm', 'right palm')
-    >>> print(f'The p-value is {p_value:.6f}')
-    The p-value is 0.235243
+        from qiime2 import Metadata
+        taxon = 'k__Bacteria;p__Proteobacteria'
+        csv_file = 'mannwhitneyu.csv'
+        qzv_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/taxa-bar-plots.qzv'
+
+        ax = dokdo.taxa_abundance_box_plot(
+            qzv_file,
+            level=2,
+            hue='body-site',
+            taxa_names=[taxon],
+            show_others=False,
+            figsize=(8, 7),
+            pretty_taxa=True,
+            include_samples={'body-site': ['left palm', 'right palm']},
+            csv_file=csv_file
+        )
+
+        plt.tight_layout()
+
+    .. image:: images/mannwhitneyu.png
+
+    .. code:: python3
+
+        p_value = dokdo.mannwhitneyu(
+            taxon,
+            csv_file,
+            'body-site',
+            'left palm',
+            'right palm'
+        )
+        print(f'The p-value is {p_value:.6f}')
+        # Will print: The p-value is 0.235243
     """
     df = pd.read_csv(csv_file)
     df = df[[taxon, category]]

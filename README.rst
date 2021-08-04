@@ -72,13 +72,13 @@ To create a taxonomic bar plot from QIIME 2's .qzv file:
 
 .. code:: python3
 
-    >>> dokdo.taxa_abundance_bar_plot('taxa-bar-plots.qzv',
-    ...                               figsize=(10, 7),
-    ...                               level=6,
-    ...                               count=8,
-    ...                               legend_short=True,
-    ...                               artist_kwargs=dict(show_legend=True,
-    ...                                                  legend_loc='upper left'))
+    dokdo.taxa_abundance_bar_plot(
+        'taxa-bar-plots.qzv',
+        figsize=(10, 7),
+        level=6,
+        count=8,
+        legend_short=True
+    )
 
 .. image:: https://raw.githubusercontent.com/sbslee/dokdo/master/docs/images/taxa_abundance_bar_plot-3.png
 
@@ -86,11 +86,12 @@ To create an alpha rarefaction plot from QIIME 2's .qzv file:
 
 .. code:: python3
 
-  >>> dokdo.alpha_rarefaction_plot('alpha-rarefaction.qzv',
-  ...                              hue='body-site',
-  ...                              metric='observed_features',
-  ...                              figsize=(8, 5),
-  ...                              artist_kwargs=dict(show_legend=True))
+    dokdo.alpha_rarefaction_plot(
+        'alpha-rarefaction.qzv',
+        hue='body-site',
+        metric='observed_features',
+        figsize=(8, 5)
+    )
 
 .. image:: https://raw.githubusercontent.com/sbslee/dokdo/master/docs/images/alpha_rarefaction_plot-3.png
 

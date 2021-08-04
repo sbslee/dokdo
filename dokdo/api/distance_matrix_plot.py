@@ -1,15 +1,16 @@
 import tempfile
-from .common import _parse_input, _artist
+
 import pandas as pd
 import skbio as sb
 import matplotlib.pyplot as plt
 from qiime2 import Artifact
 
 def distance_matrix_plot(
-    distance_matrix, bins=100, pairs=None, ax=None,
-    figsize=None, density=False, artist_kwargs=None
+    distance_matrix, bins=100, pairs=None, density=False, ax=None,
+    figsize=None
 ):
-    """Create a histogram from a distance matrix.
+    """
+    Create a histogram from a distance matrix.
 
     Parameters
     ----------
@@ -20,14 +21,12 @@ def distance_matrix_plot(
         Number of bins to be displayed.
     pairs : list, optional
         List of sample pairs to be shown in red vertical lines.
+    density : bool, default: False
+        If True, draw and return a probability density.
     ax : matplotlib.axes.Axes, optional
         Axes object to draw the plot onto, otherwise uses the current Axes.
     figsize : tuple, optional
         Width, height in inches. Format: (float, float).
-    density : bool, default: False
-        If True, draw and return a probability density.
-    artist_kwargs : dict, optional
-        Keyword arguments passed down to the _artist() method.
 
     Returns
     -------
@@ -36,28 +35,39 @@ def distance_matrix_plot(
 
     Examples
     --------
-    Below is a simple example.
+    Below is a simple example:
 
-    >>> qza_file = f'{data_dir}/moving-pictures-tutorial/unweighted_unifrac_distance_matrix.qza'
-    >>> dokdo.distance_matrix_plot(qza_file)
-    >>> plt.tight_layout()
+    .. code:: python3
+
+        import dokdo
+        import matplotlib.pyplot as plt
+        %matplotlib inline
+        import seaborn as sns
+        sns.set()
+        qza_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/unweighted_unifrac_distance_matrix.qza'
+        dokdo.distance_matrix_plot(qza_file)
+        plt.tight_layout()
 
     .. image:: images/distance_matrix_plot-1.png
 
     We can indicate the distance between any two samples on top of the
-    histogram using ``pairs``.
+    histogram using ``pairs``:
 
-    >>> dokdo.distance_matrix_plot(qza_file,
-    ...                            pairs=[['L1S8', 'L1S57'],
-    ...                                   ['L2S175', 'L2S204']])
-    >>> plt.tight_layout()
+    .. code:: python3
+
+        dokdo.distance_matrix_plot(qza_file,
+                                   pairs=[['L1S8', 'L1S57'],
+                                          ['L2S175', 'L2S204']])
+        plt.tight_layout()
 
     .. image:: images/distance_matrix_plot-2.png
 
-    Finally, we can show a density histogram.
+    Finally, we can show a density histogram:
 
-    >>> dokdo.distance_matrix_plot(qza_file, density=True)
-    >>> plt.tight_layout()
+    .. code:: python3
+
+        dokdo.distance_matrix_plot(qza_file, density=True)
+        plt.tight_layout()
 
     .. image:: images/distance_matrix_plot-3.png
     """
@@ -91,13 +101,7 @@ def distance_matrix_plot(
         for i in idx:
             ax.axvline(x=i, c='red')
 
-    if artist_kwargs is None:
-        artist_kwargs = {}
-
-    artist_kwargs = {'xlabel': 'Distance',
-                     'ylabel': 'Frequency',
-                     **artist_kwargs}
-
-    ax = _artist(ax, **artist_kwargs)
+    ax.set_xlabel('Distance')
+    ax.set_ylabel('Frequency')
 
     return ax
