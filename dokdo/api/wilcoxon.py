@@ -48,40 +48,65 @@ def wilcoxon(
     the left palm and right palm. We also want to perofrm the comparison in
     the context of ``days-since-experiment-start`` (i.e. paired comparison).
 
-    >>> from qiime2 import Metadata
-    >>> metadata = Metadata.load('/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/sample-metadata.tsv')
-    >>> sample_names = ['L2S240', 'L3S242', 'L2S155', 'L4S63', 'L2S175', 'L3S313', 'L2S204', 'L4S112', 'L2S222', 'L4S137']
-    >>> metadata = metadata.filter_ids(sample_names)
-    >>> mf = dokdo.get_mf(metadata)
-    >>> mf = mf[['body-site', 'days-since-experiment-start']]
-    >>> mf.sort_values(['days-since-experiment-start', 'body-site'])
-                body-site  days-since-experiment-start
-    sample-id
-    L2S240      left palm                          0.0
-    L3S242     right palm                          0.0
-    L2S155      left palm                         84.0
-    L4S63      right palm                         84.0
-    L2S175      left palm                        112.0
-    L3S313     right palm                        112.0
-    L2S204      left palm                        140.0
-    L4S112     right palm                        140.0
-    L2S222      left palm                        168.0
-    L4S137     right palm                        168.0
-    >>> taxon = 'k__Bacteria;p__Proteobacteria'
-    >>> csv_file = 'wilcoxon.csv'
-    >>> barplot_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/taxa-bar-plots.qzv'
-    >>> ax = dokdo.taxa_abundance_box_plot(barplot_file, level=2, hue='body-site', taxa_names=[taxon],
-    ...                                    show_others=False, figsize=(6, 6), sample_names=sample_names,
-    ...                                    include_samples={'body-site': ['left palm', 'right palm']},
-    ...                                    csv_file=csv_file, artist_kwargs=dict(show_legend=True, ymax=70))
-    >>> dokdo.addpairs(taxon, csv_file, 'days-since-experiment-start', 'body-site', ['left palm', 'right palm'], ax=ax)
-    >>> plt.tight_layout()
+    .. code:: python3
+
+        import dokdo
+        from qiime2 import Metadata
+        import matplotlib.pyplot as plt
+        %matplotlib inline
+        import seaborn as sns
+        sns.set()
+
+        sample_names = ['L2S240', 'L3S242', 'L2S155', 'L4S63', 'L2S175', 'L3S313', 'L2S204', 'L4S112', 'L2S222', 'L4S137']
+
+        qzv_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/taxa-bar-plots.qzv'
+        metadata_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/sample-metadata.tsv'
+
+        metadata = Metadata.load(metadata_file)
+        metadata = metadata.filter_ids(sample_names)
+        mf = dokdo.get_mf(metadata)
+        mf = mf[['body-site', 'days-since-experiment-start']]
+
+        taxon = 'k__Bacteria;p__Proteobacteria'
+        csv_file = 'wilcoxon.csv'
+
+        ax = dokdo.taxa_abundance_box_plot(
+            qzv_file,
+            level=2,
+            hue='body-site',
+            taxa_names=[taxon],
+            show_others=False,
+            figsize=(6, 6),
+            sample_names=sample_names,
+            include_samples={'body-site': ['left palm', 'right palm']},
+            csv_file=csv_file,
+            pretty_taxa=True
+        )
+
+        dokdo.addpairs(
+            taxon,
+            csv_file,
+            'days-since-experiment-start',
+            'body-site', ['left palm', 'right palm'],
+            ax=ax
+        )
+
+        plt.tight_layout()
 
     .. image:: images/wilcoxon.png
 
-    >>> p_value = dokdo.wilcoxon(taxon, csv_file, 'days-since-experiment-start', 'body-site', 'left palm', 'right palm')
-    >>> print(f'The p-value is {p_value:.6f}')
-    The p-value is 0.062500
+    .. code:: python3
+
+        p_value = dokdo.wilcoxon(
+            taxon,
+            csv_file,
+            'days-since-experiment-start',
+            'body-site',
+            'left palm',
+            'right palm'
+        )
+        print(f'The p-value is {p_value:.6f}')
+        # Will print: The p-value is 0.062500
     """
     df = pd.read_csv(csv_file)
     df = df.sort_values([subject, category])
