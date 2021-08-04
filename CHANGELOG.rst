@@ -5,7 +5,7 @@ Changelog
 -----------------------
 
 * :issue:`21`: Update the :meth:`taxa_abundance_bar_plot` method to accept :class:`pandas.DataFrame` in case the input data was not generated from QIIME 2 (e.g. shotgun sequencing).
-* :issue:`19`: Remove the ``artist_kwargs`` argument from the following methods:
+* :issue:`19`: Remove the ``artist_kwargs`` argument from all the remaining methods:
 
   - :meth:`denoising_stats_plot`
   - :meth:`alpha_rarefaction_plot`
@@ -17,6 +17,7 @@ Changelog
   - :meth:`distance_matrix_plot`
   - :meth:`regplot`
   - :meth:`taxa_abundance_box_plot`
+  - :meth:`taxa_abundance_bar_plot`
 
 * Deprecate the :meth:`barplot` method.
 * :issue:`22`: Rename the :meth:`heatmap` method to :meth:`clustermap`.
