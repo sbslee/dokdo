@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 
 def alpha_rarefaction_plot(
     visualization, hue='sample-id', metric='shannon', hue_order=None,
-    units=None, estimator='mean', ax=None, figsize=None
+    units=None, estimator='mean', legend='brief', ax=None, figsize=None
 ):
     """
     Create an alpha rarefaction plot.
@@ -39,6 +39,8 @@ def alpha_rarefaction_plot(
     estimator : str, default: 'mean', optional
         Method for aggregating across multiple observations of the y variable
         at the same x level. If None, all observations will be drawn.
+    legend : str, default: 'brief'
+        Legend type as in :meth:`seaborn.lineplot`.
     ax : matplotlib.axes.Axes, optional
         Axes object to draw the plot onto, otherwise uses the current Axes.
     figsize : tuple, optional
@@ -122,7 +124,8 @@ def alpha_rarefaction_plot(
                  sort=False,
                  units=units,
                  estimator=estimator,
-                 hue_order=hue_order)
+                 hue_order=hue_order,
+                 legend=legend)
 
     ax.set_xlabel('Sequencing depth')
     ax.set_ylabel(metric)
