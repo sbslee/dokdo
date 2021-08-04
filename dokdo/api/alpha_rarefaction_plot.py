@@ -14,7 +14,7 @@ def alpha_rarefaction_plot(
     Create an alpha rarefaction plot.
 
     +-----------------------+--------------------------------------------------------------------+
-    | q2-diversity plugin | Example                                                              |
+    | q2-diversity plugin   | Example                                                            |
     +=======================+====================================================================+
     | QIIME 2 CLI           | qiime diversity alpha-rarefaction [OPTIONS]                        |
     +-----------------------+--------------------------------------------------------------------+
