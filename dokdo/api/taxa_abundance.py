@@ -551,13 +551,13 @@ def taxa_abundance_bar_plot(
 
 def taxa_abundance_box_plot(
     visualization, metadata=None, hue=None, hue_order=None,
-    add_datapoints=False, level=1, by=None, ax=None,
+    level=1, by=None, ax=None,
     figsize=None, count=0, exclude_samples=None,
     include_samples=None, exclude_taxa=None, sort_by_names=False,
     sample_names=None, csv_file=None, size=5, pseudocount=False,
     taxa_names=None, brief_xlabels=False, show_means=False,
     meanprops=None, show_others=True, sort_by_mean=True,
-    jitter=1, alpha=None, artist_kwargs=None
+    jitter=1, alpha=None
 ):
     """
     Create a box plot showing the distribution of relative abundance for
@@ -588,8 +588,6 @@ def taxa_abundance_box_plot(
         Grouping variable that will produce boxes with different colors.
     hue_order : list, optional
         Specify the order of categorical levels of the 'hue' semantic.
-    add_datapoints : bool, default: False
-        Show datapoints on top of the boxes.
     level : int, default: 1
         Taxonomic level at which the features should be collapsed.
     by : list, optional
@@ -637,8 +635,6 @@ def taxa_abundance_box_plot(
         Amount of jitter (only along the categorical axis) to apply.
     alpha : float, optional
         Proportional opacity of the points.
-    artist_kwargs : dict, optional
-        Keyword arguments passed down to the _artist() method.
 
     Returns
     -------
@@ -684,8 +680,7 @@ def taxa_abundance_box_plot(
     plot, we will draw the y-axis in log scale with ``ylog``. To do
     this, we actually need to adjust the y-axis limits with ``ymin``
     and ``ymax``, and also add a pseudocount of 1 to remove 0s with
-    ``pseudocount`` (because 0s cannot be shown in log scale). We will
-    also add data points with ``add_datapoints=True``.
+    ``pseudocount`` (because 0s cannot be shown in log scale).
 
     >>> artist_kwargs = dict(ylog=True, ymin=0.05, ymax=200, show_legend=True)
     >>> dokdo.taxa_abundance_box_plot(qzv_file,
@@ -695,7 +690,6 @@ def taxa_abundance_box_plot(
     ...                               size=3,
     ...                               count=4,
     ...                               pseudocount=True,
-    ...                               add_datapoints=True,
     ...                               artist_kwargs=artist_kwargs)
     >>> plt.tight_layout()
 
@@ -791,17 +785,6 @@ def taxa_abundance_box_plot(
         ax=ax, **d
     )
 
-    if add_datapoints:
-        remove_duplicates = True
-        # Alternative method: sns.swarmplot()
-        sns.stripplot(
-            x='variable', y='value', hue=hue, hue_order=hue_order, data=df2,
-            ax=ax, color='black', size=size, dodge=True, jitter=jitter,
-            alpha=alpha
-        )
-    else:
-        remove_duplicates = False
-
     # If provided, output the dataframe as a .csv file.
     if csv_file is not None:
         df3 = pd.concat([df, mf], axis=1, join='inner')
@@ -812,20 +795,10 @@ def taxa_abundance_box_plot(
     else:
         xticklabels = None
 
-    if artist_kwargs is None:
-        artist_kwargs = {}
+    ax.set_xlabel('')
+    ax.set_ylabel('Relative abundance (%)')
 
-    artist_kwargs = {'xrot': 45,
-                     'xha': 'right',
-                     'xlabel': '',
-                     'ylabel': 'Relative abundance (%)',
-                     'xticklabels': xticklabels,
-                     'remove_duplicates': remove_duplicates,
-                     **artist_kwargs}
-
-    if hue is not None:
-        artist_kwargs['legend_title'] = hue
-
-    ax = _artist(ax, **artist_kwargs)
+    for ticklabel in ax.get_xticklabels():
+        ticklabel.set_rotation(90)
 
     return ax
