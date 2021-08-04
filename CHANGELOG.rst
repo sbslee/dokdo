@@ -16,6 +16,7 @@ Changelog
   - :meth:`beta_parallel_plot`
   - :meth:`distance_matrix_plot`
   - :meth:`regplot`
+  - :meth:`taxa_abundance_box_plot`
 
 * Deprecate the :meth:`barplot` method.
 * :issue:`22`: Rename the :meth:`heatmap` method to :meth:`clustermap`.

@@ -551,13 +551,11 @@ def taxa_abundance_bar_plot(
 
 def taxa_abundance_box_plot(
     visualization, metadata=None, hue=None, hue_order=None,
-    level=1, by=None, ax=None,
-    figsize=None, count=0, exclude_samples=None,
+    level=1, by=None, count=0, exclude_samples=None,
     include_samples=None, exclude_taxa=None, sort_by_names=False,
-    sample_names=None, csv_file=None, size=5, pseudocount=False,
-    taxa_names=None, brief_xlabels=False, show_means=False,
-    meanprops=None, show_others=True, sort_by_mean=True,
-    jitter=1, alpha=None
+    sample_names=None, csv_file=None, pseudocount=False,
+    taxa_names=None, pretty_taxa=False, show_means=False,
+    meanprops=None, show_others=True, sort_by_mean=True, ax=None, figsize=None
 ):
     """
     Create a box plot showing the distribution of relative abundance for
@@ -595,12 +593,8 @@ def taxa_abundance_box_plot(
         will sort the samples by their name, in addition to other column
         name(s) that may have been provided. If multiple items are provided,
         sorting will occur by the order of the items.
-    ax : matplotlib.axes.Axes, optional
-        Axes object to draw the plot onto, otherwise uses the current Axes.
-    figsize : tuple, optional
-        Width, height in inches. Format: (float, float).
     count : int, default: 0
-        The number of taxa to display. When 0, display all.
+        Number of top taxa to display. When 0, display all.
     exclude_samples : dict, optional
         Filtering logic used for sample exclusion.
         Format: {'col': ['item', ...], ...}.
@@ -615,13 +609,11 @@ def taxa_abundance_box_plot(
         List of sample IDs to be included.
     csv_file : str, optional
         Path of the .csv file to output the dataframe to.
-    size : float, default: 5.0
-        Radius of the markers, in points.
     pseudocount : bool, default: False
         Add pseudocount to remove zeros.
     taxa_names : list, optional
         List of taxa names to be displayed.
-    brief_xlabels : bool, default: False
+    pretty_taxa : bool, default: False
         If true, only display the smallest taxa rank in the x-axis labels.
     show_means : bool, default: False
         Add means to the boxes.
@@ -631,10 +623,10 @@ def taxa_abundance_box_plot(
         Include the 'Others' category.
     sort_by_mean : bool, default: True
         Sort taxa by their mean relative abundance after sample filtration.
-    jitter : float, default: 1
-        Amount of jitter (only along the categorical axis) to apply.
-    alpha : float, optional
-        Proportional opacity of the points.
+    ax : matplotlib.axes.Axes, optional
+        Axes object to draw the plot onto, otherwise uses the current Axes.
+    figsize : tuple, optional
+        Width, height in inches. Format: (float, float).
 
     Returns
     -------
@@ -648,52 +640,87 @@ def taxa_abundance_box_plot(
 
     Examples
     --------
-    Below is a simple example showing taxonomic abundance at the phylum
-    level (i.e. ``level=2``).
+    Below is a simple example:
 
-    >>> qzv_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/taxa-bar-plots.qzv'
-    >>> dokdo.taxa_abundance_box_plot(qzv_file, level=2, figsize=(8, 7))
-    >>> plt.tight_layout()
+    .. code:: python3
+
+        import dokdo
+        import matplotlib.pyplot as plt
+        %matplotlib inline
+        import seaborn as sns
+        sns.set()
+
+        qzv_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/taxa-bar-plots.qzv'
+        dokdo.taxa_abundance_box_plot(
+            qzv_file,
+            level=2,
+            figsize=(8, 7)
+        )
+        plt.tight_layout()
 
     .. image:: images/taxa_abundance_box_plot-1.png
 
-    We can control how many taxa to display with ``count``. Also, we can
-    make the x-axis tick labels pretty with ``brief_xlabels``. We can
-    manually set the x-axis tick labels with ``xticklabels``. Lastly, we
-    can select specific taxa to display with ``taxa_names``.
+    We can prettify the taxa names:
 
-    >>> fig, [[ax1, ax2], [ax3, ax4]] = plt.subplots(2, 2, figsize=(10, 10))
-    >>> kwargs = {'level' : 2}
-    >>> artist_kwargs1 = dict(title='count=4')
-    >>> artist_kwargs2 = dict(title='brief_xlabels=True')
-    >>> artist_kwargs3 = dict(xticklabels=['A', 'B', 'C', 'D'], title="xticklabels=['A', 'B', 'C', 'D']")
-    >>> artist_kwargs4 = dict(title="taxa_names=[...]")
-    >>> dokdo.taxa_abundance_box_plot(qzv_file, ax=ax1, count=4, artist_kwargs=artist_kwargs1, **kwargs)
-    >>> dokdo.taxa_abundance_box_plot(qzv_file, ax=ax2, count=4, brief_xlabels=True, artist_kwargs=artist_kwargs2, **kwargs)
-    >>> dokdo.taxa_abundance_box_plot(qzv_file, ax=ax3, count=4, artist_kwargs=artist_kwargs3, **kwargs)
-    >>> dokdo.taxa_abundance_box_plot(qzv_file, ax=ax4, taxa_names=['k__Bacteria;p__Firmicutes', 'k__Bacteria;p__Proteobacteria'], artist_kwargs=artist_kwargs4, **kwargs)
-    >>> plt.tight_layout()
+    .. code:: python3
+
+        dokdo.taxa_abundance_box_plot(
+            qzv_file,
+            level=2,
+            pretty_taxa=True,
+            figsize=(8, 7)
+        )
+        plt.tight_layout()
 
     .. image:: images/taxa_abundance_box_plot-2.png
 
-    We can group the boxes by a metadata column with ``hue``. For this
-    plot, we will draw the y-axis in log scale with ``ylog``. To do
-    this, we actually need to adjust the y-axis limits with ``ymin``
-    and ``ymax``, and also add a pseudocount of 1 to remove 0s with
-    ``pseudocount`` (because 0s cannot be shown in log scale).
+    We can only display a selected number of top taxa:
 
-    >>> artist_kwargs = dict(ylog=True, ymin=0.05, ymax=200, show_legend=True)
-    >>> dokdo.taxa_abundance_box_plot(qzv_file,
-    ...                               level=2,
-    ...                               figsize=(10, 7),
-    ...                               hue='body-site',
-    ...                               size=3,
-    ...                               count=4,
-    ...                               pseudocount=True,
-    ...                               artist_kwargs=artist_kwargs)
-    >>> plt.tight_layout()
+    .. code:: python3
+
+        dokdo.taxa_abundance_box_plot(
+            qzv_file,
+            level=2,
+            count=4,
+            pretty_taxa=True,
+            figsize=(8, 7)
+        )
+        plt.tight_layout()
 
     .. image:: images/taxa_abundance_box_plot-3.png
+
+    We can also specify which taxa to plot:
+
+    .. code:: python3
+
+        dokdo.taxa_abundance_box_plot(
+            qzv_file,
+            level=2,
+            pretty_taxa=True,
+            taxa_names=['k__Bacteria;p__Firmicutes', 'k__Bacteria;p__Proteobacteria'],
+            figsize=(8, 7)
+        )
+        plt.tight_layout()
+
+    .. image:: images/taxa_abundance_box_plot-4.png
+
+    In some cases, it may be desirable to plot abundance in log scale. We can achieve this with:
+
+    .. code:: python3
+
+        ax = dokdo.taxa_abundance_box_plot(
+            qzv_file,
+            level=2,
+            hue='body-site',
+            count=4,
+            pseudocount=True,
+            figsize=(8, 7)
+        )
+        ax.set_ylim([0.05, 200])
+        ax.set_yscale('log')
+        plt.tight_layout()
+
+    .. image:: images/taxa_abundance_box_plot-5.png
     """
     with tempfile.TemporaryDirectory() as t:
         common.export(visualization, t)
@@ -790,10 +817,9 @@ def taxa_abundance_box_plot(
         df3 = pd.concat([df, mf], axis=1, join='inner')
         df3.to_csv(csv_file)
 
-    if brief_xlabels:
-        xticklabels = [common.pname(x.get_text()) for x in ax.get_xticklabels()]
-    else:
-        xticklabels = None
+    if pretty_taxa:
+        l = [common.pname(x.get_text()) for x in ax.get_xticklabels()]
+        ax.set_xticklabels(l)
 
     ax.set_xlabel('')
     ax.set_ylabel('Relative abundance (%)')
