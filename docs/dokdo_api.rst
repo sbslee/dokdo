@@ -144,39 +144,6 @@ Alternatively, you can combine empty subplots to create a bigger subplot using `
 
 .. image:: images/Setting-Figure-Properties-7.png
 
-Title, Axis, Legend, Font Size
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Each main plotting method takes a dictionary argument called ``artist_kwargs`` as input that is passed down to the private method ``_artist`` as shown below. For example, the ``show_legend`` argument defined in ``_artist`` is set as ``False`` by default, which means if you want to include the figure legend, you should include ``artist_kwargs=dict(show_legend=True)`` in your method call.
-
-Note that internally, different plotting methods use a different set of default keyword arguments for ``_artist``. For example, by default, the ``dokdo.denoising_stats_plot`` method passes ``ylabel='Read depth'`` to ``_artist`` whereas the ``dokdo.taxa_abundance_bar_plot`` method passes ``ylabel='Relative abundance (%)'``. Of course, you can always easily change the y-axis label with ``artist_kwargs=dict(ylabel='My new y-axis label')``.
-
-.. automodule:: dokdo.api.common
-   :members:
-
-   .. automethod:: dokdo.api.common._artist
-
-Below are some simple examples.
-
-.. code:: python3
-
-    >>> fig, [[ax1, ax2, ax3], [ax4, ax5, ax6]] = plt.subplots(2, 3, figsize=(15, 8))
-    >>> artist_kwargs1 = dict(title='My title')
-    >>> artist_kwargs2 = dict(title='ylog=True', ylog=True, ymin=0.5E1, ymax=1.5E5)
-    >>> artist_kwargs3 = dict(title='legend_ncol=2', show_legend=True, legend_ncol=2)
-    >>> artist_kwargs4 = dict(title='hide_yticks=True', hide_yticks=True)
-    >>> artist_kwargs5 = dict(title='title_fontsize=20', title_fontsize=20)
-    >>> artist_kwargs6 = dict(title='legend_fontsize=15', show_legend=True, legend_ncol=2, legend_fontsize=15)
-    >>> dokdo.denoising_stats_plot(*args, ax=ax1, artist_kwargs=artist_kwargs1)
-    >>> dokdo.denoising_stats_plot(*args, ax=ax2, artist_kwargs=artist_kwargs2)
-    >>> dokdo.denoising_stats_plot(*args, ax=ax3, artist_kwargs=artist_kwargs3)
-    >>> dokdo.denoising_stats_plot(*args, ax=ax4, artist_kwargs=artist_kwargs4)
-    >>> dokdo.denoising_stats_plot(*args, ax=ax5, artist_kwargs=artist_kwargs5)
-    >>> dokdo.denoising_stats_plot(*args, ax=ax6, artist_kwargs=artist_kwargs6)
-    >>> plt.tight_layout()
-
-.. image:: images/Setting-Figure-Properties-8.png
-
 Sample Filtering
 ^^^^^^^^^^^^^^^^
 
@@ -191,7 +158,7 @@ Sometimes, you may want to plot only a subset of the samples. This can be easily
     >>> dokdo.denoising_stats_plot(qza_file, metadata=metadata, where=where)
     >>> plt.tight_layout()
 
-.. image:: images/Setting-Figure-Properties-9.png
+.. image:: images/Setting-Figure-Properties-8.png
 
 Plotting Legend Separately
 --------------------------
