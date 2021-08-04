@@ -39,18 +39,20 @@ def addsig(
 
     Examples
     --------
-    Below is a simple example.
 
-    >>> vector_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/faith_pd_vector.qza'
-    >>> metadata_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/sample-metadata.tsv'
-    >>> ax = dokdo.alpha_diversity_plot(vector_file,
-    ...                                 metadata_file,
-    ...                                 'body-site',
-    ...                                 figsize=(8, 5),
-    ...                                 artist_kwargs=dict(ymin=0, ymax=30))
-    >>> dokdo.addsig(0, 1, 20, t='***', ax=ax)
-    >>> dokdo.addsig(1, 2, 26, t='ns', ax=ax)
-    >>> plt.tight_layout()
+    .. code:: python3
+
+        import dokdo
+        import matplotlib.pyplot as plt
+        %matplotlib inline
+        import seaborn as sns
+        sns.set()
+        vector_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/faith_pd_vector.qza'
+        metadata_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/sample-metadata.tsv'
+        ax = dokdo.alpha_diversity_plot(vector_file, metadata_file, 'body-site', figsize=(8, 5))
+        dokdo.addsig(0, 1, 20, t='***', ax=ax)
+        dokdo.addsig(1, 2, 26, t='ns', ax=ax)
+        plt.tight_layout()
 
     .. image:: images/addsig.png
     """

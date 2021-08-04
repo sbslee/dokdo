@@ -56,47 +56,56 @@ def addbiplot(
     --------
     Below is a simple example.
 
-    >>> table_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/table.qza'
-    >>> metadata_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/sample-metadata.tsv'
-    >>> pcoa_results = dokdo.ordinate(table_file, sampling_depth=0, biplot=True, number_of_dimensions=10)
-    >>> ax = dokdo.beta_2d_plot(pcoa_results,
-    ...                         hue='body-site',
-    ...                         metadata=metadata_file,
-    ...                         figsize=(8, 8),
-    ...                         artist_kwargs=dict(show_legend=True))
-    >>> dokdo.addbiplot(pcoa_results, ax=ax, count=3)
-    >>> plt.tight_layout()
+    .. code:: python3
+
+        import dokdo
+        import matplotlib.pyplot as plt
+        %matplotlib inline
+        import seaborn as sns
+        sns.set()
+
+        table_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/table.qza'
+        metadata_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/sample-metadata.tsv'
+        pcoa_results = dokdo.ordinate(table_file, sampling_depth=0, biplot=True, number_of_dimensions=10)
+        ax = dokdo.beta_2d_plot(pcoa_results,
+                                hue='body-site',
+                                metadata=metadata_file,
+                                figsize=(8, 8))
+        dokdo.addbiplot(pcoa_results, ax=ax, count=3)
+        plt.tight_layout()
 
     .. image:: images/addbiplot-1.png
 
     We can also draw a 3D biplot.
 
-    >>> ax = dokdo.beta_3d_plot(pcoa_results,
-    ...                         hue='body-site',
-    ...                         metadata=metadata_file,
-    ...                         figsize=(8, 8),
-    ...                         artist_kwargs=dict(show_legend=True))
-    >>> dokdo.addbiplot(pcoa_results, ax=ax, count=3, dim=3)
-    >>> plt.tight_layout()
+    .. code:: python3
+
+        ax = dokdo.beta_3d_plot(pcoa_results,
+                                hue='body-site',
+                                metadata=metadata_file,
+                                figsize=(8, 8))
+        dokdo.addbiplot(pcoa_results, ax=ax, count=3, dim=3)
+        plt.tight_layout()
 
     .. image:: images/addbiplot-2.png
 
     Finally, we can display taxonomic classification instead of feature ID.
 
-    >>> taxonomy_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/taxonomy.qza'
-    >>> ax = dokdo.beta_3d_plot(pcoa_results,
-    ...                         hue='body-site',
-    ...                         metadata=metadata_file,
-    ...                         figsize=(8, 8),
-    ...                         artist_kwargs=dict(show_legend=True))
-    >>> dokdo.addbiplot(pcoa_results,
-    ...                 ax=ax,
-    ...                 count=3,
-    ...                 dim=3,
-    ...                 taxonomy=taxonomy_file,
-    ...                 name_type='taxon',
-    ...                 level=6)
-    >>> plt.tight_layout()
+    .. code:: python3
+
+        taxonomy_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/taxonomy.qza'
+        ax = dokdo.beta_3d_plot(pcoa_results,
+                                hue='body-site',
+                                metadata=metadata_file,
+                                figsize=(8, 8))
+        dokdo.addbiplot(pcoa_results,
+                        ax=ax,
+                        count=3,
+                        dim=3,
+                        taxonomy=taxonomy_file,
+                        name_type='taxon',
+                        level=6)
+        plt.tight_layout()
 
     .. image:: images/addbiplot-3.png
     """
