@@ -1,11 +1,10 @@
 import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
-from .common import _artist
 
 def regplot(
-    taxon, csv_file, subject, category, group1, group2,
-    label=None, ax=None, figsize=None, artist_kwargs=None
+    taxon, csv_file, subject, category, group1, group2, label=None, ax=None,
+    figsize=None
 ):
     """Plot relative abundance data and a linear regression model fit from
     paired samples for the given taxon.
@@ -25,13 +24,11 @@ def regplot(
     group2 : str
         Second group in the category column.
     label : str
-        Label to use in a legend.
+        Label to use for the legend.
     ax : matplotlib.axes.Axes, optional
         Axes object to draw the plot onto, otherwise uses the current Axes.
     figsize : tuple, optional
         Width, height in inches. Format: (float, float).
-    artist_kwargs : dict, optional
-        Keyword arguments passed down to the _artist() method.
 
     Returns
     -------
@@ -51,8 +48,11 @@ def regplot(
     in the context of ``days-since-experiment-start`` (i.e. paired
     comparison).
 
-    >>> metadata = Metadata.load('/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/sample-metadata.tsv')
+    >>> import dokdo
+    >>> from qiime2 import Metadata
     >>> sample_names = ['L2S240', 'L3S242', 'L2S155', 'L4S63', 'L2S175', 'L3S313', 'L2S204', 'L4S112', 'L2S222', 'L4S137']
+    >>> metadata_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/sample-metadata.tsv'
+    >>> metadata = Metadata.load(metadata_file)
     >>> metadata = metadata.filter_ids(sample_names)
     >>> mf = dokdo.get_mf(metadata)
     >>> mf = mf[['body-site', 'days-since-experiment-start']]
@@ -117,13 +117,7 @@ def regplot(
 
     sns.regplot(data=df, x=group1, y=group2, ax=ax, label=_label)
 
-    if artist_kwargs is None:
-        artist_kwargs = {}
-
-    artist_kwargs = {"xlabel": group1,
-                     "ylabel": group2,
-                     **artist_kwargs}
-
-    ax = _artist(ax, **artist_kwargs)
+    ax.set_xlabel(group1)
+    ax.set_ylabel(group2)
 
     return ax
