@@ -332,8 +332,9 @@ General Methods
 get_mf
 ------
 
-.. automodule:: dokdo.api.get_mf
-   :members:
+.. currentmodule:: dokdo.api.common
+
+.. autofunction:: get_mf
 
 ordinate
 --------
@@ -344,8 +345,9 @@ ordinate
 pname
 -----
 
-.. automodule:: dokdo.api.pname
-   :members:
+.. currentmodule:: dokdo.api.common
+
+.. autofunction:: pname
 
 num2sig
 -------
