@@ -816,7 +816,7 @@ def taxa_abundance_box_plot(
     if metadata is None:
         pass
     else:
-        mf = dokdo.get_mf(metadata)
+        mf = common.get_mf(metadata)
         cols = _get_mf_cols(df)
         df.drop(columns=cols, inplace=True)
         df = pd.concat([df, mf], axis=1, join='inner')

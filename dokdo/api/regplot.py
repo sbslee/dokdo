@@ -49,55 +49,55 @@ def regplot(
     in the context of ``days-since-experiment-start`` (i.e. paired
     comparison).
 
-    >>> import dokdo
-    >>> from qiime2 import Metadata
-    >>> sample_names = ['L2S240', 'L3S242', 'L2S155', 'L4S63', 'L2S175', 'L3S313', 'L2S204', 'L4S112', 'L2S222', 'L4S137']
-    >>> metadata_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/sample-metadata.tsv'
-    >>> metadata = Metadata.load(metadata_file)
-    >>> metadata = metadata.filter_ids(sample_names)
-    >>> mf = dokdo.get_mf(metadata)
-    >>> mf = mf[['body-site', 'days-since-experiment-start']]
-    >>> mf.sort_values(['days-since-experiment-start', 'body-site'])
-                body-site  days-since-experiment-start
-    sample-id
-    L2S240      left palm                          0.0
-    L3S242     right palm                          0.0
-    L2S155      left palm                         84.0
-    L4S63      right palm                         84.0
-    L2S175      left palm                        112.0
-    L3S313     right palm                        112.0
-    L2S204      left palm                        140.0
-    L4S112     right palm                        140.0
-    L2S222      left palm                        168.0
-    L4S137     right palm                        168.0
+    .. code:: python3
 
-    Next, we will run the ``dokdo.taxa_abundance_box_plot`` method to create the input file for the ``dokdo.regplot`` method.
+        import dokdo
+        from qiime2 import Metadata
+        import matplotlib.pyplot as plt
+        %matplotlib inline
+        import seaborn as sns
+        sns.set()
 
-    >>> qzv_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/taxa-bar-plots.qzv'
-    >>> dokdo.taxa_abundance_box_plot(qzv_file,
-    ...                               level=2,
-    ...                               hue='body-site',
-    ...                               taxa_names=['k__Bacteria;p__Proteobacteria'],
-    ...                               show_others=False,
-    ...                               figsize=(6, 6),
-    ...                               sample_names=sample_names,
-    ...                               add_datapoints=True,
-    ...                               include_samples={'body-site': ['left palm', 'right palm']},
-    ...                               csv_file='addpairs.csv',
-    ...                               artist_kwargs=dict(show_legend=True, ymax=70))
-    >>> plt.tight_layout()
+        sample_names = ['L2S240', 'L3S242', 'L2S155', 'L4S63', 'L2S175', 'L3S313', 'L2S204', 'L4S112', 'L2S222', 'L4S137']
+
+        qzv_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/taxa-bar-plots.qzv'
+        metadata_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/sample-metadata.tsv'
+
+        metadata = Metadata.load(metadata_file)
+        metadata = metadata.filter_ids(sample_names)
+        mf = dokdo.get_mf(metadata)
+        mf = mf[['body-site', 'days-since-experiment-start']]
+
+        dokdo.taxa_abundance_box_plot(
+            qzv_file,
+            level=2,
+            hue='body-site',
+            taxa_names=['k__Bacteria;p__Proteobacteria'],
+            show_others=False,
+            figsize=(8, 7),
+            sample_names=sample_names,
+            pretty_taxa=True,
+            include_samples={'body-site': ['left palm', 'right palm']},
+            csv_file='addpairs.csv'
+        )
+
+        plt.tight_layout()
 
     .. image:: images/regplot-1.png
 
     Finally, run the ``dokdo.regplot`` method.
 
-    >>> dokdo.regplot('k__Bacteria;p__Proteobacteria',
-    ...               'addpairs.csv',
-    ...               'days-since-experiment-start',
-    ...               'body-site',
-    ...               'left palm',
-    ...               'right palm')
-    >>> plt.tight_layout()
+    .. code:: python3
+
+        dokdo.regplot('k__Bacteria;p__Proteobacteria',
+                      'addpairs.csv',
+                      'days-since-experiment-start',
+                      'body-site',
+                      'left palm',
+                      'right palm',
+                      figsize=(8, 7))
+
+        plt.tight_layout()
 
     .. image:: images/regplot-2.png
     """

@@ -48,64 +48,83 @@ def addpairs(
     in the context of ``days-since-experiment-start`` (i.e. paired
     comparison).
 
-    >>> from qiime2 import Metadata
-    >>> metadata = Metadata.load('/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/sample-metadata.tsv')
-    >>> sample_names = ['L2S240', 'L3S242', 'L2S155', 'L4S63', 'L2S175', 'L3S313', 'L2S204', 'L4S112', 'L2S222', 'L4S137']
-    >>> metadata = metadata.filter_ids(sample_names)
-    >>> mf = dokdo.get_mf(metadata)
-    >>> mf = mf[['body-site', 'days-since-experiment-start']]
-    >>> mf.sort_values(['days-since-experiment-start', 'body-site'])
-                body-site  days-since-experiment-start
-    sample-id
-    L2S240      left palm                          0.0
-    L3S242     right palm                          0.0
-    L2S155      left palm                         84.0
-    L4S63      right palm                         84.0
-    L2S175      left palm                        112.0
-    L3S313     right palm                        112.0
-    L2S204      left palm                        140.0
-    L4S112     right palm                        140.0
-    L2S222      left palm                        168.0
-    L4S137     right palm                        168.0
-    >>> qzv_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/taxa-bar-plots.qzv'
-    >>> ax = dokdo.taxa_abundance_box_plot(qzv_file,
-    ...                                    level=2,
-    ...                                    hue='body-site',
-    ...                                    taxa_names=['k__Bacteria;p__Proteobacteria'],
-    ...                                    show_others=False,
-    ...                                    figsize=(6, 6),
-    ...                                    sample_names=sample_names,
-    ...                                    include_samples={'body-site': ['left palm', 'right palm']},
-    ...                                    csv_file='addpairs.csv',
-    ...                                    artist_kwargs=dict(show_legend=True, ymax=70))
-    >>> plt.tight_layout()
-    >>> dokdo.addpairs('k__Bacteria;p__Proteobacteria', 'addpairs.csv', 'days-since-experiment-start', 'body-site', ['left palm', 'right palm'], ax=ax)
-    >>> p_value = dokdo.wilcoxon('k__Bacteria;p__Proteobacteria', 'addpairs.csv', 'days-since-experiment-start', 'body-site', 'left palm', 'right palm')
-    >>> dokdo.addsig(-0.2, 0.2, 65, t=f'p-value = {p_value}', ax=ax)
+    .. code:: python3
+
+        import dokdo
+        from qiime2 import Metadata
+        import matplotlib.pyplot as plt
+        %matplotlib inline
+        import seaborn as sns
+        sns.set()
+
+        qzv_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/taxa-bar-plots.qzv'
+        metadata_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/sample-metadata.tsv'
+
+        sample_names = ['L2S240', 'L3S242', 'L2S155', 'L4S63', 'L2S175', 'L3S313', 'L2S204', 'L4S112', 'L2S222', 'L4S137']
+
+        metadata = Metadata.load(metadata_file)
+        metadata = metadata.filter_ids(sample_names)
+        mf = dokdo.get_mf(metadata)
+        mf = mf[['body-site', 'days-since-experiment-start']]
+
+        ax = dokdo.taxa_abundance_box_plot(
+            qzv_file,
+            level=2,
+            hue='body-site',
+            taxa_names=['k__Bacteria;p__Proteobacteria'],
+            show_others=False,
+            figsize=(8, 7),
+            sample_names=sample_names,
+            pretty_taxa=True,
+            include_samples={'body-site': ['left palm', 'right palm']},
+            csv_file='addpairs.csv'
+        )
+
+        dokdo.addpairs(
+            'k__Bacteria;p__Proteobacteria',
+            'addpairs.csv',
+            'days-since-experiment-start',
+            'body-site',
+            ['left palm', 'right palm'],
+            ax=ax
+        )
+
+        plt.tight_layout()
 
     .. image:: images/addpairs-1.png
 
     Note that the method suppors more than two groups.
 
-    >>> from qiime2 import Metadata
-    >>> metadata = Metadata.load('/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/sample-metadata.tsv')
-    >>> mf = dokdo.get_mf(metadata)
-    >>> mf = mf[mf['subject'] == 'subject-1']
-    >>> mf = mf[['body-site', 'days-since-experiment-start']]
-    >>> mf = mf.drop_duplicates()
-    >>> qzv_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/taxa-bar-plots.qzv'
-    >>> ax = dokdo.taxa_abundance_box_plot(qzv_file,
-    ...                                    metadata=Metadata(mf),
-    ...                                    level=2,
-    ...                                    hue='body-site',
-    ...                                    taxa_names=['k__Bacteria;p__Proteobacteria'],
-    ...                                    show_others=False,
-    ...                                    figsize=(6, 6),
-    ...                                    add_datapoints=True,
-    ...                                    csv_file='addpairs.csv',
-    ...                                    artist_kwargs=dict(show_legend=True, ymax=70))
-    >>> dokdo.addpairs('k__Bacteria;p__Proteobacteria', 'addpairs.csv', 'days-since-experiment-start', 'body-site', ['gut', 'left palm', 'right palm', 'tongue'], ax=ax)
-    >>> plt.tight_layout()
+    .. code:: python3
+
+        metadata = Metadata.load(metadata_file)
+        mf = dokdo.get_mf(metadata)
+        mf = mf[mf['subject'] == 'subject-1']
+        mf = mf[['body-site', 'days-since-experiment-start']]
+        mf = mf.drop_duplicates()
+
+        ax = dokdo.taxa_abundance_box_plot(
+            qzv_file,
+            metadata=Metadata(mf),
+            level=2,
+            hue='body-site',
+            taxa_names=['k__Bacteria;p__Proteobacteria'],
+            show_others=False,
+            figsize=(8, 7),
+            pretty_taxa=True,
+            csv_file='addpairs.csv'
+        )
+
+        dokdo.addpairs(
+            'k__Bacteria;p__Proteobacteria',
+            'addpairs.csv',
+            'days-since-experiment-start',
+            'body-site',
+            ['gut', 'left palm', 'right palm', 'tongue'],
+            ax=ax
+        )
+
+        plt.tight_layout()
 
     .. image:: images/addpairs-2.png
     """
