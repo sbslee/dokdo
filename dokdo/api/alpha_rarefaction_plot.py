@@ -10,7 +10,8 @@ def alpha_rarefaction_plot(
     visualization, hue='sample-id', metric='shannon', hue_order=None,
     units=None, estimator='mean', ax=None, figsize=None
 ):
-    """Create an alpha rarefaction plot.
+    """
+    Create an alpha rarefaction plot.
 
     +-----------------------+--------------------------------------------------------------------+
     | q2-diversity plugin | Example                                                              |

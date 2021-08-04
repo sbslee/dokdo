@@ -15,7 +15,7 @@ Changelog
   - :meth:`beta_scree_plot`
   - :meth:`beta_parallel_plot`
   - :meth:`distance_matrix_plot`
-  - :meth:`refplot`
+  - :meth:`regplot`
 
 * Deprecate the :meth:`barplot` method.
 * :issue:`22`: Rename the :meth:`heatmap` method to :meth:`clustermap`.

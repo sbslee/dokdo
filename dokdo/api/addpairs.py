@@ -6,7 +6,8 @@ def addpairs(
     taxon, csv_file, subject, category, groups,
     ax=None, figsize=None, width=0.8, **kwargs
 ):
-    """Add paired lines in a plot created by `dokdo.taxa_abundance_box_plot`.
+    """
+    Add paired lines in a plot created by `dokdo.taxa_abundance_box_plot`.
 
     Parameters
     ----------

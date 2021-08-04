@@ -4,7 +4,8 @@ def addsig(
     x1, x2, y, t='', h=1.0, lw=1.0, lc='black',
     tc='black', ax=None, figsize=None, fontsize=None
 ):
-    """Add signifiance annotation between two groups in a box plot.
+    """
+    Add signifiance annotation between two groups in a box plot.
 
     Parameters
     ----------

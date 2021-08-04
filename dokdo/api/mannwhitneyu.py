@@ -6,7 +6,8 @@ def mannwhitneyu(
     taxon, csv_file, category,
     group1, group2, ann=False
 ):
-    """Compute the p-value from the Mann–Whitney U test.
+    """
+    Compute the p-value from the Mann–Whitney U test.
 
     This method tests the null hypothesis that two independent
     samples come from the same distribution for a given taxon

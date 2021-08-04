@@ -6,7 +6,8 @@ def regplot(
     taxon, csv_file, subject, category, group1, group2, label=None, ax=None,
     figsize=None
 ):
-    """Plot relative abundance data and a linear regression model fit from
+    """
+    Plot relative abundance data and a linear regression model fit from
     paired samples for the given taxon.
 
     Parameters

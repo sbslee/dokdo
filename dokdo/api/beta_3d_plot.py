@@ -6,9 +6,8 @@ from skbio.stats.ordination import OrdinationResults
 from qiime2 import Artifact
 
 def beta_3d_plot(
-    artifact, metadata=None, hue=None, azim=-60,
-    elev=30, s=80, ax=None, figsize=None,
-    hue_order=None, artist_kwargs=None
+    artifact, metadata=None, hue=None, azim=-60, elev=30, s=80, ax=None,
+    figsize=None, hue_order=None
 ):
     """
     Create a 3D scatter plot from PCoA results.

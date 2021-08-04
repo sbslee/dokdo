@@ -1,7 +1,8 @@
 def num2sig(num):
-    """Convert a p-avalue to a signifiacne annotation.
+    """
+    Convert a p-avalue to a signifiacne annotation.
 
-    Significance annotations are defined as follows: 
+    Significance annotations are defined as follows:
 
     +----------------------+-------------+
     | P-value              | Signifiacne |

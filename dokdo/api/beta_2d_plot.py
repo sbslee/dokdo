@@ -11,7 +11,8 @@ def beta_2d_plot(
     style=None, s=80, alpha=None, hue_order=None, style_order=None,
     legend='brief', ax=None, figsize=None
 ):
-    """Create a 2D scatter plot from PCoA results.
+    """
+    Create a 2D scatter plot from PCoA results.
 
     +---------------------+---------------------------------------------------+
     | q2-diversity plugin | Example                                           |

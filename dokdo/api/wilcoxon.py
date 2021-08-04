@@ -6,7 +6,8 @@ def wilcoxon(
     taxon, csv_file, subject, category,
     group1, group2, ann=False
 ):
-    """Compute the p-value from the Wilcoxon Signed-rank test.
+    """
+    Compute the p-value from the Wilcoxon Signed-rank test.
 
     This method tests the null hypothesis that two related paired
     samples come from the same distribution for a given taxon
