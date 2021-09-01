@@ -248,7 +248,7 @@ In some situations, we may wish to plot the graph and the legend separately. For
 
 .. image:: images/Introduction-9.png
 
-We can ameliorate the issue by plotting the legend separately with ``legend_only=True``.
+We can ameliorate the issue by plotting the legend separately.
 
 .. code:: python3
 
