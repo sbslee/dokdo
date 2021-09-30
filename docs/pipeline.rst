@@ -245,7 +245,7 @@ We need to find the range of ASV frequency.
 
 .. code-block:: console
 
-    $ dokdo summarize table.qza
+    $ dokdo summarize -i table.qza
     Number of samples: 338
     Number of features: 15935
     Total frequency: 24019367.0
@@ -324,7 +324,7 @@ We need to find the range of ASV frequency.
 
 .. code-block:: console
 
-    $ dokdo summarize filtered-table.qza
+    $ dokdo summarize -i filtered-table.qza
     Number of samples: 338
     Number of features: 2583
     Total frequency: 21026677.0
