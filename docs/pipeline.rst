@@ -289,16 +289,7 @@ We filter out ASVs with a total abundance (summed across all samples) of less th
 Taxonomy-Based Filtering
 ------------------------
 
-We filter the representative sequences according to the new ASV table.
-
-.. code-block:: console
-
-    $ qiime feature-table filter-seqs \
-        --i-data rep-seqs.qza \
-        --i-table table-s2-f10.qza \
-        --o-filtered-data rep-seqs-s2-f10.qza
-
-We filter out ASVs that were annotated as either mitochondria or chloroplast.
+We can filter out ASVs that are annotated as either mitochondria or chloroplast.
 
 .. code-block:: console
 
@@ -307,15 +298,6 @@ We filter out ASVs that were annotated as either mitochondria or chloroplast.
         --i-taxonomy taxonomy-c0.qza \
         --p-exclude mitochondria,chloroplast \
         --o-filtered-table filtered-table.qza
-
-We filter the representative sequences one last time.
-
-.. code-block:: console
-
-    $ qiime feature-table filter-seqs \
-        --i-data rep-seqs-s2-f10.qza \
-        --i-table filtered-table.qza \
-        --o-filtered-data filtered-rep-seqs.qza
 
 Summarize Filtered Table
 ------------------------
