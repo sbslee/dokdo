@@ -56,11 +56,9 @@ def alpha_diversity_plot(
         %matplotlib inline
         import seaborn as sns
         sns.set()
-        qzv_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/faith_pd_vector.qza'
+        qza_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/faith_pd_vector.qza'
         metadata_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/sample-metadata.tsv'
-        dokdo.alpha_diversity_plot(qzv_file,
-                                   metadata_file,
-                                   'body-site')
+        dokdo.alpha_diversity_plot(qza_file, metadata_file, 'body-site')
         plt.tight_layout()
 
     .. image:: images/alpha_diversity_plot.png
