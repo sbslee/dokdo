@@ -2,33 +2,39 @@ import os
 from pathlib import Path
 
 def make_manifest(fastq_dir, output_file):
-    """Create a manifest file (.tsv) from a directory containing FASTQ files.
+    """
+    Create a manifest file (.tsv) from a directory containing FASTQ files.
 
-    The file names must include either '_R1_001.fastq' or '_R1_002.fastq'.
-    The word before the third-to-last underscore will be set as the sample
-    ID. For example, a file named 'EXAMPLE_S1_R1_001.fastq.gz' will produce
-    'EXAMPLE' as sample ID and 'EXAM_PLE_S1_R1_001.fastq.gz', 'EXAM_PLE'.
+    This command assumes that FASTQ filenames end with a suffix such as
+    '_S0_R1_001.fastq' or '_S14_R2_001.fastq'. The word before the
+    third-to-last underscore ('_') will be used as sample ID. For example, a
+    file named 'EXAMPLE_S1_R1_001.fastq.gz' will set 'EXAMPLE' as sample ID.
+    Undertermined reads (e.g. 'Undertermined_S0_R1_001.fastq') will not be
+    included in the output file.
 
     Parameters
     ----------
     fastq_dir : str
-        Path to the directory containing input FASTQ files.
+        Directory containing input FASTQ files.
     output_file : str
-        Path to the output file.
+        Manifest file.
     """
-    _fastq_dir = Path(fastq_dir).resolve()
+    fastq_dir = Path(fastq_dir).resolve()
 
     files = {}
 
-    for r, d, f in os.walk(_fastq_dir):
+    for r, d, f in os.walk(fastq_dir):
         for x in f:
             name = '_'.join(x.split('_')[:-3])
 
-            if "_R1_001.fastq" in x:
+            if 'Undertermined' in x:
+                continue
+
+            if '_R1_001.fastq' in x:
                 if name not in files:
                     files[name] = ['', '']
                 files[name][0] = f"{r}/{x}"
-            elif "_R2_001.fastq" in x:
+            elif '_R2_001.fastq' in x:
                 if name not in files:
                     files[name] = ['', '']
                 files[name][1] = f"{r}/{x}"
@@ -36,8 +42,8 @@ def make_manifest(fastq_dir, output_file):
                 pass
 
     with open(output_file, 'w') as f:
-        headers = ["sample-id", "forward-absolute-filepath",
-                   "reverse-absolute-filepath"]
+        headers = ['sample-id', 'forward-absolute-filepath',
+                   'reverse-absolute-filepath']
         f.write('\t'.join(headers) + '\n')
 
         for name in sorted(files):
