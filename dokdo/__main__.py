@@ -87,7 +87,7 @@ def main():
                      "'_S0_R1_001.fastq' or '_S14_R2_001.fastq'. The word before the "
                      "third-to-last underscore ('_') will be used as sample ID. For example, a "
                      "file named 'EXAMPLE_S1_R1_001.fastq.gz' will set 'EXAMPLE' as sample ID. "
-                     "Undertermined reads (e.g. 'Undertermined_S0_R1_001.fastq') will not be "
+                     "Undertermined reads (e.g. 'Undetermined_S0_R1_001.fastq') will not be "
                      "included in the output file."),
     )
 
