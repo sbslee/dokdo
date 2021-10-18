@@ -59,10 +59,10 @@ def _sort_by_mean(df):
 
 def _get_others_col(df, count, taxa_names, show_others):
     """Returns DataFrame object after selecting taxa."""
-    if count is not 0 and taxa_names is not None:
+    if count != 0 and taxa_names is not None:
         m = "Cannot use 'count' and 'taxa_names' arguments together"
         raise ValueError(m)
-    elif count is not 0:
+    elif count != 0:
         if count < df.shape[1]:
             others = df.iloc[:, count-1:].sum(axis=1)
             df = df.iloc[:, :count-1]
