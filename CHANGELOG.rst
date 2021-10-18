@@ -4,6 +4,8 @@ Changelog
 1.12.0 (in development)
 -----------------------
 
+* :issue:`33`: Update the :command:`make-manifest` command to ignore undetermined FASTQ files.
+
 1.11.0 (2021-08-04)
 -------------------
 
