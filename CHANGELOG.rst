@@ -5,6 +5,7 @@ Changelog
 -----------------------
 
 * :issue:`33`: Update the :command:`make-manifest` command to ignore undetermined FASTQ files.
+* :issue:`34`: Update the :meth:`alpha_rarefaction_plot` method to keep 'N/A' values as string instead of NaN.
 
 1.11.0 (2021-08-04)
 -------------------
