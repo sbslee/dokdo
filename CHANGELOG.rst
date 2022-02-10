@@ -6,6 +6,7 @@ Changelog
 
 * :issue:`33`: Update the :command:`make-manifest` command to ignore undetermined FASTQ files.
 * :issue:`34`: Update the :meth:`alpha_rarefaction_plot` method to keep 'N/A' values as string instead of NaN.
+* :issue:`35`: Update the :meth:`alpha_diversity_plot` method to accept  :class:`pandas.DataFrame` in case the input data was not generated from QIIME 2 (e.g. shotgun sequencing).
 
 1.11.0 (2021-08-04)
 -------------------

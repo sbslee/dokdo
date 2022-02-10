@@ -109,7 +109,7 @@ def taxa_abundance_bar_plot(
 
     Parameters
     ----------
-    visualization : str, qiime2.Visualization, pandas.DataFrame
+    visualization : str, qiime2.Visualization, or pandas.DataFrame
         Visualization file or object from the q2-taxa plugin. Alternatively,
         a :class:`pandas.DataFrame` object.
     metadata : str or qiime2.Metadata, optional

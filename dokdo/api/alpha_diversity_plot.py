@@ -22,9 +22,13 @@ def alpha_diversity_plot(
 
     Parameters
     ----------
-    artifact : str or qiime2.Artifact
+    artifact : str, qiime2.Artifact, or pandas.DataFrame
         Artifact file or object from the q2-diversity plugin with the
-        semantic type ``SampleData[AlphaDiversity]``.
+        semantic type ``SampleData[AlphaDiversity]``. If you are importing
+        data from a software tool other than QIIME 2, then you can provide a
+        :class:`pandas.DataFrame` object in which the row index is sample
+        names and the only column is diversity values with its header being
+        the name of metrics used (e.g. 'faith_pd').
     metadata : str or qiime2.Metadata
         Metadata file or object.
     where : str
@@ -65,10 +69,12 @@ def alpha_diversity_plot(
     """
     if isinstance(artifact, str):
         _alpha_diversity = Artifact.load(artifact)
+        df = _alpha_diversity.view(pd.Series).to_frame()
+    elif isinstance(artifact, pd.DataFrame):
+        df = artifact
     else:
         _alpha_diversity = artifact
-
-    df = _alpha_diversity.view(pd.Series).to_frame()
+        df = _alpha_diversity.view(pd.Series).to_frame()
 
     mf = common.get_mf(metadata)
     df = pd.concat([df, mf], axis=1, join='inner')
