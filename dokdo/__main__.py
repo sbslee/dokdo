@@ -82,14 +82,13 @@ def main():
         add_help=False,
         help=("Create a manifest file (.tsv) from a directory containing "
               "FASTQ files."),
-        description=("Create a manifest file (.tsv) from a directory "
-                     "containing FASTQ files. The file names must include "
-                     "either '_R1_001.fastq' or '_R1_002.fastq'. The word "
-                     "before the third-to-last underscore will be set "
-                     "as the sample ID. For example, a file named "
-                     "'EXAMPLE_S1_R1_001.fastq.gz' will produce 'EXAMPLE' "
-                     "as sample ID and 'EXAM_PLE_S1_R1_001.fastq.gz', "
-                     "'EXAM_PLE'."),
+        description=("Create a manifest file (.tsv) from a directory containing FASTQ files. "
+                     "This command assumes that FASTQ filenames end with a suffix such as "
+                     "'_S0_R1_001.fastq' or '_S14_R2_001.fastq'. The word before the "
+                     "third-to-last underscore ('_') will be used as sample ID. For example, a "
+                     "file named 'EXAMPLE_S1_R1_001.fastq.gz' will set 'EXAMPLE' as sample ID. "
+                     "Undertermined reads (e.g. 'Undetermined_S0_R1_001.fastq') will not be "
+                     "included in the output file."),
     )
 
     make_manifest_parser._optionals.title = "Arguments"

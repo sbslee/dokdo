@@ -20,6 +20,25 @@ Your contributions (e.g. feature ideas, pull requests) are most welcome.
 | Email: sbstevenlee@gmail.com
 | License: MIT License
 
+Citation
+========
+
+If you use Dokdo in a published analysis, please report the program version
+and the GitHub repository (https://github.com/sbslee/dokdo). If applicable,
+please also consider citing the following preprint in which Dokdo was first
+described:
+
+JY Park, H Yoon, S Lee, et al. Do Different Samples From Pregnant Women and
+Their Neonates Share the Common Microbiome: A Prospective Cohort Study.
+November 29th, 2021. Research Square.
+doi: https://doi.org/10.21203/rs.3.rs-1062191/v1.
+
+Below is an incomplete list of publications which have used Dokdo:
+
+- `Silva de Carvalho et al., 2022 <https://www.sciencedirect.com/science/article/pii/S0889159121006127>`__ in *Brain, Behavior, and Immunity*: Post-ischemic protein restriction induces sustained neuroprotection, neurological recovery, brain remodeling, and gut microbiota rebalancing.
+- `Park et al., 2021 <https://www.nature.com/articles/s41598-021-95789-8>`__ in *Scientific Reports*: Effect of black ginseng and silkworm supplementation on obesity, the transcriptome, and the gut microbiome of diet-induced overweight dogs.
+- `Reinold et al., 2021 <https://www.frontiersin.org/articles/10.3389/fcimb.2021.747816/full>`__ in *Frontiers in Cellular and Infection Microbiology*: A Pro-Inflammatory Gut Microbiome Characterizes SARS-CoV-2 Infected Patients and a Reduction in the Connectivity of an Anti-Inflammatory Bacterial Network Associates With Severe COVID-19.
+
 CLI Examples
 ============
 

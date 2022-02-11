@@ -103,7 +103,9 @@ def alpha_rarefaction_plot(
 
     with tempfile.TemporaryDirectory() as t:
         common.export(visualization, t)
-        df = pd.read_csv(f'{t}/{metric}.csv', index_col=0)
+        df = pd.read_csv(f'{t}/{metric}.csv', index_col=0,
+            keep_default_na=False, na_values=[''])
+        df.to_csv('test.csv')
 
     metadata_columns = [x for x in df.columns if 'iter' not in x]
 

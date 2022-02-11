@@ -25,7 +25,11 @@ def beta_3d_plot(
     artifact : str or qiime2.Artifact
         Artifact file or object from the q2-diversity plugin with the
         semantic type ``PCoAResults`` or
-        ``PCoAResults % Properties('biplot')``.
+        ``PCoAResults % Properties('biplot')``. If you are importing
+        data from a software tool other than QIIME 2, then you can provide a
+        :class:`pandas.DataFrame` object in which the row index is sample
+        names and the first, second, and third columns indicate the first,
+        second, and third PCoA axes, respectively.
     metadata : str or qiime2.Metadata, optional
         Metadata file or object.
     hue : str, optional
@@ -75,6 +79,13 @@ def beta_3d_plot(
                            figsize=(8, 8))
         plt.tight_layout()
 
+    .. code-block:: text
+
+        # Explained proportions computed by QIIME 2:
+        # 33.94% for Axis 1
+        # 25.90% for Axis 2
+        # 6.63% for Axis 3
+
     .. image:: images/beta_3d_plot-1.png
 
     We can control the camera angle with ``elev`` and ``azim``:
@@ -96,19 +107,35 @@ def beta_3d_plot(
                            azim=70)
         plt.tight_layout()
 
+    .. code-block:: text
+
+        # Explained proportions computed by QIIME 2:
+        # 33.94% for Axis 1
+        # 25.90% for Axis 2
+        # 6.63% for Axis 3
+        # Explained proportions computed by QIIME 2:
+        # 33.94% for Axis 1
+        # 25.90% for Axis 2
+        # 6.63% for Axis 3
+
     .. image:: images/beta_3d_plot-2.png
     """
-    if isinstance(artifact, str):
-        _pcoa_results = Artifact.load(artifact)
+    if isinstance(artifact, pd.DataFrame):
+        df = artifact
     else:
-        _pcoa_results = artifact
+        if isinstance(artifact, str):
+            _pcoa_results = Artifact.load(artifact)
+        else:
+            _pcoa_results = artifact
+        ordination_results = _pcoa_results.view(OrdinationResults)
+        df = ordination_results.samples.iloc[:, :3]
+        props = ordination_results.proportion_explained
+        print('# Explained proportions computed by QIIME 2:')
+        print(f'# {props[0]*100:.2f}% for Axis 1')
+        print(f'# {props[1]*100:.2f}% for Axis 2')
+        print(f'# {props[2]*100:.2f}% for Axis 3')
 
-    ordination_results = _pcoa_results.view(OrdinationResults)
-
-    df = ordination_results.samples.iloc[:, :3]
-    df.columns = ['A1', 'A2', 'A3']
-
-    props = ordination_results.proportion_explained
+    df.columns = ['Axis 1', 'Axis 2', 'Axis 3']
 
     if metadata is None:
         df = df
@@ -123,7 +150,7 @@ def beta_3d_plot(
     ax.view_init(azim=azim, elev=elev)
 
     if hue is None:
-        ax.scatter(df['A1'], df['A2'], df['A3'], s=s)
+        ax.scatter(df['Axis 1'], df['Axis 2'], df['Axis 3'], s=s)
     else:
         if hue_order is None:
             _hue_order = df[hue].unique()
@@ -131,12 +158,11 @@ def beta_3d_plot(
             _hue_order = hue_order
         for label in _hue_order:
             a = df[df[hue] == label]
-            ax.scatter(a['A1'], a['A2'], a['A3'], label=label, s=s)
+            ax.scatter(a['Axis 1'], a['Axis 2'], a['Axis 3'], label=label, s=s)
+            ax.legend()
 
-    ax.set_xlabel(f'Axis 1 ({props[0]*100:.2f} %)')
-    ax.set_ylabel(f'Axis 2 ({props[1]*100:.2f} %)')
-    ax.set_zlabel(f'Axis 3 ({props[2]*100:.2f} %)')
-
-    ax.legend()
+    ax.set_xlabel('Axis 1')
+    ax.set_ylabel('Axis 2')
+    ax.set_zlabel('Axis 3')
 
     return ax

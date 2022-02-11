@@ -24,10 +24,14 @@ def beta_2d_plot(
 
     Parameters
     ----------
-    artifact : str or qiime2.Artifact
+    artifact : str, qiime2.Artifact, or pandas.DataFrame
         Artifact file or object from the q2-diversity plugin with the
         semantic type ``PCoAResults`` or
-        ``PCoAResults % Properties('biplot')``.
+        ``PCoAResults % Properties('biplot')``. If you are importing
+        data from a software tool other than QIIME 2, then you can provide a
+        :class:`pandas.DataFrame` object in which the row index is sample
+        names and the first and second columns indicate the first and second
+        PCoA axes, respectively.
     metadata : str or qiime2.Metadata, optional
         Metadata file or object.
     hue : str, optional
@@ -81,6 +85,12 @@ def beta_2d_plot(
                            figsize=(5, 5))
         plt.tight_layout()
 
+    .. code-block:: text
+
+        # Explained proportions computed by QIIME 2:
+        # 33.94% for Axis 1
+        # 25.90% for Axis 2
+
     .. image:: images/beta_2d_plot-1.png
 
     We can color the datapoints with ``hue``. We can also change the
@@ -120,43 +130,52 @@ def beta_2d_plot(
             ax.legend(loc='upper left')
         plt.tight_layout()
 
+    .. code-block:: text
+
+        # Explained proportions computed by QIIME 2:
+        # 33.94% for Axis 1
+        # 25.90% for Axis 2
+        # Explained proportions computed by QIIME 2:
+        # 33.94% for Axis 1
+        # 25.90% for Axis 2
+        # Explained proportions computed by QIIME 2:
+        # 33.94% for Axis 1
+        # 25.90% for Axis 2
+        # Explained proportions computed by QIIME 2:
+        # 33.94% for Axis 1
+        # 25.90% for Axis 2
+
     .. image:: images/beta_2d_plot-2.png
     """
-    if isinstance(artifact, str):
-        _pcoa_results = Artifact.load(artifact)
+    if isinstance(artifact, pd.DataFrame):
+        df = artifact
     else:
-        _pcoa_results = artifact
+        if isinstance(artifact, str):
+            _pcoa_results = Artifact.load(artifact)
+        else:
+            _pcoa_results = artifact
+        ordination_results = _pcoa_results.view(OrdinationResults)
+        df = ordination_results.samples.iloc[:, :2]
+        props = ordination_results.proportion_explained
+        print('# Explained proportions computed by QIIME 2:')
+        print(f'# {props[0]*100:.2f}% for Axis 1')
+        print(f'# {props[1]*100:.2f}% for Axis 2')
 
-    ordination_results = _pcoa_results.view(OrdinationResults)
-
-    df1 = ordination_results.samples.iloc[:, :2]
-    df1.columns = ['A1', 'A2']
+    df.columns = ['Axis 1', 'Axis 2']
 
     if metadata is None:
-        df2 = df1
+        pass
     else:
         mf = common.get_mf(metadata)
-        df2 = pd.concat([df1, mf], axis=1, join='inner')
-
-    props = ordination_results.proportion_explained
+        df = pd.concat([df, mf], axis=1, join='inner')
 
     if ax is None:
         fig, ax = plt.subplots(figsize=figsize)
 
-    sns.scatterplot(data=df2,
-                    x='A1',
-                    y='A2',
-                    hue=hue,
-                    hue_order=hue_order,
-                    style=style,
-                    style_order=style_order,
-                    size=size,
-                    ax=ax,
-                    s=s,
-                    alpha=alpha,
-                    legend=legend)
-
-    ax.set_xlabel(f'Axis 1 ({props[0]*100:.2f} %)')
-    ax.set_ylabel(f'Axis 2 ({props[1]*100:.2f} %)')
+    sns.scatterplot(
+        x='Axis 1', y='Axis 2', data=df, hue=hue, hue_order=hue_order,
+        style=style, style_order=style_order, size=size, ax=ax,
+        s=s, alpha=alpha, legend=legend
+    )
 
     return ax
