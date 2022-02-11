@@ -85,6 +85,12 @@ def beta_2d_plot(
                            figsize=(5, 5))
         plt.tight_layout()
 
+    .. code-block:: text
+
+        # Explained proportions computed by QIIME 2:
+        # 33.94% for Axis 1
+        # 25.90% for Axis 2
+
     .. image:: images/beta_2d_plot-1.png
 
     We can color the datapoints with ``hue``. We can also change the
@@ -123,6 +129,21 @@ def beta_2d_plot(
             ax.tick_params(axis='both', which='major', labelsize=15)
             ax.legend(loc='upper left')
         plt.tight_layout()
+
+    .. code-block:: text
+
+        # Explained proportions computed by QIIME 2:
+        # 33.94% for Axis 1
+        # 25.90% for Axis 2
+        # Explained proportions computed by QIIME 2:
+        # 33.94% for Axis 1
+        # 25.90% for Axis 2
+        # Explained proportions computed by QIIME 2:
+        # 33.94% for Axis 1
+        # 25.90% for Axis 2
+        # Explained proportions computed by QIIME 2:
+        # 33.94% for Axis 1
+        # 25.90% for Axis 2
 
     .. image:: images/beta_2d_plot-2.png
     """

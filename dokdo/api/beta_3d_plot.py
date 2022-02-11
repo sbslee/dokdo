@@ -79,6 +79,13 @@ def beta_3d_plot(
                            figsize=(8, 8))
         plt.tight_layout()
 
+    .. code-block:: text
+
+        # Explained proportions computed by QIIME 2:
+        # 33.94% for Axis 1
+        # 25.90% for Axis 2
+        # 6.63% for Axis 3
+
     .. image:: images/beta_3d_plot-1.png
 
     We can control the camera angle with ``elev`` and ``azim``:
@@ -99,6 +106,17 @@ def beta_3d_plot(
                            hue='body-site',
                            azim=70)
         plt.tight_layout()
+
+    .. code-block:: text
+
+        # Explained proportions computed by QIIME 2:
+        # 33.94% for Axis 1
+        # 25.90% for Axis 2
+        # 6.63% for Axis 3
+        # Explained proportions computed by QIIME 2:
+        # 33.94% for Axis 1
+        # 25.90% for Axis 2
+        # 6.63% for Axis 3
 
     .. image:: images/beta_3d_plot-2.png
     """
