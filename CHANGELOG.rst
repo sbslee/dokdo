@@ -6,7 +6,8 @@ Changelog
 
 * :issue:`33`: Update the :command:`make-manifest` command to ignore undetermined FASTQ files.
 * :issue:`34`: Update the :meth:`alpha_rarefaction_plot` method to keep 'N/A' values as string instead of NaN.
-* :issue:`35`: Update the :meth:`alpha_diversity_plot` method to accept  :class:`pandas.DataFrame` in case the input data was not generated from QIIME 2 (e.g. shotgun sequencing).
+* :issue:`35`: Update the methods :meth:`alpha_diversity_plot`, :meth:`beta_2d_plot`, and :meth:`beta_3d_plot` to accept :class:`pandas.DataFrame` in case the input data was not generated from QIIME 2 (e.g. shotgun sequencing).
+* Update the methods :meth:`beta_2d_plot` and :meth:`beta_3d_plot` to print out the proportions explained instead of embedding them in the PCoA plot.
 
 1.11.0 (2021-08-04)
 -------------------

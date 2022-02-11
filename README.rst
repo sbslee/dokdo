@@ -25,7 +25,7 @@ Citation
 
 If you use Dokdo in a published analysis, please report the program version
 and the GitHub repository (https://github.com/sbslee/dokdo). If applicable,
-please also consider citing the following preprint in which Dokdo is first
+please also consider citing the following preprint in which Dokdo was first
 described:
 
 JY Park, H Yoon, S Lee, et al. Do Different Samples From Pregnant Women and
