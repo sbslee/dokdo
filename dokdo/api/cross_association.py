@@ -7,7 +7,8 @@ import statsmodels.stats.multitest as multi
 from qiime2 import Artifact, Metadata
 
 def cross_association_table(
-    artifact, target, method='spearman', normalize=None
+    artifact, target, method='spearman', normalize=None, alpha=0.05,
+    multitest='fdr_bh'
 ):
     """
     Parameters
@@ -30,6 +31,16 @@ def cross_association_table(
         - 'clr': Apply the centre log ratio (CLR) transformation adding a
           psuedocount of 1.
         - 'zscore': Apply the Z score transformation.
+    alpha : float, default: 0.05
+        FWER, family-wise error rate.
+    multitest : str, default: 'fdr_bh'
+        Method used for testing and adjustment of p values, as defined in
+        :meth:`statsmodels.stats.multitest.multipletests`.
+
+    Returns
+    -------
+    pandas.DataFrame
+        Cross-association table.
     """
     if method not in ['pearson', 'spearman']:
         raise ValueError("Method must be 'pearson' or 'spearman'")
@@ -68,12 +79,12 @@ def cross_association_table(
     pval_df = input_df.apply(target.corrwith, method=compute_pval)
 
     df1 = corr_df.melt(var_name='taxon', value_name='correlation', ignore_index=False)
-    df2 = pval_df.melt(var_name='target', value_name='pval', ignore_index=False)
+    df2 = pval_df.melt(var_name='taxon', value_name='pval', ignore_index=False)
     df3 = pd.concat([df1, df2['pval']], axis=1)
     df3.index.name = 'target'
     df3 = df3.reset_index()
-    df3['pvaladj'] = multi.multipletests(df3['pval'], method='fdr_bh')[1]
-    df3 = df3.sort_values('pvaladj')
+    df3['pvaladj'] = multi.multipletests(df3['pval'], method=multitest)[1]
+    df3 = df3.sort_values('pval')
 
     return df3
 
@@ -89,12 +100,12 @@ def cross_association_heatmap(
         ``FeatureTable[Frequency]``. Alternatively, a
         :class:`pandas.DataFrame` object.
     """
-    if method not in ['pearson', 'spearman']:
-        raise ValueError("Method must be 'pearson' or 'spearman'")
+    df = cross_association_table(
+        artifact, target, method=method, normalize=normalize
+    )
 
-    df = artifact.apply(target.corrwith, method=method)
-    return df
+    df = df.set_index(['target', 'taxon'])['correlation'].unstack()
 
-    #g = sns.clustermap(df, figsize=figsize, cmap=cmap)
+    g = sns.clustermap(df, figsize=figsize, cmap=cmap)
 
-    #return g
+    return g
