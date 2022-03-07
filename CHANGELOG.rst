@@ -4,6 +4,8 @@ Changelog
 1.13.0 (in development)
 -----------------------
 
+* :issue:`37`: Add a new method called :meth:`cross_association_table`.
+
 1.12.0 (2022-02-11)
 -------------------
 

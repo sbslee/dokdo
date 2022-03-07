@@ -329,6 +329,13 @@ As expected, above gives the same result as using the Visualization file created
 General Methods
 ===============
 
+cross_association_table
+-----------------------
+
+.. currentmodule:: dokdo.api.cross_association
+
+.. autofunction:: cross_association_table
+
 get_mf
 ------
 
@@ -478,6 +485,13 @@ clustermap
 .. currentmodule:: dokdo.api.clustermap
 
 .. autofunction:: clustermap
+
+cross_association_heatmap
+-------------------------
+
+.. currentmodule:: dokdo.api.cross_association
+
+.. autofunction:: cross_association_heatmap
 
 regplot
 -------
