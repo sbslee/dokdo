@@ -236,3 +236,44 @@ def cross_association_heatmap(
     ax.set_ylabel('')
 
     return g
+
+def cross_association_regplot(
+    artifact, target, taxon, name, ax=None, figsize=None
+):
+    """
+    Create a scatter plot showing the cross-correlatation of a specific pair
+    between feature table and target matrices.
+
+    Parameters
+    ----------
+    artifact : str, qiime2.Artifact, or pandas.DataFrame
+        Feature table. This can be an QIIME 2 artifact file or object with
+        the semantic type ``FeatureTable[Frequency]``. If you are importing
+        data from an external tool, you can also provide a
+        :class:`pandas.DataFrame` object where rows indicate samples and
+        columns indicate taxa.
+    target : pandas.DataFrame
+        Target :class:`pandas.DataFrame` object to be used for
+        cross-correlation analysis.
+    taxon : str
+        Taxon in feature table.
+    name : str
+        Target name.
+    ax : matplotlib.axes.Axes, optional
+        Axes object to draw the plot onto, otherwise uses the current Axes.
+    figsize : tuple, optional
+        Width, height in inches. Format: (float, float).
+
+    Returns
+    -------
+    matplotlib.axes.Axes
+        Axes object with the plot drawn onto it.
+    """
+    df = pd.concat([artifact[taxon], target[name]], axis=1)
+
+    if ax is None:
+        fig, ax = plt.subplots(figsize=figsize)
+
+    sns.regplot(data=df, x=taxon, y=name, ax=ax)
+
+    return ax

@@ -15,7 +15,7 @@ from .beta_parallel_plot import beta_parallel_plot
 from .distance_matrix_plot import distance_matrix_plot
 from .taxa_abundance import taxa_abundance_bar_plot, taxa_abundance_box_plot
 from .ancom_volcano_plot import ancom_volcano_plot
-from .cross_association import cross_association_table, cross_association_heatmap
+from .cross_association import cross_association_table, cross_association_heatmap, cross_association_regplot
 
 from .addsig import addsig
 from .addpairs import addpairs
@@ -30,5 +30,5 @@ __all__ = ['alpha_diversity_plot', 'addpairs', 'wilcoxon',
            'beta_scree_plot', 'beta_parallel_plot', 'distance_matrix_plot',
            'taxa_abundance_bar_plot', 'taxa_abundance_box_plot',
            'ancom_volcano_plot', 'cross_association_table',
-           'cross_association_heatmap', 'addsig', 'regplot', 'addbiplot',
-           'ordinate', 'pname', 'get_mf']
+           'cross_association_heatmap', 'cross_association_regplot',
+           'addsig', 'regplot', 'addbiplot', 'ordinate', 'pname', 'get_mf']
