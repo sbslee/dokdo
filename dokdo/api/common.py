@@ -116,7 +116,7 @@ def pname(name, levels=None):
     .. code:: python3
 
         import dokdo
-        
+
         dokdo.pname('d__Bacteria;p__Actinobacteriota;c__Actinobacteria;o__Actinomycetales;f__Actinomycetaceae;g__Actinomyces;s__Schaalia_radingae')
         # Will print: 's__Schaalia_radingae'
 
@@ -139,7 +139,7 @@ def pname(name, levels=None):
                 return rank
             if rank == '__':
                 continue
-            if rank.split('__')[1] is '':
+            if not rank.split('__')[1]:
                 return ranks[i+1] + ';' + rank
             return rank
     else:
