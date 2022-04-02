@@ -1,8 +1,8 @@
 Changelog
 *********
 
-1.13.0 (in development)
------------------------
+1.13.0 (2022-04-02)
+-------------------
 
 * :issue:`37`: Add new methods :meth:`cross_association_table`, :meth:`cross_association_heatmap`, and :meth:`cross_association_regplot`.
 

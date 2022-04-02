@@ -52,31 +52,39 @@ def cross_association_table(
     pandas.DataFrame
         Cross-association table.
 
+    See Also
+    --------
+    dokdo.api.cross_association.cross_association_heatmap
+    dokdo.api.cross_association.cross_association_regplot
+
     Examples
     --------
 
     Below example is taken from a `tutorial <https://microbiome.github.io/
     tutorials/Heatmap.html>`__ by Leo Lahti and Sudarshan Shetty et al.
 
-    >>> import pandas as pd
-    >>> import dokdo
-    >>> otu = pd.read_csv('/Users/sbslee/Desktop/dokdo/data/miscellaneous/otu.csv', index_col=0)
-    >>> lipids = pd.read_csv('/Users/sbslee/Desktop/dokdo/data/miscellaneous/lipids.csv', index_col=0)
-    >>> df = dokdo.cross_association_table(
-    ...     otu, lipids, normalize='log10', nsig=1
-    ... )
-    >>> df.head(10)
-                                 taxon      target      corr          pval      adjp
-    0      Ruminococcus gnavus et rel.  TG(54:5).2  0.716496  4.516954e-08  0.002284
-    1         Uncultured Bacteroidetes  TG(56:2).1 -0.698738  1.330755e-07  0.002345
-    2                    Moraxellaceae   PC(40:3e) -0.694186  1.733720e-07  0.002345
-    3      Ruminococcus gnavus et rel.    TG(50:4)  0.691191  2.058030e-07  0.002345
-    4  Lactobacillus plantarum et rel.    PC(40:3) -0.687798  2.493210e-07  0.002345
-    5      Ruminococcus gnavus et rel.  TG(54:6).1  0.683580  3.153275e-07  0.002345
-    6      Ruminococcus gnavus et rel.  TG(54:4).2  0.682030  3.434292e-07  0.002345
-    7      Ruminococcus gnavus et rel.    TG(52:5)  0.680622  3.709485e-07  0.002345
-    8                     Helicobacter    PC(40:3) -0.673201  5.530595e-07  0.003108
-    9                    Moraxellaceae  PC(38:4).1 -0.670050  6.530463e-07  0.003302
+    .. code:: python3
+
+        import pandas as pd
+        import dokdo
+        otu = pd.read_csv('/Users/sbslee/Desktop/dokdo/data/miscellaneous/otu.csv', index_col=0)
+        lipids = pd.read_csv('/Users/sbslee/Desktop/dokdo/data/miscellaneous/lipids.csv', index_col=0)
+        df = dokdo.cross_association_table(
+            otu, lipids, normalize='log10', nsig=1
+        )
+        df.head(10)
+        # Will print:
+        #                              taxon      target      corr          pval      adjp
+        # 0      Ruminococcus gnavus et rel.  TG(54:5).2  0.716496  4.516954e-08  0.002284
+        # 1         Uncultured Bacteroidetes  TG(56:2).1 -0.698738  1.330755e-07  0.002345
+        # 2                    Moraxellaceae   PC(40:3e) -0.694186  1.733720e-07  0.002345
+        # 3      Ruminococcus gnavus et rel.    TG(50:4)  0.691191  2.058030e-07  0.002345
+        # 4  Lactobacillus plantarum et rel.    PC(40:3) -0.687798  2.493210e-07  0.002345
+        # 5      Ruminococcus gnavus et rel.  TG(54:6).1  0.683580  3.153275e-07  0.002345
+        # 6      Ruminococcus gnavus et rel.  TG(54:4).2  0.682030  3.434292e-07  0.002345
+        # 7      Ruminococcus gnavus et rel.    TG(52:5)  0.680622  3.709485e-07  0.002345
+        # 8                     Helicobacter    PC(40:3) -0.673201  5.530595e-07  0.003108
+        # 9                    Moraxellaceae  PC(38:4).1 -0.670050  6.530463e-07  0.003302
     """
     if isinstance(artifact, Artifact):
         feats = artifact.view(pd.DataFrame)
@@ -190,21 +198,31 @@ def cross_association_heatmap(
     seaborn.matrix.ClusterGrid
         A ClusterGrid instance.
 
+    See Also
+    --------
+    dokdo.api.cross_association.cross_association_table
+    dokdo.api.cross_association.cross_association_regplot
+
     Examples
     --------
 
     Below example is taken from a `tutorial <https://microbiome.github.io/
     tutorials/Heatmap.html>`__ by Leo Lahti and Sudarshan Shetty et al.
 
-    >>> import pandas as pd
-    >>> import dokdo
-    >>> otu = pd.read_csv('/Users/sbslee/Desktop/dokdo/data/miscellaneous/otu.csv', index_col=0)
-    >>> lipids = pd.read_csv('/Users/sbslee/Desktop/dokdo/data/miscellaneous/lipids.csv', index_col=0)
-    >>> dokdo.cross_association_heatmap(
-    ...    otu, lipids, normalize='log10', nsig=1,
-    ...    figsize=(15, 15), cmap='vlag', marksig=True,
-    ...    annot_kws={'fontsize': 6, 'ha': 'center', 'va': 'center'}
-    ... )
+    .. code:: python3
+
+        import dokdo
+        import matplotlib.pyplot as plt
+        %matplotlib inline
+        import pandas as pd
+
+        otu = pd.read_csv('/Users/sbslee/Desktop/dokdo/data/miscellaneous/otu.csv', index_col=0)
+        lipids = pd.read_csv('/Users/sbslee/Desktop/dokdo/data/miscellaneous/lipids.csv', index_col=0)
+        dokdo.cross_association_heatmap(
+           otu, lipids, normalize='log10', nsig=1,
+           figsize=(15, 15), cmap='vlag', marksig=True,
+           annot_kws={'fontsize': 6, 'ha': 'center', 'va': 'center'}
+        )
 
     .. image:: images/cross_association_heatmap_1.png
     """
@@ -268,6 +286,28 @@ def cross_association_regplot(
     -------
     matplotlib.axes.Axes
         Axes object with the plot drawn onto it.
+
+    See Also
+    --------
+    dokdo.api.cross_association.cross_association_table
+    dokdo.api.cross_association.cross_association_heatmap
+
+    Examples
+    --------
+
+    .. code:: python3
+
+        import dokdo
+        import matplotlib.pyplot as plt
+        %matplotlib inline
+        import pandas as pd
+
+        otu = pd.read_csv('/Users/sbslee/Desktop/dokdo/data/miscellaneous/otu.csv', index_col=0)
+        lipids = pd.read_csv('/Users/sbslee/Desktop/dokdo/data/miscellaneous/lipids.csv', index_col=0)
+        dokdo.cross_association_regplot(otu, lipids, 'Ruminococcus gnavus et rel.', 'TG(54:5).2')
+        plt.tight_layout()
+
+    .. image:: images/cross_association_regplot.png
     """
     df = pd.concat([artifact[taxon], target[name]], axis=1)
 

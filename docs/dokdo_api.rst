@@ -493,6 +493,13 @@ cross_association_heatmap
 
 .. autofunction:: cross_association_heatmap
 
+cross_association_regplot
+-------------------------
+
+.. currentmodule:: dokdo.api.cross_association
+
+.. autofunction:: cross_association_regplot
+
 regplot
 -------
 
