@@ -74,8 +74,8 @@ def beta_3d_plot(
         qza_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/unweighted_unifrac_pcoa_results.qza'
         metadata_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/sample-metadata.tsv'
         dokdo.beta_3d_plot(qza_file,
-                           metadata_file,
-                           'body-site',
+                           metadata=metadata_file,
+                           hue='body-site',
                            figsize=(8, 8))
         plt.tight_layout()
 
@@ -96,12 +96,12 @@ def beta_3d_plot(
         ax1 = fig.add_subplot(1, 2, 1, projection='3d')
         ax2 = fig.add_subplot(1, 2, 2, projection='3d')
         dokdo.beta_3d_plot(qza_file,
-                           metadata_file,
+                           metadata=metadata_file,
                            ax=ax1,
                            hue='body-site',
                            elev=15)
         dokdo.beta_3d_plot(qza_file,
-                           metadata_file,
+                           metadata=metadata_file,
                            ax=ax2,
                            hue='body-site',
                            azim=70)
