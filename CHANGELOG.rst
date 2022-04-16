@@ -4,6 +4,8 @@ Changelog
 1.14.0 (in development)
 -----------------------
 
+* :issue:`39`: Add new arguments ``palette`` and ``kwargs`` to :meth:`beta_2d_plot` method so that users can have more control over various aspects of the output plot (e.g. control color mapping).
+
 1.13.0 (2022-04-02)
 -------------------
 
