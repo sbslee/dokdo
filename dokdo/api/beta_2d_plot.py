@@ -14,6 +14,9 @@ def beta_2d_plot(
     """
     Create a 2D scatter plot from PCoA results.
 
+    In addition to creating a PCoA plot, this method prints out the
+    proportions explained by each axis.
+
     +---------------------+---------------------------------------------------+
     | q2-diversity plugin | Example                                           |
     +=====================+===================================================+
@@ -139,9 +142,8 @@ def beta_2d_plot(
 
     .. image:: images/beta_2d_plot-2.png
 
-    We can pass the name of a categorical palette or explicit colors (as a
-    Python list or dictionary) to force categorical mapping of the ``hue``
-    variable:
+    We can control categorical mapping of the ``hue`` variable with
+    ``palette``:
 
     .. code:: python3
 

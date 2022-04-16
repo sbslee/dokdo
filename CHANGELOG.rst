@@ -4,7 +4,8 @@ Changelog
 1.14.0 (in development)
 -----------------------
 
-* :issue:`39`: Add new arguments ``palette`` and ``kwargs`` to :meth:`beta_2d_plot` method so that users can have more control over various aspects of the output plot (e.g. control color mapping).
+* :issue:`39`: Add new argument ``palette`` to :meth:`beta_2d_plot` and :meth:`beta_3d_plot` methods so that users can control categorical color mapping.
+* Add new argument ``kwargs`` to :meth:`beta_2d_plot` method. It will be passed to :meth:`seaborn.scatterplot()` method so that users can have more control over various aspects of the output plot.
 
 1.13.0 (2022-04-02)
 -------------------
