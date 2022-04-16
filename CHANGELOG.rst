@@ -5,7 +5,9 @@ Changelog
 -----------------------
 
 * :issue:`39`: Add new argument ``palette`` to :meth:`beta_2d_plot` and :meth:`beta_3d_plot` methods so that users can control categorical color mapping.
+* :issue:`39`: Bring back ``add_datapoints`` argument to :meth:`taxa_abundance_box_plot` method to display data points on top of the boxes (note that it was deprecated in 1.11.0 version).
 * Add new argument ``kwargs`` to :meth:`beta_2d_plot` method. It will be passed to :meth:`seaborn.scatterplot()` method so that users can have more control over various aspects of the output plot.
+
 
 1.13.0 (2022-04-02)
 -------------------
