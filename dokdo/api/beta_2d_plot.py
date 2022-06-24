@@ -9,10 +9,13 @@ from qiime2 import Artifact
 def beta_2d_plot(
     artifact, metadata=None, hue=None, size=None,
     style=None, s=80, alpha=None, hue_order=None, style_order=None,
-    legend='brief', ax=None, figsize=None
+    legend='brief', ax=None, figsize=None, palette=None, **kwargs
 ):
     """
     Create a 2D scatter plot from PCoA results.
+
+    In addition to creating a PCoA plot, this method prints out the
+    proportions explained by each axis.
 
     +---------------------+---------------------------------------------------+
     | q2-diversity plugin | Example                                           |
@@ -54,6 +57,13 @@ def beta_2d_plot(
         Axes object to draw the plot onto, otherwise uses the current Axes.
     figsize : tuple, optional
         Width, height in inches. Format: (float, float).
+    palette : string, list, dict, or matplotlib.colors.Colormap
+        Method for choosing the colors to use when mapping the ``hue``
+        semantic. List or dict values imply categorical mapping, while a
+        colormap object implies numeric mapping.
+    kwargs : other keyword arguments
+        Other keyword arguments will be passed down to
+        :meth:`seaborn.scatterplot()`.
 
     Returns
     -------
@@ -130,22 +140,18 @@ def beta_2d_plot(
             ax.legend(loc='upper left')
         plt.tight_layout()
 
-    .. code-block:: text
-
-        # Explained proportions computed by QIIME 2:
-        # 33.94% for Axis 1
-        # 25.90% for Axis 2
-        # Explained proportions computed by QIIME 2:
-        # 33.94% for Axis 1
-        # 25.90% for Axis 2
-        # Explained proportions computed by QIIME 2:
-        # 33.94% for Axis 1
-        # 25.90% for Axis 2
-        # Explained proportions computed by QIIME 2:
-        # 33.94% for Axis 1
-        # 25.90% for Axis 2
-
     .. image:: images/beta_2d_plot-2.png
+
+    We can control categorical mapping of the ``hue`` variable with
+    ``palette``:
+
+    .. code:: python3
+
+        palette = {'gut': 'yellow', 'left palm': 'green', 'right palm': 'blue', 'tongue': 'red'}
+        dokdo.beta_2d_plot(qza_file, metadata_file, hue='body-site', palette=palette)
+        plt.tight_layout()
+
+    .. image:: images/beta_2d_plot-3.png
     """
     if isinstance(artifact, pd.DataFrame):
         df = artifact
@@ -175,7 +181,7 @@ def beta_2d_plot(
     sns.scatterplot(
         x='Axis 1', y='Axis 2', data=df, hue=hue, hue_order=hue_order,
         style=style, style_order=style_order, size=size, ax=ax,
-        s=s, alpha=alpha, legend=legend
+        s=s, alpha=alpha, legend=legend, palette=palette, **kwargs
     )
 
     return ax

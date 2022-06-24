@@ -7,10 +7,13 @@ from qiime2 import Artifact
 
 def beta_3d_plot(
     artifact, metadata=None, hue=None, azim=-60, elev=30, s=80, ax=None,
-    figsize=None, hue_order=None
+    figsize=None, hue_order=None, palette=None
 ):
     """
     Create a 3D scatter plot from PCoA results.
+
+    In addition to creating a PCoA plot, this method prints out the
+    proportions explained by each axis.
 
     +---------------------+---------------------------------------------------+
     | q2-diversity plugin | Example                                           |
@@ -46,6 +49,9 @@ def beta_3d_plot(
         Width, height in inches. Format: (float, float).
     hue_order : list, optional
         Specify the order of categorical levels of the 'hue' semantic.
+    palette : dict
+        Dictionary for choosing the colors to use when mapping the ``hue``
+        semantic.
 
     Returns
     -------
@@ -74,8 +80,8 @@ def beta_3d_plot(
         qza_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/unweighted_unifrac_pcoa_results.qza'
         metadata_file = '/Users/sbslee/Desktop/dokdo/data/moving-pictures-tutorial/sample-metadata.tsv'
         dokdo.beta_3d_plot(qza_file,
-                           metadata_file,
-                           'body-site',
+                           metadata=metadata_file,
+                           hue='body-site',
                            figsize=(8, 8))
         plt.tight_layout()
 
@@ -96,29 +102,29 @@ def beta_3d_plot(
         ax1 = fig.add_subplot(1, 2, 1, projection='3d')
         ax2 = fig.add_subplot(1, 2, 2, projection='3d')
         dokdo.beta_3d_plot(qza_file,
-                           metadata_file,
+                           metadata=metadata_file,
                            ax=ax1,
                            hue='body-site',
                            elev=15)
         dokdo.beta_3d_plot(qza_file,
-                           metadata_file,
+                           metadata=metadata_file,
                            ax=ax2,
                            hue='body-site',
                            azim=70)
         plt.tight_layout()
 
-    .. code-block:: text
-
-        # Explained proportions computed by QIIME 2:
-        # 33.94% for Axis 1
-        # 25.90% for Axis 2
-        # 6.63% for Axis 3
-        # Explained proportions computed by QIIME 2:
-        # 33.94% for Axis 1
-        # 25.90% for Axis 2
-        # 6.63% for Axis 3
-
     .. image:: images/beta_3d_plot-2.png
+
+    We can control categorical mapping of the ``hue`` variable with
+    ``palette``:
+
+    .. code:: python3
+
+        palette = {'gut': 'yellow', 'left palm': 'green', 'right palm': 'blue', 'tongue': 'red'}
+        dokdo.beta_3d_plot(qza_file, metadata=metadata_file, hue='body-site', palette=palette, figsize=(8, 8))
+        plt.tight_layout()
+
+    .. image:: images/beta_3d_plot-3.png
     """
     if isinstance(artifact, pd.DataFrame):
         df = artifact
@@ -158,7 +164,10 @@ def beta_3d_plot(
             _hue_order = hue_order
         for label in _hue_order:
             a = df[df[hue] == label]
-            ax.scatter(a['Axis 1'], a['Axis 2'], a['Axis 3'], label=label, s=s)
+            if palette is None:
+                palette = {x: None for x in _hue_order}
+            c = palette[label]
+            ax.scatter(a['Axis 1'], a['Axis 2'], a['Axis 3'], label=label, s=s, c=c)
             ax.legend()
 
     ax.set_xlabel('Axis 1')

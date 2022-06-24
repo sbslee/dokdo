@@ -111,7 +111,7 @@ def beta_parallel_plot(
         fig, ax = plt.subplots(figsize=figsize)
 
     pd.plotting.parallel_coordinates(df, 'Target',
-        color=plt.cm.get_cmap('tab10').colors)
+        color=plt.cm.get_cmap('tab10').colors, ax=ax)
 
     if hue is None:
         ax.get_legend().remove()

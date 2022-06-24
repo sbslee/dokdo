@@ -641,7 +641,9 @@ def taxa_abundance_box_plot(
     include_samples=None, exclude_taxa=None, sort_by_names=False,
     sample_names=None, csv_file=None, pseudocount=False,
     taxa_names=None, pretty_taxa=False, show_means=False,
-    meanprops=None, show_others=True, sort_by_mean=True, ax=None, figsize=None
+    meanprops=None, show_others=True, sort_by_mean=True,
+    add_datapoints=False, jitter=1, alpha=None, size=5,
+    ax=None, figsize=None,
 ):
     """
     Create a box plot showing the distribution of relative abundance for
@@ -709,6 +711,17 @@ def taxa_abundance_box_plot(
         Include the 'Others' category.
     sort_by_mean : bool, default: True
         Sort taxa by their mean relative abundance after sample filtration.
+    add_datapoints : bool, default: False
+        Show data points on top of the boxes.
+    jitter : float, default: 1
+        Ignored when ``add_datapoints=False``. Amount of jitter (only along
+        the categorical axis) to apply.
+    alpha : float, optional
+        Ignored when ``add_datapoints=False``. Proportional opacity of the
+        points.
+    size : float, default: 5.0
+        Ignored when ``add_datapoints=False``. Radius of the markers, in
+        points.
     ax : matplotlib.axes.Axes, optional
         Axes object to draw the plot onto, otherwise uses the current Axes.
     figsize : tuple, optional
@@ -774,6 +787,22 @@ def taxa_abundance_box_plot(
         plt.tight_layout()
 
     .. image:: images/taxa_abundance_box_plot-3.png
+
+    We can add data points on top of the boxes:
+
+    .. code:: python3
+
+        dokdo.taxa_abundance_box_plot(
+            qzv_file,
+            level=2,
+            count=4,
+            pretty_taxa=True,
+            add_datapoints=True,
+            figsize=(8, 7)
+        )
+        plt.tight_layout()
+
+    .. image:: images/taxa_abundance_box_plot-6.png
 
     We can also specify which taxa to plot:
 
@@ -877,8 +906,6 @@ def taxa_abundance_box_plot(
     else:
         df2 = pd.melt(df)
 
-
-
     if meanprops:
         _meanprops = meanprops
     else:
@@ -897,6 +924,13 @@ def taxa_abundance_box_plot(
         x='variable', y='value', hue=hue, hue_order=hue_order, data=df2,
         ax=ax, **d
     )
+
+    if add_datapoints:
+        sns.stripplot(
+            x='variable', y='value', hue=hue, hue_order=hue_order, data=df2,
+            ax=ax, color='black', size=size, dodge=True, jitter=jitter,
+            alpha=alpha
+        )
 
     # If provided, output the dataframe as a .csv file.
     if csv_file is not None:
