@@ -1,8 +1,8 @@
 Changelog
 *********
 
-1.14.0 (in development)
------------------------
+1.14.0 (2022-06-24)
+-------------------
 
 * :issue:`39`: Add new argument ``palette`` to :meth:`beta_2d_plot` and :meth:`beta_3d_plot` methods so that users can control categorical color mapping.
 * :issue:`39`: Bring back ``add_datapoints`` argument to :meth:`taxa_abundance_box_plot` method to display data points on top of the boxes (note that it was deprecated in 1.11.0 version).
