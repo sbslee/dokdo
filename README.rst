@@ -35,6 +35,7 @@ doi: https://doi.org/10.21203/rs.3.rs-1062191/v1.
 
 Below is an incomplete list of publications which have used Dokdo:
 
+- `Reinold et al., 2022 <https://www.frontiersin.org/articles/10.3389/fcimb.2022.848650/full>`__ in *Front Cell Infect Microbiol*: The Fungal Gut Microbiome Exhibits Reduced Diversity and Increased Relative Abundance of Ascomycota in Severe COVID-19 Illness and Distinct Interconnected Communities in SARS-CoV-2 Positive Patients.
 - `Silva de Carvalho et al., 2022 <https://www.sciencedirect.com/science/article/pii/S0889159121006127>`__ in *Brain, Behavior, and Immunity*: Post-ischemic protein restriction induces sustained neuroprotection, neurological recovery, brain remodeling, and gut microbiota rebalancing.
 - `Park et al., 2021 <https://www.nature.com/articles/s41598-021-95789-8>`__ in *Scientific Reports*: Effect of black ginseng and silkworm supplementation on obesity, the transcriptome, and the gut microbiome of diet-induced overweight dogs.
 - `Reinold et al., 2021 <https://www.frontiersin.org/articles/10.3389/fcimb.2021.747816/full>`__ in *Frontiers in Cellular and Infection Microbiology*: A Pro-Inflammatory Gut Microbiome Characterizes SARS-CoV-2 Infected Patients and a Reduction in the Connectivity of an Anti-Inflammatory Bacterial Network Associates With Severe COVID-19.
