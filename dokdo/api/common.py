@@ -121,7 +121,7 @@ def pname(name, levels=None):
         # Will print: 's__Schaalia_radingae'
 
         dokdo.pname('Unassigned;__;__;__;__;__;__')
-        # PWill print: 'Unassigned'
+        # Will print: 'Unassigned'
 
         dokdo.pname('d__Bacteria;__;__;__;__;__;__')
         # Will print: 'd__Bacteria'
@@ -131,7 +131,12 @@ def pname(name, levels=None):
 
         dokdo.pname('d__Bacteria;p__Actinobacteriota;c__Actinobacteria;o__Actinomycetales;f__Actinomycetaceae;g__Actinomyces;s__Schaalia_radingae', levels=[6,7])
         # Will print: 'g__Actinomyces;s__Schaalia_radingae'
+
+        dokdo.pname('1ad289cd8f44e109fd95de0382c5b252')
+        # Will print: '1ad289cd8f44e109fd95de0382c5b252'
     """
+    if ';' not in name:
+        return name
     if levels is None:
         ranks = list(reversed(name.split(';')))
         for i, rank in enumerate(ranks):
