@@ -96,7 +96,7 @@ def get_mf(metadata):
         raise TypeError(f"Incorrect metadata type: {type(metadata)}")
     return mf
 
-def pname(name, levels=None):
+def pname(name, levels=None, delimiter=';'):
     """
     Return a prettified taxon name.
 
@@ -104,6 +104,15 @@ def pname(name, levels=None):
     ----------
     name : str
         Taxon name.
+    levels : list, optional
+        Which taxonomic rank(s) to display. For example, assuming a taxon
+        name is composed of seven taxonomic ranks (i.e. kingdom to species)
+        ``levels=[6, 7]`` will only return 6th (genus) and 7th (species)
+        labels.
+    delimiter : str, default: ';'
+        Delimiter used to separate taxonomic ranks. If this delimiter is not
+        found, the method will simply return the input taxon name as is (e.g.
+        ASV ID).
 
     Returns
     -------
@@ -129,28 +138,28 @@ def pname(name, levels=None):
         dokdo.pname('d__Bacteria;p__Acidobacteriota;c__Acidobacteriae;o__Bryobacterales;f__Bryobacteraceae;g__Bryobacter;__')
         # Will print: 'g__Bryobacter'
 
-        dokdo.pname('d__Bacteria;p__Actinobacteriota;c__Actinobacteria;o__Actinomycetales;f__Actinomycetaceae;g__Actinomyces;s__Schaalia_radingae', levels=[6,7])
+        dokdo.pname('d__Bacteria;p__Actinobacteriota;c__Actinobacteria;o__Actinomycetales;f__Actinomycetaceae;g__Actinomyces;s__Schaalia_radingae', levels=[6, 7])
         # Will print: 'g__Actinomyces;s__Schaalia_radingae'
 
         dokdo.pname('1ad289cd8f44e109fd95de0382c5b252')
         # Will print: '1ad289cd8f44e109fd95de0382c5b252'
     """
-    if ';' not in name:
+    if delimiter not in name:
         return name
     if levels is None:
-        ranks = list(reversed(name.split(';')))
+        ranks = list(reversed(name.split(delimiter)))
         for i, rank in enumerate(ranks):
             if rank in ['Others', 'Unassigned']:
                 return rank
             if rank == '__':
                 continue
             if not rank.split('__')[1]:
-                return ranks[i+1] + ';' + rank
+                return ranks[i+1] + delimiter + rank
             return rank
     else:
-        ranks = name.split(';')
+        ranks = name.split(delimiter)
         if 'Others' in ranks:
             return 'Others'
         if 'Unassigned' in ranks:
             return 'Unassigned'
-        return ';'.join([ranks[x-1] for x in levels])
+        return delimiter.join([ranks[x-1] for x in levels])
