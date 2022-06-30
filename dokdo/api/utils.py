@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+from skbio.stats.composition import clr
 from qiime2 import Artifact
 
 def import_feature_table(artifact):

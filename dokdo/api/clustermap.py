@@ -5,7 +5,6 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 from matplotlib.patches import Patch
-from skbio.stats.composition import clr
 from qiime2 import Artifact, Metadata
 from scipy.stats import zscore
 
@@ -404,7 +403,7 @@ def clustermap(
         s = df[hue2].map(lut2)
         row_colors = pd.concat([row_colors, s], axis=1)
         df.drop(mf.columns, axis=1, inplace=True)
-        
+
     if normalize is not None:
         df = utils.normalize_feature_table(df, normalize)
 
