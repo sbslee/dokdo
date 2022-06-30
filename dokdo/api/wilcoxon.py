@@ -11,10 +11,10 @@ def wilcoxon(
 
     This method tests the null hypothesis that two related paired
     samples come from the same distribution for a given taxon
-    using the `scipy.stats.wilcoxon()` method.
+    using the :meth:`scipy.stats.wilcoxon()` method.
 
     Note that one of the inputs for this method is a .csv file
-    from the `dokdo.taxa_abundance_box_plot()` method which
+    from the :meth:`dokdo.taxa_abundance_box_plot()` method which
     contains the relvant data (e.g. relative abundance).
 
     Parameters
