@@ -321,9 +321,9 @@ def cross_association_regplot(
 
 def group_correlation_heatmap(
     artifact, group1_samples, group2_samples, group1_label=None,
-    group2_label=None, taxa_names=None, count=0, normalize=None,
-    method='spearman', alpha=0.05, csv_file=None, ax=None, figsize=None,
-    **kwargs
+    group2_label=None, taxa_names=None, count=0, sort_by_mean=True,
+    normalize=None, method='spearman', alpha=0.05, csv_file=None, ax=None,
+    figsize=None, **kwargs
 ):
     """
     Create a heatmap showing cross-correlation of taxa abundance between two
@@ -345,6 +345,9 @@ def group_correlation_heatmap(
         List of taxa names to be displayed.
     count : int, default: 0
         The number of taxa to display. When 0, display all.
+    sort_by_mean : bool, default: True
+        Sort taxa by their mean abundance before filtering with ``count``.
+        Set ``sort_by_mean=False`` if the original order of taxa is desired.
     normalize : {None, 'log10', 'clr', 'zscore'}, default: None
         Whether to normalize the the input feature table:
 
@@ -416,9 +419,8 @@ def group_correlation_heatmap(
     if taxa_names is not None:
         df = df[taxa_names]
 
-    _ = df.div(df.sum(axis=1), axis=0)
-    _ = _.loc[:, _.mean().sort_values(ascending=False).index]
-    df = df[_.columns]
+    if sort_by_mean:
+        df = utils.sort_by_mean(df)
 
     if count != 0:
         df = df.iloc[:, :count]

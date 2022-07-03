@@ -30,3 +30,11 @@ def normalize_feature_table(df, method):
     else:
         raise ValueError(f"Incorrect normalization method: {method}")
     return df
+
+def sort_by_mean(df):
+    """
+    Sort given feature table by mean taxa abundance.
+    """
+    _ = df.div(df.sum(axis=1), axis=0)
+    _ = _.loc[:, _.mean().sort_values(ascending=False).index]
+    return df[_.columns]
