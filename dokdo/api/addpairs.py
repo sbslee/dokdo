@@ -28,7 +28,7 @@ def addpairs(
     width : float, default: 0.8
         Width of all the elements for one level of the grouping variable.
     kwargs : other keyword arguments
-        All other keyword arguments are passed to `seaborn.lineplot`.
+        All other keyword arguments are passed to :meth:`seaborn.lineplot`.
 
     Returns
     -------
