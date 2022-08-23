@@ -458,6 +458,13 @@ heatmap
 
 .. autofunction:: heatmap
 
+group_correlation_heatmap
+-------------------------
+
+.. currentmodule:: dokdo.api.cross_association
+
+.. autofunction:: group_correlation_heatmap
+
 Other Plotting Methods
 ======================
 

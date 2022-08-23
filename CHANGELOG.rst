@@ -1,6 +1,13 @@
 Changelog
 *********
 
+1.15.0 (2022-08-23)
+-------------------
+
+* Update :meth:`pname` method to support taxa names that don't have a delimiter such as ASV IDs (e.g. ``1ad289cd8f44e109fd95de0382c5b252``). Basically, the method will simply return the input name as is.
+* Add new argument ``delimiter`` to :meth:`pname` method.
+* Add new method :meth:`group_correlation_heatmap`.
+
 1.14.0 (2022-06-24)
 -------------------
 

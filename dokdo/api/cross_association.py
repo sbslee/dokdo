@@ -5,13 +5,14 @@ import matplotlib.pyplot as plt
 from scipy.stats import spearmanr, pearsonr
 import statsmodels.stats.multitest as multi
 from qiime2 import Artifact, Metadata
+from . import common, utils
 
 def cross_association_table(
     artifact, target, method='spearman', normalize=None, alpha=0.05,
     multitest='fdr_bh', nsig=0
 ):
     """
-    Compute cross-correlatation between feature table and target matrices.
+    Compute cross-correlation between feature table and target matrices.
 
     This method is essentially equivalent to the :meth:`associate` `function
     <https://rdrr.io/github/microbiome/microbiome/man/associate.html>`__
@@ -315,5 +316,150 @@ def cross_association_regplot(
         fig, ax = plt.subplots(figsize=figsize)
 
     sns.regplot(data=df, x=taxon, y=name, ax=ax)
+
+    return ax
+
+def group_correlation_heatmap(
+    artifact, group1_samples, group2_samples, group1_label=None,
+    group2_label=None, taxa_names=None, count=0, sort_by_mean=True,
+    normalize=None, method='spearman', alpha=0.05, csv_file=None, ax=None,
+    figsize=None, **kwargs
+):
+    """
+    Create a heatmap showing cross-correlation of taxa abundance between two
+    groups.
+
+    Parameters
+    ----------
+    artifact : str, qiime2.Artifact, or pandas.DataFrame
+        Feature table. This can be an QIIME 2 artifact file or object with
+        the semantic type ``FeatureTable[Frequency]``. If you are importing
+        data from an external tool, you can also provide a
+        :class:`pandas.DataFrame` object where rows indicate samples and
+        columns indicate taxa.
+    group1_samples, group2_samples : list
+        Lists of matched samples from identical subjects (e.g. patient ID).
+    group1_label, group2_label : str
+        Group labels (e.g. before and after treatment).
+    taxa_names : list, optional
+        List of taxa names to be displayed.
+    count : int, default: 0
+        The number of taxa to display. When 0, display all.
+    sort_by_mean : bool, default: True
+        Sort taxa by their mean abundance before filtering with ``count``.
+        Set ``sort_by_mean=False`` if the original order of taxa is desired.
+    normalize : {None, 'log10', 'clr', 'zscore'}, default: None
+        Whether to normalize the the input feature table:
+
+        * None: Do not normalize.
+        * 'log10': Apply the log10 transformation adding a psuedocount of 1.
+        * 'clr': Apply the centre log ratio (CLR) transformation adding a psuedocount of 1.
+        * 'zscore': Apply the Z score transformation.
+
+    method : {'spearman', 'pearson'}, default: 'spearman'
+        Association method.
+    alpha : float, default: 0.05
+        FWER, family-wise error rate.
+    csv_file : str, optional
+        Path of the .csv file to output the dataframe to.
+    ax : matplotlib.axes.Axes, optional
+        Axes object to draw the plot onto, otherwise uses the current Axes.
+    figsize : tuple, optional
+        Width, height in inches. Format: (float, float).
+    kwargs : other keyword arguments
+        Other keyword arguments will be passed down to
+        :meth:`seaborn.heatmap()`.
+
+    Returns
+    -------
+    matplotlib.axes.Axes
+        Axes object with the plot drawn onto it.
+
+    Examples
+    --------
+
+    .. code:: python3
+
+        qza_file = '/Users/sbslee/Desktop/dokdo/data/parkinsons-mouse-tutorial/dada2_table_l6.qza'
+
+        mice_days7 = [
+            'recip.413.WT.HC2.D7',  # Mouse ID: 457
+            'recip.460.WT.HC3.D7',  # Mouse ID: 468
+            'recip.461.ASO.HC3.D7', # Mouse ID: 469
+            'recip.463.WT.PD3.D7',  # Mouse ID: 537
+            'recip.465.ASO.PD3.D7', # Mouse ID: 538
+            'recip.540.ASO.HC4.D7', # Mouse ID: 547
+        ]
+
+        mice_days49 = [
+            'recip.220.WT.OB1.D7',   # Mouse ID: 457
+            'recip.456.ASO.HC3.D49', # Mouse ID: 468
+            'recip.458.ASO.HC3.D49', # Mouse ID: 469
+            'recip.460.WT.HC3.D49',  # Mouse ID: 537
+            'recip.461.ASO.HC3.D49', # Mouse ID: 538
+            'recip.536.ASO.PD4.D49', # Mouse ID: 547
+        ]
+
+        dokdo.group_correlation_heatmap(
+            qza_file, mice_days7, mice_days49, normalize='clr', group1_label='Days 7',
+            group2_label='Days 49', cmap='vlag', figsize=(8, 8), count=5)
+
+        plt.tight_layout()
+
+    .. image:: images/group_correlation_heatmap-1.png
+    """
+    df = utils.import_feature_table(artifact)
+
+    if len(group1_samples) != len(group2_samples):
+        raise ValueError(f"Two groups have different sizes: {len(group1)} and {len(group2)}, respectively ")
+
+    if normalize is not None:
+        df = utils.normalize_feature_table(df, normalize)
+
+    if taxa_names is not None:
+        df = df[taxa_names]
+
+    if sort_by_mean:
+        df = utils.sort_by_mean(df)
+
+    if count != 0:
+        df = df.iloc[:, :count]
+
+    df = df[df.index.isin(group1_samples + group2_samples)]
+
+    if csv_file is not None:
+        df.to_csv(csv_file)
+
+    df1 = df.loc[group1_samples]
+    df2 = df.loc[group2_samples]
+
+    methods = {'pearson': pearsonr, 'spearman': spearmanr}
+
+    size = max(df1.shape[1], df2.shape[1])
+
+    cols = [common.pname(x) for x in df1.columns]
+
+    rho_df = pd.DataFrame(np.zeros((size, size)), index=cols, columns=cols)
+    pval_df = pd.DataFrame(np.zeros((size, size)), index=cols, columns=cols)
+
+    for i, t1 in enumerate(df1.columns):
+        for j, t2 in enumerate(df2.columns):
+            rho, pval = methods[method](df1[t1], df2[t2])
+
+            if np.isnan(rho):
+                rho, pval = 0, 1
+            rho_df.iloc[i, j] = rho
+            pval_df.iloc[i, j] = pval
+
+    pval_df = pval_df.applymap(lambda x: '*' if x <= alpha else '')
+
+    if ax is None:
+        fig, ax = plt.subplots(figsize=figsize)
+
+    sns.heatmap(rho_df, annot=pval_df, fmt = '', ax=ax, vmin=-1,
+    vmax=1, **kwargs)
+
+    ax.set_xlabel(group2_label)
+    ax.set_ylabel(group1_label)
 
     return ax

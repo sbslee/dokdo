@@ -1,24 +1,12 @@
-from . import common
+from . import common, utils
 
 import numpy as np
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 from matplotlib.patches import Patch
-from skbio.stats.composition import clr
 from qiime2 import Artifact, Metadata
 from scipy.stats import zscore
-
-def _get_df(artifact):
-    if isinstance(artifact, Artifact):
-        df = artifact.view(pd.DataFrame)
-    elif isinstance(artifact, str):
-        df = Artifact.load(artifact).view(pd.DataFrame)
-    elif isinstance(artifact, pd.DataFrame):
-        df = artifact
-    else:
-        raise TypeError(f'Incorrect input type: {type(artifact)}.')
-    return df
 
 def _intersect_samples(df, metadata):
     if metadata is None:
@@ -29,17 +17,6 @@ def _intersect_samples(df, metadata):
         df = df.drop(mf.columns, axis=1)
         df = df.loc[:, (df != 0).any(axis=0)]
     return df, mf
-
-def _normalize_df(df, normalize):
-    if normalize == 'log10':
-        df = df.applymap(lambda x: np.log10(x + 1))
-    elif normalize == 'clr':
-        df = df.apply(lambda x: clr(x + 1), axis=1, result_type='broadcast')
-    elif normalize == 'zscore':
-        df = df.apply(zscore, axis=1, result_type='broadcast')
-    else:
-        pass
-    return df
 
 def heatmap(
     artifact, metadata=None, where=None, sort_samples=None,
@@ -174,9 +151,10 @@ def heatmap(
 
     .. image:: images/heatmap-2.png
     """
-    df = _get_df(artifact)
+    df = utils.import_feature_table(artifact)
     df, mf = _intersect_samples(df, metadata)
-    df = _normalize_df(df, normalize)
+    if normalize is not None:
+        df = utils.normalize_feature_table(df, normalize)
 
     # Determine which samples to display.
     if where is None and samples is not None:
@@ -389,7 +367,7 @@ def clustermap(
 
     .. image:: images/clustermap-5.png
     """
-    df = _get_df(artifact)
+    df = utils.import_feature_table(artifact)
 
     # If the metadata is provided, filter the samples accordingly.
     if metadata is not None:
@@ -426,7 +404,8 @@ def clustermap(
         row_colors = pd.concat([row_colors, s], axis=1)
         df.drop(mf.columns, axis=1, inplace=True)
 
-    df = _normalize_df(df, normalize)
+    if normalize is not None:
+        df = utils.normalize_feature_table(df, normalize)
 
     # Flip the axes.
     if flip:

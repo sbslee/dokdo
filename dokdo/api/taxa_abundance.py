@@ -99,6 +99,13 @@ def taxa_abundance_bar_plot(
     By default, the method will draw a bar for each sample. To plot the
     average taxa abundance of each sample group, use the ``group`` option.
 
+    .. warning::
+        You may get unexpected results when using ``group`` if samples have
+        uneven sequencing depth. For example, an outlier sample with an
+        extraordinarily large depth could easily mask the contributions from
+        the rest of the samples. Therefore, it's strongly recommended to
+        rarefy the input feature table when plotting with ``group``.
+
     +----------------+-----------------------------------------------------+
     | q2-taxa plugin | Example                                             |
     +================+=====================================================+
