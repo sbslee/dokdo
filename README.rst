@@ -38,6 +38,11 @@ Below is an incomplete list of publications which have used Dokdo:
 - `Park et al., 2021 <https://www.nature.com/articles/s41598-021-95789-8>`__ in *Scientific Reports*: Effect of black ginseng and silkworm supplementation on obesity, the transcriptome, and the gut microbiome of diet-induced overweight dogs.
 - `Reinold et al., 2021 <https://www.frontiersin.org/articles/10.3389/fcimb.2021.747816/full>`__ in *Frontiers in Cellular and Infection Microbiology*: A Pro-Inflammatory Gut Microbiome Characterizes SARS-CoV-2 Infected Patients and a Reduction in the Connectivity of an Anti-Inflammatory Bacterial Network Associates With Severe COVID-19.
 
+Support Dokdo
+=============
+
+If you find my work useful, please consider becoming a `sponsor <https://github.com/sponsors/sbslee>`__.
+
 CLI Examples
 ============
 
@@ -140,8 +145,3 @@ QIIME 2 is one of the most well-documented and easy-to-use tools I have ever wor
 1. Dynamically create publication-quality figures with Jupyter Notebook using output files/instances from QIIME 2 (Dokdo API). QIIME 2 already provides high-quality, interactive figures via Visualizations (e.g. .qzv files) and `QIIME 2 View <https://view.qiime2.org/>`__. Visualizations are excellent at allowing users to interactively explore the data; however, they are not optimized for presentation (e.g. PowerPoint or publication) due to the lack of options to control various aspects of a figure (size, legend, labels, etc.). Moreover, once created, those visualizations cannot be modified, for example, to make a subset of the samples (e.g. a taxonomic bar plot). Therefore, the user would have to go way back to perform sample filtration, redo the analysis, and create a new visualization again, which can be burdensome and time-consuming. Finally, some visualizations simply do not support the user to download a given figure (e.g. an alpha rarefaction plot). With Dokdo API, the user can directly manipulate a given visualization to make necessary figures. At this point, let me be very clear: I’m not saying QIIME 2 Visualizations should be able to do all the things I mentioned above. I would say it’s actually better QIIME 2 doesn’t do those because then its code can stay simple and focused on the method’s core functionality. That's what programs like Dokdo are for!
 
 2. Create convenience or pipeline commands that combine several QIIME 2 methods (Dokdo CLI). For example, the ``make-manifest`` command in Dokdo CLI automatically creates a manifest file that can be used by QIIME 2 from a directory containing FASTQ files. Another example is the ``summarize`` command which extracts summary statistics from a feature table so the user does not have to create a Visualization file just to get simple statistics.
-
-Support Dokdo
-=============
-
-If you find my work useful, please consider becoming a `sponsor <https://github.com/sponsors/sbslee>`__.
