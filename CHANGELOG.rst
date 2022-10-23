@@ -4,6 +4,8 @@ Changelog
 1.16.0 (in development)
 -----------------------
 
+* Add new argument ``palette`` to :meth:`taxa_abundance_box_plot` method.
+
 1.15.0 (2022-08-23)
 -------------------
 

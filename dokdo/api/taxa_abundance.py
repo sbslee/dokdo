@@ -649,7 +649,7 @@ def taxa_abundance_box_plot(
     sample_names=None, csv_file=None, pseudocount=False,
     taxa_names=None, pretty_taxa=False, show_means=False,
     meanprops=None, show_others=True, sort_by_mean=True,
-    add_datapoints=False, jitter=1, alpha=None, size=5,
+    add_datapoints=False, jitter=1, alpha=None, size=5, palette=None,
     ax=None, figsize=None,
 ):
     """
@@ -729,6 +729,8 @@ def taxa_abundance_box_plot(
     size : float, default: 5.0
         Ignored when ``add_datapoints=False``. Radius of the markers, in
         points.
+    palette : palette name, list, or dict
+        Box colors.
     ax : matplotlib.axes.Axes, optional
         Axes object to draw the plot onto, otherwise uses the current Axes.
     figsize : tuple, optional
@@ -929,7 +931,7 @@ def taxa_abundance_box_plot(
 
     sns.boxplot(
         x='variable', y='value', hue=hue, hue_order=hue_order, data=df2,
-        ax=ax, **d
+        ax=ax, palette=palette, **d
     )
 
     if add_datapoints:
