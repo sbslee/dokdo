@@ -5,6 +5,7 @@ Changelog
 -----------------------
 
 * Add new argument ``palette`` to :meth:`taxa_abundance_box_plot` method.
+* :issue:`51`: Fix bug in :meth:`clustermap` method where color labels disappeared when ``flip=True``.
 
 1.15.0 (2022-08-23)
 -------------------

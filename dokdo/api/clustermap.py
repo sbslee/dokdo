@@ -410,11 +410,13 @@ def clustermap(
     # Flip the axes.
     if flip:
         df = df.T
-
-    # Draw the heatmap.
-    g = sns.clustermap(df, method=method, metric=metric, figsize=figsize,
-                       row_cluster=row_cluster, col_cluster=col_cluster,
-                       row_colors=row_colors, **kwargs)
+        g = sns.clustermap(df, method=method, metric=metric, figsize=figsize,
+                           row_cluster=row_cluster, col_cluster=col_cluster,
+                           col_colors=row_colors, **kwargs)
+    else:
+        g = sns.clustermap(df, method=method, metric=metric, figsize=figsize,
+                           row_cluster=row_cluster, col_cluster=col_cluster,
+                           row_colors=row_colors, **kwargs)
 
     # If the hue argument(s) are used, add the legend(s).
     if hue1 is not None:
