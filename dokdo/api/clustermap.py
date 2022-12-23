@@ -337,9 +337,13 @@ def clustermap(
 
     .. image:: images/clustermap-3.png
 
-    We can add an additional grouping variable ``subject``. Note that
-    ``xticklabels`` and ``yticklabels`` are extra keyword arguments that
-    are passed to :meth:`seaborn.clustermap`.
+    We can add an additional grouping variable ``subject``. This may require
+    you to use ``bbox_inches='tight'`` option in the :meth:`plt.savefig`
+    method when saving the figure as a file (e.g. PNG) because otherwise
+    there could be weird issues with the legends (because there are now two
+    legends instead of just one). Additionally, note that ``xticklabels``
+    and ``yticklabels`` are extra keyword arguments that are passed to
+    :meth:`seaborn.clustermap`.
 
     .. code:: python3
 
@@ -350,6 +354,7 @@ def clustermap(
                          hue2='subject',
                          xticklabels=False,
                          yticklabels=False)
+        plt.savefig('out.png', bbox_inches='tight')
 
     .. image:: images/clustermap-4.png
 
