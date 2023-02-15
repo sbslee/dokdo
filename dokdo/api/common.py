@@ -127,22 +127,22 @@ def pname(name, levels=None, delimiter=';'):
         import dokdo
 
         dokdo.pname('d__Bacteria;p__Actinobacteriota;c__Actinobacteria;o__Actinomycetales;f__Actinomycetaceae;g__Actinomyces;s__Schaalia_radingae')
-        # Will print: 's__Schaalia_radingae'
+        # Will return: 's__Schaalia_radingae'
 
         dokdo.pname('Unassigned;__;__;__;__;__;__')
-        # Will print: 'Unassigned'
+        # Will return: 'Unassigned'
 
         dokdo.pname('d__Bacteria;__;__;__;__;__;__')
-        # Will print: 'd__Bacteria'
+        # Will return: 'd__Bacteria'
 
         dokdo.pname('d__Bacteria;p__Acidobacteriota;c__Acidobacteriae;o__Bryobacterales;f__Bryobacteraceae;g__Bryobacter;__')
-        # Will print: 'g__Bryobacter'
+        # Will return: 'g__Bryobacter'
 
         dokdo.pname('d__Bacteria;p__Actinobacteriota;c__Actinobacteria;o__Actinomycetales;f__Actinomycetaceae;g__Actinomyces;s__Schaalia_radingae', levels=[6, 7])
-        # Will print: 'g__Actinomyces;s__Schaalia_radingae'
+        # Will return: 'g__Actinomyces;s__Schaalia_radingae'
 
         dokdo.pname('1ad289cd8f44e109fd95de0382c5b252')
-        # Will print: '1ad289cd8f44e109fd95de0382c5b252'
+        # Will return: '1ad289cd8f44e109fd95de0382c5b252'
     """
     if delimiter not in name:
         return name
@@ -153,6 +153,8 @@ def pname(name, levels=None, delimiter=';'):
                 return rank
             if rank == '__':
                 continue
+            if '__' not in rank:
+                return rank
             if not rank.split('__')[1]:
                 return ranks[i+1] + delimiter + rank
             return rank

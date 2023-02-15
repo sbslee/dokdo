@@ -1,3 +1,5 @@
+import re
+import json
 import tempfile
 
 from . import common
@@ -6,29 +8,21 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-def taxa_cols(df):
-    """Returns metadata columns from DataFrame object."""
-    cols = []
-    for col in df.columns:
-        if 'Unassigned' in col:
-            cols.append(col)
-        elif '__' in col:
-            cols.append(col)
-        else:
-            continue
-    return cols
-
-def _get_mf_cols(df):
-    """Returns metadata columns from DataFrame object."""
-    cols = []
-    for column in df.columns:
-        if 'Unassigned' in column:
-            continue
-        elif '__' in column:
-            continue
-        else:
-            cols.append(column)
-    return cols
+def _parse_qzv(level, t):
+    """Parse input QZV file."""
+    df = pd.read_csv(f'{t}/level-{level}.csv', index_col=0)
+    with open(f'{t}/level-{level}.jsonp', 'r') as f:
+        jsonp_text = f.read()
+    matches = re.search(r'\[.*?\],', jsonp_text)
+    if matches:
+        df_cols = json.loads(matches.group(0).strip(','))
+        mf_cols = [x for x in df.columns if x not in df_cols]
+        mf = df[mf_cols]
+        df = df[df_cols]
+        mf['sample-id'] = mf.index
+    else:
+        raise ValueError("No list-looking string found")
+    return (df, mf)
 
 def _filter_samples(df, mf, exclude_samples, include_samples):
     """Returns DataFrame objects after sample filtering."""
@@ -81,13 +75,13 @@ def _get_others_col(df, count, taxa_names, show_others):
     return df
 
 def taxa_abundance_bar_plot(
-    visualization, metadata=None, level=1, group=None, group_order=None, by=None,
-    ax=None, figsize=None, width=0.8, count=0, exclude_samples=None,
-    include_samples=None, exclude_taxa=None, sort_by_names=False,
-    colors=None, label_columns=None, orders=None, sample_names=None,
-    csv_file=None, taxa_names=None, sort_by_mean1=True,
-    sort_by_mean2=True, sort_by_mean3=True, show_others=True,
-    cmap_name='Accent', legend_short=False, pname_kws=None, legend=True
+    visualization, metadata=None, level=1, group=None, group_order=None,
+    by=None, orders=None, ax=None, figsize=None, width=0.8, count=0,
+    exclude_samples=None, include_samples=None, exclude_taxa=None,
+    sort_by_names=False, colors=None, label_columns=None, sample_names=None,
+    csv_file=None, taxa_names=None, sort_by_mean1=True, sort_by_mean2=True,
+    sort_by_mean3=True, show_others=True, cmap_name='Accent',
+    legend_short=False, pname_kws=None, legend=True
 ):
     """
     Create a bar plot showing relative taxa abundance for individual samples.
@@ -128,10 +122,13 @@ def taxa_abundance_bar_plot(
     group_order : list, optional
         Order to plot the groups in.
     by : list, optional
-        Column name(s) to be used for sorting the samples. Using 'sample-id'
-        will sort the samples by their name, in addition to other column
-        name(s) that may have been provided. If multiple items are provided,
-        sorting will occur by the order of the items.
+        Sort samples by metadata columns, in that order, numerically or
+        alphabetically depending on the data type. Use ``['sample-id']`` to
+        sort samples by name.
+    orders : dict, optional
+        Dictionary of metadata columns (keys) and labels (values) to dictate
+        the order of samples: ``{col1: [lab1, lab2, ...], col2: [lab1, lab2,
+        ...], ...}``. This option has no effect when ``by=None``.
     ax : matplotlib.axes.Axes, optional
         Axes object to draw the plot onto, otherwise uses the current Axes.
     figsize : tuple, optional
@@ -155,11 +152,6 @@ def taxa_abundance_bar_plot(
     label_columns : list, optional
         List of metadata columns to be concatenated to form new sample
         labels. Use the string 'sample-id' to indicate the sample ID column.
-    orders : dict, optional
-        Dictionary of {column1: [element1, element2, ...], column2:
-        [element1, element2...], ...} to indicate the order of items. Used to
-        sort the sampels by the user-specified order instead of ordering
-        numerically or alphabetically.
     sample_names : list, optional
         List of sample IDs to be included.
     csv_file : str, optional
@@ -513,26 +505,30 @@ def taxa_abundance_bar_plot(
     """
     if isinstance(visualization, pd.DataFrame):
         df = visualization
+        mf = pd.DataFrame()
     else:
         with tempfile.TemporaryDirectory() as t:
             common.export(visualization, t)
-            df = pd.read_csv(f'{t}/level-{level}.csv', index_col=0)
+            df, mf = _parse_qzv(level, t)
+            # df = pd.read_csv(f'{t}/level-{level}.csv', index_col=0)
+            # with open(f'{t}/level-{level}.jsonp', 'r') as f:
+            #     jsonp_text = f.read()
+            # matches = re.search(r'\[.*?\],', jsonp_text)
+            # if matches:
+            #     df_cols = json.loads(matches.group(0).strip(','))
+            #     mf_cols = [x for x in df.columns if x not in df_cols]
+            #     mf = df[mf_cols]
+            #     df = df[df_cols]
+            #     mf['sample-id'] = mf.index
+            # else:
+            #     raise ValueError("No list-looking string found")
 
     if sort_by_mean1:
-        cols = _get_mf_cols(df)
-        mf = df[cols]
-        df = df.drop(columns=cols)
         df = _sort_by_mean(df)
-        df = pd.concat([df, mf], axis=1, join='inner')
 
     # If provided, update the metadata.
-    if metadata is None:
-        pass
-    else:
+    if metadata is not None:
         mf = common.get_mf(metadata)
-        cols = _get_mf_cols(df)
-        df.drop(columns=cols, inplace=True)
-        df = pd.concat([df, mf], axis=1, join='inner')
 
     # If provided, sort the samples by the user-specified order instead of
     # ordering numerically or alphabetically. To do this, we will first add a
@@ -540,32 +536,31 @@ def taxa_abundance_bar_plot(
     # list. This column will be used for sorting the samples later instead of
     # the original column. After sorting, the new column will be dropped from
     # the dataframe and the original column will replace its place.
-    if isinstance(orders, dict):
+    if orders is not None:
         for k, v in orders.items():
-            u = df[k].unique().tolist()
+            u = mf[k].unique().tolist()
 
             if set(u) != set(v):
-                message = (f"Target values {u} not matched with user-provided "
-                           f"values {v} for metadata column `{k}`")
+                message = (f"Target values {u} not matched with user-"
+                           f"provided values {v} for metadata column `{k}`")
                 raise ValueError(message)
 
             l = [x for x in range(len(v))]
             d = dict(zip(v, l))
-            df.rename(columns={k: f'@{k}'}, inplace=True)
-            df[k] = df[f'@{k}'].map(d)
+            mf.rename(columns={k: f'@{k}'}, inplace=True)
+            mf[k] = mf[f'@{k}'].map(d)
 
-    df["sample-id"] = df.index
-
-    # If provided, sort the samples for display in the x-axis.
-    if isinstance(by, list):
-        df = df.sort_values(by=by)
+    # If asked, sort the samples.
+    if by is not None:
+        mf = mf.sort_values(by=by)
+        df = df.loc[mf.index]
 
     # If sorting was performed by the user-specified order, remove the
     # temporary columns and then bring back the original column.
-    if isinstance(orders, dict):
+    if orders is not None:
         for k in orders:
-            df.drop(columns=[k], inplace=True)
-            df.rename(columns={f'@{k}': k}, inplace=True)
+            mf.drop(columns=[k], inplace=True)
+            mf.rename(columns={f'@{k}': k}, inplace=True)
 
     # If provided, exclude the specified taxa.
     if isinstance(exclude_taxa, list):
@@ -577,17 +572,12 @@ def taxa_abundance_bar_plot(
         dropped = list(set(dropped))
         df = df.drop(columns=dropped)
 
-    # If provided, group the samples by the given metadata column.
+    # If asked, group samples by the given metadata column.
     if group is not None:
-        df = df.groupby(group)[taxa_cols(df)].agg('sum')
-
-    # Remove the metadata columns.
-    cols = _get_mf_cols(df)
-    mf = df[cols]
-    df = df.drop(columns=cols)
-
-    if group is not None and group_order is not None:
-        df = df.loc[group_order]
+        df[group] = mf[group]
+        df = df.groupby(group).agg('sum')
+        if group_order is not None:
+            df = df.loc[group_order]
 
     df, mf = _filter_samples(df, mf, exclude_samples, include_samples)
 
@@ -848,22 +838,16 @@ def taxa_abundance_box_plot(
     """
     with tempfile.TemporaryDirectory() as t:
         common.export(visualization, t)
-        df = pd.read_csv(f'{t}/level-{level}.csv', index_col=0)
+        df, mf = _parse_qzv(level, t)
 
     # If provided, update the metadata.
-    if metadata is None:
-        pass
-    else:
+    if metadata is not None:
         mf = common.get_mf(metadata)
-        cols = _get_mf_cols(df)
-        df.drop(columns=cols, inplace=True)
-        df = pd.concat([df, mf], axis=1, join='inner')
 
-    df["sample-id"] = df.index
-
-    # If provided, sort the samples for display in the x-axis.
-    if by:
-        df = df.sort_values(by=by)
+    # If asked, sort the samples.
+    if by is not None:
+        mf = mf.sort_values(by=by)
+        df = df.loc[mf.index]
 
     # If provided, exclude the specified taxa.
     if isinstance(exclude_taxa, list):
@@ -874,11 +858,6 @@ def taxa_abundance_box_plot(
                     dropped.append(col)
         dropped = list(set(dropped))
         df = df.drop(columns=dropped)
-
-    # Remove the metadata columns.
-    cols = _get_mf_cols(df)
-    mf = df[cols]
-    df = df.drop(columns=cols)
 
     df, mf = _filter_samples(df, mf, exclude_samples, include_samples)
 
