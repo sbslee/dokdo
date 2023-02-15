@@ -510,18 +510,6 @@ def taxa_abundance_bar_plot(
         with tempfile.TemporaryDirectory() as t:
             common.export(visualization, t)
             df, mf = _parse_qzv(level, t)
-            # df = pd.read_csv(f'{t}/level-{level}.csv', index_col=0)
-            # with open(f'{t}/level-{level}.jsonp', 'r') as f:
-            #     jsonp_text = f.read()
-            # matches = re.search(r'\[.*?\],', jsonp_text)
-            # if matches:
-            #     df_cols = json.loads(matches.group(0).strip(','))
-            #     mf_cols = [x for x in df.columns if x not in df_cols]
-            #     mf = df[mf_cols]
-            #     df = df[df_cols]
-            #     mf['sample-id'] = mf.index
-            # else:
-            #     raise ValueError("No list-looking string found")
 
     if sort_by_mean1:
         df = _sort_by_mean(df)
