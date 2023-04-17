@@ -23,12 +23,9 @@ Your contributions (e.g. feature ideas, pull requests) are most welcome.
 Citation
 ========
 
-If you use Dokdo in a published analysis, please report the program version
-and the GitHub repository (https://github.com/sbslee/dokdo). If applicable,
-please also consider citing the following preprint in which Dokdo was first
-described:
+If you use Dokdo in a published analysis, please report the program version and cite the following article:
 
-- JY Park, H Yoon, S Lee, et al. `Do Different Samples From Pregnant Women and Their Neonates Share the Common Microbiome: A Prospective Cohort Study <https://doi.org/10.21203/rs.3.rs-1062191/v1>`__. Research Square. November 29th, 2021.
+- JY Park, H Yoon, S Lee, et al., 2023. `Comprehensive characterization of maternal, fetal, and neonatal microbiomes supports prenatal colonization of the gastrointestinal tract <https://doi.org/10.1038/s41598-023-31049-1>`__. Scientific Reports.
 
 Below is an incomplete list of publications which have used Dokdo:
 
