@@ -25,7 +25,7 @@ Citation
 
 If you use Dokdo in a published analysis, please report the program version and cite the following article:
 
-- JY Park, H Yoon, S Lee, et al., 2023. `Comprehensive characterization of maternal, fetal, and neonatal microbiomes supports prenatal colonization of the gastrointestinal tract <https://doi.org/10.1038/s41598-023-31049-1>`__. Scientific Reports.
+- JY Park, H Yoon, S Lee, et al., 2023 in *Scientific Reports*: `Comprehensive characterization of maternal, fetal, and neonatal microbiomes supports prenatal colonization of the gastrointestinal tract <https://doi.org/10.1038/s41598-023-31049-1>`__.
 
 Below is an incomplete list of publications which have used Dokdo:
 
