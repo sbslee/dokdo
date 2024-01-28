@@ -5,6 +5,7 @@ Changelog
 -----------------------
 
 * :issue:`53`: Fix bug in :meth:`taxa_abundance_bar_plot`, :meth:`taxa_abundance_box_plot`, :meth:`pname` methods when taxa names don't have any prefix (e.g. ``k__`` in ``k__Bacteria``). This can occur if taxonomic classification was performed with databases other than, say, Greengenes and SILVA.
+* :issue:`58`: Update :meth:`denoising_stats_plot` method to support data from single-end reads.
 
 1.16.0 (2022-12-27)
 -------------------

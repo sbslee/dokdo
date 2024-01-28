@@ -74,7 +74,11 @@ def denoising_stats_plot(
 
     df2 = pd.concat([df1, mf], axis=1, join='inner')
 
-    a = ['input', 'filtered', 'denoised', 'merged', 'non-chimeric', where]
+    if 'merged' in df2.columns:
+        a = ['input', 'filtered', 'denoised', 'merged', 'non-chimeric', where]
+    else:
+        a = ['input', 'filtered', 'denoised', 'non-chimeric', where]
+
     df3 = pd.melt(df2[a], id_vars=[where])
 
     if ax is None:
